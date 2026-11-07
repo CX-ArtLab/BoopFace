@@ -8,7 +8,7 @@
 
 [English](https://github.com/CX-ArtLab/boopface/blob/main/README.md) | [簡體中文](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.zh-CN.md) | [Español](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.es.md) | [Русский](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.ru.md) | [Français](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.fr.md) | [Português](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.pt.md) | [Deutsch](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.de.md) | [日本語](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.ja.md) | [한국어](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.ko.md) | [繁體中文](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.zh-TW.md)
 
-![Version](https://img.shields.io/badge/version-v0.8.0-111111?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-0A7EA4?style=flat-square)](../LICENSE) [![CI](https://github.com/CX-ArtLab/boopface/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/CX-ArtLab/boopface/actions/workflows/validate.yml) [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-FF5E5B?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/P0E625WIOI)
+![Version](https://img.shields.io/badge/version-v0.8.1-111111?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-0A7EA4?style=flat-square)](../LICENSE) [![CI](https://github.com/CX-ArtLab/boopface/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/CX-ArtLab/boopface/actions/workflows/validate.yml) [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-FF5E5B?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/P0E625WIOI)
 
 ![Vanilla JavaScript](https://img.shields.io/badge/Vanilla-JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=000) ![Web Component](https://img.shields.io/badge/Web-Native%20Component-5A67D8?style=flat-square) ![SVG](https://img.shields.io/badge/Rendering-SVG-FFB13B?style=flat-square&logo=svg&logoColor=000) ![Zero Dependencies](https://img.shields.io/badge/Dependencies-0-2EA44F?style=flat-square) ![Embedded](https://img.shields.io/badge/Embedded-ESP32%20%7C%20STM32%20%7C%20Pico-E7352C?style=flat-square&logo=espressif&logoColor=white)
 
@@ -36,7 +36,7 @@ BoopFace 是一個輕量、富表現力的機器人頭像組件，適用於 AI �
 
 ## 在線 Demo
 
-[打開交互 Demo](https://cx-artlab.github.io/BoopFace/?lang=zh-TW) · [逛逛皮膚美術館](https://cx-artlab.github.io/BoopFace/skins.html?lang=zh-TW)\
+[打開交互 Demo](https://cx-artlab.github.io/BoopFace/?lang=zh-TW) · [逛逛皮膚美術館](https://cx-artlab.github.io/BoopFace/skins.html?lang=zh-TW) · [AI 事件示範](https://cx-artlab.github.io/BoopFace/agent.html?lang=zh-TW)\
 [打開嵌入式設備模擬器](https://cx-artlab.github.io/BoopFace/hardware/?lang=zh-TW)（可預覽 32 種常用嵌入式設備屏幕）
 
 ## 特點
@@ -55,6 +55,7 @@ BoopFace 是一個輕量、富表現力的機器人頭像組件，適用於 AI �
 - 可調頭部圓角
 - 188 款編號皮膚，分 17 個系列，光線跟隨鼠標
 - 不含皮膚的精簡版，適合對大小特別在意的頁面
+- `connectAgent()`：AI 資料流的事件直接驅動表情（AG-UI、OpenAI、Anthropic、Vercel AI SDK）
 - 內置 TypeScript 類型聲明
 - BoopFace Embedded 嵌入式設備版：同樣的表情跑在 28 種 ESP32、STM32 和樹莓派 Pico 開發板與屏幕組合上，在線模擬器裏調好後直接導出到固件
 
@@ -235,6 +236,92 @@ avatar.setSkin(null); // 回到純色
 
 所有表情和手勢都能配合皮膚使用。去掉皮膚後，`color` 屬性會重新生效。
 
+## 接入 AI 資料流 · 0.8.1 新增
+
+`connectAgent()` 讓 AI 的資料流直接驅動頭像。把 AI SDK 本來就提供的事件交給它，頭像會自己顯示思考、呼叫工具、回覆、完成、失敗和拒絕。
+
+```js
+import { connectAgent } from 'boopface';
+
+const agent = connectAgent(avatar);
+
+for await (const event of agent.track(stream)) {
+  // 照常顯示回覆
+}
+```
+
+`track()` 會原樣傳出每一項。資料流正常結束算完成，拋出錯誤算失敗，中止或提前 `break` 算取消。也可以用 `agent.handle(event)` 一項一項傳，或者直接傳狀態名稱，例如 `agent.handle('thinking')`。
+
+支援 AG-UI 事件、OpenAI Responses 和 Chat Completions 資料流、Anthropic Messages 資料流、Vercel AI SDK 的資料流片段，以及 `useChat` 狀態（`submitted`、`streaming`、`ready`、`error`）。無法辨識的內容會被忽略。
+
+| 狀態 | 預設表情 | 什麼時候 |
+| --- | --- | --- |
+| `thinking` | `waiting-spin`，循環 | 請求已送出，模型在思考 |
+| `tool` | `waiting-wave`，循環 | 正在呼叫工具 |
+| `replying` | `idle` | 回覆文字正在到達 |
+| `approval` | `wary` | 需要使用者確認 |
+| `done` | `success` | 完成 |
+| `error` | `failure` | 失敗 |
+| `refused` | `refuse` | 模型拒絕回答 |
+| `cancelled` | `idle` | 被使用者停止 |
+| `typing` | `input` | 使用者正在輸入，用 `handle('typing')` 設定 |
+| `idle` | `idle` | 沒有任務 |
+
+每個狀態都可以換成別的動作名稱、一個函式，或者 `null`（什麼都不顯示）：
+
+```js
+connectAgent(avatar, {
+  actions: { replying: 'input', tool: 'inspect' },
+  onChange: (state, previous) => console.log(previous, '→', state),
+});
+```
+
+在 [AI 事件示範](https://cx-artlab.github.io/BoopFace/agent.html?lang=zh-TW) 裡可以試所有格式。
+
+## React 和 Vue
+
+`<boop-face>` 是標準的 Web Component，任何框架都能直接使用。
+
+**React 19**
+
+```jsx
+import { useEffect, useRef } from 'react';
+import { connectAgent } from 'boopface';
+
+export function Avatar({ onReady }) {
+  const ref = useRef(null);
+  useEffect(() => { onReady(connectAgent(ref.current)); }, []);
+  return <boop-face ref={ref} size="140" />;
+}
+```
+
+在 Next.js 裡，替檔案加上 `'use client'`。
+
+**Vue 3**
+
+先在 `vite.config.js` 裡告訴 Vue，`boop-face` 是自訂元素：
+
+```js
+vue({ template: { compilerOptions: { isCustomElement: tag => tag === 'boop-face' } } })
+```
+
+```vue
+<script setup>
+import { onMounted, ref } from 'vue';
+import { connectAgent } from 'boopface';
+
+const avatar = ref(null);
+let agent;
+onMounted(() => { agent = connectAgent(avatar.value); });
+</script>
+
+<template>
+  <boop-face ref="avatar" size="140" />
+</template>
+```
+
+不需要建置工具、直接開啟就能執行的範例：[`examples/react.html`](../examples/react.html) 和 [`examples/vue.html`](../examples/vue.html)。
+
 ## 事件與集成
 
 組件通過 `face-state` 報告視覺狀態變化，通過 `action-state` 報告語義動作生命週期變化。
@@ -302,7 +389,7 @@ void loop() {
 
 ## 項目狀態
 
-**當前公開版本：v0.8.0**（網頁版）\
+**當前公開版本：v0.8.1**（網頁版）\
 BoopFace Embedded 嵌入式設備版：v0.1.0（實驗版）
 
 公開 API 會在未來 `1.0.0` 穩定性承諾前繼續保持精簡併謹慎演進。

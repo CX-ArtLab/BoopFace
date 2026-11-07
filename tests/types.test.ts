@@ -101,3 +101,22 @@ void motion;
 void invalidWakeOn;
 void invalidMotion;
 
+
+// connectAgent: AI stream events drive the avatar.
+import { connectAgent, type BoopFaceAgentState } from 'boopface';
+const agent = connectAgent(avatar, {
+  actions: { replying: 'input', tool: 'inspect', done: null, error: face => face.play('refuse') },
+  onChange: (state: BoopFaceAgentState, previous: BoopFaceAgentState) => void [state, previous],
+});
+const agentState: BoopFaceAgentState = agent.handle({ type: 'RUN_STARTED' });
+void agentState;
+void agent.handle('thinking');
+connectAgent('#avatar').reset();
+async function followStream(stream: AsyncIterable<{ type: string }>) {
+  for await (const part of agent.track(stream)) void part.type;
+}
+void followStream;
+// @ts-expect-error unknown state
+connectAgent(avatar, { actions: { talking: 'idle' } });
+// @ts-expect-error unknown action
+connectAgent(avatar, { actions: { done: 'party' } });

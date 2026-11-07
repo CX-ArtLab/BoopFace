@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh-CN" translate="no">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="google" content="notranslate" />
+<title>BoopFace — AI Events</title>
+<link rel="modulepreload" href="../boopface.js">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;color:#15171a;background:#f7f7f5}
+  .canvas{position:relative;width:100%;min-height:100vh;padding:86px 28px 80px;background-color:#f8f8f6;background-image:radial-gradient(#d7d9dc 1px,transparent 1px);background-size:24px 24px}
+  .title{position:absolute;left:28px;top:22px;font-size:13px;color:#8a8f98;letter-spacing:.04em}
+  .title span+span::before{content:' / '}
+  .build-badge{position:absolute;right:28px;top:20px;padding:3px 7px;border:1px solid #e0e1e3;border-radius:999px;background:rgba(255,255,255,.82);font-size:10px;color:#777c83}
+  .lang{position:absolute;right:112px;top:16px;display:flex;gap:4px}
+  .lang button{padding:4px 8px;font-size:11px;color:#777c83;background:transparent}
+  .lang button[aria-pressed=true]{background:#eceeef;color:#30343a}
+  button{border:0;background:#f1f2f3;padding:8px 11px;border-radius:10px;font:inherit;font-size:12px;color:#333;cursor:pointer;white-space:nowrap}
+  button:hover{background:#e7e8ea} button:active{transform:translateY(1px)}
+  button:focus-visible{outline:2px solid #aeb2b8;outline-offset:2px}
+
+  .layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:22px;max-width:1060px;margin:0 auto;align-items:start}
+  .stage{display:grid;justify-items:center;gap:18px}
+  .avatar-home{width:118px;height:118px;display:grid;place-items:center;margin-top:6px}
+  boop-face{filter:drop-shadow(0 12px 24px rgba(0,0,0,.08))}
+  .state-pill{font-size:11px;color:#858990;background:#fff;border:1px solid #ececec;border-radius:999px;padding:6px 10px}
+  .reply{width:min(520px,100%);min-height:68px;padding:12px 14px;border-radius:18px;border-bottom-left-radius:7px;background:rgba(255,255,255,.88);box-shadow:0 7px 30px rgba(0,0,0,.08);backdrop-filter:blur(14px);font-size:13px;line-height:1.55;color:#565b62;white-space:pre-wrap;word-break:break-word}
+  .reply:empty::before{content:attr(data-empty);color:#a6a9ae}
+
+  .panel{width:min(620px,100%);display:grid;gap:10px;padding:12px;border-radius:16px;background:rgba(255,255,255,.88);box-shadow:0 7px 30px rgba(0,0,0,.08);backdrop-filter:blur(14px)}
+  .row{display:grid;grid-template-columns:92px minmax(0,1fr);align-items:center;gap:10px}
+  .row-label{font-size:11px;font-weight:600;color:#72777e}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chips button{padding:6px 10px;font-size:12px;color:#656a70;background:#f4f5f6}
+  .chips button:hover{background:#e9eaec}
+  .chips button[aria-pressed=true]{background:#dfe1e4;color:#25282c;font-weight:600}
+  .divider{height:1px;background:rgba(0,0,0,.06);margin:2px 0}
+  .toggle{display:inline-flex;align-items:center;gap:9px;font-size:12px;color:#656a70;cursor:pointer;user-select:none}
+  .toggle input{position:absolute;opacity:0;pointer-events:none}
+  .switch{position:relative;width:30px;height:18px;border-radius:999px;background:#d4d6d9;transition:background .18s ease;flex:0 0 auto}
+  .switch::after{content:'';position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.18);transition:transform .18s ease}
+  .toggle input:checked+.switch{background:#666b72}
+  .toggle input:checked+.switch::after{transform:translateX(12px)}
+  .toggle input:focus-visible+.switch{outline:2px solid #aeb2b8;outline-offset:2px}
+  .actions{display:flex;justify-content:flex-end;gap:8px}
+  .run{background:#666b72;color:#fff;padding:8px 15px;border-radius:11px}
+  .run:hover{background:#585d63}
+  .run:disabled{opacity:.45;cursor:default}
+
+  .log{position:sticky;top:20px;display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:10px;height:min(640px,calc(100vh - 120px));padding:12px;border-radius:16px;background:rgba(255,255,255,.88);box-shadow:0 7px 30px rgba(0,0,0,.08);backdrop-filter:blur(14px)}
+  .log-head{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:600;color:#72777e}
+  .log-head button{padding:4px 8px;font-size:11px;color:#72777e;background:#f4f5f6}
+  .code{margin:0;padding:10px;border-radius:10px;background:#f4f5f6;font:11px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#4d5258;white-space:pre-wrap;word-break:break-word}
+  .events{margin:0;padding:0;list-style:none;overflow:auto;font:11px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .events li{display:flex;justify-content:space-between;gap:8px;padding:4px 6px;border-radius:7px;color:#565b62}
+  .events li:nth-child(odd){background:#f6f7f7}
+  .events .type{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .events .count{flex:0 0 auto;margin-left:auto;color:#a0a4aa}
+  .events .to{flex:0 0 auto;color:#9a9da2}
+  .events .to.changed{color:#25282c;font-weight:600}
+  .events .note{color:#a0a4aa;font-style:italic}
+
+  @media(max-width:900px){
+    .layout{grid-template-columns:1fr}
+    .log{position:static;height:420px}
+  }
+  @media(max-width:600px){
+    .canvas{padding:70px 12px 40px}
+    .title{left:18px;top:16px}.build-badge{right:18px;top:14px}.lang{right:96px;top:10px}
+    .row{grid-template-columns:1fr;gap:6px}
+  }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="title"><span>BoopFace</span><span data-i18n="title">AI 事件</span><span>connectAgent</span></div>
+  <div class="lang" role="group" aria-label="Language">
+    <button type="button" data-lang="zh">中文</button>
+    <button type="button" data-lang="en">EN</button>
+  </div>
+  <div class="build-badge">Demo 0.8.1</div>
+
+  <div class="layout">
+    <main class="stage">
+      <div class="avatar-home"><boop-face id="face" size="118"></boop-face></div>
+      <div class="state-pill" id="state" role="status">idle · 待机</div>
+      <div class="reply" id="reply" aria-live="polite"></div>
+
+      <div class="panel">
+        <div class="row">
+          <span class="row-label" data-i18n="format">接口格式</span>
+          <div class="chips" data-group="format">
+            <button type="button" data-value="ag-ui">AG-UI</button>
+            <button type="button" data-value="openai">OpenAI</button>
+            <button type="button" data-value="anthropic">Anthropic</button>
+            <button type="button" data-value="ai-sdk">Vercel AI SDK</button>
+          </div>
+        </div>
+        <div class="row">
+          <span class="row-label" data-i18n="outcome">这次结果</span>
+          <div class="chips" data-group="outcome">
+            <button type="button" data-value="done" data-i18n="outcomeDone">顺利完成</button>
+            <button type="button" data-value="error" data-i18n="outcomeError">出错</button>
+            <button type="button" data-value="refused" data-i18n="outcomeRefused">拒绝回答</button>
+            <button type="button" data-value="approval" data-i18n="outcomeApproval">需要确认</button>
+          </div>
+        </div>
+        <div class="row">
+          <span class="row-label" data-i18n="tools">中途用工具</span>
+          <label class="toggle"><input type="checkbox" id="useTool" checked><span class="switch" aria-hidden="true"></span><span data-i18n="toolsHint">比如上网搜索</span></label>
+        </div>
+        <div class="divider"></div>
+        <div class="row">
+          <span class="row-label" data-i18n="thinking">思考时</span>
+          <div class="chips" data-group="thinking">
+            <button type="button" data-value="waiting-spin" data-i18n="spin">等待 · 旋转</button>
+            <button type="button" data-value="waiting-wrap" data-i18n="wrap">等待 · 环绕</button>
+            <button type="button" data-value="waiting-wave" data-i18n="wave">等待 · 波动</button>
+          </div>
+        </div>
+        <div class="row">
+          <span class="row-label" data-i18n="tool">用工具时</span>
+          <div class="chips" data-group="tool">
+            <button type="button" data-value="waiting-wave" data-i18n="wave">等待 · 波动</button>
+            <button type="button" data-value="waiting-wrap" data-i18n="wrap">等待 · 环绕</button>
+            <button type="button" data-value="waiting-spin" data-i18n="spin">等待 · 旋转</button>
+            <button type="button" data-value="inspect" data-i18n="inspect">审视</button>
+          </div>
+        </div>
+        <div class="row">
+          <span class="row-label" data-i18n="replying">回复文字时</span>
+          <div class="chips" data-group="replying">
+            <button type="button" data-value="idle" data-i18n="idle">正常</button>
+            <button type="button" data-value="input" data-i18n="input">输入</button>
+            <button type="button" data-value="keep" data-i18n="keep">继续等待</button>
+          </div>
+        </div>
+        <div class="actions">
+          <button type="button" id="stop" disabled data-i18n="stop">中途停止</button>
+          <button type="button" class="run" id="run" data-i18n="run">发一条消息</button>
+        </div>
+      </div>
+    </main>
+
+    <aside class="log" aria-label="Events">
+      <div class="log-head"><span data-i18n="code">你的代码</span></div>
+      <pre class="code" id="code"></pre>
+      <ol class="events" id="events"></ol>
+    </aside>
+  </div>
+</div>
+<script type="module" src="./agent.js"></script>
+</body>
+</html>

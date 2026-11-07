@@ -48,6 +48,7 @@ test('package contains the complete runtime and excludes the demo', async () => 
     'src/boopface-random.js',
     'src/boopface-head-roundness.js',
     'src/boopface-runtime.js',
+    'src/boopface-agent.js',
   ];
 
   for (const file of required) assert.ok(files.has(file), `Missing package file: ${file}`);
@@ -110,13 +111,13 @@ test('packed package installs and can be imported without browser globals', asyn
       '--eval',
       "import('boopface').then(module => console.log(Object.keys(module).sort().join(',')))",
     ], { cwd: consumer });
-    assert.match(imported, /BoopFace,SKINS,SKIN_NAMES,SKIN_SERIES,VERSION,default,loadSkins/);
+    assert.match(imported, /BoopFace,SKINS,SKIN_NAMES,SKIN_SERIES,VERSION,connectAgent,default,loadSkins/);
     const lite = run(process.execPath, [
       '--input-type=module',
       '--eval',
       "import('boopface/lite').then(module => console.log(Object.keys(module).sort().join(',')))",
     ], { cwd: consumer });
-    assert.match(lite, /BoopFace,VERSION,default/);
+    assert.match(lite, /BoopFace,VERSION,connectAgent,default/);
 
     const packageJson = JSON.parse(await readFile(path.join(consumer, 'node_modules', 'boopface', 'package.json'), 'utf8'));
     assert.notEqual(packageJson.sideEffects, false);

@@ -4,6 +4,14 @@ All notable user-facing changes to BoopFace (called Agent Robot Avatar before 0.
 
 The project follows Semantic Versioning for public releases. Internal development build numbers are not part of the public version history.
 
+## [0.8.1] - 2026-11-07
+
+### Added
+
+- `connectAgent(avatar)` lets an AI stream drive the avatar. It reads AG-UI events, OpenAI Responses and Chat Completions streams, Anthropic Messages streams, Vercel AI SDK stream parts and `useChat` status, and shows thinking, tool use, replying, approval, done, failure and refusal. `agent.track(stream)` follows a stream while passing every item through; `actions` changes the expression for any state. Both the full and the lite build include it.
+- An AI events demo page that plays a pretend reply in each of the four formats.
+- React and Vue examples, `examples/react.html` and `examples/vue.html`, and a README section on using the component in both.
+
 ## [0.8.0] - 2026-11-05
 
 ### Changed
@@ -243,6 +251,7 @@ First public release.
 - npm-compatible package metadata for later package publication
 - Contribution guide, issue templates, pull request template, MIT License, and Ko-fi funding metadata
 
+[0.8.1]: https://github.com/CX-ArtLab/boopface/releases/tag/v0.8.1
 [0.8.0]: https://github.com/CX-ArtLab/boopface/releases/tag/v0.8.0
 [0.7.2]: https://github.com/CX-ArtLab/boopface/releases/tag/v0.7.2
 [0.7.1]: https://github.com/CX-ArtLab/boopface/releases/tag/v0.7.1

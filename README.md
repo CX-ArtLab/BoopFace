@@ -8,7 +8,7 @@
 
 [English](https://github.com/CX-ArtLab/boopface/blob/main/README.md) | [简体中文](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.zh-CN.md) | [Español](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.es.md) | [Русский](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.ru.md) | [Français](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.fr.md) | [Português](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.pt.md) | [Deutsch](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.de.md) | [日本語](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.ja.md) | [한국어](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.ko.md) | [繁體中文](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.zh-TW.md)
 
-![Version](https://img.shields.io/badge/version-v0.8.0-111111?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-0A7EA4?style=flat-square)](./LICENSE) [![CI](https://github.com/CX-ArtLab/boopface/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/CX-ArtLab/boopface/actions/workflows/validate.yml) [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-FF5E5B?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/P0E625WIOI)
+![Version](https://img.shields.io/badge/version-v0.8.1-111111?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-0A7EA4?style=flat-square)](./LICENSE) [![CI](https://github.com/CX-ArtLab/boopface/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/CX-ArtLab/boopface/actions/workflows/validate.yml) [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-FF5E5B?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/P0E625WIOI)
 
 ![Vanilla JavaScript](https://img.shields.io/badge/Vanilla-JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=000) ![Web Component](https://img.shields.io/badge/Web-Native%20Component-5A67D8?style=flat-square) ![SVG](https://img.shields.io/badge/Rendering-SVG-FFB13B?style=flat-square&logo=svg&logoColor=000) ![Zero Dependencies](https://img.shields.io/badge/Dependencies-0-2EA44F?style=flat-square) ![Embedded](https://img.shields.io/badge/Embedded-ESP32%20%7C%20STM32%20%7C%20Pico-E7352C?style=flat-square&logo=espressif&logoColor=white)
 
@@ -34,7 +34,7 @@ The same eye expressions on ESP32, STM32 and Raspberry Pi Pico screens, or in ot
 
 ## Live Demo
 
-[Open the interactive demo](https://cx-artlab.github.io/BoopFace/) · [Visit the Skin Gallery](https://cx-artlab.github.io/BoopFace/skins.html)
+[Open the interactive demo](https://cx-artlab.github.io/BoopFace/) · [Visit the Skin Gallery](https://cx-artlab.github.io/BoopFace/skins.html) · [AI events demo](https://cx-artlab.github.io/BoopFace/agent.html)
 
 [Open the embedded simulator](https://cx-artlab.github.io/BoopFace/hardware/?lang=en)
 
@@ -54,6 +54,7 @@ The same eye expressions on ESP32, STM32 and Raspberry Pi Pico screens, or in ot
 - Adjustable head roundness
 - 188 numbered skins in 17 series, with light that follows the pointer
 - A lite build without skins for the smallest pages
+- `connectAgent()`: AI stream events drive the expressions (AG-UI, OpenAI, Anthropic, Vercel AI SDK)
 - TypeScript declarations included
 
 ## Install
@@ -233,6 +234,92 @@ Skin painters download the first time a skin is used, so a page without skins ne
 
 Every expression and gesture works with a skin. When the skin is removed, the `color` attribute applies again.
 
+## Connect an AI stream · New in 0.8.1
+
+`connectAgent()` lets an AI stream drive the avatar. Hand it the events your AI SDK already gives you, and the avatar shows thinking, tool use, replying, done, failure and refusal by itself.
+
+```js
+import { connectAgent } from 'boopface';
+
+const agent = connectAgent(avatar);
+
+for await (const event of agent.track(stream)) {
+  // show the reply as usual
+}
+```
+
+`track()` passes every item through unchanged. A stream that ends cleanly counts as done, a thrown error as a failure, and an abort or an early `break` as cancelled. You can also pass items one at a time with `agent.handle(event)`, or a state name such as `agent.handle('thinking')`.
+
+It understands AG-UI events, OpenAI Responses and Chat Completions streams, Anthropic Messages streams, Vercel AI SDK stream parts and `useChat` status (`submitted`, `streaming`, `ready`, `error`). Anything else is ignored.
+
+| State | Default expression | When |
+| --- | --- | --- |
+| `thinking` | `waiting-spin`, looping | Request sent, the model is reasoning |
+| `tool` | `waiting-wave`, looping | A tool call is running |
+| `replying` | `idle` | Reply text is arriving |
+| `approval` | `wary` | The agent needs the user to confirm |
+| `done` | `success` | Finished |
+| `error` | `failure` | Failed |
+| `refused` | `refuse` | The model declined |
+| `cancelled` | `idle` | Stopped by the user |
+| `typing` | `input` | The user is typing, set with `handle('typing')` |
+| `idle` | `idle` | Nothing running |
+
+Change any of them with an action name, a function, or `null` to show nothing:
+
+```js
+connectAgent(avatar, {
+  actions: { replying: 'input', tool: 'inspect' },
+  onChange: (state, previous) => console.log(previous, '→', state),
+});
+```
+
+Try every format on the [AI events demo](https://cx-artlab.github.io/BoopFace/agent.html).
+
+## React and Vue
+
+`<boop-face>` is a standard Web Component, so it works in any framework.
+
+**React 19**
+
+```jsx
+import { useEffect, useRef } from 'react';
+import { connectAgent } from 'boopface';
+
+export function Avatar({ onReady }) {
+  const ref = useRef(null);
+  useEffect(() => { onReady(connectAgent(ref.current)); }, []);
+  return <boop-face ref={ref} size="140" />;
+}
+```
+
+In Next.js, mark the file `'use client'`.
+
+**Vue 3**
+
+Tell Vue that `boop-face` is a custom element, in `vite.config.js`:
+
+```js
+vue({ template: { compilerOptions: { isCustomElement: tag => tag === 'boop-face' } } })
+```
+
+```vue
+<script setup>
+import { onMounted, ref } from 'vue';
+import { connectAgent } from 'boopface';
+
+const avatar = ref(null);
+let agent;
+onMounted(() => { agent = connectAgent(avatar.value); });
+</script>
+
+<template>
+  <boop-face ref="avatar" size="140" />
+</template>
+```
+
+Pages that run without a build step: [`examples/react.html`](./examples/react.html) and [`examples/vue.html`](./examples/vue.html).
+
 ## Events and integration
 
 The component emits `face-state` for visual state changes and `action-state` for semantic action lifecycle changes.
@@ -301,7 +388,7 @@ Issues and pull requests are welcome. See [`CONTRIBUTING.md`](./CONTRIBUTING.md)
 
 ## Project status
 
-**Current public version: v0.8.0**\
+**Current public version: v0.8.1**\
 BoopFace Embedded: v0.1.0 (experimental)
 
 The public API is intentionally kept compact while the project evolves toward a future `1.0.0` stability commitment.

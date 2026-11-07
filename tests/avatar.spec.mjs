@@ -138,12 +138,12 @@ test('interactive demo loads without runtime errors', async ({ page }) => {
   await page.goto('/demo/');
   await expect(page.locator('boop-face')).toBeVisible();
   await expect(page.locator('[data-action="waiting-spin"]')).toBeVisible();
-  await expect(page.locator('#agent-demo-build')).toHaveText('Demo 0.8.0');
+  await expect(page.locator('#agent-demo-build')).toHaveText('Demo 0.8.1');
   const versions = await page.evaluate(() => ({
     runtime: window.BoopFaceVersion,
     demo: window.BoopFaceDemoBuild,
   }));
-  expect(versions).toEqual({ runtime: '0.8.0', demo: '0.8.0' });
+  expect(versions).toEqual({ runtime: '0.8.1', demo: '0.8.1' });
   expect(pageErrors).toEqual([]);
 });
 

@@ -11,6 +11,7 @@ import './src/boopface-gestures.js';
 import { SKIN_NAMES, SKINS, SKIN_SERIES, loadSkins } from './src/boopface-skins.js';
 import './src/boopface-runtime.js';
 import { VERSION } from './src/boopface-version.js';
+import { connectAgent } from './src/boopface-agent.js';
 
 // Elements already present in markup can upgrade while the core module is
 // loading, before runtime extensions finish installing their prototype hooks.
@@ -24,6 +25,6 @@ if (typeof window !== 'undefined') {
   window.BoopFaceVersion = window.AgentRobotAvatarVersion = VERSION;
 }
 
-export { BoopFace, BoopFace as AgentRobotAvatar, SKIN_NAMES, SKINS, SKIN_SERIES, VERSION, loadSkins };
+export { BoopFace, BoopFace as AgentRobotAvatar, SKIN_NAMES, SKINS, SKIN_SERIES, VERSION, loadSkins, connectAgent };
 // AgentRobotAvatar: the 0.7 name, kept until 1.0.
 export default BoopFace;

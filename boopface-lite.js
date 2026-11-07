@@ -13,6 +13,7 @@ import './src/boopface-head-roundness.js';
 import './src/boopface-gestures.js';
 import './src/boopface-runtime.js';
 import { VERSION } from './src/boopface-version.js';
+import { connectAgent } from './src/boopface-agent.js';
 
 const proto = BoopFace.prototype;
 let warned = false;
@@ -40,6 +41,6 @@ if (typeof window !== 'undefined') {
   window.BoopFaceVersion = window.AgentRobotAvatarVersion = VERSION;
 }
 
-export { BoopFace, BoopFace as AgentRobotAvatar, VERSION };
+export { BoopFace, BoopFace as AgentRobotAvatar, VERSION, connectAgent };
 // AgentRobotAvatar: the 0.7 name, kept until 1.0.
 export default BoopFace;

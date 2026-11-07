@@ -195,6 +195,58 @@ export declare class BoopFace extends HTMLElement {
 
 export declare const VERSION: string;
 
+/**
+ * What an AI agent is doing, as understood by `connectAgent()`.
+ * Busy states (`thinking`, `tool`, `replying`) keep looping until the next state.
+ */
+export type BoopFaceAgentState =
+  | 'idle'
+  | 'typing'
+  | 'thinking'
+  | 'tool'
+  | 'replying'
+  | 'approval'
+  | 'done'
+  | 'error'
+  | 'refused'
+  | 'cancelled';
+
+/** An action name, a function that drives the avatar itself, or `null`/`false` to show nothing. */
+export type BoopFaceAgentAction =
+  | Exclude<BoopFaceAction, BoopFaceDeprecatedAction>
+  | ((avatar: BoopFace, state: BoopFaceAgentState) => unknown)
+  | null
+  | false;
+
+export interface BoopFaceAgentOptions {
+  /** Replace the expression shown for any state. */
+  actions?: Partial<Record<BoopFaceAgentState, BoopFaceAgentAction>>;
+  /** Called after every state change, for status text or logging. */
+  onChange?: (state: BoopFaceAgentState, previous: BoopFaceAgentState) => void;
+}
+
+export interface BoopFaceAgent {
+  /** The current state. */
+  readonly state: BoopFaceAgentState;
+  readonly avatar: BoopFace;
+  /**
+   * Reads one stream item: an AG-UI event, an OpenAI Responses or Chat Completions
+   * chunk, an Anthropic Messages event, a Vercel AI SDK stream part, a useChat
+   * status, or a state word such as `'thinking'`. Unrecognized items are ignored.
+   */
+  handle(event: unknown): BoopFaceAgentState;
+  /**
+   * Passes a stream through unchanged while the avatar follows it. A clean end
+   * counts as done, a thrown error as error, an abort or early stop as cancelled.
+   */
+  track<T>(stream: AsyncIterable<T> | Iterable<T> | ReadableStream<T>): AsyncGenerator<T, void, undefined>;
+  /** Back to idle. */
+  reset(): BoopFaceAgentState;
+}
+
+/** Lets an AI stream drive the avatar's expressions. */
+export declare function connectAgent(avatar: BoopFace | string, options?: BoopFaceAgentOptions): BoopFaceAgent;
+
 export default BoopFace;
 
 /** @deprecated Renamed to BoopFace in 0.8; the old names go away in 1.0. */

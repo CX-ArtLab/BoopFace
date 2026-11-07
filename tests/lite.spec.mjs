@@ -22,7 +22,7 @@ test('the lite build has every expression and no skin code', async ({ page }) =>
     return { exports: Object.keys(module).sort(), skin: avatar.getSkin(), chained: avatar.setSkin(null) === avatar,
       head: avatar.shadowRoot.getElementById('head').getAttribute('fill') };
   });
-  expect(result).toEqual({ exports: ['AgentRobotAvatar', 'BoopFace', 'VERSION', 'default'], skin: null, chained: true, head: '#08090b' });
+  expect(result).toEqual({ exports: ['AgentRobotAvatar', 'BoopFace', 'VERSION', 'connectAgent', 'default'], skin: null, chained: true, head: '#08090b' });
   expect(warnings.filter(text => text.includes('lite build'))).toHaveLength(1);
   expect(requests.filter(url => /skins|skin-patterns/.test(url))).toEqual([]);
   expect(errors).toEqual([]);

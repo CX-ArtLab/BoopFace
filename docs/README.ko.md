@@ -8,7 +8,7 @@
 
 [English](https://github.com/CX-ArtLab/boopface/blob/main/README.md) | [简体中文](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.zh-CN.md) | [Español](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.es.md) | [Русский](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.ru.md) | [Français](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.fr.md) | [Português](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.pt.md) | [Deutsch](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.de.md) | [日本語](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.ja.md) | [한국어](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.ko.md) | [繁體中文](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.zh-TW.md)
 
-![Version](https://img.shields.io/badge/version-v0.8.0-111111?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-0A7EA4?style=flat-square)](../LICENSE) [![CI](https://github.com/CX-ArtLab/boopface/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/CX-ArtLab/boopface/actions/workflows/validate.yml) [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-FF5E5B?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/P0E625WIOI)
+![Version](https://img.shields.io/badge/version-v0.8.1-111111?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-0A7EA4?style=flat-square)](../LICENSE) [![CI](https://github.com/CX-ArtLab/boopface/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/CX-ArtLab/boopface/actions/workflows/validate.yml) [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-FF5E5B?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/P0E625WIOI)
 
 ![Vanilla JavaScript](https://img.shields.io/badge/Vanilla-JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=000) ![Web Component](https://img.shields.io/badge/Web-Native%20Component-5A67D8?style=flat-square) ![SVG](https://img.shields.io/badge/Rendering-SVG-FFB13B?style=flat-square&logo=svg&logoColor=000) ![Zero Dependencies](https://img.shields.io/badge/Dependencies-0-2EA44F?style=flat-square) ![Embedded](https://img.shields.io/badge/Embedded-ESP32%20%7C%20STM32%20%7C%20Pico-E7352C?style=flat-square&logo=espressif&logoColor=white)
 
@@ -34,7 +34,7 @@ ESP32, STM32, Raspberry Pi Pico 화면과 다른 C++ 프로그램에서 같은 �
 
 ## 라이브 데모
 
-[인터랙티브 데모 열기](https://cx-artlab.github.io/BoopFace/?lang=ko) · [스킨 갤러리 둘러보기](https://cx-artlab.github.io/BoopFace/skins.html?lang=ko)
+[인터랙티브 데모 열기](https://cx-artlab.github.io/BoopFace/?lang=ko) · [스킨 갤러리 둘러보기](https://cx-artlab.github.io/BoopFace/skins.html?lang=ko) · [AI 이벤트 데모](https://cx-artlab.github.io/BoopFace/agent.html?lang=ko)
 
 [임베디드 시뮬레이터 열기](https://cx-artlab.github.io/BoopFace/hardware/?lang=ko)
 
@@ -54,6 +54,7 @@ ESP32, STM32, Raspberry Pi Pico 화면과 다른 C++ 프로그램에서 같은 �
 - 조절 가능한 머리 둥글기
 - 17개 시리즈, 188가지 번호 스킨. 빛이 포인터를 따라갑니다
 - 스킨을 뺀 경량판 제공
+- `connectAgent()`: AI 스트림 이벤트로 표정을 자동 전환 (AG-UI, OpenAI, Anthropic, Vercel AI SDK)
 - TypeScript 선언 포함
 
 ## 설치
@@ -233,6 +234,92 @@ avatar.setSkin(null); // 단색으로 돌아가기
 
 모든 표정과 제스처를 스킨과 함께 쓸 수 있습니다. 스킨을 제거하면 `color` 속성이 다시 적용됩니다.
 
+## AI 스트림 연결 · 0.8.1 신규
+
+`connectAgent()`를 쓰면 AI 스트림이 아바타를 직접 움직입니다. AI SDK가 이미 주는 이벤트를 넘기기만 하면 아바타가 생각 중, 도구 사용, 답변 중, 완료, 실패, 거절을 스스로 표현합니다.
+
+```js
+import { connectAgent } from 'boopface';
+
+const agent = connectAgent(avatar);
+
+for await (const event of agent.track(stream)) {
+  // 답변은 평소처럼 표시
+}
+```
+
+`track()`은 모든 항목을 그대로 통과시킵니다. 스트림이 정상적으로 끝나면 완료, 오류가 발생하면 실패, 중단하거나 중간에 `break`하면 취소로 처리합니다. `agent.handle(event)`로 하나씩 넘기거나, `agent.handle('thinking')`처럼 상태 이름을 직접 넘길 수도 있습니다.
+
+AG-UI 이벤트, OpenAI Responses 및 Chat Completions 스트림, Anthropic Messages 스트림, Vercel AI SDK 스트림 파트, `useChat` 상태(`submitted`, `streaming`, `ready`, `error`)를 이해합니다. 그 밖의 항목은 무시합니다.
+
+| 상태 | 기본 표정 | 언제 |
+| --- | --- | --- |
+| `thinking` | `waiting-spin`, 반복 | 요청을 보냈고 모델이 생각 중 |
+| `tool` | `waiting-wave`, 반복 | 도구 호출 실행 중 |
+| `replying` | `idle` | 답변 텍스트가 도착하는 중 |
+| `approval` | `wary` | 사용자 확인이 필요함 |
+| `done` | `success` | 완료 |
+| `error` | `failure` | 실패 |
+| `refused` | `refuse` | 모델이 답변을 거절함 |
+| `cancelled` | `idle` | 사용자가 중지함 |
+| `typing` | `input` | 사용자가 입력 중, `handle('typing')`으로 설정 |
+| `idle` | `idle` | 실행 중인 작업 없음 |
+
+각 상태는 액션 이름, 함수, 또는 아무것도 표시하지 않는 `null`로 바꿀 수 있습니다.
+
+```js
+connectAgent(avatar, {
+  actions: { replying: 'input', tool: 'inspect' },
+  onChange: (state, previous) => console.log(previous, '→', state),
+});
+```
+
+[AI 이벤트 데모](https://cx-artlab.github.io/BoopFace/agent.html?lang=ko)에서 모든 형식을 시험해 볼 수 있습니다.
+
+## React와 Vue
+
+`<boop-face>`는 표준 Web Component이므로 어떤 프레임워크에서도 쓸 수 있습니다.
+
+**React 19**
+
+```jsx
+import { useEffect, useRef } from 'react';
+import { connectAgent } from 'boopface';
+
+export function Avatar({ onReady }) {
+  const ref = useRef(null);
+  useEffect(() => { onReady(connectAgent(ref.current)); }, []);
+  return <boop-face ref={ref} size="140" />;
+}
+```
+
+Next.js에서는 파일에 `'use client'`를 붙이세요.
+
+**Vue 3**
+
+`vite.config.js`에서 `boop-face`가 커스텀 엘리먼트라고 Vue에 알려 줍니다.
+
+```js
+vue({ template: { compilerOptions: { isCustomElement: tag => tag === 'boop-face' } } })
+```
+
+```vue
+<script setup>
+import { onMounted, ref } from 'vue';
+import { connectAgent } from 'boopface';
+
+const avatar = ref(null);
+let agent;
+onMounted(() => { agent = connectAgent(avatar.value); });
+</script>
+
+<template>
+  <boop-face ref="avatar" size="140" />
+</template>
+```
+
+빌드 없이 바로 실행되는 페이지: [`examples/react.html`](../examples/react.html), [`examples/vue.html`](../examples/vue.html).
+
 ## 이벤트와 통합
 
 컴포넌트는 시각 상태 변경에 `face-state`, 의미 기반 액션 라이프사이클 변경에 `action-state`를 발생시킵니다.
@@ -301,7 +388,7 @@ Issue와 Pull Request를 환영합니다. 변경 사항을 제출하기 전에 [
 
 ## 프로젝트 상태
 
-**현재 공개 버전: v0.8.0**\
+**현재 공개 버전: v0.8.1**\
 BoopFace Embedded: v0.1.0 (실험 버전)
 
 공개 API는 향후 `1.0.0` 안정성 약속을 향해 발전하는 동안 의도적으로 간결하게 유지합니다.
