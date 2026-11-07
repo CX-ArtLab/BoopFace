@@ -19,7 +19,9 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-const settle = page => page.evaluate(() => new Promise(resolve => setTimeout(resolve, 250)));
+const settle = (page, ms = 250) => page.evaluate(wait => new Promise(resolve => setTimeout(resolve, wait)), ms);
+// A waiting loop finishes its round before the next expression: at most one orbit.
+const ROUND = 2600;
 
 test('an AG-UI run shows waiting, then success', async ({ page }) => {
   await page.evaluate(() => {
@@ -31,13 +33,16 @@ test('an AG-UI run shows waiting, then success', async ({ page }) => {
     window.agent.handle({ type: 'TOOL_CALL_START' });
   });
   await settle(page);
+  // The thinking orbit is still finishing its round; the state already moved on.
+  expect(await page.evaluate(() => ({ state: window.agent.state, actions: window.actions.length }))).toEqual({ state: 'tool', actions: 1 });
+  await settle(page, ROUND);
   await page.evaluate(() => {
     window.agent.handle({ type: 'TOOL_CALL_RESULT' });
     window.agent.handle({ type: 'TEXT_MESSAGE_START', role: 'assistant' });
     window.agent.handle({ type: 'TEXT_MESSAGE_CONTENT', delta: 'Hi' });
     window.agent.handle({ type: 'RUN_FINISHED' });
   });
-  await settle(page);
+  await settle(page, ROUND);
   const result = await page.evaluate(() => ({ state: window.agent.state, actions: window.actions }));
   expect(result.state).toBe('done');
   expect(result.actions[0]).toBe('waiting');
@@ -74,7 +79,7 @@ test('track() follows a stream and passes every item through', async ({ page }) 
     }
     let text = '';
     for await (const event of agent.track(stream())) text += event.delta || '';
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise(resolve => setTimeout(resolve, 2600));
     const clean = { text, state: agent.state, last: window.actions.at(-1) };
 
     async function* broken() {
@@ -109,16 +114,25 @@ test('custom actions, onChange and clear mistakes', async ({ page }) => {
     const typingEyes = avatar._state;
     agent.handle('ready');
     const errors = [];
+    // Thinking and replying share one loop: it keeps going instead of restarting.
+    const shared = window.boop.connectAgent(avatar, { actions: { replying: 'waiting-spin' } });
+    shared.handle('thinking');
+    await new Promise(resolve => setTimeout(resolve, 300));
+    const loopStart = avatar._waitingFx?.start;
+    shared.handle('streaming');
+    await new Promise(resolve => setTimeout(resolve, 300));
+    const sameLoop = loopStart !== undefined && avatar._waitingFx?.start === loopStart;
     for (const options of [{ actions: { talking: 'idle' } }, { actions: { done: 'party' } }]) {
       try { window.boop.connectAgent(avatar, options); } catch (error) { errors.push(error.constructor.name); }
     }
     try { window.boop.connectAgent('#missing'); } catch (error) { errors.push(error.constructor.name); }
-    return { changes, typingEyes, state: agent.state, errors };
+    return { changes, typingEyes, state: agent.state, errors, sameLoop };
   });
   expect(result.changes).toEqual(['idle>thinking', 'thinking>replying', 'replying>done']);
   expect(result.typingEyes).toBe('input');
   expect(result.state).toBe('done');
   expect(result.errors).toEqual(['TypeError', 'TypeError', 'TypeError']);
+  expect(result.sameLoop).toBe(true);
 });
 
 test('a run waiting for approval or for a page tool is not a success', async ({ page }) => {

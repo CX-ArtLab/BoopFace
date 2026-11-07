@@ -148,7 +148,7 @@ function plan(format, outcome, tool) {
   const steps = [];
   const add = (event, delay = 60, text) => steps.push({ event, delay, text });
   const words = outcome === 'refused' ? t('refusal') : t('reply');
-  const thinkingDeltas = 10;
+  const thinkingDeltas = 20;
 
   if (format === 'ag-ui') {
     add({ type: 'RUN_STARTED', threadId: 't1', runId: 'r1' }, 0);
@@ -159,7 +159,7 @@ function plan(format, outcome, tool) {
       add({ type: 'TOOL_CALL_START', toolCallId: 'c1', toolCallName: 'web_search' }, 120);
       for (let i = 0; i < 4; i++) add({ type: 'TOOL_CALL_ARGS', toolCallId: 'c1', delta: '{"q"' }, 90);
       add({ type: 'TOOL_CALL_END', toolCallId: 'c1' });
-      add({ type: 'TOOL_CALL_RESULT', toolCallId: 'c1', content: '…' }, 1800);
+      add({ type: 'TOOL_CALL_RESULT', toolCallId: 'c1', content: '…' }, 2400);
     }
     if (outcome === 'error') add({ type: 'RUN_ERROR', message: 'Upstream timeout' }, 600);
     else if (outcome === 'approval') add({ type: 'RUN_FINISHED', outcome: 'interrupt', interrupt: { reason: 'purchase' } }, 500, t('approval'));
@@ -179,8 +179,8 @@ function plan(format, outcome, tool) {
     if (tool) {
       add({ type: 'response.output_item.added', item: { type: 'web_search_call' } }, 120);
       add({ type: 'response.web_search_call.in_progress' });
-      add({ type: 'response.web_search_call.searching' }, 900);
-      add({ type: 'response.web_search_call.completed' }, 900);
+      add({ type: 'response.web_search_call.searching' }, 1200);
+      add({ type: 'response.web_search_call.completed' }, 1200);
     }
     if (outcome === 'error') add({ type: 'response.failed', response: { error: { message: 'Upstream timeout' } } }, 600);
     else if (outcome === 'approval') {
@@ -204,7 +204,7 @@ function plan(format, outcome, tool) {
       add({ type: 'content_block_start', index: 1, content_block: { type: 'server_tool_use', name: 'web_search' } }, 120);
       for (let i = 0; i < 4; i++) add({ type: 'content_block_delta', index: 1, delta: { type: 'input_json_delta', partial_json: '{"q"' } }, 90);
       add({ type: 'content_block_stop', index: 1 });
-      add({ type: 'content_block_start', index: 2, content_block: { type: 'web_search_tool_result' } }, 1800);
+      add({ type: 'content_block_start', index: 2, content_block: { type: 'web_search_tool_result' } }, 2400);
       add({ type: 'content_block_stop', index: 2 });
     }
     if (outcome === 'error') add({ type: 'error', error: { type: 'overloaded_error', message: 'Overloaded' } }, 600);
@@ -235,7 +235,7 @@ function plan(format, outcome, tool) {
       add({ type: 'tool-input-start', toolCallId: 'c1', toolName: 'webSearch' }, 120);
       for (let i = 0; i < 4; i++) add({ type: 'tool-input-delta', toolCallId: 'c1', inputTextDelta: '{"q"' }, 90);
       add({ type: 'tool-input-available', toolCallId: 'c1', toolName: 'webSearch', input: {} });
-      add({ type: 'tool-output-available', toolCallId: 'c1', output: {} }, 1800);
+      add({ type: 'tool-output-available', toolCallId: 'c1', output: {} }, 2400);
     }
     if (outcome === 'error') add({ type: 'error', errorText: 'Upstream timeout' }, 600);
     else if (outcome === 'approval') {

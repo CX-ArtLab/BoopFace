@@ -102,6 +102,12 @@ const AI_SDK = Object.freeze({
 
 const TOOL_ITEM = /(?:^|_)(?:call|tool_use)$/;
 
+// A waiting loop is only left where its motion comes back to the start, so a
+// short stage never cuts an orbit or a wave in half. Spin: one orbit of its
+// two-orbit cycle; wave: one bob; wrap: one pass.
+const LOOP_SEAM = Object.freeze({ spin: 1600, wave: 1100, wrap: 2400 });
+const WAITING_ACTION = /^waiting(?:-(spin|wrap|wave))?$/;
+
 function lower(value) {
   return typeof value === 'string' ? value.trim().toLowerCase() : '';
 }
@@ -310,21 +316,57 @@ function connectAgent(target, options = {}) {
   const warned = new Set();
   const memo = { stopReason: '', ended: false };
   let state = 'idle';
+  let looping = null; // waiting variant this adapter started, while it may still run
+  let timer = 0;
 
-  function show(next) {
+  function loopOf(next) {
+    const match = typeof actions[next] === 'string' && BUSY.has(next) ? WAITING_ACTION.exec(actions[next]) : null;
+    return match ? match[1] || 'spin' : null;
+  }
+
+  function reduced() {
+    const motion = String(avatar.getAttribute?.('motion') || 'auto').toLowerCase();
+    if (motion === 'reduce') return true;
+    if (motion === 'full') return false;
+    return typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  // Milliseconds until the running loop is back at its starting pose.
+  function untilSeam() {
+    const fx = avatar._waitingFx;
+    if (!looping || !fx || !fx.continuous || reduced()) return 0;
+    const period = LOOP_SEAM[fx.variant === 'default' ? 'spin' : fx.variant];
+    if (!period) return 0;
+    const left = period - ((performance.now() - fx.start) % period);
+    return left < 50 ? 0 : left;
+  }
+
+  function apply(next) {
     const action = actions[next];
+    const loop = loopOf(next);
+    looping = loop;
     if (action === null || action === false) return;
     if (typeof action === 'function') {
       action(avatar, next);
       return;
     }
-    const waiting = /^waiting(?:-(spin|wrap|wave))?$/.exec(action);
     let result;
-    if (waiting && BUSY.has(next)) result = avatar.startWaiting({ variant: waiting[1] || 'spin' });
+    if (loop) result = avatar.startWaiting({ variant: loop });
     else if (action === 'idle') result = avatar.reset();
     else result = avatar.play(action);
     // Animations resolve when they finish; nothing waits on them here.
     if (result && typeof result.catch === 'function') result.catch(() => {});
+  }
+
+  function show(next) {
+    clearTimeout(timer);
+    timer = 0;
+    const loop = loopOf(next);
+    // The same loop is already on screen: keep it going instead of restarting it.
+    if (loop && loop === looping && (avatar._waitingFx || avatar._waitingRequested)) return;
+    const wait = untilSeam();
+    if (wait) timer = setTimeout(() => { timer = 0; apply(next); }, wait);
+    else apply(next);
   }
 
   function set(next) {
