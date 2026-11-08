@@ -5,6 +5,7 @@ import BoopFace from './src/boopface-extension-host.js';
 import './src/boopface-actions.js';
 import './src/boopface-antenna.js';
 import './src/boopface-waiting.js';
+import './src/boopface-voice.js';
 import './src/boopface-inspect.js';
 import './src/boopface-failure.js';
 import './src/boopface-love.js';

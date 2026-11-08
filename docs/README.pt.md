@@ -55,6 +55,7 @@ As mesmas expressões nas telas ESP32, STM32 e Raspberry Pi Pico, ou em outros p
 - 188 skins numerados em 17 séries, com luz que segue o ponteiro
 - Versão leve sem skins para as páginas mais enxutas
 - `connectAgent()`: eventos de um stream de IA controlam as expressões (AG-UI, OpenAI, Anthropic, Vercel AI SDK)
+- Conversa por voz: expressões de ouvir e falar que seguem o volume real
 - Declarações TypeScript incluídas
 
 ## Instalação
@@ -132,6 +133,8 @@ Ações disponíveis:
 | `waiting-wrap` | Os olhos saem por um lado e voltam pelo outro | Aguardando resposta |
 | `waiting-wave` | Os olhos sobem e descem alternadamente | Aguardando resposta |
 | `input` | Os olhos viram cursores piscantes | O usuário está digitando |
+| `listening` | Inclina-se para a frente; os olhos se abrem com a voz do usuário | Voz: o usuário está falando |
+| `speaking` | Os olhos pulam no ritmo da fala | Voz: a IA está respondendo |
 | `affirm` | Acena com a cabeça | Entendido, confirmado |
 | `success` | Olhos felizes e sorridentes | Tarefa concluída |
 | `failure` | Abaixa a cabeça e os olhos | Falha de tarefa ou conexão |
@@ -250,13 +253,15 @@ for await (const event of agent.track(stream)) {
 
 `track()` repassa cada item sem alterações. Um stream que termina normalmente conta como concluído, um erro lançado como falha e um cancelamento ou `break` antecipado como cancelado. Você também pode passar os itens um a um com `agent.handle(event)`, ou um nome de estado como `agent.handle('thinking')`.
 
-Entende eventos AG-UI, streams do OpenAI Responses e Chat Completions, streams do Anthropic Messages, partes de stream do Vercel AI SDK e o status do `useChat` (`submitted`, `streaming`, `ready`, `error`). O resto é ignorado.
+Entende eventos AG-UI, streams do OpenAI Responses, Realtime e Chat Completions, streams do Anthropic Messages, partes de stream do Vercel AI SDK e o status do `useChat` (`submitted`, `streaming`, `ready`, `error`). O resto é ignorado.
 
 | Estado | Expressão padrão | Quando |
 | --- | --- | --- |
+| `listening` | `listening`, em loop | Voz: o usuário está falando |
 | `thinking` | `waiting-spin`, em loop | Pedido enviado, o modelo está pensando |
 | `tool` | `waiting-wave`, em loop | Uma ferramenta está em execução |
 | `replying` | `idle` | O texto da resposta está chegando |
+| `speaking` | `speaking`, em loop | Voz: a resposta da IA está tocando |
 | `approval` | `wary` | O agente precisa da confirmação do usuário |
 | `done` | `success` | Concluído |
 | `error` | `failure` | Falhou |
@@ -275,6 +280,29 @@ connectAgent(avatar, {
 ```
 
 Experimente todos os formatos na [demo Conectar IA](https://cx-artlab.github.io/BoopFace/agent.html?lang=pt).
+
+## Conversa por voz · Novidade na 0.8.1
+
+Ouvir, pensar, falar: um assistente de voz passa por esses três passos a cada turno, e o avatar tem uma expressão para cada um.
+
+```js
+avatar.startListening();   // o usuário está falando
+avatar.startWaiting();     // a IA está pensando
+avatar.startSpeaking();    // a IA está respondendo
+avatar.setVoiceLevel(0.6); // opcional: volume de 0 a 1
+```
+
+Ao ouvir, o avatar se inclina para a frente e abre um pouco mais os olhos quando o usuário fala; ao falar, os olhos pulam no ritmo da voz. Com `setVoiceLevel()` os dois seguem o volume real. Sem ele, falar mantém um ritmo próprio e ouvir fica parado. Variantes: `startListening({ variant: 'tilt' })` inclina a cabeça como quem presta atenção; `startSpeaking({ variant: 'nod' })` acena com a cabeça e `'bars'` transforma os olhos em um medidor de som.
+
+`connectAgent()` cuida de tudo. Ele entende os eventos do OpenAI Realtime e o `mode` informado por SDKs de voz como o ElevenLabs, e volta a ouvir depois de cada resposta:
+
+```js
+const agent = connectAgent(avatar);
+events.onmessage = ({ data }) => agent.handle(JSON.parse(data));
+agent.connectAudio({ input: microphone, output: replyAudio });
+```
+
+`connectAudio()` aceita MediaStreams ou elementos `<audio>` e passa o volume deles para os olhos. Com a resposta conectada, o avatar também percebe quando ela terminou de tocar.
 
 ## React e Vue
 

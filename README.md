@@ -55,6 +55,7 @@ The same eye expressions on ESP32, STM32 and Raspberry Pi Pico screens, or in ot
 - 188 numbered skins in 17 series, with light that follows the pointer
 - A lite build without skins for the smallest pages
 - `connectAgent()`: AI stream events drive the expressions (AG-UI, OpenAI, Anthropic, Vercel AI SDK)
+- Voice conversation: listening and speaking expressions that follow the real loudness
 - TypeScript declarations included
 
 ## Install
@@ -132,6 +133,8 @@ Available actions:
 | `waiting-wrap` | Eyes slide out one side and back in the other | Waiting for a reply |
 | `waiting-wave` | Eyes bob up and down in turn | Waiting for a reply |
 | `input` | Eyes become blinking text cursors | The user is typing |
+| `listening` | Leans in; the eyes open wider with the user's voice | Voice: the user is speaking |
+| `speaking` | The eyes bounce with the rhythm of speech | Voice: the AI is answering |
 | `affirm` | Nods | Got it, confirmed |
 | `success` | Happy, smiling eyes | Task completed |
 | `failure` | Head and eyes droop | Task or connection failed |
@@ -250,13 +253,15 @@ for await (const event of agent.track(stream)) {
 
 `track()` passes every item through unchanged. A stream that ends cleanly counts as done, a thrown error as a failure, and an abort or an early `break` as cancelled. You can also pass items one at a time with `agent.handle(event)`, or a state name such as `agent.handle('thinking')`.
 
-It understands AG-UI events, OpenAI Responses and Chat Completions streams, Anthropic Messages streams, Vercel AI SDK stream parts and `useChat` status (`submitted`, `streaming`, `ready`, `error`). Anything else is ignored.
+It understands AG-UI events, OpenAI Responses, Realtime and Chat Completions streams, Anthropic Messages streams, Vercel AI SDK stream parts and `useChat` status (`submitted`, `streaming`, `ready`, `error`). Anything else is ignored.
 
 | State | Default expression | When |
 | --- | --- | --- |
+| `listening` | `listening`, looping | Voice: the user is speaking |
 | `thinking` | `waiting-spin`, looping | Request sent, the model is reasoning |
 | `tool` | `waiting-wave`, looping | A tool call is running |
 | `replying` | `idle` | Reply text is arriving |
+| `speaking` | `speaking`, looping | Voice: the AI's reply is playing |
 | `approval` | `wary` | The agent needs the user to confirm |
 | `done` | `success` | Finished |
 | `error` | `failure` | Failed |
@@ -275,6 +280,29 @@ connectAgent(avatar, {
 ```
 
 Try every format on the [Connect AI demo](https://cx-artlab.github.io/BoopFace/agent.html).
+
+## Voice conversation · New in 0.8.1
+
+Listening, thinking, speaking: a voice assistant goes through these three steps on every turn, and the avatar has an expression for each.
+
+```js
+avatar.startListening();   // the user is talking
+avatar.startWaiting();     // the AI is thinking
+avatar.startSpeaking();    // the AI is answering
+avatar.setVoiceLevel(0.6); // optional: loudness from 0 to 1
+```
+
+Listening leans in and opens the eyes wider as the user speaks; speaking makes the eyes bounce with the speech. With `setVoiceLevel()` both follow the real loudness. Without it, speaking keeps a rhythm of its own and listening holds still. Variants: `startListening({ variant: 'tilt' })` turns the head like an ear; `startSpeaking({ variant: 'nod' })` nods along and `'bars'` turns the eyes into a sound meter.
+
+`connectAgent()` drives all of it. It understands OpenAI Realtime events and the `mode` that ElevenLabs-style voice SDKs report, and goes back to listening after each reply:
+
+```js
+const agent = connectAgent(avatar);
+events.onmessage = ({ data }) => agent.handle(JSON.parse(data));
+agent.connectAudio({ input: microphone, output: replyAudio });
+```
+
+`connectAudio()` takes MediaStreams or `<audio>` elements and passes their loudness to the eyes. With the reply connected, the avatar also notices when the answer has finished playing.
 
 ## React and Vue
 

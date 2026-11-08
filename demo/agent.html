@@ -30,6 +30,7 @@
   .reply:empty::before{content:attr(data-empty);color:#a6a9ae}
 
   .panel{width:min(620px,100%);display:grid;gap:10px;padding:12px;border-radius:16px;background:rgba(255,255,255,.88);box-shadow:0 7px 30px rgba(0,0,0,.08);backdrop-filter:blur(14px)}
+  .row[hidden]{display:none}
   .row{display:grid;grid-template-columns:92px minmax(0,1fr);align-items:center;gap:10px}
   .row-label{font-size:11px;font-weight:600;color:#72777e}
   .chips{display:flex;flex-wrap:wrap;gap:6px}
@@ -102,9 +103,10 @@
             <button type="button" data-value="openai">OpenAI</button>
             <button type="button" data-value="anthropic">Anthropic</button>
             <button type="button" data-value="ai-sdk">Vercel AI SDK</button>
+            <button type="button" data-value="realtime" data-i18n="realtime">OpenAI 实时语音</button>
           </div>
         </div>
-        <div class="row">
+        <div class="row" data-text-only>
           <span class="row-label" data-i18n="outcome">这次结果</span>
           <div class="chips" data-group="outcome">
             <button type="button" data-value="done" data-i18n="outcomeDone">顺利完成</button>
@@ -113,11 +115,22 @@
             <button type="button" data-value="approval" data-i18n="outcomeApproval">需要确认</button>
           </div>
         </div>
-        <div class="row">
+        <div class="row" data-text-only>
           <span class="row-label" data-i18n="tools">中途用工具</span>
           <label class="toggle"><input type="checkbox" id="useTool" checked><span class="switch" aria-hidden="true"></span><span data-i18n="toolsHint">比如上网搜索</span></label>
         </div>
+        <div class="row" data-voice-only hidden>
+          <span class="row-label" data-i18n="mic">用麦克风</span>
+          <label class="toggle"><input type="checkbox" id="useMic"><span class="switch" aria-hidden="true"></span><span data-i18n="micHint">打开后，聆听时眼睛跟着你的声音动</span></label>
+        </div>
         <div class="divider"></div>
+        <div class="row" data-voice-only hidden>
+          <span class="row-label" data-i18n="listeningRow">聆听时</span>
+          <div class="chips" data-group="listening">
+            <button type="button" data-value="listening-lean" data-i18n="lean">聆听 · 前倾</button>
+            <button type="button" data-value="listening-tilt" data-i18n="tilt">聆听 · 侧耳</button>
+          </div>
+        </div>
         <div class="row">
           <span class="row-label" data-i18n="thinking">思考时</span>
           <div class="chips" data-group="thinking">
@@ -126,7 +139,7 @@
             <button type="button" data-value="waiting-wave" data-i18n="wave">等待 · 波动</button>
           </div>
         </div>
-        <div class="row">
+        <div class="row" data-text-only>
           <span class="row-label" data-i18n="tool">用工具时</span>
           <div class="chips" data-group="tool">
             <button type="button" data-value="waiting-wave" data-i18n="wave">等待 · 波动</button>
@@ -135,12 +148,20 @@
             <button type="button" data-value="inspect" data-i18n="inspect">审视</button>
           </div>
         </div>
-        <div class="row">
+        <div class="row" data-text-only>
           <span class="row-label" data-i18n="replying">回复文字时</span>
           <div class="chips" data-group="replying">
             <button type="button" data-value="idle" data-i18n="idle">正常</button>
             <button type="button" data-value="input" data-i18n="input">输入</button>
             <button type="button" data-value="keep" data-i18n="keep">继续等待</button>
+          </div>
+        </div>
+        <div class="row" data-voice-only hidden>
+          <span class="row-label" data-i18n="speakingRow">说话时</span>
+          <div class="chips" data-group="speaking">
+            <button type="button" data-value="speaking-bounce" data-i18n="bounce">说话 · 跳动</button>
+            <button type="button" data-value="speaking-nod" data-i18n="nod">说话 · 点头</button>
+            <button type="button" data-value="speaking-bars" data-i18n="bars">说话 · 声波</button>
           </div>
         </div>
         <div class="actions">

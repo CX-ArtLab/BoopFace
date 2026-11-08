@@ -6,6 +6,13 @@ export type BoopFaceAction =
   | 'waiting-wrap'
   | 'waiting-wave'
   | 'input'
+  | 'listening'
+  | 'listening-lean'
+  | 'listening-tilt'
+  | 'speaking'
+  | 'speaking-bounce'
+  | 'speaking-nod'
+  | 'speaking-bars'
   | 'affirm'
   | 'success'
   | 'failure'
@@ -108,6 +115,8 @@ export type BoopFaceState =
   | 'love'
   | 'random'
   | 'waiting'
+  | 'listening'
+  | 'speaking'
   | 'wary'
   | 'refuse'
   | 'inspect'
@@ -120,6 +129,8 @@ export type BoopFaceCanonicalAction =
   | 'bored'
   | 'waiting'
   | 'input'
+  | 'listening'
+  | 'speaking'
   | 'affirm'
   | 'success'
   | 'failure'
@@ -144,6 +155,16 @@ export interface BoopFaceWaitingOptions {
   variant?: 'default' | 'spin' | 'wrap' | 'wave';
 }
 
+export interface BoopFaceListeningOptions {
+  /** `lean` (default) leans in towards the speaker; `tilt` turns the head like an ear. */
+  variant?: 'lean' | 'tilt';
+}
+
+export interface BoopFaceSpeakingOptions {
+  /** `bounce` (default) hops the eyes, `nod` nods the head, `bars` turns the eyes into a sound meter. */
+  variant?: 'bounce' | 'nod' | 'bars';
+}
+
 export interface BoopFaceActionStateDetail {
   action: BoopFaceCanonicalAction;
   phase: BoopFaceActionPhase;
@@ -164,6 +185,15 @@ export declare class BoopFace extends HTMLElement {
   input(active?: boolean): this | Promise<void>;
   startWaiting(options?: BoopFaceWaitingOptions): Promise<this>;
   stopWaiting(): this;
+  /** Listens to the user until another action starts. */
+  startListening(options?: BoopFaceListeningOptions): Promise<this>;
+  /** Speaks a reply until another action starts. */
+  startSpeaking(options?: BoopFaceSpeakingOptions): Promise<this>;
+  /**
+   * Current loudness from 0 (silent) to 1 (loud) while listening or speaking.
+   * Without it, speaking keeps a speech-like rhythm and listening holds still.
+   */
+  setVoiceLevel(level: number): this;
   setPointerFollow(enabled?: boolean): this;
   /** @deprecated Removed in 0.6; does nothing and logs a one-time notice. Deleted in 1.0. */
   setAntennaFlash(enabled?: boolean): this;
@@ -197,14 +227,17 @@ export declare const VERSION: string;
 
 /**
  * What an AI agent is doing, as understood by `connectAgent()`.
- * Busy states (`thinking`, `tool`, `replying`) keep looping until the next state.
+ * Busy states (`thinking`, `tool`, `replying`, `speaking`) and `listening` keep
+ * looping until the next state.
  */
 export type BoopFaceAgentState =
   | 'idle'
   | 'typing'
+  | 'listening'
   | 'thinking'
   | 'tool'
   | 'replying'
+  | 'speaking'
   | 'approval'
   | 'done'
   | 'error'
@@ -230,8 +263,8 @@ export interface BoopFaceAgent {
   readonly state: BoopFaceAgentState;
   readonly avatar: BoopFace;
   /**
-   * Reads one stream item: an AG-UI event, an OpenAI Responses or Chat Completions
-   * chunk, an Anthropic Messages event, a Vercel AI SDK stream part, a useChat
+   * Reads one stream item: an AG-UI event, an OpenAI Responses, Realtime or Chat
+   * Completions event, an Anthropic Messages event, a Vercel AI SDK stream part, a useChat
    * status, or a state word such as `'thinking'`. Unrecognized items are ignored.
    */
   handle(event: unknown): BoopFaceAgentState;
@@ -240,6 +273,15 @@ export interface BoopFaceAgent {
    * counts as done, a thrown error as error, an abort or early stop as cancelled.
    */
   track<T>(stream: AsyncIterable<T> | Iterable<T> | ReadableStream<T>): AsyncGenerator<T, void, undefined>;
+  /**
+   * Lets the eyes follow real sound: `input` (the microphone) while listening,
+   * `output` (the reply) while speaking. Each is a MediaStream or an
+   * `<audio>` / `<video>` element. Returns a function that disconnects them.
+   */
+  connectAudio(sources: {
+    input?: MediaStream | HTMLMediaElement;
+    output?: MediaStream | HTMLMediaElement;
+  }): () => void;
   /** Back to idle. */
   reset(): BoopFaceAgentState;
 }

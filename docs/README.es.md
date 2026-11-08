@@ -55,6 +55,7 @@ Las mismas expresiones en pantallas ESP32, STM32 y Raspberry Pi Pico, o en otros
 - 188 skins numerados en 17 series, con luz que sigue al puntero
 - Versión ligera sin skins para las páginas más pequeñas
 - `connectAgent()`: los eventos de un flujo de IA controlan las expresiones (AG-UI, OpenAI, Anthropic, Vercel AI SDK)
+- Conversación por voz: expresiones de escuchar y hablar que siguen el volumen real
 - Declaraciones TypeScript incluidas
 
 ## Instalación
@@ -132,6 +133,8 @@ Acciones disponibles:
 | `waiting-wrap` | Los ojos salen por un lado y vuelven por el otro | Esperando respuesta |
 | `waiting-wave` | Los ojos suben y bajan por turnos | Esperando respuesta |
 | `input` | Los ojos se convierten en cursores parpadeantes | El usuario está escribiendo |
+| `listening` | Se inclina hacia delante; los ojos se abren con la voz del usuario | Voz: el usuario está hablando |
+| `speaking` | Los ojos botan al ritmo del habla | Voz: la IA está respondiendo |
 | `affirm` | Asiente | Entendido, confirmado |
 | `success` | Ojos felices y sonrientes | Tarea completada |
 | `failure` | Baja la cabeza y los ojos | Fallo de tarea o conexión |
@@ -250,13 +253,15 @@ for await (const event of agent.track(stream)) {
 
 `track()` deja pasar cada elemento sin cambios. Un flujo que termina bien cuenta como terminado, un error lanzado como fallo, y una cancelación o un `break` anticipado como cancelado. También puedes pasar los elementos uno a uno con `agent.handle(event)`, o un nombre de estado como `agent.handle('thinking')`.
 
-Entiende eventos de AG-UI, flujos de OpenAI Responses y Chat Completions, flujos de Anthropic Messages, partes de flujo de Vercel AI SDK y el estado de `useChat` (`submitted`, `streaming`, `ready`, `error`). Todo lo demás se ignora.
+Entiende eventos de AG-UI, flujos de OpenAI Responses, Realtime y Chat Completions, flujos de Anthropic Messages, partes de flujo de Vercel AI SDK y el estado de `useChat` (`submitted`, `streaming`, `ready`, `error`). Todo lo demás se ignora.
 
 | Estado | Expresión por defecto | Cuándo |
 | --- | --- | --- |
+| `listening` | `listening`, en bucle | Voz: el usuario está hablando |
 | `thinking` | `waiting-spin`, en bucle | Petición enviada, el modelo está pensando |
 | `tool` | `waiting-wave`, en bucle | Se está ejecutando una herramienta |
 | `replying` | `idle` | Está llegando el texto de la respuesta |
+| `speaking` | `speaking`, en bucle | Voz: se está reproduciendo la respuesta de la IA |
 | `approval` | `wary` | El agente necesita que el usuario confirme |
 | `done` | `success` | Terminado |
 | `error` | `failure` | Ha fallado |
@@ -275,6 +280,29 @@ connectAgent(avatar, {
 ```
 
 Prueba todos los formatos en la [demo Conectar IA](https://cx-artlab.github.io/BoopFace/agent.html?lang=es).
+
+## Conversación por voz · Novedad en 0.8.1
+
+Escuchar, pensar, hablar: un asistente de voz pasa por estos tres pasos en cada turno, y el avatar tiene una expresión para cada uno.
+
+```js
+avatar.startListening();   // el usuario habla
+avatar.startWaiting();     // la IA piensa
+avatar.startSpeaking();    // la IA responde
+avatar.setVoiceLevel(0.6); // opcional: volumen de 0 a 1
+```
+
+Al escuchar, el avatar se inclina hacia delante y abre un poco más los ojos cuando el usuario habla; al hablar, los ojos botan al ritmo de la voz. Con `setVoiceLevel()` ambos siguen el volumen real. Sin él, hablar mantiene su propio ritmo y escuchar se queda quieto. Variantes: `startListening({ variant: 'tilt' })` ladea la cabeza como quien presta oído; `startSpeaking({ variant: 'nod' })` asiente al hablar y `'bars'` convierte los ojos en un medidor de sonido.
+
+`connectAgent()` se encarga de todo. Entiende los eventos de OpenAI Realtime y el `mode` que informan SDK de voz como ElevenLabs, y vuelve a escuchar después de cada respuesta:
+
+```js
+const agent = connectAgent(avatar);
+events.onmessage = ({ data }) => agent.handle(JSON.parse(data));
+agent.connectAudio({ input: microphone, output: replyAudio });
+```
+
+`connectAudio()` acepta MediaStreams o elementos `<audio>` y pasa su volumen a los ojos. Con la respuesta conectada, el avatar también nota cuándo ha terminado de sonar.
 
 ## React y Vue
 

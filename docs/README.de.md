@@ -55,6 +55,7 @@ Dieselben Augenausdrücke auf ESP32-, STM32- und Raspberry-Pi-Pico-Bildschirmen 
 - 188 nummerierte Skins in 17 Serien, mit Licht, das dem Zeiger folgt
 - Schlanke Version ohne Skins für besonders kleine Seiten
 - `connectAgent()`: Ereignisse eines KI-Streams steuern die Ausdrücke (AG-UI, OpenAI, Anthropic, Vercel AI SDK)
+- Sprachdialog: Ausdrücke für Zuhören und Sprechen, die der echten Lautstärke folgen
 - TypeScript-Deklarationen enthalten
 
 ## Installation
@@ -132,6 +133,8 @@ Verfügbare Aktionen:
 | `waiting-wrap` | Augen gleiten auf einer Seite hinaus und auf der anderen zurück | Warten auf eine Antwort |
 | `waiting-wave` | Augen wippen abwechselnd auf und ab | Warten auf eine Antwort |
 | `input` | Augen werden zu blinkenden Textcursorn | Nutzer tippt |
+| `listening` | Beugt sich vor; die Augen öffnen sich mit der Stimme des Nutzers | Sprache: der Nutzer spricht |
+| `speaking` | Die Augen hüpfen im Rhythmus der Sprache | Sprache: die KI antwortet |
 | `affirm` | Nickt | Verstanden, bestätigt |
 | `success` | Fröhlich lächelnde Augen | Aufgabe erledigt |
 | `failure` | Kopf und Augen sinken | Aufgabe oder Verbindung fehlgeschlagen |
@@ -250,13 +253,15 @@ for await (const event of agent.track(stream)) {
 
 `track()` reicht jedes Element unverändert weiter. Ein sauber beendeter Stream gilt als fertig, ein geworfener Fehler als Fehlschlag, ein Abbruch oder ein vorzeitiges `break` als abgebrochen. Sie können Elemente auch einzeln mit `agent.handle(event)` übergeben oder direkt einen Zustand wie `agent.handle('thinking')`.
 
-Unterstützt werden AG-UI-Ereignisse, OpenAI-Responses- und Chat-Completions-Streams, Anthropic-Messages-Streams, Vercel-AI-SDK-Stream-Parts und der `useChat`-Status (`submitted`, `streaming`, `ready`, `error`). Alles andere wird ignoriert.
+Unterstützt werden AG-UI-Ereignisse, OpenAI-Responses-, Realtime- und Chat-Completions-Streams, Anthropic-Messages-Streams, Vercel-AI-SDK-Stream-Parts und der `useChat`-Status (`submitted`, `streaming`, `ready`, `error`). Alles andere wird ignoriert.
 
 | Zustand | Standardausdruck | Wann |
 | --- | --- | --- |
+| `listening` | `listening`, in Schleife | Sprache: der Nutzer spricht |
 | `thinking` | `waiting-spin`, in Schleife | Anfrage gesendet, das Modell denkt nach |
 | `tool` | `waiting-wave`, in Schleife | Ein Werkzeugaufruf läuft |
 | `replying` | `idle` | Antworttext trifft ein |
+| `speaking` | `speaking`, in Schleife | Sprache: die Antwort der KI wird abgespielt |
 | `approval` | `wary` | Der Agent braucht eine Bestätigung |
 | `done` | `success` | Fertig |
 | `error` | `failure` | Fehlgeschlagen |
@@ -275,6 +280,29 @@ connectAgent(avatar, {
 ```
 
 Alle Formate lassen sich in der [Demo „KI anbinden“](https://cx-artlab.github.io/BoopFace/agent.html?lang=de) ausprobieren.
+
+## Sprachdialog · Neu in 0.8.1
+
+Zuhören, nachdenken, sprechen: Diese drei Schritte durchläuft ein Sprachassistent in jeder Runde, und der Avatar hat für jeden einen Ausdruck.
+
+```js
+avatar.startListening();   // der Nutzer spricht
+avatar.startWaiting();     // die KI denkt nach
+avatar.startSpeaking();    // die KI antwortet
+avatar.setVoiceLevel(0.6); // optional: Lautstärke von 0 bis 1
+```
+
+Beim Zuhören beugt sich der Avatar vor und öffnet die Augen etwas weiter, sobald der Nutzer spricht; beim Sprechen hüpfen die Augen im Rhythmus der Sprache. Mit `setVoiceLevel()` folgen beide der echten Lautstärke. Ohne sie behält das Sprechen einen eigenen Rhythmus, und das Zuhören hält still. Varianten: `startListening({ variant: 'tilt' })` neigt den Kopf wie ein lauschendes Ohr; `startSpeaking({ variant: 'nod' })` nickt mit, und `'bars'` macht aus den Augen eine Pegelanzeige.
+
+`connectAgent()` übernimmt das alles. Es versteht OpenAI-Realtime-Ereignisse und den `mode`, den Sprach-SDKs wie ElevenLabs melden, und kehrt nach jeder Antwort zum Zuhören zurück:
+
+```js
+const agent = connectAgent(avatar);
+events.onmessage = ({ data }) => agent.handle(JSON.parse(data));
+agent.connectAudio({ input: microphone, output: replyAudio });
+```
+
+`connectAudio()` nimmt MediaStreams oder `<audio>`-Elemente und gibt ihre Lautstärke an die Augen weiter. Ist die Antwort verbunden, merkt der Avatar auch, wann sie fertig abgespielt ist.
 
 ## React und Vue
 

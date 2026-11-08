@@ -49,6 +49,7 @@ test('package contains the complete runtime and excludes the demo', async () => 
     'src/boopface-head-roundness.js',
     'src/boopface-runtime.js',
     'src/boopface-agent.js',
+    'src/boopface-voice.js',
   ];
 
   for (const file of required) assert.ok(files.has(file), `Missing package file: ${file}`);

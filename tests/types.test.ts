@@ -120,3 +120,17 @@ void followStream;
 connectAgent(avatar, { actions: { talking: 'idle' } });
 // @ts-expect-error unknown action
 connectAgent(avatar, { actions: { done: 'party' } });
+
+// Voice conversation.
+void avatar.startListening();
+void avatar.startListening({ variant: 'tilt' });
+void avatar.startSpeaking({ variant: 'bars' });
+avatar.setVoiceLevel(0.4);
+void avatar.play('speaking-nod');
+const speakingState: BoopFaceState = 'speaking';
+void speakingState;
+const voiceAgent = connectAgent(avatar, { actions: { listening: 'listening-tilt', speaking: 'speaking-bars' } });
+const stopAudio: () => void = voiceAgent.connectAudio({ input: new MediaStream() });
+stopAudio();
+// @ts-expect-error unknown variant
+void avatar.startSpeaking({ variant: 'sing' });

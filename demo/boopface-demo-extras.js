@@ -46,6 +46,22 @@ const RANDOM_LABELS = Object.freeze({
   fr: { action: 'Aléatoire', state: 'Aléatoire / Machine à sous' },
 });
 
+const LISTENING_LABELS = Object.freeze({
+  'zh-CN': { action: '聆听', state: '聆听' }, 'zh-TW': { action: '聆聽', state: '聆聽' },
+  en: { action: 'Listening', state: 'Listening' }, ja: { action: '聞く', state: '聞いている' },
+  ko: { action: '듣기', state: '듣는 중' }, es: { action: 'Escuchar', state: 'Escuchando' },
+  pt: { action: 'Ouvir', state: 'Ouvindo' }, de: { action: 'Zuhören', state: 'Hört zu' },
+  fr: { action: 'Écouter', state: 'Écoute' },
+});
+
+const SPEAKING_LABELS = Object.freeze({
+  'zh-CN': { action: '说话', state: '说话' }, 'zh-TW': { action: '說話', state: '說話' },
+  en: { action: 'Speaking', state: 'Speaking' }, ja: { action: '話す', state: '話している' },
+  ko: { action: '말하기', state: '말하는 중' }, es: { action: 'Hablar', state: 'Hablando' },
+  pt: { action: 'Falar', state: 'Falando' }, de: { action: 'Sprechen', state: 'Spricht' },
+  fr: { action: 'Parler', state: 'Parle' },
+});
+
 const WRAP_WAITING_LABELS = Object.freeze({
   'zh-CN':'等待 · 滚动', 'zh-TW':'等待 · 滾動', en:'Waiting · Scroll', ja:'待機 · 回り込み',
   ko:'대기 · 감싸기', es:'Espera · Envoltura', pt:'Espera · Contorno', de:'Warten · Umlauf', fr:'Attente · Boucle',
@@ -94,7 +110,11 @@ function syncActionLabels() {
   // New actions go at the very end of the row, in the order they were added.
   const loveButton = ensureActionButton('love', 'sleep');
   const randomButton = ensureActionButton('random', 'love');
-  for (const button of [loveButton, randomButton]) if (button) markAsNew(button);
+  const listeningButton = ensureActionButton('listening', 'random');
+  const speakingButton = ensureActionButton('speaking', 'listening');
+  for (const button of [loveButton, randomButton, listeningButton, speakingButton]) if (button) markAsNew(button);
+  if (listeningButton) listeningButton.textContent = LISTENING_LABELS[activeLanguage(LISTENING_LABELS)].action;
+  if (speakingButton) speakingButton.textContent = SPEAKING_LABELS[activeLanguage(SPEAKING_LABELS)].action;
   if (inspectButton) inspectButton.textContent = inspect.action;
   if (failureButton) failureButton.textContent = failure.action;
   if (loveButton) loveButton.textContent = love.action;
@@ -139,7 +159,30 @@ function mountStateLabels() {
     } else if (state === 'random') {
       const t = RANDOM_LABELS[activeLanguage(RANDOM_LABELS)];
       status.textContent = `random · ${t.state}`;
+    } else if (state === 'listening') {
+      status.textContent = `listening · ${LISTENING_LABELS[activeLanguage(LISTENING_LABELS)].state}`;
+    } else if (state === 'speaking') {
+      status.textContent = `speaking · ${SPEAKING_LABELS[activeLanguage(SPEAKING_LABELS)].state}`;
     }
+  });
+}
+
+// The demo has nobody talking to it, so while it listens it hears a pretend
+// voice: syllables about four times a second with short pauses.
+function mountPretendVoice() {
+  const face = document.getElementById('face');
+  if (!face || typeof face.setVoiceLevel !== 'function') return;
+  let frame = 0;
+  const start = performance.now();
+  const tick = now => {
+    if (face._voiceFx?.mode !== 'listening') { frame = 0; return; }
+    const s = (now - start) / 1000;
+    const syllable = Math.max(0, Math.sin(s * Math.PI * 2 * 3.8 + Math.sin(s * 1.7)));
+    face.setVoiceLevel((now - start) % 3000 > 2300 ? 0 : syllable * (0.6 + 0.4 * Math.sin(s * 2.1)));
+    frame = requestAnimationFrame(tick);
+  };
+  face.addEventListener('face-state', event => {
+    if (event.detail?.state === 'listening' && !frame) frame = requestAnimationFrame(tick);
   });
 }
 
@@ -147,6 +190,7 @@ function mountExtras() {
   syncActionLabels();
   mountWaitingSync();
   mountStateLabels();
+  mountPretendVoice();
 
   new MutationObserver(() => {
     syncActionLabels();

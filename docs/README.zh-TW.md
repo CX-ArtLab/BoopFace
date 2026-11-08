@@ -56,6 +56,7 @@ BoopFace 是一個輕量、富表現力的機器人頭像組件，適用於 AI �
 - 188 款編號皮膚，分 17 個系列，光線跟隨鼠標
 - 不含皮膚的精簡版，適合對大小特別在意的頁面
 - `connectAgent()`：AI 資料流的事件直接驅動表情（AG-UI、OpenAI、Anthropic、Vercel AI SDK）
+- 語音對話：聆聽和說話兩個表情，跟著真實的音量動
 - 內置 TypeScript 類型聲明
 - BoopFace Embedded 嵌入式設備版：同樣的表情跑在 28 種 ESP32、STM32 和樹莓派 Pico 開發板與屏幕組合上，在線模擬器裏調好後直接導出到固件
 
@@ -134,6 +135,8 @@ avatar.reset();
 | `waiting-wrap` | 雙眼從一側轉出、另一側回來 | 等待回覆 |
 | `waiting-wave` | 雙眼輪流上下起伏 | 等待回覆 |
 | `input` | 雙眼變成閃爍的輸入光標 | 用戶正在輸入 |
+| `listening` | 微微前傾，眼睛隨使用者的聲音睜大 | 語音對話：使用者在說話 |
+| `speaking` | 眼睛跟著說話的節奏跳動 | 語音對話：AI 在回答 |
 | `affirm` | 點頭 | 收到、確認 |
 | `success` | 開心的笑眼 | 任務完成 |
 | `failure` | 低頭、眼睛下垂 | 任務或連接失敗 |
@@ -252,13 +255,15 @@ for await (const event of agent.track(stream)) {
 
 `track()` 會原樣傳出每一項。資料流正常結束算完成，拋出錯誤算失敗，中止或提前 `break` 算取消。也可以用 `agent.handle(event)` 一項一項傳，或者直接傳狀態名稱，例如 `agent.handle('thinking')`。
 
-支援 AG-UI 事件、OpenAI Responses 和 Chat Completions 資料流、Anthropic Messages 資料流、Vercel AI SDK 的資料流片段，以及 `useChat` 狀態（`submitted`、`streaming`、`ready`、`error`）。無法辨識的內容會被忽略。
+支援 AG-UI 事件、OpenAI Responses、Realtime 和 Chat Completions 資料流、Anthropic Messages 資料流、Vercel AI SDK 的資料流片段，以及 `useChat` 狀態（`submitted`、`streaming`、`ready`、`error`）。無法辨識的內容會被忽略。
 
 | 狀態 | 預設表情 | 什麼時候 |
 | --- | --- | --- |
+| `listening` | `listening`，循環 | 語音對話：使用者在說話 |
 | `thinking` | `waiting-spin`，循環 | 請求已送出，模型在思考 |
 | `tool` | `waiting-wave`，循環 | 正在呼叫工具 |
 | `replying` | `idle` | 回覆文字正在到達 |
+| `speaking` | `speaking`，循環 | 語音對話：AI 的回答正在播放 |
 | `approval` | `wary` | 需要使用者確認 |
 | `done` | `success` | 完成 |
 | `error` | `failure` | 失敗 |
@@ -277,6 +282,29 @@ connectAgent(avatar, {
 ```
 
 在 [AI 接入示範](https://cx-artlab.github.io/BoopFace/agent.html?lang=zh-TW) 裡可以試所有格式。
+
+## 語音對話 · 0.8.1 新增
+
+聆聽、思考、說話：語音助理每一輪都會走這三步，頭像為每一步都準備了表情。
+
+```js
+avatar.startListening();   // 使用者在說話
+avatar.startWaiting();     // AI 在思考
+avatar.startSpeaking();    // AI 在回答
+avatar.setVoiceLevel(0.6); // 選用：音量，0 到 1
+```
+
+聆聽時頭像微微前傾，使用者一說話眼睛就睜大一點；說話時眼睛跟著語音的節奏跳動。用 `setVoiceLevel()` 傳入音量後，兩者都跟著真實音量動；不傳時，說話會按自己的節奏動，聆聽則保持專注的樣子。其他樣式：`startListening({ variant: 'tilt' })` 像側耳一樣歪頭；`startSpeaking({ variant: 'nod' })` 跟著點頭，`'bars'` 把眼睛變成跳動的聲波條。
+
+`connectAgent()` 可以把這些全部自動接上。它認得 OpenAI Realtime 的事件，也認得 ElevenLabs 這類語音 SDK 回報的 `mode`，每次回答完都會回到聆聽：
+
+```js
+const agent = connectAgent(avatar);
+events.onmessage = ({ data }) => agent.handle(JSON.parse(data));
+agent.connectAudio({ input: microphone, output: replyAudio });
+```
+
+`connectAudio()` 接收 MediaStream 或 `<audio>` 元素，把它們的音量傳給眼睛。接上 AI 的聲音後，頭像還能自己發現回答已經播完。
 
 ## React 和 Vue
 

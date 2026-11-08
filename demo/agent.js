@@ -17,8 +17,13 @@ const TEXT = {
     failed: '（连接中断，回复失败）',
     approval: '要花 ¥12 订阅天气服务，需要你确认。',
     cancelled: '（已停止）',
+    runVoice: '开始说话', codeNoteVoice: '实时语音的信号由 OpenAI 发来，你的代码只要转交给 agent；接上麦克风和 AI 的声音，眼睛就跟着真实音量动。下面三排会改 actions 那一行。',
+    realtime: 'OpenAI 实时语音', mic: '用麦克风', micHint: '打开后，聆听时眼睛跟着你的声音动',
+    micDenied: '没有拿到麦克风，改用模拟的声音', listeningRow: '聆听时', speakingRow: '说话时',
+    lean: '聆听 · 前倾', tilt: '聆听 · 侧耳', bounce: '说话 · 跳动', nod: '说话 · 点头', bars: '说话 · 声波',
+    you: '你：', ai: 'AI：', question: '明天上海天气怎么样？', sessionEnd: '对话结束',
     yourCode: '你的代码调用', states: {
-      idle: '待机', typing: '输入中', thinking: '思考中', tool: '用工具', replying: '回复中', approval: '等待确认',
+      idle: '待机', typing: '输入中', listening: '聆听', speaking: '说话', thinking: '思考中', tool: '用工具', replying: '回复中', approval: '等待确认',
       done: '完成', error: '出错', refused: '拒绝', cancelled: '已停止',
     },
   },
@@ -34,15 +39,24 @@ const TEXT = {
     failed: '(Connection lost, the reply failed)',
     approval: 'Subscribing to the weather service costs $2. Please confirm.',
     cancelled: '(Stopped)',
+    runVoice: 'Start talking', codeNoteVoice: 'OpenAI sends the voice events; your code only passes them to the agent. With the microphone and the reply connected, the eyes follow the real loudness. The three rows below change the actions line.',
+    realtime: 'OpenAI Realtime', mic: 'Microphone', micHint: 'When on, the eyes follow your voice while listening',
+    micDenied: 'No microphone, using a pretend voice', listeningRow: 'Listening', speakingRow: 'Speaking',
+    lean: 'Listening · Lean', tilt: 'Listening · Tilt', bounce: 'Speaking · Bounce', nod: 'Speaking · Nod', bars: 'Speaking · Bars',
+    you: 'You: ', ai: 'AI: ', question: 'What’s the weather in Shanghai tomorrow?', sessionEnd: 'conversation ends',
     yourCode: 'your code calls', states: {
-      idle: 'idle', typing: 'typing', thinking: 'thinking', tool: 'using a tool', replying: 'replying', approval: 'needs approval',
+      idle: 'idle', typing: 'typing', listening: 'listening', speaking: 'speaking', thinking: 'thinking', tool: 'using a tool', replying: 'replying', approval: 'needs approval',
       done: 'done', error: 'error', refused: 'refused', cancelled: 'stopped',
     },
   },
 };
 
-const DEFAULTS = { thinking: 'waiting-spin', tool: 'waiting-wave', replying: 'idle' };
-const settings = { format: 'ag-ui', outcome: 'done', thinking: DEFAULTS.thinking, tool: DEFAULTS.tool, replying: DEFAULTS.replying };
+const DEFAULTS = { thinking: 'waiting-spin', tool: 'waiting-wave', replying: 'idle', listening: 'listening-lean', speaking: 'speaking-bounce' };
+const settings = { format: 'ag-ui', outcome: 'done', ...DEFAULTS };
+// States whose expression the code panel shows, per kind of conversation.
+const TEXT_STATES = ['thinking', 'tool', 'replying'];
+const VOICE_STATES = ['listening', 'thinking', 'speaking'];
+const isVoice = () => settings.format === 'realtime';
 
 const face = document.getElementById('face');
 const stateEl = document.getElementById('state');
@@ -52,6 +66,7 @@ const codeEl = document.getElementById('code');
 const runButton = document.getElementById('run');
 const stopButton = document.getElementById('stop');
 const useTool = document.getElementById('useTool');
+const useMic = document.getElementById('useMic');
 
 const params = new URLSearchParams(location.search);
 let lang = /^zh/i.test(params.get('lang') || (params.get('lang') ? '' : navigator.language)) ? 'zh' : 'en';
@@ -82,6 +97,7 @@ function applyLanguage() {
   showState(agent?.state || 'idle');
   shownLines = null;
   renderCode();
+  syncFormat();
 }
 
 function actionsFromSettings() {
@@ -89,6 +105,8 @@ function actionsFromSettings() {
     thinking: settings.thinking,
     tool: settings.tool,
     replying: settings.replying === 'keep' ? settings.thinking : settings.replying,
+    listening: settings.listening,
+    speaking: settings.speaking,
   };
 }
 
@@ -130,6 +148,16 @@ const SOURCES = {
       '}',
     ],
   },
+  realtime: {
+    imports: [],
+    body: [
+      '// OpenAI Realtime over WebRTC',
+      "const events = peer.createDataChannel('oai-events');",
+      'events.onmessage = ({ data }) => agent.handle(JSON.parse(data));',
+      '',
+      'agent.connectAudio({ input: microphone, output: replyAudio });',
+    ],
+  },
   'ai-sdk': {
     imports: ["import { streamText } from 'ai';"],
     body: [
@@ -146,7 +174,8 @@ let shownLines = null;
 
 function renderCode() {
   const actions = actionsFromSettings();
-  const changed = Object.entries(actions).filter(([state, action]) => DEFAULTS[state] !== action);
+  const shown = isVoice() ? VOICE_STATES : TEXT_STATES;
+  const changed = shown.map(state => [state, actions[state]]).filter(([state, action]) => DEFAULTS[state] !== action);
   const source = SOURCES[settings.format];
   const create = changed.length
     ? ['const agent = connectAgent(avatar, {', `  actions: { ${changed.map(([state, action]) => `${state}: '${action}'`).join(', ')} },`, '});']
@@ -165,7 +194,15 @@ function renderCode() {
   shownLines = lines;
 }
 
+function syncFormat() {
+  for (const row of document.querySelectorAll('[data-text-only]')) row.hidden = isVoice();
+  for (const row of document.querySelectorAll('[data-voice-only]')) row.hidden = !isVoice();
+  runButton.textContent = t(isVoice() ? 'runVoice' : 'run');
+  document.querySelector('.code-note').textContent = t(isVoice() ? 'codeNoteVoice' : 'codeNote');
+}
+
 function syncChips() {
+  syncFormat();
   for (const group of document.querySelectorAll('[data-group]')) {
     for (const button of group.querySelectorAll('button')) {
       button.setAttribute('aria-pressed', String(settings[group.dataset.group] === button.dataset.value));
@@ -345,6 +382,74 @@ async function* pretendStream(steps) {
 
 let agent = null;
 
+const pause = async ms => {
+  const end = performance.now() + ms;
+  while (!stopRequested && performance.now() < end) await new Promise(resolve => setTimeout(resolve, Math.min(50, end - performance.now())));
+};
+
+function voicePlan() {
+  const steps = [];
+  const add = (event, delay = 60, text) => steps.push({ event, delay, text });
+  add({ type: 'session.created' }, 0);
+  add({ type: 'input_audio_buffer.speech_started' }, 500);
+  add({ type: 'input_audio_buffer.speech_stopped' }, 3000);
+  add({ type: 'input_audio_buffer.committed' }, 40);
+  add({ type: 'conversation.item.input_audio_transcription.completed', transcript: t('question') }, 300, `${t('you')}${t('question')}\n`);
+  add({ type: 'response.created' }, 60);
+  add({ type: 'output_audio_buffer.started' }, 2200, t('ai'));
+  for (const piece of pieces(t('reply'))) add({ type: 'response.output_audio_transcript.delta', delta: piece }, 150, piece);
+  add({ type: 'response.output_audio.done' });
+  add({ type: 'response.done', response: { status: 'completed' } });
+  add({ type: 'output_audio_buffer.stopped' }, 900);
+  return steps;
+}
+
+async function runVoice(onChange) {
+  agent = connectAgent(face, { actions: actionsFromSettings(), onChange });
+  let microphone = null;
+  let stopAudio = null;
+  if (useMic.checked) {
+    try {
+      microphone = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stopAudio = agent.connectAudio({ input: microphone });
+    } catch {
+      logNote(t('micDenied'));
+    }
+  }
+  // Without a microphone the page pretends someone is talking while it listens.
+  let frame = 0;
+  const started = performance.now();
+  const pretendVoice = now => {
+    frame = requestAnimationFrame(pretendVoice);
+    if (face._voiceFx?.mode !== 'listening') return;
+    const seconds = (now - started) / 1000;
+    const syllable = Math.max(0, Math.sin(seconds * Math.PI * 2 * 3.8 + Math.sin(seconds * 1.7)));
+    face.setVoiceLevel(syllable * (0.6 + 0.4 * Math.sin(seconds * 2.1)));
+  };
+  if (!stopAudio) frame = requestAnimationFrame(pretendVoice);
+  try {
+    for (const step of voicePlan()) {
+      await pause(step.delay);
+      if (stopRequested) break;
+      if (step.text) replyEl.textContent += step.text;
+      const before = agent.state;
+      agent.handle(step.event);
+      logEvent(labelOf(step.event), agent.state, agent.state !== before);
+    }
+    if (!stopRequested) await pause(1600);
+  } finally {
+    cancelAnimationFrame(frame);
+    stopAudio?.();
+    for (const track of microphone?.getTracks() || []) track.stop();
+  }
+  if (stopRequested) {
+    replyEl.textContent += (replyEl.textContent ? '\n' : '') + t('cancelled');
+    agent.handle({ type: 'output_audio_buffer.cleared' });
+  }
+  agent.reset();
+  logNote(`${t('sessionEnd')}: agent.reset() → ${agent.state}`);
+}
+
 async function run() {
   if (running) return;
   running = true;
@@ -354,6 +459,17 @@ async function run() {
   replyEl.textContent = '';
   eventsEl.textContent = '';
   lastRow = null;
+
+  if (isVoice()) {
+    try {
+      await runVoice(state => showState(state));
+    } finally {
+      running = false;
+      runButton.disabled = false;
+      stopButton.disabled = true;
+    }
+    return;
+  }
 
   let changed = false;
   agent = connectAgent(face, {

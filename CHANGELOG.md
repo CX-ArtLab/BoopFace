@@ -9,7 +9,8 @@ The project follows Semantic Versioning for public releases. Internal developmen
 ### Added
 
 - `connectAgent(avatar)` lets an AI stream drive the avatar. It reads AG-UI events, OpenAI Responses and Chat Completions streams, Anthropic Messages streams, Vercel AI SDK stream parts and `useChat` status, and shows thinking, tool use, replying, approval, done, failure and refusal. `agent.track(stream)` follows a stream while passing every item through; `actions` changes the expression for any state. Both the full and the lite build include it.
-- A Connect AI page, opened from the demo next to the Skin Gallery button, that plays a pretend reply in each of the four formats.
+- Voice conversation: `listening` and `speaking` expressions. `startListening()` leans in (or tilts the head with `variant: 'tilt'`), `startSpeaking()` bounces the eyes with speech (or nods, or turns them into sound bars). `setVoiceLevel(0..1)` makes both follow the real loudness. `connectAgent()` understands OpenAI Realtime events and returns to listening after each reply, and `agent.connectAudio({ input, output })` reads the microphone and the reply by itself. The demo has Listening and Speaking buttons.
+- A Connect AI page, opened from the demo next to the Skin Gallery button, that plays a pretend reply in each of the four formats, and a whole voice turn with an optional microphone.
 - React and Vue examples, `examples/react.html` and `examples/vue.html`, and a README section on using the component in both.
 
 ## [0.8.0] - 2026-11-05

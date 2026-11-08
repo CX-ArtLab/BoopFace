@@ -55,6 +55,7 @@ ESP32、STM32、Raspberry Pi Pico の画面や、その他の C++ プログラ�
 - 17 シリーズ・188 種類の番号付きスキン。光はポインターを追います
 - スキンを含まない軽量版も用意
 - `connectAgent()`：AI ストリームのイベントで表情を自動切り替え（AG-UI、OpenAI、Anthropic、Vercel AI SDK）
+- 音声会話：実際の音量に合わせて動く「聞く」「話す」の表情
 - TypeScript 型定義を同梱
 
 ## インストール
@@ -132,6 +133,8 @@ avatar.reset();
 | `waiting-wrap` | 目が片側から出て反対側から戻る | 返信待ち |
 | `waiting-wave` | 目が交互に上下に揺れる | 返信待ち |
 | `input` | 目が点滅する入力カーソルになる | ユーザーが入力中 |
+| `listening` | 少し身を乗り出し、ユーザーの声に合わせて目が開く | 音声会話：ユーザーが話している |
+| `speaking` | 話すリズムに合わせて目が弾む | 音声会話：AI が答えている |
 | `affirm` | うなずく | 了解・確認 |
 | `success` | うれしそうな笑顔の目 | タスク完了 |
 | `failure` | 頭と目が下がる | タスクや接続の失敗 |
@@ -250,13 +253,15 @@ for await (const event of agent.track(stream)) {
 
 `track()` は各項目をそのまま通します。ストリームが正常に終われば完了、エラーが投げられれば失敗、中断や途中の `break` はキャンセルとして扱います。`agent.handle(event)` で 1 件ずつ渡すことも、`agent.handle('thinking')` のように状態名を直接渡すこともできます。
 
-AG-UI イベント、OpenAI Responses と Chat Completions のストリーム、Anthropic Messages のストリーム、Vercel AI SDK のストリームパーツ、`useChat` の状態（`submitted`、`streaming`、`ready`、`error`）に対応しています。認識できないものは無視されます。
+AG-UI イベント、OpenAI Responses・Realtime・Chat Completions のストリーム、Anthropic Messages のストリーム、Vercel AI SDK のストリームパーツ、`useChat` の状態（`submitted`、`streaming`、`ready`、`error`）に対応しています。認識できないものは無視されます。
 
 | 状態 | 既定の表情 | いつ |
 | --- | --- | --- |
+| `listening` | `listening`、ループ | 音声会話：ユーザーが話している |
 | `thinking` | `waiting-spin`、ループ | リクエスト送信済み、モデルが考え中 |
 | `tool` | `waiting-wave`、ループ | ツールを実行中 |
 | `replying` | `idle` | 返信テキストが届いている |
+| `speaking` | `speaking`、ループ | 音声会話：AI の返答を再生中 |
 | `approval` | `wary` | ユーザーの確認が必要 |
 | `done` | `success` | 完了 |
 | `error` | `failure` | 失敗 |
@@ -275,6 +280,29 @@ connectAgent(avatar, {
 ```
 
 [AI 接続デモ](https://cx-artlab.github.io/BoopFace/agent.html?lang=ja) ですべての形式を試せます。
+
+## 音声会話 · 0.8.1 の新機能
+
+聞く、考える、話す。音声アシスタントは毎回この 3 ステップを踏みます。アバターにはそれぞれの表情があります。
+
+```js
+avatar.startListening();   // ユーザーが話している
+avatar.startWaiting();     // AI が考えている
+avatar.startSpeaking();    // AI が答えている
+avatar.setVoiceLevel(0.6); // 任意：音量 0〜1
+```
+
+聞いているときは少し身を乗り出し、ユーザーが話すと目が少し大きく開きます。話すときは発話のリズムに合わせて目が弾みます。`setVoiceLevel()` で音量を渡すと、どちらも実際の音量に合わせて動きます。渡さない場合、話す表情は独自のリズムで動き、聞く表情はじっと集中します。バリエーション：`startListening({ variant: 'tilt' })` は耳を傾けるように首をかしげ、`startSpeaking({ variant: 'nod' })` はうなずき、`'bars'` は目を音量メーターに変えます。
+
+`connectAgent()` を使えばすべて自動です。OpenAI Realtime のイベントや、ElevenLabs などの音声 SDK が返す `mode` を理解し、返答のたびに「聞く」へ戻ります。
+
+```js
+const agent = connectAgent(avatar);
+events.onmessage = ({ data }) => agent.handle(JSON.parse(data));
+agent.connectAudio({ input: microphone, output: replyAudio });
+```
+
+`connectAudio()` は MediaStream や `<audio>` 要素を受け取り、その音量を目に伝えます。返答の音声をつなぐと、再生が終わったこともアバターが自分で判断します。
 
 ## React と Vue
 

@@ -21,6 +21,8 @@ const baseCanPauseFrames = proto._canPauseFrames;
 const baseInput = proto.input;
 const baseStartWaiting = proto.startWaiting;
 const baseStopWaiting = proto.stopWaiting;
+const baseStartListening = proto.startListening;
+const baseStartSpeaking = proto.startSpeaking;
 const baseDraw = proto._draw;
 
 const DEFAULT_SIZE = 112;
@@ -36,6 +38,13 @@ const ACTION_ALIASES = Object.freeze({
   'waiting-wrap': 'waiting',
   'waiting-wave': 'waiting',
   input: 'input',
+  listening: 'listening',
+  'listening-lean': 'listening',
+  'listening-tilt': 'listening',
+  speaking: 'speaking',
+  'speaking-bounce': 'speaking',
+  'speaking-nod': 'speaking',
+  'speaking-bars': 'speaking',
   affirm: 'affirm',
   send: 'affirm',
   success: 'success',
@@ -813,6 +822,21 @@ proto.startWaiting = async function(options = {}) {
   return result;
 };
 
+// Voice loops behave like waiting: one continuous action until the next one.
+for (const [method, base, action] of [['startListening', baseStartListening, 'listening'], ['startSpeaking', baseStartSpeaking, 'speaking']]) {
+  if (typeof base !== 'function') continue;
+  proto[method] = async function(options = {}) {
+    ensureRuntime(this);
+    clearAutoSleep(this);
+    const result = await base.call(this, options);
+    // A new variant restarts the loop (and cancels its record); the same loop keeps it.
+    if (this._voiceFx?.mode === action && this._voiceFx.continuous && this._activeActionState?.action !== action) {
+      beginAction(this, action, 'api', true);
+    }
+    return result;
+  };
+}
+
 proto.stopWaiting = function() {
   ensureRuntime(this);
   const record = this._activeActionState?.action === 'waiting' ? this._activeActionState : null;
@@ -913,7 +937,7 @@ function drawReducedState(instance) {
   }
 }
 
-for (const property of ['_waitingFx', '_inspectFx', '_loveFx', '_randomFx', '_failureFx', '_warningFx', '_systemErrorShake']) {
+for (const property of ['_waitingFx', '_voiceFx', '_inspectFx', '_loveFx', '_randomFx', '_failureFx', '_warningFx', '_systemErrorShake']) {
   const slot = Symbol(property);
   Object.defineProperty(proto, property, {
     configurable: true,

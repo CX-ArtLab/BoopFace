@@ -7,19 +7,24 @@
 // refusal by itself. The adapter touches nothing but the avatar's public API.
 
 const STATES = Object.freeze([
-  'idle', 'typing', 'thinking', 'tool', 'replying', 'approval', 'done', 'error', 'refused', 'cancelled',
+  'idle', 'typing', 'listening', 'thinking', 'tool', 'replying', 'speaking', 'approval', 'done', 'error', 'refused', 'cancelled',
 ]);
 
-// Busy states loop until the next state; the others play once and settle.
-const BUSY = new Set(['thinking', 'tool', 'replying']);
+// Busy states: a reply is under way. Looping states keep their expression
+// going until the next state; the others play once and settle.
+const BUSY = new Set(['thinking', 'tool', 'replying', 'speaking']);
+const LOOPING = new Set([...BUSY, 'listening']);
+const VOICE = new Set(['listening', 'speaking']);
 const ENDINGS = new Set(['done', 'error', 'refused', 'cancelled']);
 
 const DEFAULT_ACTIONS = Object.freeze({
   idle: 'idle',
   typing: 'input',
+  listening: 'listening',
   thinking: 'waiting-spin',
   tool: 'waiting-wave',
   replying: 'idle',
+  speaking: 'speaking',
   approval: 'wary',
   done: 'success',
   error: 'failure',
@@ -30,6 +35,7 @@ const DEFAULT_ACTIONS = Object.freeze({
 const ACTION_NAMES = new Set([
   'idle', 'bored', 'waiting', 'waiting-spin', 'waiting-wrap', 'waiting-wave', 'input', 'affirm', 'success',
   'failure', 'wary', 'inspect', 'angry', 'refuse', 'surprise', 'love', 'random', 'sleep', 'wake',
+  'listening', 'listening-lean', 'listening-tilt', 'speaking', 'speaking-bounce', 'speaking-nod', 'speaking-bars',
 ]);
 
 // Plain words: our own state names, useChat status values and common synonyms.
@@ -37,6 +43,8 @@ const ACTION_NAMES = new Set([
 const WORDS = Object.freeze({
   idle: 'idle',
   typing: 'typing', input: 'typing',
+  listening: 'listening', listen: 'listening',
+  speaking: 'speaking', speak: 'speaking', talking: 'speaking',
   thinking: 'thinking', reasoning: 'thinking', submitted: 'thinking', waiting: 'thinking', pending: 'thinking',
   loading: 'thinking', start: 'thinking', started: 'thinking', running: 'thinking', 'in-progress': 'thinking',
   tool: 'tool', 'tool-call': 'tool', 'tool-calling': 'tool', 'tool-use': 'tool', working: 'tool',
@@ -137,6 +145,16 @@ function fromOpenAIItem(item) {
 }
 
 function fromOpenAIResponses(type, event) {
+  // Realtime: audio of the reply, and the end of a voice turn.
+  if (type.startsWith('response.output_audio') || type.startsWith('response.audio')) return 'speaking';
+  if (type === 'response.done') {
+    const status = lower(event.response?.status);
+    if (status === 'failed') return 'error';
+    if (status === 'cancelled') return 'cancelled';
+    const output = Array.isArray(event.response?.output) ? event.response.output : [];
+    if (output.some(item => lower(item?.type) === 'function_call')) return 'tool';
+    return 'done';
+  }
   if (type === 'response.created' || type === 'response.in_progress' || type === 'response.queued') return 'thinking';
   if (type.startsWith('response.reasoning')) return 'thinking';
   if (type.startsWith('response.output_text.')) return 'replying';
@@ -244,6 +262,12 @@ function stateFromEvent(event, memo) {
     if (type === 'error') return 'error';
     if (type === 'ping') return null;
     if (type.startsWith('response.')) return fromOpenAIResponses(type, event);
+    // OpenAI Realtime: the user's voice, and (over WebRTC) playback of the reply.
+    if (type === 'input_audio_buffer.speech_started') return 'listening';
+    if (type === 'input_audio_buffer.speech_stopped' || type === 'input_audio_buffer.committed') return 'thinking';
+    if (type === 'output_audio_buffer.started') { memo.playback = true; return 'speaking'; }
+    if (type === 'output_audio_buffer.stopped' || type === 'output_audio_buffer.cleared') return 'listening';
+    if (type.startsWith('input_audio_buffer.') || type.startsWith('output_audio_buffer.')) return null;
     const anthropic = fromAnthropic(type, event, memo);
     if (anthropic !== undefined) return anthropic;
     const agUi = fromAgUi(type, event);
@@ -253,6 +277,8 @@ function stateFromEvent(event, memo) {
   }
   if (lower(event.object) === 'chat.completion.chunk' || Array.isArray(event.choices)) return fromChatCompletionChunk(event);
   if (typeof event.state === 'string') return fromWord(event.state);
+  // ElevenLabs and similar voice SDKs report { mode: 'speaking' | 'listening' }.
+  if (typeof event.mode === 'string') return fromWord(event.mode);
   if (typeof event.status === 'string') return fromWord(event.status);
   return type ? fromWord(type) : undefined;
 }
@@ -309,19 +335,68 @@ async function* readItems(source) {
   throw new TypeError('track: pass an async iterable, a ReadableStream or an iterable.');
 }
 
+const clamp01 = value => Math.max(0, Math.min(1, value));
+
+// Loudness of a MediaStream (a microphone, a WebRTC reply) or an <audio> /
+// <video> element, read with a Web Audio analyser.
+function audioMeter(context, source) {
+  let node;
+  if (typeof MediaStream !== 'undefined' && source instanceof MediaStream) {
+    node = context.createMediaStreamSource(source);
+  } else if (source && typeof source.play === 'function') {
+    node = context.createMediaElementSource(source);
+    // Web Audio takes over the element's sound; send it on to the speakers.
+    node.connect(context.destination);
+  } else {
+    throw new TypeError('connectAudio: pass a MediaStream or an <audio> / <video> element.');
+  }
+  const analyser = context.createAnalyser();
+  analyser.fftSize = 1024;
+  node.connect(analyser);
+  const data = new Float32Array(analyser.fftSize);
+  return {
+    read() {
+      analyser.getFloatTimeDomainData(data);
+      let sum = 0;
+      for (const value of data) sum += value * value;
+      const decibels = 20 * Math.log10(Math.sqrt(sum / data.length) || 1e-8);
+      // About -52 dB (room noise) is silent, -16 dB (speech up close) is full.
+      return clamp01((decibels + 52) / 36);
+    },
+    disconnect() {
+      try { node.disconnect(analyser); } catch { /* already gone */ }
+    },
+  };
+}
+
 function connectAgent(target, options = {}) {
   const avatar = resolveAvatar(target);
   const actions = resolveActions(options.actions);
   const onChange = typeof options.onChange === 'function' ? options.onChange : null;
   const warned = new Set();
-  const memo = { stopReason: '', ended: false };
+  const memo = { stopReason: '', ended: false, voice: false, playback: false, pendingDone: false, outputMeter: false };
   let state = 'idle';
-  let looping = null; // waiting variant this adapter started, while it may still run
+  let looping = null; // the loop this adapter started, while it may still run
   let timer = 0;
 
+  // The loop a state shows, if its action is one: waiting, listening or speaking.
   function loopOf(next) {
-    const match = typeof actions[next] === 'string' && BUSY.has(next) ? WAITING_ACTION.exec(actions[next]) : null;
-    return match ? match[1] || 'spin' : null;
+    const action = actions[next];
+    if (typeof action !== 'string' || !LOOPING.has(next)) return null;
+    const waiting = WAITING_ACTION.exec(action);
+    if (waiting) return { key: `waiting:${waiting[1] || 'spin'}`, start: () => avatar.startWaiting({ variant: waiting[1] || 'spin' }) };
+    const voice = /^(listening|speaking)(?:-([a-z]+))?$/.exec(action);
+    if (voice && typeof avatar.startListening === 'function') {
+      const variant = voice[2] ? { variant: voice[2] } : {};
+      const start = voice[1] === 'listening' ? () => avatar.startListening(variant) : () => avatar.startSpeaking(variant);
+      return { key: `${voice[1]}:${voice[2] || ''}`, start };
+    }
+    return null;
+  }
+
+  function stillLooping(key) {
+    if (key.startsWith('waiting:')) return Boolean(avatar._waitingFx || avatar._waitingRequested);
+    return Boolean(avatar._voiceFx || avatar._voiceRequested);
   }
 
   function reduced() {
@@ -331,10 +406,10 @@ function connectAgent(target, options = {}) {
     return typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
-  // Milliseconds until the running loop is back at its starting pose.
+  // Milliseconds until a running waiting loop is back at its starting pose.
   function untilSeam() {
     const fx = avatar._waitingFx;
-    if (!looping || !fx || !fx.continuous || reduced()) return 0;
+    if (!looping?.key.startsWith('waiting:') || !fx || !fx.continuous || reduced()) return 0;
     const period = LOOP_SEAM[fx.variant === 'default' ? 'spin' : fx.variant];
     if (!period) return 0;
     const left = period - ((performance.now() - fx.start) % period);
@@ -351,7 +426,7 @@ function connectAgent(target, options = {}) {
       return;
     }
     let result;
-    if (loop) result = avatar.startWaiting({ variant: loop });
+    if (loop) result = loop.start();
     else if (action === 'idle') result = avatar.reset();
     else result = avatar.play(action);
     // Animations resolve when they finish; nothing waits on them here.
@@ -363,13 +438,24 @@ function connectAgent(target, options = {}) {
     timer = 0;
     const loop = loopOf(next);
     // The same loop is already on screen: keep it going instead of restarting it.
-    if (loop && loop === looping && (avatar._waitingFx || avatar._waitingRequested)) return;
+    if (loop && loop.key === looping?.key && stillLooping(loop.key)) return;
     const wait = untilSeam();
     if (wait) timer = setTimeout(() => { timer = 0; apply(next); }, wait);
     else apply(next);
   }
 
   function set(next) {
+    if (VOICE.has(next)) memo.voice = true;
+    if (memo.voice) {
+      // A voice conversation goes back to listening after each reply instead of
+      // celebrating it. While the reply is still being played, it keeps speaking.
+      if (next === 'done' && state === 'speaking') {
+        memo.pendingDone = true;
+        return state;
+      }
+      if (next === 'done' || next === 'cancelled') next = 'listening';
+    }
+    if (next !== 'speaking') memo.pendingDone = false;
     if (next === state) {
       if (BUSY.has(next)) avatar.noteActivity?.(false);
       return state;
@@ -381,7 +467,7 @@ function connectAgent(target, options = {}) {
     const previous = state;
     if (BUSY.has(next) && !BUSY.has(previous)) memo.ended = false;
     if (next === 'error' || next === 'refused' || next === 'cancelled') memo.ended = true;
-    if (next === 'idle' || next === 'typing') memo.ended = false;
+    if (next === 'idle' || next === 'typing' || next === 'listening') memo.ended = false;
     state = next;
     if (previous === 'typing' && next !== 'typing' && actions.typing === 'input' && typeof avatar.input === 'function') {
       // Only matters when the next state leaves the cursor eyes on screen.
@@ -432,14 +518,66 @@ function connectAgent(target, options = {}) {
     }
   }
 
+  // Lets the eyes follow real sound: the microphone while listening, the reply
+  // while speaking. With the reply connected, the avatar also notices when it
+  // has finished playing and goes back to listening.
+  function connectAudio({ input, output } = {}) {
+    const Context = globalThis.AudioContext || globalThis.webkitAudioContext;
+    if (!Context) throw new TypeError('connectAudio: this browser has no Web Audio.');
+    const context = new Context();
+    const meters = {};
+    try {
+      if (input) meters.input = audioMeter(context, input);
+      if (output) meters.output = audioMeter(context, output);
+    } catch (error) {
+      for (const meter of Object.values(meters)) meter.disconnect();
+      context.close?.().catch?.(() => {});
+      throw error;
+    }
+    memo.outputMeter = Boolean(meters.output);
+    context.resume?.().catch?.(() => {});
+    let frame = 0;
+    let quietSince = 0;
+    const tick = now => {
+      frame = requestAnimationFrame(tick);
+      const meter = state === 'listening' ? meters.input : state === 'speaking' ? meters.output : null;
+      if (!meter) return;
+      const level = meter.read();
+      avatar.setVoiceLevel?.(level);
+      if (state !== 'speaking' || !memo.pendingDone || meter !== meters.output) {
+        quietSince = 0;
+        return;
+      }
+      if (level > 0.04) quietSince = 0;
+      else if (!quietSince) quietSince = now;
+      else if (now - quietSince > 700) {
+        quietSince = 0;
+        set('listening');
+      }
+    };
+    frame = requestAnimationFrame(tick);
+    let connected = true;
+    return function disconnectAudio() {
+      if (!connected) return;
+      connected = false;
+      cancelAnimationFrame(frame);
+      for (const meter of Object.values(meters)) meter.disconnect();
+      if (meters.output) memo.outputMeter = false;
+      context.close?.().catch?.(() => {});
+    };
+  }
+
   return {
     get state() { return state; },
     get avatar() { return avatar; },
     handle,
     track,
+    connectAudio,
     reset() {
       memo.stopReason = '';
       memo.ended = false;
+      memo.voice = false;
+      memo.pendingDone = false;
       return set('idle');
     },
   };
