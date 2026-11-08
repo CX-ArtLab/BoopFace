@@ -77,9 +77,9 @@ const WAVE_WAITING_LABELS = Object.freeze({
   ko:'대기 · 물결', es:'Espera · Onda', pt:'Espera · Onda', de:'Warten · Welle', fr:'Attente · Vague',
 });
 
-const FLOWER_WAITING_LABELS = Object.freeze({
-  'zh-CN':'等待 · 十字花', 'zh-TW':'等待 · 十字花', en:'Waiting · Flower', ja:'待機 · フラワー',
-  ko:'대기 · 꽃', es:'Espera · Flor', pt:'Espera · Flor', de:'Warten · Blüte', fr:'Attente · Fleur',
+const BLOOM_WAITING_LABELS = Object.freeze({
+  'zh-CN':'等待 · 绽放', 'zh-TW':'等待 · 綻放', en:'Waiting · Bloom', ja:'待機 · ブルーム',
+  ko:'대기 · 피어나기', es:'Espera · Florecer', pt:'Espera · Florescer', de:'Warten · Erblühen', fr:'Attente · Éclosion',
 });
 
 function activeLanguage(table) {
@@ -117,7 +117,7 @@ function syncActionLabels() {
   const failureButton = ensureActionButton('failure', 'success');
   const wrapButton = ensureActionButton('waiting-wrap', 'waiting-spin');
   const waveButton = ensureActionButton('waiting-wave', 'waiting-wrap');
-  const flowerButton = ensureActionButton('waiting-flower', 'waiting-wave');
+  const bloomButton = ensureActionButton('waiting-bloom', 'waiting-wave');
   // New actions go at the very end of the row, in the order they were added.
   const loveButton = ensureActionButton('love', 'sleep');
   const randomButton = ensureActionButton('random', 'love');
@@ -131,9 +131,9 @@ function syncActionLabels() {
     waveButton.textContent = WAVE_WAITING_LABELS[activeLanguage(WAVE_WAITING_LABELS)];
     markAsNew(waveButton);
   }
-  if (flowerButton) {
-    flowerButton.textContent = FLOWER_WAITING_LABELS[activeLanguage(FLOWER_WAITING_LABELS)];
-    markAsNew(flowerButton);
+  if (bloomButton) {
+    bloomButton.textContent = BLOOM_WAITING_LABELS[activeLanguage(BLOOM_WAITING_LABELS)];
+    markAsNew(bloomButton);
   }
 }
 

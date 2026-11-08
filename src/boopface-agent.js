@@ -35,7 +35,7 @@ const DEFAULT_ACTIONS = Object.freeze({
 const ACTION_NAMES = new Set([
   'idle', 'bored', 'waiting', 'waiting-spin', 'waiting-wrap', 'waiting-wave', 'input', 'affirm', 'success',
   'failure', 'wary', 'inspect', 'angry', 'refuse', 'surprise', 'love', 'random', 'sleep', 'wake',
-  'waiting-flower', 'listening', 'speaking',
+  'waiting-bloom', 'listening', 'speaking',
 ]);
 
 // Plain words: our own state names, useChat status values and common synonyms.
@@ -114,7 +114,7 @@ const TOOL_ITEM = /(?:^|_)(?:call|tool_use)$/;
 // short stage never cuts an orbit or a wave in half. Spin: one orbit of its
 // two-orbit cycle; wave: one bob; wrap: one pass.
 const LOOP_SEAM = Object.freeze({ spin: 1600, wave: 1100, wrap: 2400 });
-const WAITING_ACTION = /^waiting(?:-(spin|wrap|wave|flower))?$/;
+const WAITING_ACTION = /^waiting(?:-(spin|wrap|wave|bloom))?$/;
 
 function lower(value) {
   return typeof value === 'string' ? value.trim().toLowerCase() : '';
@@ -383,10 +383,10 @@ function connectAgent(target, options = {}) {
   let state = 'idle';
   let looping = null; // the loop this adapter started, while it may still run
   let timer = 0;
-  // In a voice conversation, thinking waits with the flower, which morphs out
+  // In a voice conversation, thinking waits with the bloom, which morphs out
   // of the listening eye, unless the page chose another waiting style.
   const customThinking = Boolean(options.actions && Object.hasOwn(options.actions, 'thinking'));
-  const actionFor = next => (next === 'thinking' && memo.voice && !customThinking ? 'waiting-flower' : actions[next]);
+  const actionFor = next => (next === 'thinking' && memo.voice && !customThinking ? 'waiting-bloom' : actions[next]);
 
   // The loop a state shows, if its action is one: waiting, listening or speaking.
   function loopOf(next) {
@@ -402,7 +402,7 @@ function connectAgent(target, options = {}) {
   }
 
   function stillLooping(key) {
-    if (key === 'waiting:flower') return avatar._voiceFx?.mode === 'thinking' || avatar._voiceRequested === 'thinking';
+    if (key === 'waiting:bloom') return avatar._voiceFx?.mode === 'thinking' || avatar._voiceRequested === 'thinking';
     if (key.startsWith('waiting:')) return Boolean(avatar._waitingFx || avatar._waitingRequested);
     if (avatar._voiceFx && avatar._voiceFx.mode !== key.slice(6)) return false;
     return Boolean(avatar._voiceFx || avatar._voiceRequested);

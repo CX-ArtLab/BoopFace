@@ -132,7 +132,7 @@ Actions disponibles :
 | `waiting-spin` | Les yeux tournent d’un côté à l’autre | En attente d’une réponse (par défaut) |
 | `waiting-wrap` | Les yeux sortent d’un côté et reviennent par l’autre | En attente d’une réponse |
 | `waiting-wave` | Les yeux montent et descendent à tour de rôle | En attente d’une réponse |
-| `waiting-flower` | Deux ovales croisés respirent et tournent comme une fleur | En attente d’une réponse ; conçue pour les conversations vocales |
+| `waiting-bloom` | Deux ovales croisés respirent et tournent comme une fleur | En attente d’une réponse ; conçue pour les conversations vocales |
 | `input` | Les yeux deviennent des curseurs clignotants | L’utilisateur tape |
 | `listening` | Les deux yeux fusionnent en un œil rond qui gonfle avec la voix | Voix : l’utilisateur parle |
 | `speaking` | Les yeux se séparent de nouveau et s’étirent avec la réponse | Voix : l’IA répond |
@@ -149,7 +149,7 @@ Actions disponibles :
 | `sleep` | Ferme les yeux et dort | Longue inactivité |
 | `wake` | Ouvre les yeux et se réveille | L’activité reprend |
 
-Les actions d’attente jouent un tour avec `play()`. `startWaiting({ variant: 'spin' | 'wrap' | 'wave' | 'flower' })` boucle jusqu’à une autre action ou un appel à `stopWaiting()`.
+Les actions d’attente jouent un tour avec `play()`. `startWaiting({ variant: 'spin' | 'wrap' | 'wave' | 'bloom' })` boucle jusqu’à une autre action ou un appel à `stopWaiting()`.
 
 Les noms de 0.5 (`send`, `warning`, `error`, `blocked`, `slot` et d’autres) fonctionnent encore jusqu’à 1.0, avec un avis dans la console ; voir le [tableau de mise à niveau](../CHANGELOG.md#upgrading-from-05x).
 
@@ -288,16 +288,16 @@ Essayez tous les formats dans la [démo « Connecter une IA »](https://cx-artla
 
 ```js
 avatar.startListening();                    // l’utilisateur parle
-avatar.startWaiting({ variant: 'flower' }); // l’IA réfléchit
+avatar.startWaiting({ variant: 'bloom' }); // l’IA réfléchit
 avatar.startSpeaking();                     // l’IA répond
 avatar.setVoiceLevel(0.6);                  // facultatif : volume de 0 à 1
 ```
 
 En écoute, les deux yeux fusionnent en un seul œil rond qui gonfle avec la voix de l’utilisateur. En réflexion, il devient une fleur de deux ovales croisés qui respire et tourne lentement. En parlant, il se sépare de nouveau en deux yeux, qui se posent puis s’étirent avec la réponse : les sons graves dans l’œil gauche, les aigus dans le droit. `setVoiceLevel(level)` ou `setVoiceLevel([low, high])` fournit le volume ; sans lui, la parole garde son propre rythme et l’écoute reste immobile. Chaque étape tourne en boucle jusqu’à la suivante, et au changement les yeux se transforment au lieu de sauter.
 
-Réfléchir est une étape d’attente. La fleur (`variant: 'flower'`) naît directement de l’œil d’écoute ; tout autre style d’attente convient aussi.
+Réfléchir est une étape d’attente. Éclosion (`variant: 'bloom'`) naît directement de l’œil d’écoute ; tout autre style d’attente convient aussi.
 
-`connectAgent()` s’occupe de tout. Il comprend les événements OpenAI Realtime et le `mode` signalé par les SDK vocaux comme ElevenLabs, attend avec la fleur pendant qu’une conversation vocale réfléchit (ou avec le style de `actions.thinking`) et revient à l’écoute après chaque réponse :
+`connectAgent()` s’occupe de tout. Il comprend les événements OpenAI Realtime et le `mode` signalé par les SDK vocaux comme ElevenLabs, attend avec le style Éclosion pendant qu’une conversation vocale réfléchit (ou avec le style de `actions.thinking`) et revient à l’écoute après chaque réponse :
 
 ```js
 const agent = connectAgent(avatar);

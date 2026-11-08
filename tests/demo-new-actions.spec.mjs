@@ -33,7 +33,7 @@ test('the demo lists the newest actions last, each flagged with a red dot', asyn
     isNew: button.classList.contains('is-new'),
     badge: getComputedStyle(button, '::after').content,
   })));
-  expect(flags.filter(flag => flag.isNew).map(flag => flag.action)).toEqual(['waiting-wave', 'waiting-flower', 'love', 'random']);
+  expect(flags.filter(flag => flag.isNew).map(flag => flag.action)).toEqual(['waiting-wave', 'waiting-bloom', 'love', 'random']);
   // New actions carry a red corner dot.
   for (const flag of flags.filter(flag => flag.isNew)) expect(flag.badge).toBe('""');
   for (const flag of flags.filter(flag => !flag.isNew)) expect(['none', 'normal']).toContain(flag.badge);

@@ -123,14 +123,14 @@ connectAgent(avatar, { actions: { done: 'party' } });
 
 // Voice conversation.
 void avatar.startListening();
-void avatar.startWaiting({ variant: 'flower' });
+void avatar.startWaiting({ variant: 'bloom' });
 void avatar.startSpeaking();
 avatar.setVoiceLevel(0.4);
 avatar.setVoiceLevel([0.2, 0.6]);
-void avatar.play('waiting-flower');
+void avatar.play('waiting-bloom');
 const speakingState: BoopFaceState = 'speaking';
 void speakingState;
-const voiceAgent = connectAgent(avatar, { actions: { listening: 'listening', speaking: 'speaking', thinking: 'waiting-flower' } });
+const voiceAgent = connectAgent(avatar, { actions: { listening: 'listening', speaking: 'speaking', thinking: 'waiting-bloom' } });
 const stopAudio: () => void = voiceAgent.connectAudio({ input: new MediaStream() });
 stopAudio();
 // @ts-expect-error the voice set has no variants

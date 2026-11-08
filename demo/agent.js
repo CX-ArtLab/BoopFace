@@ -9,7 +9,7 @@ const TEXT = {
     title: 'AI 接入', format: '接口格式', outcome: '这次结果', outcomeDone: '顺利完成', outcomeError: '出错',
     outcomeRefused: '拒绝回答', outcomeApproval: '需要确认', tools: '中途用工具', toolsHint: '比如上网搜索',
     thinking: '思考时', tool: '用工具时', replying: '回复文字时', spin: '等待 · 旋转', wrap: '等待 · 环绕',
-    wave: '等待 · 波动', flower: '等待 · 十字花', inspect: '审视', idle: '正常', input: '输入', keep: '继续等待', stop: '中途停止',
+    wave: '等待 · 波动', bloom: '等待 · 绽放', inspect: '审视', idle: '正常', input: '输入', keep: '继续等待', stop: '中途停止',
     run: '发一条消息', code: '你的代码', codeComment: '// 照常显示回复',
     codeNote: '「接口格式」决定代码怎么接；「这次结果」和「中途用工具」不用改代码，头像自己会处理；下面三排会改 actions 那一行。', empty: '点「发一条消息」，看头像怎么跟着 AI 的状态变。右边是实际收到的事件。',
     reply: '明天上海多云，最高 18°C，最低 11°C，傍晚可能有小雨，出门记得带把伞。',
@@ -31,7 +31,7 @@ const TEXT = {
     title: 'Connect AI', format: 'Format', outcome: 'Outcome', outcomeDone: 'Completes', outcomeError: 'Fails',
     outcomeRefused: 'Refuses', outcomeApproval: 'Needs approval', tools: 'Uses a tool', toolsHint: 'Such as web search',
     thinking: 'Thinking', tool: 'Using a tool', replying: 'Writing text', spin: 'Waiting · Spin', wrap: 'Waiting · Wrap',
-    wave: 'Waiting · Wave', flower: 'Waiting · Flower', inspect: 'Inspect', idle: 'Normal', input: 'Input', keep: 'Keep waiting', stop: 'Stop',
+    wave: 'Waiting · Wave', bloom: 'Waiting · Bloom', inspect: 'Inspect', idle: 'Normal', input: 'Input', keep: 'Keep waiting', stop: 'Stop',
     run: 'Send a message', code: 'Your code', codeComment: '// show the reply as usual',
     codeNote: '“Format” decides how the code connects. “Outcome” and “Uses a tool” need no code: the avatar handles them. The three rows below change the actions line.', empty: 'Press “Send a message” and watch the avatar follow the AI. The events it receives are listed on the right.',
     reply: 'Tomorrow in Shanghai: cloudy, high 18°C, low 11°C. Light rain is likely in the evening, so take an umbrella.',
@@ -52,8 +52,8 @@ const TEXT = {
 };
 
 const DEFAULTS = { thinking: 'waiting-spin', tool: 'waiting-wave', replying: 'idle' };
-// A voice conversation thinks with the flower unless another style is picked.
-const VOICE_THINKING = 'waiting-flower';
+// A voice conversation thinks with the bloom unless another style is picked.
+const VOICE_THINKING = 'waiting-bloom';
 const settings = { format: 'ag-ui', outcome: 'done', ...DEFAULTS, voiceThinking: VOICE_THINKING };
 // States whose expression the code panel shows, per kind of conversation.
 const TEXT_STATES = ['thinking', 'tool', 'replying'];

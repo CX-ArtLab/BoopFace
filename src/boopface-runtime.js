@@ -38,7 +38,7 @@ const ACTION_ALIASES = Object.freeze({
   'waiting-wrap': 'waiting',
   'waiting-wave': 'waiting',
   input: 'input',
-  'waiting-flower': 'waiting',
+  'waiting-bloom': 'waiting',
   listening: 'listening',
   speaking: 'speaking',
   affirm: 'affirm',
@@ -814,8 +814,8 @@ proto.startWaiting = async function(options = {}) {
   ensureRuntime(this);
   clearAutoSleep(this);
   const result = await baseStartWaiting.call(this, options);
-  const flower = this._voiceFx?.mode === 'thinking' && this._voiceFx.continuous;
-  if ((this._waitingRequested && this._waitingFx) || (flower && this._activeActionState?.action !== 'waiting')) {
+  const bloom = this._voiceFx?.mode === 'thinking' && this._voiceFx.continuous;
+  if ((this._waitingRequested && this._waitingFx) || (bloom && this._activeActionState?.action !== 'waiting')) {
     beginAction(this, 'waiting', 'api', true);
   }
   return result;

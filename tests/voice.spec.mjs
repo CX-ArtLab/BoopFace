@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-// The voice set: listening (one round eye), thinking (a turning flower of two
+// The voice set: listening (one round eye), thinking (a turning bloom of two
 // ovals), speaking (two eyes that stretch with the reply), and connectAgent()
 // driving it from OpenAI Realtime events.
 test.beforeEach(async ({ page }) => {
@@ -49,9 +49,9 @@ test('listening merges the eyes into one round eye that swells with the voice', 
   expect(result.events).toEqual(['listening:start']);
 });
 
-test('the flower waiting style turns two crossed ovals', async ({ page }) => {
+test('the bloom waiting style turns two crossed ovals', async ({ page }) => {
   const result = await page.evaluate(async () => {
-    await window.avatar.startWaiting({ variant: 'flower' });
+    await window.avatar.startWaiting({ variant: 'bloom' });
     await window.wait(800);
     const first = [window.shape('left'), window.shape('right')];
     await window.wait(500);
@@ -66,7 +66,7 @@ test('the flower waiting style turns two crossed ovals', async ({ page }) => {
 
 test('speaking splits and settles first, then stretches each eye with its band', async ({ page }) => {
   const result = await page.evaluate(async () => {
-    await window.avatar.startWaiting({ variant: 'flower' });
+    await window.avatar.startWaiting({ variant: 'bloom' });
     await window.wait(700);
     await window.avatar.startSpeaking();
     await window.wait(700);
@@ -102,7 +102,7 @@ test('steps of the set follow each other without resetting, and leaving eases ba
   const result = await page.evaluate(async () => {
     await window.avatar.startListening();
     await window.wait(500);
-    await window.avatar.startWaiting({ variant: 'flower' });
+    await window.avatar.startWaiting({ variant: 'bloom' });
     // Right after the switch the eye is still round: a morph, not a jump.
     const morphing = window.shape('left');
     await window.avatar.startSpeaking();
@@ -137,7 +137,7 @@ test('one round of play() ends on its own', async ({ page }) => {
 test('reduced motion holds still poses', async ({ page }) => {
   const result = await page.evaluate(async () => {
     window.avatar.setAttribute('motion', 'reduce');
-    await window.avatar.startWaiting({ variant: 'flower' });
+    await window.avatar.startWaiting({ variant: 'bloom' });
     await window.wait(300);
     const first = window.shape('left');
     await window.wait(400);
@@ -172,13 +172,13 @@ test('connectAgent follows an OpenAI Realtime voice turn', async ({ page }) => {
   expect(result.events).not.toContain('success:start');
 });
 
-test('the flower is a waiting style: one round, stopWaiting, and the same waiting events', async ({ page }) => {
+test('the bloom is a waiting style: one round, stopWaiting, and the same waiting events', async ({ page }) => {
   const result = await page.evaluate(async () => {
     const states = [];
     window.avatar.addEventListener('face-state', event => states.push(event.detail.state));
-    await window.avatar.play('waiting-flower');
+    await window.avatar.play('waiting-bloom');
     const round = window.events.slice();
-    await window.avatar.startWaiting({ variant: 'flower' });
+    await window.avatar.startWaiting({ variant: 'bloom' });
     window.avatar.stopWaiting();
     return { round, events: window.events, states, voice: window.avatar._voiceFx };
   });

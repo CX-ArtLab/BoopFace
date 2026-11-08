@@ -5,7 +5,7 @@ export type BoopFaceAction =
   | 'waiting-spin'
   | 'waiting-wrap'
   | 'waiting-wave'
-  | 'waiting-flower'
+  | 'waiting-bloom'
   | 'input'
   | 'listening'
   | 'speaking'
@@ -148,8 +148,8 @@ export type BoopFaceActionSource = 'api' | 'interaction' | 'automatic';
 export type BoopFaceWakeOn = 'activity' | 'interaction' | 'manual';
 export type BoopFaceMotion = 'auto' | 'reduce' | 'full';
 export interface BoopFaceWaitingOptions {
-  /** `flower` is the voice set's thinking style: two crossed ovals that breathe and turn. */
-  variant?: 'default' | 'spin' | 'wrap' | 'wave' | 'flower';
+  /** `bloom` is the voice set's thinking style: two crossed ovals that breathe and turn. */
+  variant?: 'default' | 'spin' | 'wrap' | 'wave' | 'bloom';
 }
 
 export interface BoopFaceActionStateDetail {

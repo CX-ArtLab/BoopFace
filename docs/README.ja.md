@@ -132,7 +132,7 @@ avatar.reset();
 | `waiting-spin` | 目が左右に回る | 返信待ち（デフォルト） |
 | `waiting-wrap` | 目が片側から出て反対側から戻る | 返信待ち |
 | `waiting-wave` | 目が交互に上下に揺れる | 返信待ち |
-| `waiting-flower` | 交差した 2 つの楕円が花のように呼吸して回る | 返答待ち。音声会話のために作られた形 |
+| `waiting-bloom` | 交差した 2 つの楕円が花のように呼吸して回る | 返答待ち。音声会話のために作られた形 |
 | `input` | 目が点滅する入力カーソルになる | ユーザーが入力中 |
 | `listening` | 両目がひとつの丸い目に合わさり、声に合わせてふくらむ | 音声会話：ユーザーが話している |
 | `speaking` | 目が 2 つに戻り、返答に合わせて伸び縮みする | 音声会話：AI が答えている |
@@ -149,7 +149,7 @@ avatar.reset();
 | `sleep` | 目を閉じて眠る | 長時間操作がない |
 | `wake` | 目を開けて起きる | 操作が再開した |
 
-待機系のアクションは `play()` で 1 回再生されます。`startWaiting({ variant: 'spin' | 'wrap' | 'wave' | 'flower' })` は、別のアクションを再生するか `stopWaiting()` を呼ぶまでループします。
+待機系のアクションは `play()` で 1 回再生されます。`startWaiting({ variant: 'spin' | 'wrap' | 'wave' | 'bloom' })` は、別のアクションを再生するか `stopWaiting()` を呼ぶまでループします。
 
 0.5 の旧名（`send`、`warning`、`error`、`blocked`、`slot` など）は 1.0 まで使えますが、コンソールに名前変更の通知が出ます。[移行表](../CHANGELOG.md#upgrading-from-05x)を参照してください。
 
@@ -288,16 +288,16 @@ connectAgent(avatar, {
 
 ```js
 avatar.startListening();                    // ユーザーが話している
-avatar.startWaiting({ variant: 'flower' }); // AI が考えている
+avatar.startWaiting({ variant: 'bloom' }); // AI が考えている
 avatar.startSpeaking();                     // AI が答えている
 avatar.setVoiceLevel(0.6);                  // 任意：音量 0〜1
 ```
 
 聞くときは両目がひとつの丸い目に合わさり、ユーザーの声に合わせてふくらみます。考えるときは交差した 2 つの楕円になり、ゆっくり回る花のように呼吸します。話すときは 2 つの目に戻って一度静止し、返答に合わせて伸び縮みします。低い音は左目、高い音は右目を動かします。音量は `setVoiceLevel(level)` または `setVoiceLevel([low, high])` で渡します。渡さない場合、話す表情は独自のリズムで動き、聞く表情はじっとしています。各ステップは次のステップまでループし、切り替えでは目が飛ばずに変形します。
 
-「考える」は待機の一種です。フラワー（`variant: 'flower'`）は「聞く」の丸い目からそのまま変形し、ほかの待機スタイルも使えます。
+「考える」は待機の一種です。ブルーム（`variant: 'bloom'`）は「聞く」の丸い目からそのまま変形し、ほかの待機スタイルも使えます。
 
-`connectAgent()` を使えばすべて自動です。OpenAI Realtime のイベントや、ElevenLabs などの音声 SDK が返す `mode` を理解し、音声会話で考えている間はフラワーで待機し（`actions.thinking` でほかのスタイルにも変更可能）、返答のたびに「聞く」へ戻ります。
+`connectAgent()` を使えばすべて自動です。OpenAI Realtime のイベントや、ElevenLabs などの音声 SDK が返す `mode` を理解し、音声会話で考えている間はブルームで待機し（`actions.thinking` でほかのスタイルにも変更可能）、返答のたびに「聞く」へ戻ります。
 
 ```js
 const agent = connectAgent(avatar);
