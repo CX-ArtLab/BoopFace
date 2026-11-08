@@ -11,6 +11,10 @@
 /* Voice set: one row of its own under the single expressions. */
 .demo-voice-row{position:relative;z-index:25;width:100%;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;padding:8px;border-radius:16px;background:rgba(255,255,255,.88);box-shadow:0 7px 30px rgba(0,0,0,.08);backdrop-filter:blur(14px)}
 .demo-voice-label{padding:0 6px 0 4px;color:#72777e;font:600 11px Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;white-space:nowrap}
+.demo-voice-arrow{display:grid;place-items:center;color:#b3b7bd}
+.demo-voice-arrow svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.demo-voice-row [data-voice].is-active{background:#666b72;color:#fff}
+.demo-voice-label[title]{cursor:help}
 .demo-voice-divider{width:1px;height:18px;margin:0 2px;background:rgba(0,0,0,.08)}
 .demo-voice-play{position:relative;display:inline-flex;align-items:center;gap:6px}
 .demo-voice-play svg{width:11px;height:11px;fill:currentColor}

@@ -24,7 +24,9 @@ test('the voice row plays each step and lets the thinking style be chosen', asyn
   await row.locator('.demo-voice-play').click();
   await expect.poll(() => page.evaluate(() => document.getElementById('face')._voiceFx?.mode), { timeout: 10000 }).toBe('listening');
   await expect(row.locator('.demo-voice-play')).toHaveText('停止');
+  await expect(row.locator('[data-voice="listening"]')).toHaveClass(/is-active/);
   await row.locator('.demo-voice-play').click();
-  await expect(row.locator('.demo-voice-play')).toHaveText('连着播');
+  await expect(row.locator('.demo-voice-play')).toHaveText('播放一轮对话');
+  await expect(row.locator('[data-voice].is-active')).toHaveCount(0);
   expect(errors).toEqual([]);
 });
