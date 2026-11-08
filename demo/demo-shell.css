@@ -10,6 +10,21 @@
 @media(max-width:800px){.canvas>.demo-nav{top:70px}.demo-nav{font-size:13px}.demo-nav a{padding:7px 18px}}
 /* Voice set: one row of its own under the single expressions. */
 .demo-voice-row{position:relative;z-index:25;width:100%;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;padding:8px;border-radius:16px;background:rgba(255,255,255,.88);box-shadow:0 7px 30px rgba(0,0,0,.08);backdrop-filter:blur(14px)}
+/* Three parts that never split inside: the kit's name, its steps, play and sound.
+   Wide screens show them on one line, narrow ones stack them. */
+.demo-voice-steps,.demo-voice-actions{display:inline-flex;align-items:center;flex-wrap:nowrap;gap:6px}
+@media(max-width:600px){
+  .demo-voice-label{flex-basis:100%;text-align:center;padding:0}
+  .demo-voice-actions .demo-voice-divider{display:none}
+  .demo-voice-row button{padding:8px 9px}
+}
+@media(max-width:360px){
+  .demo-voice-row{padding:8px 6px}
+  .demo-voice-steps{gap:3px}
+  .demo-voice-row button{padding:7px 7px;font-size:11px}
+  .demo-voice-think-toggle{width:20px}
+  .demo-voice-arrow svg{width:10px;height:10px}
+}
 .demo-voice-label{padding:0 6px 0 4px;color:#72777e;font:600 11px Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;white-space:nowrap}
 .demo-voice-arrow{display:grid;place-items:center;color:#b3b7bd}
 .demo-voice-arrow svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -18,7 +33,10 @@
 .demo-voice-divider{width:1px;height:18px;margin:0 2px;background:rgba(0,0,0,.08)}
 .demo-voice-play{position:relative;display:inline-flex;align-items:center;gap:6px}
 .demo-voice-play svg{width:11px;height:11px;fill:currentColor}
-.demo-voice-play.is-playing svg{display:none}
+/* Labels that take turns share one grid cell, so the button keeps its size. */
+.demo-voice-swap{display:inline-grid;justify-items:center;align-items:center}
+.demo-voice-swap>*{grid-area:1/1;visibility:hidden}
+.demo-voice-swap>.is-shown{visibility:visible}
 .demo-voice-play.is-new::after{content:'';position:absolute;top:3px;right:3px;width:7px;height:7px;border-radius:50%;background:#e5484d;box-shadow:0 0 0 2px rgba(255,255,255,.95);pointer-events:none}
 .demo-voice-think{position:relative;display:inline-flex;gap:2px}
 .demo-voice-think>[data-voice]{border-top-right-radius:4px;border-bottom-right-radius:4px}

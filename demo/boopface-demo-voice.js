@@ -9,9 +9,9 @@ const LABELS = Object.freeze({
   en: { group: 'Voice Interaction Kit', listening: 'Listening', thinking: 'Thinking', speaking: 'Speaking', play: 'Play a turn', stop: 'Stop', sound: 'Sound' , style: 'Thinking style', bloom: 'Bloom', spin: 'Spin', wrap: 'Scroll', wave: 'Wave' , user: 'User', ai: 'AI', hint: 'One turn with a voice assistant: it listens, thinks, then answers' },
   ja: { group: '音声対話表情キット', listening: '聞く', thinking: '考える', speaking: '話す', play: '1 往復を再生', stop: '停止', sound: '音声' , style: '考えるときの形', bloom: 'ブルーム', spin: '回転', wrap: '回り込み', wave: 'ウェーブ' , user: 'ユーザー', ai: 'AI', hint: '音声アシスタントとの 1 往復：聞いて、考えて、答える' },
   ko: { group: '음성 인터랙션 표정 키트', listening: '듣기', thinking: '생각', speaking: '말하기', play: '한 번 재생', stop: '정지', sound: '소리' , style: '생각 스타일', bloom: '피어나기', spin: '회전', wrap: '감싸기', wave: '물결' , user: '사용자', ai: 'AI', hint: '음성 비서와의 한 턴: 듣고, 생각하고, 답합니다' },
-  es: { group: 'Kit de expresiones de voz', listening: 'Escuchar', thinking: 'Pensar', speaking: 'Hablar', play: 'Reproducir un turno', stop: 'Detener', sound: 'Sonido' , style: 'Estilo al pensar', bloom: 'Florecer', spin: 'Giro', wrap: 'Envoltura', wave: 'Onda' , user: 'Usuario', ai: 'IA', hint: 'Un turno con un asistente de voz: escucha, piensa y responde' },
-  pt: { group: 'Kit de expressões de voz', listening: 'Ouvir', thinking: 'Pensar', speaking: 'Falar', play: 'Tocar uma rodada', stop: 'Parar', sound: 'Som' , style: 'Estilo ao pensar', bloom: 'Florescer', spin: 'Giro', wrap: 'Contorno', wave: 'Onda' , user: 'Usuário', ai: 'IA', hint: 'Uma rodada com um assistente de voz: ouve, pensa e responde' },
-  de: { group: 'Sprach-Interaktions-Kit', listening: 'Zuhören', thinking: 'Denken', speaking: 'Sprechen', play: 'Eine Runde abspielen', stop: 'Stopp', sound: 'Ton' , style: 'Denkstil', bloom: 'Erblühen', spin: 'Drehen', wrap: 'Umlauf', wave: 'Welle' , user: 'Nutzer', ai: 'KI', hint: 'Eine Runde mit einem Sprachassistenten: zuhören, nachdenken, antworten' },
+  es: { group: 'Kit de expresiones de voz', listening: 'Escuchar', thinking: 'Pensar', speaking: 'Hablar', play: 'Reproducir turno', stop: 'Detener', sound: 'Sonido' , style: 'Estilo al pensar', bloom: 'Florecer', spin: 'Giro', wrap: 'Envoltura', wave: 'Onda' , user: 'Usuario', ai: 'IA', hint: 'Un turno con un asistente de voz: escucha, piensa y responde' },
+  pt: { group: 'Kit de expressões de voz', listening: 'Ouvir', thinking: 'Pensar', speaking: 'Falar', play: 'Tocar rodada', stop: 'Parar', sound: 'Som' , style: 'Estilo ao pensar', bloom: 'Florescer', spin: 'Giro', wrap: 'Contorno', wave: 'Onda' , user: 'Usuário', ai: 'IA', hint: 'Uma rodada com um assistente de voz: ouve, pensa e responde' },
+  de: { group: 'Sprach-Interaktions-Kit', listening: 'Zuhören', thinking: 'Denken', speaking: 'Sprechen', play: 'Runde abspielen', stop: 'Stopp', sound: 'Ton' , style: 'Denkstil', bloom: 'Erblühen', spin: 'Drehen', wrap: 'Umlauf', wave: 'Welle' , user: 'Nutzer', ai: 'KI', hint: 'Eine Runde mit einem Sprachassistenten: zuhören, nachdenken, antworten' },
   fr: { group: 'Kit d’expressions vocales', listening: 'Écouter', thinking: 'Réfléchir', speaking: 'Parler', play: 'Lire un échange', stop: 'Arrêter', sound: 'Son' , style: 'Style de réflexion', bloom: 'Éclosion', spin: 'Rotation', wrap: 'Boucle', wave: 'Vague' , user: 'Utilisateur', ai: 'IA', hint: 'Un échange avec un assistant vocal : il écoute, réfléchit, puis répond' },
 });
 
@@ -32,10 +32,11 @@ row.className = 'demo-voice-row';
 row.setAttribute('role', 'group');
 row.innerHTML = `
   <span class="demo-voice-label"></span>
+  <span class="demo-voice-steps">
   <button type="button" data-voice="listening"></button>
   <span class="demo-voice-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 7l5 5-5 5"/></svg></span>
   <span class="demo-voice-think">
-    <button type="button" data-voice="thinking"></button>
+    <button type="button" data-voice="thinking"><span class="demo-voice-swap"><span data-shows="bloom"></span><span data-shows="spin"></span><span data-shows="wrap"></span><span data-shows="wave"></span></span></button>
     <button type="button" class="demo-voice-think-toggle" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg></button>
     <span class="demo-voice-menu" role="menu" hidden>
       <span class="demo-voice-menu-title"></span>
@@ -47,12 +48,15 @@ row.innerHTML = `
   </span>
   <span class="demo-voice-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 7l5 5-5 5"/></svg></span>
   <button type="button" data-voice="speaking"></button>
+  </span>
+  <span class="demo-voice-actions">
   <span class="demo-voice-divider" aria-hidden="true"></span>
-  <button type="button" class="demo-voice-play is-new" data-new-key="voice-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg><span></span></button>
+  <button type="button" class="demo-voice-play is-new" data-new-key="voice-play"><span class="demo-voice-swap" aria-hidden="true"><svg data-shows="play" viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5z"/></svg><svg data-shows="stop" viewBox="0 0 24 24"><rect x="6.5" y="6.5" width="11" height="11" rx="2"/></svg></span><span class="demo-voice-swap"><span data-shows="play"></span><span data-shows="stop"></span></span></button>
   <label class="demo-voice-sound">
     <input type="checkbox" checked>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path class="speaker" d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="waves" d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/><path class="mute" d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
-  </label>`;
+  </label>
+  </span>`;
 if (controls) controls.insertAdjacentElement('afterend', row);
 else stack?.append(row);
 
@@ -73,14 +77,23 @@ function relabel() {
   row.title = '';
   playButton.title = t.hint;
   if (turn && caption.dataset.text) caption.textContent = `${t[caption.dataset.who === 'user' ? 'user' : 'ai']} · ${caption.dataset.text}`;
-  for (const button of row.querySelectorAll('[data-voice]')) button.textContent = t[button.dataset.voice];
-  // The thinking button names the waiting style it plays.
-  row.querySelector('[data-voice="thinking"]').textContent = `${t.thinking} · ${t[thinkingStyle]}`;
+  for (const button of row.querySelectorAll('[data-voice]:not([data-voice="thinking"])')) button.textContent = t[button.dataset.voice];
+  // The thinking button names the waiting style it plays. Every style's label
+  // sits in the same spot, so the button keeps one width whichever is shown.
+  const thinkingButton = row.querySelector('[data-voice="thinking"]');
+  for (const label of thinkingButton.querySelectorAll('[data-shows]')) {
+    label.textContent = `${t.thinking} · ${t[label.dataset.shows]}`;
+    label.classList.toggle('is-shown', label.dataset.shows === thinkingStyle);
+  }
   row.querySelector('.demo-voice-think-toggle').setAttribute('aria-label', t.style);
   row.querySelector('.demo-voice-menu').setAttribute('aria-label', t.style);
   row.querySelector('.demo-voice-menu-title').textContent = t.style;
   for (const button of row.querySelectorAll('[data-style]')) button.textContent = t[button.dataset.style];
-  playButton.querySelector('span').textContent = turn ? t.stop : t.play;
+  // Play and stop share one spot too: the button never changes size.
+  for (const label of playButton.querySelectorAll('[data-shows]')) {
+    if (label.tagName === 'SPAN') label.textContent = t[label.dataset.shows];
+    label.classList.toggle('is-shown', label.dataset.shows === (turn ? 'stop' : 'play'));
+  }
   row.querySelector('.demo-voice-sound').title = t.sound;
   soundInput.setAttribute('aria-label', t.sound);
 }
