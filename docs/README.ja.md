@@ -34,7 +34,7 @@ ESP32、STM32、Raspberry Pi Pico の画面や、その他の C++ プログラ�
 
 ## ライブデモ
 
-[インタラクティブデモを開く](https://cx-artlab.github.io/BoopFace/?lang=ja) · [スキンギャラリーを見る](https://cx-artlab.github.io/BoopFace/skins.html?lang=ja) · [AI イベントデモ](https://cx-artlab.github.io/BoopFace/agent.html?lang=ja)
+[インタラクティブデモを開く](https://cx-artlab.github.io/BoopFace/?lang=ja) · [スキンギャラリーを見る](https://cx-artlab.github.io/BoopFace/skins.html?lang=ja) · [AI 接続デモ](https://cx-artlab.github.io/BoopFace/agent.html?lang=ja)
 
 [組み込みシミュレーターを開く](https://cx-artlab.github.io/BoopFace/hardware/?lang=ja)
 
@@ -274,7 +274,7 @@ connectAgent(avatar, {
 });
 ```
 
-[AI イベントデモ](https://cx-artlab.github.io/BoopFace/agent.html?lang=ja) ですべての形式を試せます。
+[AI 接続デモ](https://cx-artlab.github.io/BoopFace/agent.html?lang=ja) ですべての形式を試せます。
 
 ## React と Vue
 

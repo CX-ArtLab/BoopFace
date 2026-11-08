@@ -1,11 +1,12 @@
 import { connectAgent } from '../boopface.js';
+import { t as navLabel, skinLanguage, markDotSeen } from './skins-i18n.js';
 
 // A pretend AI reply in four wire formats. Each run builds the events a real
 // SDK would deliver and feeds them through agent.track(), exactly like a page would.
 
 const TEXT = {
   zh: {
-    title: 'AI 事件', format: '接口格式', outcome: '这次结果', outcomeDone: '顺利完成', outcomeError: '出错',
+    title: 'AI 接入', format: '接口格式', outcome: '这次结果', outcomeDone: '顺利完成', outcomeError: '出错',
     outcomeRefused: '拒绝回答', outcomeApproval: '需要确认', tools: '中途用工具', toolsHint: '比如上网搜索',
     thinking: '思考时', tool: '用工具时', replying: '回复文字时', spin: '等待 · 旋转', wrap: '等待 · 环绕',
     wave: '等待 · 波动', inspect: '审视', idle: '正常', input: '输入', keep: '继续等待', stop: '中途停止',
@@ -21,7 +22,7 @@ const TEXT = {
     },
   },
   en: {
-    title: 'AI events', format: 'Format', outcome: 'Outcome', outcomeDone: 'Completes', outcomeError: 'Fails',
+    title: 'Connect AI', format: 'Format', outcome: 'Outcome', outcomeDone: 'Completes', outcomeError: 'Fails',
     outcomeRefused: 'Refuses', outcomeApproval: 'Needs approval', tools: 'Uses a tool', toolsHint: 'Such as web search',
     thinking: 'Thinking', tool: 'Using a tool', replying: 'Writing text', spin: 'Waiting · Spin', wrap: 'Waiting · Wrap',
     wave: 'Waiting · Wave', inspect: 'Inspect', idle: 'Normal', input: 'Input', keep: 'Keep waiting', stop: 'Stop',
@@ -66,6 +67,16 @@ function applyLanguage() {
   for (const node of document.querySelectorAll('[data-i18n]')) node.textContent = t(node.dataset.i18n);
   for (const button of document.querySelectorAll('[data-lang]')) button.setAttribute('aria-pressed', String(button.dataset.lang === lang));
   replyEl.dataset.empty = t('empty');
+  // The navigation speaks every demo language; this page itself has Chinese and English.
+  const navLang = skinLanguage(params.get('lang') || (lang === 'zh' ? 'zh-CN' : navigator.language));
+  for (const [id, key, page] of [['navDemo', 'demo', './index.html'], ['navSkins', 'skins', './skins.html'], ['navAgent', 'agent', './agent.html']]) {
+    const link = document.getElementById(id);
+    link.textContent = navLabel(key, 0, navLang);
+    const url = new URL(page, location.href);
+    url.searchParams.set('lang', params.get('lang') || navLang);
+    link.href = url.href;
+  }
+  document.title = `${navLabel('agent', 0, navLang)} · BoopFace`;
   showState(agent?.state || 'idle');
 }
 
@@ -317,8 +328,9 @@ for (const group of document.querySelectorAll('[data-group]')) {
 for (const button of document.querySelectorAll('[data-lang]')) {
   button.addEventListener('click', () => {
     lang = button.dataset.lang;
+    params.set('lang', lang === 'zh' ? 'zh-CN' : 'en');
     const url = new URL(location.href);
-    url.searchParams.set('lang', lang);
+    url.searchParams.set('lang', params.get('lang'));
     history.replaceState(null, '', url);
     applyLanguage();
   });
@@ -326,5 +338,6 @@ for (const button of document.querySelectorAll('[data-lang]')) {
 runButton.addEventListener('click', run);
 stopButton.addEventListener('click', () => { stopRequested = true; });
 
+markDotSeen('nav-agent');
 syncChips();
 applyLanguage();

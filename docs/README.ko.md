@@ -34,7 +34,7 @@ ESP32, STM32, Raspberry Pi Pico 화면과 다른 C++ 프로그램에서 같은 �
 
 ## 라이브 데모
 
-[인터랙티브 데모 열기](https://cx-artlab.github.io/BoopFace/?lang=ko) · [스킨 갤러리 둘러보기](https://cx-artlab.github.io/BoopFace/skins.html?lang=ko) · [AI 이벤트 데모](https://cx-artlab.github.io/BoopFace/agent.html?lang=ko)
+[인터랙티브 데모 열기](https://cx-artlab.github.io/BoopFace/?lang=ko) · [스킨 갤러리 둘러보기](https://cx-artlab.github.io/BoopFace/skins.html?lang=ko) · [AI 연결 데모](https://cx-artlab.github.io/BoopFace/agent.html?lang=ko)
 
 [임베디드 시뮬레이터 열기](https://cx-artlab.github.io/BoopFace/hardware/?lang=ko)
 
@@ -274,7 +274,7 @@ connectAgent(avatar, {
 });
 ```
 
-[AI 이벤트 데모](https://cx-artlab.github.io/BoopFace/agent.html?lang=ko)에서 모든 형식을 시험해 볼 수 있습니다.
+[AI 연결 데모](https://cx-artlab.github.io/BoopFace/agent.html?lang=ko)에서 모든 형식을 시험해 볼 수 있습니다.
 
 ## React와 Vue
 

@@ -34,7 +34,7 @@ BoopFace — лёгкий выразительный компонент ават
 
 ## Демонстрация в реальном времени
 
-[Открыть интерактивную демонстрацию](https://cx-artlab.github.io/BoopFace/?lang=ru) · [Открыть галерею скинов](https://cx-artlab.github.io/BoopFace/skins.html?lang=ru) · [Демо событий ИИ](https://cx-artlab.github.io/BoopFace/agent.html?lang=ru)
+[Открыть интерактивную демонстрацию](https://cx-artlab.github.io/BoopFace/?lang=ru) · [Открыть галерею скинов](https://cx-artlab.github.io/BoopFace/skins.html?lang=ru) · [Демо «Подключение ИИ»](https://cx-artlab.github.io/BoopFace/agent.html?lang=ru)
 
 [Открыть симулятор устройств](https://cx-artlab.github.io/BoopFace/hardware/?lang=ru)
 
@@ -274,7 +274,7 @@ connectAgent(avatar, {
 });
 ```
 
-Все форматы можно попробовать в [демо событий ИИ](https://cx-artlab.github.io/BoopFace/agent.html?lang=ru).
+Все форматы можно попробовать в [демо «Подключение ИИ»](https://cx-artlab.github.io/BoopFace/agent.html?lang=ru).
 
 ## React и Vue
 

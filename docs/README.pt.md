@@ -34,7 +34,7 @@ As mesmas expressões nas telas ESP32, STM32 e Raspberry Pi Pico, ou em outros p
 
 ## Demo ao vivo
 
-[Abrir a demo interativa](https://cx-artlab.github.io/BoopFace/?lang=pt) · [Visite a galeria de skins](https://cx-artlab.github.io/BoopFace/skins.html?lang=pt) · [Demo de eventos de IA](https://cx-artlab.github.io/BoopFace/agent.html?lang=pt)
+[Abrir a demo interativa](https://cx-artlab.github.io/BoopFace/?lang=pt) · [Visite a galeria de skins](https://cx-artlab.github.io/BoopFace/skins.html?lang=pt) · [Demo Conectar IA](https://cx-artlab.github.io/BoopFace/agent.html?lang=pt)
 
 [Abrir o simulador embarcado](https://cx-artlab.github.io/BoopFace/hardware/?lang=pt)
 
@@ -274,7 +274,7 @@ connectAgent(avatar, {
 });
 ```
 
-Experimente todos os formatos na [demo de eventos de IA](https://cx-artlab.github.io/BoopFace/agent.html?lang=pt).
+Experimente todos os formatos na [demo Conectar IA](https://cx-artlab.github.io/BoopFace/agent.html?lang=pt).
 
 ## React e Vue
 

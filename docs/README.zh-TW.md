@@ -36,7 +36,7 @@ BoopFace 是一個輕量、富表現力的機器人頭像組件，適用於 AI �
 
 ## 在線 Demo
 
-[打開交互 Demo](https://cx-artlab.github.io/BoopFace/?lang=zh-TW) · [逛逛皮膚美術館](https://cx-artlab.github.io/BoopFace/skins.html?lang=zh-TW) · [AI 事件示範](https://cx-artlab.github.io/BoopFace/agent.html?lang=zh-TW)\
+[打開交互 Demo](https://cx-artlab.github.io/BoopFace/?lang=zh-TW) · [逛逛皮膚美術館](https://cx-artlab.github.io/BoopFace/skins.html?lang=zh-TW) · [AI 接入示範](https://cx-artlab.github.io/BoopFace/agent.html?lang=zh-TW)\
 [打開嵌入式設備模擬器](https://cx-artlab.github.io/BoopFace/hardware/?lang=zh-TW)（可預覽 32 種常用嵌入式設備屏幕）
 
 ## 特點
@@ -276,7 +276,7 @@ connectAgent(avatar, {
 });
 ```
 
-在 [AI 事件示範](https://cx-artlab.github.io/BoopFace/agent.html?lang=zh-TW) 裡可以試所有格式。
+在 [AI 接入示範](https://cx-artlab.github.io/BoopFace/agent.html?lang=zh-TW) 裡可以試所有格式。
 
 ## React 和 Vue
 

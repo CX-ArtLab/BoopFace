@@ -4,12 +4,13 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="google" content="notranslate" />
-<title>BoopFace — AI Events</title>
+<title>Connect AI · BoopFace</title>
 <link rel="modulepreload" href="../boopface.js">
+<link rel="stylesheet" href="./demo-shell.css">
 <style>
   *{box-sizing:border-box}
   html,body{margin:0;min-height:100%;font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;color:#15171a;background:#f7f7f5}
-  .canvas{position:relative;width:100%;min-height:100vh;padding:86px 28px 80px;background-color:#f8f8f6;background-image:radial-gradient(#d7d9dc 1px,transparent 1px);background-size:24px 24px}
+  .canvas{position:relative;width:100%;min-height:100vh;padding:96px 28px 80px;background-color:#f8f8f6;background-image:radial-gradient(#d7d9dc 1px,transparent 1px);background-size:24px 24px}
   .title{position:absolute;left:28px;top:22px;font-size:13px;color:#8a8f98;letter-spacing:.04em}
   .title span+span::before{content:' / '}
   .build-badge{position:absolute;right:28px;top:20px;padding:3px 7px;border:1px solid #e0e1e3;border-radius:999px;background:rgba(255,255,255,.82);font-size:10px;color:#777c83}
@@ -66,15 +67,16 @@
     .log{position:static;height:420px}
   }
   @media(max-width:600px){
-    .canvas{padding:70px 12px 40px}
-    .title{left:18px;top:16px}.build-badge{right:18px;top:14px}.lang{right:96px;top:10px}
+    .canvas{padding:124px 12px 40px}
+    .title{left:18px;top:16px}.title span:last-child{display:none}.build-badge{right:18px;top:14px}.lang{right:96px;top:10px}
     .row{grid-template-columns:1fr;gap:6px}
   }
 </style>
 </head>
 <body>
 <div class="canvas">
-  <div class="title"><span>BoopFace</span><span data-i18n="title">AI 事件</span><span>connectAgent</span></div>
+  <div class="title"><span>BoopFace</span><span data-i18n="title">AI 接入</span><span>connectAgent</span></div>
+  <nav class="demo-nav" aria-label="页面导航"><a id="navDemo" href="./index.html">演示</a><a id="navSkins" class="demo-nav-skins" href="./skins.html">皮肤</a><a id="navAgent" href="./agent.html" aria-current="page">AI 接入</a></nav>
   <div class="lang" role="group" aria-label="Language">
     <button type="button" data-lang="zh">中文</button>
     <button type="button" data-lang="en">EN</button>

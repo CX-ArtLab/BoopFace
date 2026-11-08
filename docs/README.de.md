@@ -34,7 +34,7 @@ Dieselben Augenausdrücke auf ESP32-, STM32- und Raspberry-Pi-Pico-Bildschirmen 
 
 ## Live-Demo
 
-[Interaktive Demo öffnen](https://cx-artlab.github.io/BoopFace/?lang=de) · [Zur Skin-Galerie](https://cx-artlab.github.io/BoopFace/skins.html?lang=de) · [KI-Ereignis-Demo](https://cx-artlab.github.io/BoopFace/agent.html?lang=de)
+[Interaktive Demo öffnen](https://cx-artlab.github.io/BoopFace/?lang=de) · [Zur Skin-Galerie](https://cx-artlab.github.io/BoopFace/skins.html?lang=de) · [Demo „KI anbinden“](https://cx-artlab.github.io/BoopFace/agent.html?lang=de)
 
 [Embedded-Simulator öffnen](https://cx-artlab.github.io/BoopFace/hardware/?lang=de)
 
@@ -274,7 +274,7 @@ connectAgent(avatar, {
 });
 ```
 
-Alle Formate lassen sich in der [KI-Ereignis-Demo](https://cx-artlab.github.io/BoopFace/agent.html?lang=de) ausprobieren.
+Alle Formate lassen sich in der [Demo „KI anbinden“](https://cx-artlab.github.io/BoopFace/agent.html?lang=de) ausprobieren.
 
 ## React und Vue
 

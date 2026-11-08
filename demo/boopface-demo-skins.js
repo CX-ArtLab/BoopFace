@@ -4,11 +4,14 @@ const face = document.getElementById('face');
 const navigation = document.createElement('nav');
 navigation.className = 'demo-nav';
 navigation.setAttribute('aria-label', '页面导航');
-navigation.innerHTML = '<a href="./index.html" aria-current="page">演示</a><a class="demo-nav-skins" href="./skins.html" data-skin-link>皮肤</a>';
+navigation.innerHTML = '<a href="./index.html" aria-current="page">演示</a><a class="demo-nav-skins" href="./skins.html" data-skin-link>皮肤</a><a href="./agent.html" data-agent-link>AI 接入</a>';
 document.getElementById('canvas').append(navigation);
 const skinsTab = navigation.querySelector('[data-skin-link]');
 skinsTab.classList.add('is-new');
 skinsTab.dataset.newKey = 'nav-skins';
+const agentTab = navigation.querySelector('[data-agent-link]');
+agentTab.classList.add('is-new');
+agentTab.dataset.newKey = 'nav-agent';
 // The way into the skins: its own button under the controls, apart from the
 // panel toggles.
 const skinButton = document.createElement('a');
@@ -24,6 +27,10 @@ function updateLinks() {
   const links = navigation.querySelectorAll('a');
   links[0].textContent = t('demo');
   links[1].textContent = t('skins');
+  links[2].textContent = t('agent');
+  const agentUrl = new URL('./agent.html', location.href);
+  agentUrl.searchParams.set('lang', document.documentElement.lang);
+  links[2].href = agentUrl.href;
   skinButton.querySelector('span').textContent = t('entry');
   skinButton.title = t('openSkins');
   for (const link of document.querySelectorAll('[data-skin-link]')) {

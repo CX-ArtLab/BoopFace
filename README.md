@@ -34,7 +34,7 @@ The same eye expressions on ESP32, STM32 and Raspberry Pi Pico screens, or in ot
 
 ## Live Demo
 
-[Open the interactive demo](https://cx-artlab.github.io/BoopFace/) · [Visit the Skin Gallery](https://cx-artlab.github.io/BoopFace/skins.html) · [AI events demo](https://cx-artlab.github.io/BoopFace/agent.html)
+[Open the interactive demo](https://cx-artlab.github.io/BoopFace/) · [Visit the Skin Gallery](https://cx-artlab.github.io/BoopFace/skins.html) · [Connect AI demo](https://cx-artlab.github.io/BoopFace/agent.html)
 
 [Open the embedded simulator](https://cx-artlab.github.io/BoopFace/hardware/?lang=en)
 
@@ -274,7 +274,7 @@ connectAgent(avatar, {
 });
 ```
 
-Try every format on the [AI events demo](https://cx-artlab.github.io/BoopFace/agent.html).
+Try every format on the [Connect AI demo](https://cx-artlab.github.io/BoopFace/agent.html).
 
 ## React and Vue
 
