@@ -209,7 +209,7 @@ avatar.setAntennaDrag(true);
 
 所有皮肤仍然是纯 SVG 绘制，没有使用图片、Canvas 或 WebGL。它非常轻：全部皮肤加起来，网络传输只有约 70 KB（不压缩约 290 KB），而且大部分代码只在网页用到皮肤时才会加载。作为对比，头像本身（精简版，不含皮肤）大约 45 KB。
 
-<img src="../assets/readme/skin-gallery.jpg" alt="皮肤美术馆：精选皮肤、分类筛选和搜索" width="100%">
+<img src="../assets/readme/boopface-skin-gallery.jpg" alt="BoopFace 皮肤美术馆：精选皮肤、分类筛选和搜索" width="100%">
 
 ```html
 <boop-face skin="301"></boop-face>
@@ -261,7 +261,7 @@ avatar.setSkin(null); // 回到纯色
 | ESP32、STM32、树莓派 Pico 等开发板 | 嵌入式设备版，有固件示例 |
 | 其他单片机或 C++ 程序 | 嵌入式设备版的 C++ 库，自己接屏幕驱动 |
 
-<img src="../assets/readme/hardware-preview.jpg" alt="嵌入式设备模拟器：圆形 TFT 模组显示眼睛，旁边是布局、颜色和导出设置" width="100%">
+<img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded 嵌入式设备模拟器：圆形 TFT 模组显示眼睛，旁边是布局、颜色和导出设置" width="100%">
 
 **没有板子也能先预览效果。** [在线模拟器](https://cx-artlab.github.io/BoopFace/hardware/?lang=zh-CN)在浏览器里就能运行同一套 C++ 引擎，模拟 32 种屏幕，你可以大致看到它在真实模组上的样子，选购屏幕时也能拿来参考。
 

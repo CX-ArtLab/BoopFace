@@ -27,7 +27,7 @@ BoopFace — лёгкий выразительный компонент ават
 ## Новое: [BoopFace Embedded](#boopface-embedded)
 
 <p align="center">
-  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="Те же выражения глаз на экранах ESP32, STM32 и Raspberry Pi Pico или в других программах C++. Примеры прошивок для 28 конфигураций и симулятор с экспортом настроек."></a>
+  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="BoopFace Embedded: те же выражения глаз на экранах ESP32, STM32 и Raspberry Pi Pico или в других программах C++. Примеры прошивок для 28 конфигураций и симулятор с экспортом настроек."></a>
 </p>
 
 Те же выражения глаз на экранах ESP32, STM32 и Raspberry Pi Pico или в других программах C++. Примеры прошивок для 28 конфигураций и симулятор с экспортом настроек.
@@ -207,7 +207,7 @@ avatar.setAntennaDrag(true);
 
 Все скины по-прежнему чистый SVG: без изображений, canvas и WebGL. Все скины вместе занимают около 70 КБ при передаче по сети (около 290 КБ без сжатия), и бо́льшая часть загружается, только когда странице нужен скин. Для сравнения: сам аватар (облегчённая сборка lite, без скинов) весит около 45 КБ.
 
-<img src="../assets/readme/skin-gallery.jpg" alt="Галерея скинов: подборка, фильтры и поиск" width="100%">
+<img src="../assets/readme/boopface-skin-gallery.jpg" alt="Галерея скинов BoopFace: подборка, фильтры и поиск" width="100%">
 
 ```html
 <boop-face skin="301"></boop-face>
@@ -260,7 +260,7 @@ avatar.setSkin(null); // вернуться к сплошному цвету
 | Другие микроконтроллеры или программы C++ | Библиотека C++; подключите свой драйвер экрана |
 
 
-<img src="../assets/readme/hardware-preview.jpg" alt="Симулятор: выражения на круглом TFT, расположение, цвета и экспорт" width="100%">
+<img src="../assets/readme/boopface-embedded-simulator.jpg" alt="Симулятор BoopFace Embedded: выражения на круглом TFT, расположение, цвета и экспорт" width="100%">
 
 **Попробуйте без платы.** [Симулятор](https://cx-artlab.github.io/BoopFace/hardware/?lang=ru) запускает тот же движок C++ в браузере на 32 виртуальных экранах. Он помогает оценить результат и сравнить модули.
 

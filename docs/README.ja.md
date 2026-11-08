@@ -27,7 +27,7 @@ SVG と素の JavaScript で作られたネイティブ Web Component で、実�
 ## 新対応：[BoopFace Embedded](#boopface-embedded)
 
 <p align="center">
-  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="ESP32、STM32、Raspberry Pi Pico の画面や、その他の C++ プログラムで同じ目の表情を使えます。28種類の構成に対応するサンプルファームウェアと、設定を書き出せるシミュレーターを用意しました。"></a>
+  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="BoopFace Embedded：ESP32、STM32、Raspberry Pi Pico の画面や、その他の C++ プログラムで同じ目の表情を使えます。28種類の構成に対応するサンプルファームウェアと、設定を書き出せるシミュレーターを用意しました。"></a>
 </p>
 
 ESP32、STM32、Raspberry Pi Pico の画面や、その他の C++ プログラムで同じ目の表情を使えます。28種類の構成に対応するサンプルファームウェアと、設定を書き出せるシミュレーターを用意しました。
@@ -207,7 +207,7 @@ avatar.setAntennaDrag(true);
 
 スキンもすべて純粋な SVG で描かれており、画像・Canvas・WebGL は使っていません。全スキン合わせても通信量は約 70 KB（非圧縮で約 290 KB）で、その大部分はページがスキンを使うときにだけ読み込まれます。比較として、アバター本体（スキンを含まない lite 版）は約 45 KB です。
 
-<img src="../assets/readme/skin-gallery.jpg" alt="スキンギャラリー：おすすめ、絞り込み、検索" width="100%">
+<img src="../assets/readme/boopface-skin-gallery.jpg" alt="BoopFace スキンギャラリー：おすすめ、絞り込み、検索" width="100%">
 
 ```html
 <boop-face skin="301"></boop-face>
@@ -260,7 +260,7 @@ Web版の目の表情を、ロボットや開発ボードの画面でも使え�
 | その他のマイコン・C++プログラム | C++ライブラリ。画面ドライバーは自分で接続 |
 
 
-<img src="../assets/readme/hardware-preview.jpg" alt="シミュレーター：円形TFTの目の表情、配置、色、設定の書き出し" width="100%">
+<img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded シミュレーター：円形TFTの目の表情、配置、色、設定の書き出し" width="100%">
 
 **ボードなしでも試せます。** [シミュレーター](https://cx-artlab.github.io/BoopFace/hardware/?lang=ja)は同じC++エンジンをブラウザーで動かし、32種類の画面を再現します。表示の確認やモジュールの比較に使えます。
 

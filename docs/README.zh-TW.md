@@ -209,7 +209,7 @@ avatar.setAntennaDrag(true);
 
 所有皮膚仍然是純 SVG 繪製，沒有使用圖片、Canvas 或 WebGL。它非常輕：全部皮膚加起來，網絡傳輸只有約 70 KB（不壓縮約 290 KB），而且大部分代碼只在網頁用到皮膚時纔會加載。作爲對比，頭像本身（精簡版，不含皮膚）大約 45 KB。
 
-<img src="../assets/readme/skin-gallery.jpg" alt="皮膚美術館：精選皮膚、分類篩選和搜索" width="100%">
+<img src="../assets/readme/boopface-skin-gallery.jpg" alt="BoopFace 皮膚美術館：精選皮膚、分類篩選和搜索" width="100%">
 
 ```html
 <boop-face skin="301"></boop-face>
@@ -261,7 +261,7 @@ avatar.setSkin(null); // 回到純色
 | ESP32、STM32、樹莓派 Pico 等開發板 | 嵌入式設備版，有固件示例 |
 | 其他單片機或 C++ 程序 | 嵌入式設備版的 C++ 庫，自己接屏幕驅動 |
 
-<img src="../assets/readme/hardware-preview.jpg" alt="嵌入式設備模擬器：圓形 TFT 模組顯示眼睛，旁邊是佈局、顏色和導出設置" width="100%">
+<img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded 嵌入式設備模擬器：圓形 TFT 模組顯示眼睛，旁邊是佈局、顏色和導出設置" width="100%">
 
 **沒有板子也能先預覽效果。** [在線模擬器](https://cx-artlab.github.io/BoopFace/hardware/?lang=zh-TW)在瀏覽器裏就能運行同一套 C++ 引擎，模擬 32 種屏幕，你可以大致看到它在真實模組上的樣子，選購屏幕時也能拿來參考。
 
