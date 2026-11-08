@@ -326,7 +326,8 @@ async function startTurn() {
   stopTurn();
   const begin = context.currentTime + 0.08;
   const readyAt = begin + MERGE;
-  const userStart = readyAt + clip.cue.duration + 0.1;
+  // After the cue, a person needs about half a second before they start talking.
+  const userStart = readyAt + clip.cue.duration + 0.55;
   const userEnd = userStart + clip.user.duration;
   const thinkStart = userEnd + clip.cue.duration + 0.08;
   const speakStart = thinkStart + THINK;
