@@ -288,10 +288,6 @@ function relabel() {
   const nav = document.querySelectorAll('.demo-nav a');
   nav[0].textContent = t('demo');
   nav[1].textContent = t('skins');
-  nav[2].textContent = t('agent');
-  const agentUrl = new URL('./agent.html', location.href);
-  agentUrl.searchParams.set('lang', document.documentElement.lang);
-  nav[2].href = agentUrl.href;
   document.title = `${t('skins')} · BoopFace`;
   renderCards();
 }

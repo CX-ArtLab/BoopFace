@@ -71,7 +71,7 @@ function applyLanguage() {
   replyEl.dataset.empty = t('empty');
   // The navigation speaks every demo language; this page itself has Chinese and English.
   const navLang = skinLanguage(params.get('lang') || (lang === 'zh' ? 'zh-CN' : navigator.language));
-  for (const [id, key, page] of [['navDemo', 'demo', './index.html'], ['navSkins', 'skins', './skins.html'], ['navAgent', 'agent', './agent.html']]) {
+  for (const [id, key, page] of [['navDemo', 'demo', './index.html'], ['navSkins', 'skins', './skins.html']]) {
     const link = document.getElementById(id);
     link.textContent = navLabel(key, 0, navLang);
     const url = new URL(page, location.href);

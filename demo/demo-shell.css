@@ -8,6 +8,13 @@
 .demo-nav a:focus-visible{outline:2px solid #777d86;outline-offset:3px}
 .canvas>.demo-nav{position:absolute;top:18px;left:50%;transform:translateX(-50%);z-index:30}
 @media(max-width:800px){.canvas>.demo-nav{top:70px}.demo-nav{font-size:13px}.demo-nav a{padding:7px 18px}}
+.demo-page-links{justify-self:center;display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+/* Connect AI: the same pill as the skins button, plain, without the skin colors. */
+.demo-agent-page-link{position:relative;display:inline-flex;align-items:center;margin-top:4px;padding:11px 18px;border-radius:14px;background:rgba(255,255,255,.92);box-shadow:0 7px 30px rgba(0,0,0,.08);color:#2c3035;font:600 13px Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;text-decoration:none;white-space:nowrap;transition:transform .15s}
+.demo-agent-page-link:hover,.demo-agent-page-link:focus-visible{transform:translateY(-1px)}
+.demo-agent-page-link:focus-visible{outline:2px solid #777d86;outline-offset:3px}
+.demo-agent-page-link.is-new::after{content:'';position:absolute;top:6px;right:7px;width:7px;height:7px;border-radius:50%;background:#e5484d;box-shadow:0 0 0 2px rgba(255,255,255,.95);pointer-events:none}
+@media(prefers-reduced-motion:reduce){.demo-agent-page-link{transition:none}.demo-agent-page-link:hover{transform:none}}
 .demo-skin-page-link{justify-self:center;display:inline-flex;align-items:center;gap:9px;margin-top:4px;padding:11px 20px 11px 16px;border-radius:14px;background:rgba(255,255,255,.92);box-shadow:0 7px 30px rgba(0,0,0,.08);color:#2c3035;font:600 13px Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;text-decoration:none;white-space:nowrap;transition:transform .15s,color .25s}
 /* At rest a small sphere like skin 705's antenna marks the button; it turns
    plain white once the button glows. */

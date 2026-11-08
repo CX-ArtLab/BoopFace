@@ -113,7 +113,8 @@ for (const [name, viewport] of [['phone', { width: 390, height: 844 }], ['small 
 test('a red dot goes away for good once clicked, and a page dot once that page is seen', async ({ page }) => {
   await openDemo(page, '?lang=zh-CN');
   await expect(page.locator('html')).toHaveAttribute('data-demo-ready', 'true');
-  await expect(page.locator('.demo-nav a.is-new')).toHaveCount(2);
+  await expect(page.locator('.demo-nav a.is-new')).toHaveCount(1);
+  await expect(page.locator('.demo-agent-page-link.is-new')).toHaveCount(1);
   await page.locator('button[data-action="love"]').click();
   await expect(page.locator('button[data-action="love"]')).not.toHaveClass(/is-new/);
   await page.locator('#demoColorPanelToggle').click();
@@ -125,9 +126,10 @@ test('a red dot goes away for good once clicked, and a page dot once that page i
   await expect(page.locator('html')).not.toHaveClass(/skin-initializing/);
   await openDemo(page, '?lang=zh-CN');
   await expect(page.locator('.demo-nav a.demo-nav-skins.is-new')).toHaveCount(0);
-  await expect(page.locator('.demo-nav a[data-agent-link].is-new')).toHaveCount(1);
+  await expect(page.locator('.demo-agent-page-link.is-new')).toHaveCount(1);
   await page.goto('/demo/agent.html?lang=zh-CN');
-  await expect(page.locator('#navAgent')).toHaveText('AI 接入');
+  await expect(page.locator('#navDemo')).toHaveAttribute('aria-current', 'page');
   await openDemo(page, '?lang=zh-CN');
-  await expect(page.locator('.demo-nav a.is-new')).toHaveCount(0);
+  await expect(page.locator('.demo-agent-page-link')).toHaveText('AI 接入');
+  await expect(page.locator('.demo-agent-page-link.is-new')).toHaveCount(0);
 });
