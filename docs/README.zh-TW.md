@@ -56,7 +56,7 @@ BoopFace 是一個輕量、富表現力的機器人頭像組件，適用於 AI �
 - 188 款編號皮膚，分 17 個系列，光線跟隨鼠標
 - 不含皮膚的精簡版，適合對大小特別在意的頁面
 - `connectAgent()`：AI 資料流的事件直接驅動表情（AG-UI、OpenAI、Anthropic、Vercel AI SDK）
-- 語音對話：聆聽、思考、說話一組三個表情，跟著真實的音量動
+- 語音套件：聆聽、思考、說話一組三個表情，跟著真實的音量動
 - 內置 TypeScript 類型聲明
 - BoopFace Embedded 嵌入式設備版：同樣的表情跑在 28 種 ESP32、STM32 和樹莓派 Pico 開發板與屏幕組合上，在線模擬器裏調好後直接導出到固件
 
@@ -284,7 +284,7 @@ connectAgent(avatar, {
 
 在 [AI 接入示範](https://cx-artlab.github.io/BoopFace/agent.html?lang=zh-TW) 裡可以試所有格式。
 
-## 語音對話 · 0.8.1 新增
+## 語音套件 · 0.8.1 新增
 
 聆聽、思考、說話：語音助理每一輪都會走這三步。頭像為它們準備了一組三個表情，前後可以自然地銜接。
 

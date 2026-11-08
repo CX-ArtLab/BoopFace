@@ -55,7 +55,7 @@ Dieselben Augenausdrücke auf ESP32-, STM32- und Raspberry-Pi-Pico-Bildschirmen 
 - 188 nummerierte Skins in 17 Serien, mit Licht, das dem Zeiger folgt
 - Schlanke Version ohne Skins für besonders kleine Seiten
 - `connectAgent()`: Ereignisse eines KI-Streams steuern die Ausdrücke (AG-UI, OpenAI, Anthropic, Vercel AI SDK)
-- Sprachdialog: ein Set aus Zuhören, Nachdenken und Sprechen, das der echten Lautstärke folgt
+- Sprach-Kit: ein Set aus Zuhören, Nachdenken und Sprechen, das der echten Lautstärke folgt
 - TypeScript-Deklarationen enthalten
 
 ## Installation
@@ -282,7 +282,7 @@ connectAgent(avatar, {
 
 Alle Formate lassen sich in der [Demo „KI anbinden“](https://cx-artlab.github.io/BoopFace/agent.html?lang=de) ausprobieren.
 
-## Sprachdialog · Neu in 0.8.1
+## Sprach-Kit · Neu in 0.8.1
 
 Zuhören, nachdenken, sprechen: Diese drei Schritte durchläuft ein Sprachassistent in jeder Runde. Der Avatar hat dafür ein Set aus drei Ausdrücken, die ineinander übergehen.
 

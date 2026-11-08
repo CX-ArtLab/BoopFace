@@ -55,7 +55,7 @@ Las mismas expresiones en pantallas ESP32, STM32 y Raspberry Pi Pico, o en otros
 - 188 skins numerados en 17 series, con luz que sigue al puntero
 - Versión ligera sin skins para las páginas más pequeñas
 - `connectAgent()`: los eventos de un flujo de IA controlan las expresiones (AG-UI, OpenAI, Anthropic, Vercel AI SDK)
-- Conversación por voz: un conjunto de expresiones para escuchar, pensar y hablar que siguen el volumen real
+- Kit de voz: un conjunto de expresiones para escuchar, pensar y hablar que siguen el volumen real
 - Declaraciones TypeScript incluidas
 
 ## Instalación
@@ -282,7 +282,7 @@ connectAgent(avatar, {
 
 Prueba todos los formatos en la [demo Conectar IA](https://cx-artlab.github.io/BoopFace/agent.html?lang=es).
 
-## Conversación por voz · Novedad en 0.8.1
+## Kit de voz · Novedad en 0.8.1
 
 Escuchar, pensar, hablar: un asistente de voz pasa por estos tres pasos en cada turno. El avatar tiene para ellos un conjunto de tres expresiones que enlazan entre sí.
 

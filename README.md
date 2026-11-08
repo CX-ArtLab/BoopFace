@@ -55,7 +55,7 @@ The same eye expressions on ESP32, STM32 and Raspberry Pi Pico screens, or in ot
 - 188 numbered skins in 17 series, with light that follows the pointer
 - A lite build without skins for the smallest pages
 - `connectAgent()`: AI stream events drive the expressions (AG-UI, OpenAI, Anthropic, Vercel AI SDK)
-- Voice conversation: a set of listening, thinking and speaking expressions that follow the real loudness
+- Voice Kit: a set of listening, thinking and speaking expressions that follow the real loudness
 - TypeScript declarations included
 
 ## Install
@@ -282,7 +282,7 @@ connectAgent(avatar, {
 
 Try every format on the [Connect AI demo](https://cx-artlab.github.io/BoopFace/agent.html).
 
-## Voice conversation · New in 0.8.1
+## Voice Kit · New in 0.8.1
 
 Listening, thinking, speaking: a voice assistant goes through these three steps on every turn. The avatar has a set of three expressions for them, designed to flow into each other.
 

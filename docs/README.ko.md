@@ -55,7 +55,7 @@ ESP32, STM32, Raspberry Pi Pico 화면과 다른 C++ 프로그램에서 같은 �
 - 17개 시리즈, 188가지 번호 스킨. 빛이 포인터를 따라갑니다
 - 스킨을 뺀 경량판 제공
 - `connectAgent()`: AI 스트림 이벤트로 표정을 자동 전환 (AG-UI, OpenAI, Anthropic, Vercel AI SDK)
-- 음성 대화: 실제 음량을 따라 움직이는 듣기·생각하기·말하기 표정 세트
+- 음성 키트: 실제 음량을 따라 움직이는 듣기·생각하기·말하기 표정 세트
 - TypeScript 선언 포함
 
 ## 설치
@@ -282,7 +282,7 @@ connectAgent(avatar, {
 
 [AI 연결 데모](https://cx-artlab.github.io/BoopFace/agent.html?lang=ko)에서 모든 형식을 시험해 볼 수 있습니다.
 
-## 음성 대화 · 0.8.1 신규
+## 음성 키트 · 0.8.1 신규
 
 듣기, 생각하기, 말하기. 음성 비서는 매 턴마다 이 세 단계를 거칩니다. 아바타에는 서로 자연스럽게 이어지는 세 가지 표정 세트가 있습니다.
 
