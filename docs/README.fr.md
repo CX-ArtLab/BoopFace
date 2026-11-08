@@ -55,7 +55,7 @@ Les mêmes expressions sur les écrans ESP32, STM32 et Raspberry Pi Pico, ou dan
 - 188 skins numérotés en 17 séries, avec une lumière qui suit le pointeur
 - Version légère sans skins pour les pages les plus sobres
 - `connectAgent()` : les événements d’un flux d’IA pilotent les expressions (AG-UI, OpenAI, Anthropic, Vercel AI SDK)
-- Kit vocal : un ensemble d’expressions d’écoute, de réflexion et de parole qui suivent le volume réel
+- Kit d’expressions vocales : un ensemble d’expressions d’écoute, de réflexion et de parole qui suivent le volume réel
 - Déclarations TypeScript incluses
 
 ## Installation
@@ -282,22 +282,22 @@ connectAgent(avatar, {
 
 Essayez tous les formats dans la [démo « Connecter une IA »](https://cx-artlab.github.io/BoopFace/agent.html?lang=fr).
 
-## Kit vocal · Nouveau dans la 0.8.1
+## Kit d’expressions vocales · Nouveau dans la 0.8.1
 
-Écouter, réfléchir, parler : un assistant vocal passe par ces trois étapes à chaque tour. L’avatar a pour elles un ensemble de trois expressions qui s’enchaînent.
+Écouter, réfléchir, parler : tout assistant vocal passe par ces trois étapes à chaque tour. Le kit d’expressions vocales donne à l’avatar un ensemble de trois expressions qui s’enchaînent. Il convient à tout produit auquel on parle, quel que soit le service vocal : appelez vous-même les trois méthodes, ou laissez `connectAgent()` suivre votre API vocale.
 
 ```js
-avatar.startListening();                    // l’utilisateur parle
+avatar.startListening();                   // l’utilisateur parle
 avatar.startWaiting({ variant: 'bloom' }); // l’IA réfléchit
-avatar.startSpeaking();                     // l’IA répond
-avatar.setVoiceLevel(0.6);                  // facultatif : volume de 0 à 1
+avatar.startSpeaking();                    // l’IA répond
+avatar.setVoiceLevel(0.6);                 // facultatif : volume de 0 à 1
 ```
 
 En écoute, les deux yeux fusionnent en un seul œil rond qui gonfle avec la voix de l’utilisateur. En réflexion, il devient une fleur de deux ovales croisés qui respire et tourne lentement. En parlant, il se sépare de nouveau en deux yeux, qui se posent puis s’étirent avec la réponse : les sons graves dans l’œil gauche, les aigus dans le droit. `setVoiceLevel(level)` ou `setVoiceLevel([low, high])` fournit le volume ; sans lui, la parole garde son propre rythme et l’écoute reste immobile. Chaque étape tourne en boucle jusqu’à la suivante, et au changement les yeux se transforment au lieu de sauter.
 
 Réfléchir est une étape d’attente. Éclosion (`variant: 'bloom'`) naît directement de l’œil d’écoute ; tout autre style d’attente convient aussi.
 
-`connectAgent()` s’occupe de tout. Il comprend les événements OpenAI Realtime et le `mode` signalé par les SDK vocaux comme ElevenLabs, attend avec le style Éclosion pendant qu’une conversation vocale réfléchit (ou avec le style de `actions.thinking`) et revient à l’écoute après chaque réponse :
+`connectAgent()` peut aussi les enchaîner tout seul. Il comprend déjà les événements des API vocales courantes, comme OpenAI Realtime et le `mode` signalé par des SDK comme ElevenLabs. Pendant la réflexion il attend avec le style Éclosion (ou celui de `actions.thinking`) et revient à l’écoute après chaque réponse. Par exemple, avec OpenAI Realtime :
 
 ```js
 const agent = connectAgent(avatar);

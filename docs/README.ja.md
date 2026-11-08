@@ -55,7 +55,7 @@ ESP32、STM32、Raspberry Pi Pico の画面や、その他の C++ プログラ�
 - 17 シリーズ・188 種類の番号付きスキン。光はポインターを追います
 - スキンを含まない軽量版も用意
 - `connectAgent()`：AI ストリームのイベントで表情を自動切り替え（AG-UI、OpenAI、Anthropic、Vercel AI SDK）
-- 音声キット：実際の音量に合わせて動く「聞く・考える・話す」の表情セット
+- 音声対話表情キット：実際の音量に合わせて動く「聞く・考える・話す」の表情セット
 - TypeScript 型定義を同梱
 
 ## インストール
@@ -282,22 +282,22 @@ connectAgent(avatar, {
 
 [AI 接続デモ](https://cx-artlab.github.io/BoopFace/agent.html?lang=ja) ですべての形式を試せます。
 
-## 音声キット · 0.8.1 の新機能
+## 音声対話表情キット · 0.8.1 の新機能
 
-聞く、考える、話す。音声アシスタントは毎回この 3 ステップを踏みます。アバターには、なめらかにつながる 3 つの表情のセットがあります。
+聞く、考える、話す。どの音声アシスタントも毎回この 3 ステップを踏みます。音声対話表情キットは、なめらかにつながる 3 つの表情をアバターに用意します。話しかけて使う製品ならどの音声サービスでも使えます。3 つのメソッドを自分で呼ぶことも、`connectAgent()` に音声 API を追わせることもできます。
 
 ```js
-avatar.startListening();                    // ユーザーが話している
+avatar.startListening();                   // ユーザーが話している
 avatar.startWaiting({ variant: 'bloom' }); // AI が考えている
-avatar.startSpeaking();                     // AI が答えている
-avatar.setVoiceLevel(0.6);                  // 任意：音量 0〜1
+avatar.startSpeaking();                    // AI が答えている
+avatar.setVoiceLevel(0.6);                 // 任意：音量 0〜1
 ```
 
 聞くときは両目がひとつの丸い目に合わさり、ユーザーの声に合わせてふくらみます。考えるときは交差した 2 つの楕円になり、ゆっくり回る花のように呼吸します。話すときは 2 つの目に戻って一度静止し、返答に合わせて伸び縮みします。低い音は左目、高い音は右目を動かします。音量は `setVoiceLevel(level)` または `setVoiceLevel([low, high])` で渡します。渡さない場合、話す表情は独自のリズムで動き、聞く表情はじっとしています。各ステップは次のステップまでループし、切り替えでは目が飛ばずに変形します。
 
 「考える」は待機の一種です。ブルーム（`variant: 'bloom'`）は「聞く」の丸い目からそのまま変形し、ほかの待機スタイルも使えます。
 
-`connectAgent()` を使えばすべて自動です。OpenAI Realtime のイベントや、ElevenLabs などの音声 SDK が返す `mode` を理解し、音声会話で考えている間はブルームで待機し（`actions.thinking` でほかのスタイルにも変更可能）、返答のたびに「聞く」へ戻ります。
+`connectAgent()` は表情を自動で切り替えることもできます。OpenAI Realtime や、ElevenLabs などの SDK が返す `mode` といった、よく使われる音声 API のイベントをすでに理解しています。考えている間はブルームで待機し（`actions.thinking` でほかのスタイルにも変更可能）、返答のたびに「聞く」へ戻ります。OpenAI Realtime の例：
 
 ```js
 const agent = connectAgent(avatar);

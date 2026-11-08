@@ -56,7 +56,7 @@ BoopFace 是一个轻量、富表现力的机器人头像组件，适用于 AI �
 - 188 款编号皮肤，分 17 个系列，光线跟随鼠标
 - 不含皮肤的精简版，适合对大小特别在意的页面
 - `connectAgent()`：AI 数据流的事件直接驱动表情（AG-UI、OpenAI、Anthropic、Vercel AI SDK）
-- 语音套件：聆听、思考、说话一组三个表情，跟着真实的音量动
+- 语音交互表情套件：聆听、思考、说话一组三个表情，跟着真实的音量动
 - 内置 TypeScript 类型声明
 - BoopFace Embedded 嵌入式设备版：同样的表情跑在 28 种 ESP32、STM32 和树莓派 Pico 开发板与屏幕组合上，在线模拟器里调好后直接导出到固件
 
@@ -284,22 +284,22 @@ connectAgent(avatar, {
 
 在 [AI 接入演示](https://cx-artlab.github.io/BoopFace/agent.html?lang=zh-CN) 里可以试所有格式。
 
-## 语音套件 · 0.8.1 新增
+## 语音交互表情套件 · 0.8.1 新增
 
-聆听、思考、说话：语音助手每一轮都会走这三步。头像为它们准备了一组三个表情，前后可以自然地衔接。
+聆听、思考、说话：所有语音助手每一轮都会走这三步。语音交互表情套件为头像准备了对应的一组三个表情，前后自然衔接。它适合任何能用声音交流的产品，不限语音服务：可以自己调用这三个方法，也可以让 `connectAgent()` 跟着你的语音接口自动切换。
 
 ```js
-avatar.startListening();                    // 用户在说话
+avatar.startListening();                   // 用户在说话
 avatar.startWaiting({ variant: 'bloom' }); // AI 在思考
-avatar.startSpeaking();                     // AI 在回答
-avatar.setVoiceLevel(0.6);                  // 可选：音量，0 到 1
+avatar.startSpeaking();                    // AI 在回答
+avatar.setVoiceLevel(0.6);                 // 可选：音量，0 到 1
 ```
 
 聆听时两只眼睛合成一个圆，随用户的声音一鼓一鼓；思考时变成两个交叉的椭圆，像一朵慢慢转动的花；说话时分回两只眼睛，先停稳，再跟着回答伸缩：低音驱动左眼，高音驱动右眼。用 `setVoiceLevel(level)` 或 `setVoiceLevel([low, high])` 传入音量；不传时，说话会按自己的节奏动，聆听则保持不动。每一步都会循环到下一步开始，步骤之间眼睛会平滑变形，不会跳变。
 
 思考这一步其实是一种等待。绽放（`variant: 'bloom'`）可以直接从聆听的圆变形出来；换成其他任何一种等待样式也可以。
 
-`connectAgent()` 可以把这些全部自动接上。它认得 OpenAI Realtime 的事件，也认得 ElevenLabs 这类语音 SDK 报告的 `mode`；语音对话思考时默认用「绽放」样式等待（也可以用 `actions.thinking` 换成别的样式），每次回答完都会回到聆听：
+`connectAgent()` 也能自动切换这三个表情。它已经认得常见语音接口的事件，例如 OpenAI Realtime，以及 ElevenLabs 这类 SDK 报告的 `mode`。思考时默认用「绽放」样式等待（也可以用 `actions.thinking` 换成别的样式），每次回答完都会回到聆听。以 OpenAI Realtime 为例：
 
 ```js
 const agent = connectAgent(avatar);

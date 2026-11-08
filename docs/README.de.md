@@ -55,7 +55,7 @@ Dieselben Augenausdrücke auf ESP32-, STM32- und Raspberry-Pi-Pico-Bildschirmen 
 - 188 nummerierte Skins in 17 Serien, mit Licht, das dem Zeiger folgt
 - Schlanke Version ohne Skins für besonders kleine Seiten
 - `connectAgent()`: Ereignisse eines KI-Streams steuern die Ausdrücke (AG-UI, OpenAI, Anthropic, Vercel AI SDK)
-- Sprach-Kit: ein Set aus Zuhören, Nachdenken und Sprechen, das der echten Lautstärke folgt
+- Sprach-Interaktions-Kit: ein Set aus Zuhören, Nachdenken und Sprechen, das der echten Lautstärke folgt
 - TypeScript-Deklarationen enthalten
 
 ## Installation
@@ -282,22 +282,22 @@ connectAgent(avatar, {
 
 Alle Formate lassen sich in der [Demo „KI anbinden“](https://cx-artlab.github.io/BoopFace/agent.html?lang=de) ausprobieren.
 
-## Sprach-Kit · Neu in 0.8.1
+## Sprach-Interaktions-Kit · Neu in 0.8.1
 
-Zuhören, nachdenken, sprechen: Diese drei Schritte durchläuft ein Sprachassistent in jeder Runde. Der Avatar hat dafür ein Set aus drei Ausdrücken, die ineinander übergehen.
+Zuhören, nachdenken, sprechen: Diese drei Schritte durchläuft jeder Sprachassistent in jeder Runde. Das Sprach-Interaktions-Kit gibt dem Avatar dafür ein Set aus drei Ausdrücken, die ineinander übergehen. Es passt zu jedem Produkt, mit dem man spricht, unabhängig vom Sprachdienst: Rufen Sie die drei Methoden selbst auf oder lassen Sie `connectAgent()` Ihrer Sprach-API folgen.
 
 ```js
-avatar.startListening();                    // der Nutzer spricht
+avatar.startListening();                   // der Nutzer spricht
 avatar.startWaiting({ variant: 'bloom' }); // die KI denkt nach
-avatar.startSpeaking();                     // die KI antwortet
-avatar.setVoiceLevel(0.6);                  // optional: Lautstärke von 0 bis 1
+avatar.startSpeaking();                    // die KI antwortet
+avatar.setVoiceLevel(0.6);                 // optional: Lautstärke von 0 bis 1
 ```
 
 Beim Zuhören verschmelzen beide Augen zu einem runden Auge, das mit der Stimme des Nutzers anschwillt. Beim Nachdenken wird daraus eine langsam drehende Blüte aus zwei gekreuzten Ovalen. Beim Sprechen teilt es sich wieder in zwei Augen, die kurz zur Ruhe kommen und sich dann mit der Antwort strecken: tiefe Töne im linken, hohe im rechten Auge. `setVoiceLevel(level)` oder `setVoiceLevel([low, high])` liefert die Lautstärke; ohne sie behält das Sprechen einen eigenen Rhythmus, und das Zuhören hält still. Jeder Schritt läuft in Schleife bis zum nächsten, und beim Wechsel verformen sich die Augen, statt zu springen.
 
 Nachdenken ist ein Warteschritt. Erblühen (`variant: 'bloom'`) geht direkt aus dem Zuhör-Auge hervor; jeder andere Wartestil funktioniert ebenso.
 
-`connectAgent()` übernimmt das alles. Es versteht OpenAI-Realtime-Ereignisse und den `mode`, den Sprach-SDKs wie ElevenLabs melden, wartet beim Nachdenken im Sprachdialog mit Erblühen (oder mit dem Stil aus `actions.thinking`) und kehrt nach jeder Antwort zum Zuhören zurück:
+`connectAgent()` kann sie auch selbst umschalten. Es versteht bereits die Ereignisse gängiger Sprach-APIs, etwa OpenAI Realtime und den `mode`, den SDKs wie ElevenLabs melden. Beim Nachdenken wartet es mit Erblühen (oder mit dem Stil aus `actions.thinking`) und kehrt nach jeder Antwort zum Zuhören zurück. Beispiel mit OpenAI Realtime:
 
 ```js
 const agent = connectAgent(avatar);

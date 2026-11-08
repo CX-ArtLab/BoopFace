@@ -55,7 +55,7 @@ ESP32, STM32, Raspberry Pi Pico 화면과 다른 C++ 프로그램에서 같은 �
 - 17개 시리즈, 188가지 번호 스킨. 빛이 포인터를 따라갑니다
 - 스킨을 뺀 경량판 제공
 - `connectAgent()`: AI 스트림 이벤트로 표정을 자동 전환 (AG-UI, OpenAI, Anthropic, Vercel AI SDK)
-- 음성 키트: 실제 음량을 따라 움직이는 듣기·생각하기·말하기 표정 세트
+- 음성 인터랙션 표정 키트: 실제 음량을 따라 움직이는 듣기·생각하기·말하기 표정 세트
 - TypeScript 선언 포함
 
 ## 설치
@@ -282,22 +282,22 @@ connectAgent(avatar, {
 
 [AI 연결 데모](https://cx-artlab.github.io/BoopFace/agent.html?lang=ko)에서 모든 형식을 시험해 볼 수 있습니다.
 
-## 음성 키트 · 0.8.1 신규
+## 음성 인터랙션 표정 키트 · 0.8.1 신규
 
-듣기, 생각하기, 말하기. 음성 비서는 매 턴마다 이 세 단계를 거칩니다. 아바타에는 서로 자연스럽게 이어지는 세 가지 표정 세트가 있습니다.
+듣기, 생각하기, 말하기. 모든 음성 비서는 매 턴마다 이 세 단계를 거칩니다. 음성 인터랙션 표정 키트는 자연스럽게 이어지는 세 가지 표정을 아바타에 제공합니다. 음성 서비스와 상관없이 말로 대화하는 어떤 제품에도 맞습니다. 세 메서드를 직접 호출해도 되고, `connectAgent()`가 음성 API를 따라가게 해도 됩니다.
 
 ```js
-avatar.startListening();                    // 사용자가 말하는 중
+avatar.startListening();                   // 사용자가 말하는 중
 avatar.startWaiting({ variant: 'bloom' }); // AI가 생각하는 중
-avatar.startSpeaking();                     // AI가 답하는 중
-avatar.setVoiceLevel(0.6);                  // 선택: 음량 0~1
+avatar.startSpeaking();                    // AI가 답하는 중
+avatar.setVoiceLevel(0.6);                 // 선택: 음량 0~1
 ```
 
 듣기에서는 두 눈이 하나의 둥근 눈으로 합쳐져 사용자의 목소리에 따라 부풀어 오릅니다. 생각하기에서는 교차한 두 타원이 천천히 도는 꽃처럼 숨 쉽니다. 말하기에서는 두 눈으로 다시 나뉘어 잠시 멈춘 뒤, 답변에 맞춰 늘어났다 줄어듭니다. 낮은 소리는 왼쪽 눈, 높은 소리는 오른쪽 눈을 움직입니다. 음량은 `setVoiceLevel(level)` 또는 `setVoiceLevel([low, high])`로 넘깁니다. 넘기지 않으면 말하기는 자체 리듬으로 움직이고 듣기는 가만히 있습니다. 각 단계는 다음 단계가 시작될 때까지 반복되며, 단계가 바뀔 때 눈이 튀지 않고 부드럽게 변형됩니다.
 
 생각하기는 대기의 한 종류입니다. 피어나기(`variant: 'bloom'`)은 듣기의 둥근 눈에서 바로 변형되며, 다른 대기 스타일도 쓸 수 있습니다.
 
-`connectAgent()`가 이 모든 것을 자동으로 처리합니다. OpenAI Realtime 이벤트와 ElevenLabs 같은 음성 SDK가 알려 주는 `mode`를 이해하고, 음성 대화에서 생각하는 동안 피어나기 스타일로 대기하며(`actions.thinking`으로 다른 스타일 지정 가능), 답변이 끝날 때마다 듣기로 돌아갑니다.
+`connectAgent()`는 표정을 스스로 전환할 수도 있습니다. OpenAI Realtime이나 ElevenLabs 같은 SDK가 알려 주는 `mode` 등 흔히 쓰는 음성 API의 이벤트를 이미 이해합니다. 생각하는 동안 피어나기 스타일로 대기하고(`actions.thinking`으로 다른 스타일 지정 가능), 답변이 끝날 때마다 듣기로 돌아갑니다. OpenAI Realtime 예시:
 
 ```js
 const agent = connectAgent(avatar);

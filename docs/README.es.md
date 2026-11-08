@@ -55,7 +55,7 @@ Las mismas expresiones en pantallas ESP32, STM32 y Raspberry Pi Pico, o en otros
 - 188 skins numerados en 17 series, con luz que sigue al puntero
 - Versión ligera sin skins para las páginas más pequeñas
 - `connectAgent()`: los eventos de un flujo de IA controlan las expresiones (AG-UI, OpenAI, Anthropic, Vercel AI SDK)
-- Kit de voz: un conjunto de expresiones para escuchar, pensar y hablar que siguen el volumen real
+- Kit de expresiones de voz: un conjunto de expresiones para escuchar, pensar y hablar que siguen el volumen real
 - Declaraciones TypeScript incluidas
 
 ## Instalación
@@ -282,22 +282,22 @@ connectAgent(avatar, {
 
 Prueba todos los formatos en la [demo Conectar IA](https://cx-artlab.github.io/BoopFace/agent.html?lang=es).
 
-## Kit de voz · Novedad en 0.8.1
+## Kit de expresiones de voz · Novedad en 0.8.1
 
-Escuchar, pensar, hablar: un asistente de voz pasa por estos tres pasos en cada turno. El avatar tiene para ellos un conjunto de tres expresiones que enlazan entre sí.
+Escuchar, pensar, hablar: todo asistente de voz pasa por estos tres pasos en cada turno. El kit de expresiones de voz da al avatar un conjunto de tres expresiones que enlazan entre sí. Sirve para cualquier producto al que se le habla, con cualquier servicio de voz: llama tú mismo a los tres métodos o deja que `connectAgent()` siga a tu API de voz.
 
 ```js
-avatar.startListening();                    // el usuario habla
+avatar.startListening();                   // el usuario habla
 avatar.startWaiting({ variant: 'bloom' }); // la IA piensa
-avatar.startSpeaking();                     // la IA responde
-avatar.setVoiceLevel(0.6);                  // opcional: volumen de 0 a 1
+avatar.startSpeaking();                    // la IA responde
+avatar.setVoiceLevel(0.6);                 // opcional: volumen de 0 a 1
 ```
 
 Al escuchar, los dos ojos se funden en un solo ojo redondo que se hincha con la voz del usuario. Al pensar, se convierte en una flor de dos óvalos cruzados que respira y gira despacio. Al hablar, vuelve a separarse en dos ojos que se asientan y luego se estiran con la respuesta: los sonidos graves mueven el ojo izquierdo y los agudos el derecho. `setVoiceLevel(level)` o `setVoiceLevel([low, high])` aporta el volumen; sin él, hablar mantiene su propio ritmo y escuchar se queda quieto. Cada paso se repite hasta el siguiente, y al cambiar los ojos se transforman en lugar de saltar.
 
 Pensar es un paso de espera. Florecer (`variant: 'bloom'`) surge directamente del ojo de escuchar; cualquier otro estilo de espera también sirve.
 
-`connectAgent()` se encarga de todo. Entiende los eventos de OpenAI Realtime y el `mode` que informan SDK de voz como ElevenLabs, espera con el estilo Florecer mientras una conversación por voz piensa (o con el estilo de `actions.thinking`) y vuelve a escuchar después de cada respuesta:
+`connectAgent()` también puede cambiarlas por sí solo. Ya entiende los eventos de las API de voz más comunes, como OpenAI Realtime y el `mode` que informan SDK como ElevenLabs. Mientras piensa espera con el estilo Florecer (o con el de `actions.thinking`) y vuelve a escuchar después de cada respuesta. Por ejemplo, con OpenAI Realtime:
 
 ```js
 const agent = connectAgent(avatar);

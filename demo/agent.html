@@ -22,14 +22,17 @@
   button:focus-visible{outline:2px solid #aeb2b8;outline-offset:2px}
 
   .layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:22px;max-width:1060px;margin:0 auto;align-items:start}
-  .stage{display:grid;justify-items:center;gap:18px}
-  .avatar-home{width:118px;height:118px;display:grid;place-items:center;margin-top:6px}
+  /* The same stage card, status pill and caption as the main demo. */
+  .column{display:grid;gap:8px;width:100%}
+  .stage{position:relative;display:grid;place-items:center;width:100%;height:clamp(230px,34vh,300px);border:1px solid rgba(0,0,0,.055);border-radius:16px;background:#fff;box-shadow:0 7px 30px rgba(0,0,0,.08)}
+  .avatar-home{width:118px;height:118px;display:grid;place-items:center}
   boop-face{filter:drop-shadow(0 12px 24px rgba(0,0,0,.08))}
-  .state-pill{font-size:11px;color:#858990;background:#fff;border:1px solid #ececec;border-radius:999px;padding:6px 10px}
-  .reply{width:min(520px,100%);min-height:68px;padding:12px 14px;border-radius:18px;border-bottom-left-radius:7px;background:rgba(255,255,255,.88);box-shadow:0 7px 30px rgba(0,0,0,.08);backdrop-filter:blur(14px);font-size:13px;line-height:1.55;color:#565b62;white-space:pre-wrap;word-break:break-word}
+  .state-pill{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);font-size:11px;color:#858990;background:#fff;border:1px solid #ececec;border-radius:999px;padding:6px 10px;white-space:nowrap}
+  .reply{position:absolute;left:50%;top:12px;transform:translateX(-50%);width:max-content;max-width:calc(100% - 40px);padding:6px 12px;border-radius:12px;background:rgba(255,255,255,.88);box-shadow:0 4px 18px rgba(0,0,0,.06);backdrop-filter:blur(8px);color:#4b5057;font:500 12px/1.5 Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;text-align:center;white-space:pre-wrap;word-break:break-word}
+  .reply:empty{box-shadow:none;background:transparent}
   .reply:empty::before{content:attr(data-empty);color:#a6a9ae}
 
-  .panel{width:min(620px,100%);display:grid;gap:10px;padding:12px;border-radius:16px;background:rgba(255,255,255,.88);box-shadow:0 7px 30px rgba(0,0,0,.08);backdrop-filter:blur(14px)}
+  .panel{width:100%;display:grid;gap:10px;padding:12px;border-radius:16px;background:rgba(255,255,255,.88);box-shadow:0 7px 30px rgba(0,0,0,.08);backdrop-filter:blur(14px)}
   .row[hidden]{display:none}
   .row{display:grid;grid-template-columns:92px minmax(0,1fr);align-items:center;gap:10px}
   .row-label{font-size:11px;font-weight:600;color:#72777e}
@@ -90,10 +93,12 @@
   <div class="build-badge">Demo 0.8.1</div>
 
   <div class="layout">
-    <main class="stage">
-      <div class="avatar-home"><boop-face id="face" size="118"></boop-face></div>
-      <div class="state-pill" id="state" role="status">idle · 待机</div>
-      <div class="reply" id="reply" aria-live="polite"></div>
+    <main class="column">
+      <div class="stage">
+        <div class="reply" id="reply" aria-live="polite"></div>
+        <div class="avatar-home"><boop-face id="face" size="118"></boop-face></div>
+        <div class="state-pill" id="state" role="status">idle · 待机</div>
+      </div>
 
       <div class="panel">
         <div class="row">
@@ -103,7 +108,7 @@
             <button type="button" data-value="openai">OpenAI</button>
             <button type="button" data-value="anthropic">Anthropic</button>
             <button type="button" data-value="ai-sdk">Vercel AI SDK</button>
-            <button type="button" data-value="realtime" data-i18n="realtime">OpenAI 实时语音</button>
+            <button type="button" data-value="realtime" data-i18n="realtime">语音对话</button>
           </div>
         </div>
         <div class="row" data-text-only>
