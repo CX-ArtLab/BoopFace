@@ -27,7 +27,7 @@ SVG와 순수 JavaScript로 만든 네이티브 Web Component로, 런타임 의�
 ## 새 지원: [BoopFace Embedded](#boopface-embedded)
 
 <p align="center">
-  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="ESP32, STM32, Raspberry Pi Pico 화면과 다른 C++ 프로그램에서 같은 눈 표정을 사용합니다. 28가지 구성의 예제 펌웨어와 설정을 내보내는 시뮬레이터를 제공합니다."></a>
+  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="BoopFace Embedded: ESP32, STM32, Raspberry Pi Pico 화면과 다른 C++ 프로그램에서 같은 눈 표정을 사용합니다. 28가지 구성의 예제 펌웨어와 설정을 내보내는 시뮬레이터를 제공합니다."></a>
 </p>
 
 ESP32, STM32, Raspberry Pi Pico 화면과 다른 C++ 프로그램에서 같은 눈 표정을 사용합니다. 28가지 구성의 예제 펌웨어와 설정을 내보내는 시뮬레이터를 제공합니다.
@@ -207,7 +207,7 @@ avatar.setAntennaDrag(true);
 
 모든 스킨은 여전히 순수 SVG로 그려지며 이미지, Canvas, WebGL을 사용하지 않습니다. 전체 스킨을 합쳐도 네트워크 전송량은 약 70KB(압축 전 약 290KB)이며, 그 대부분은 페이지에서 스킨을 쓸 때만 불러옵니다. 참고로 아바타 본체(스킨이 없는 lite 빌드)는 약 45KB입니다.
 
-<img src="../assets/readme/skin-gallery.jpg" alt="스킨 갤러리: 추천 스킨, 분류, 검색" width="100%">
+<img src="../assets/readme/boopface-skin-gallery.jpg" alt="BoopFace 스킨 갤러리: 추천 스킨, 분류, 검색" width="100%">
 
 ```html
 <boop-face skin="301"></boop-face>
@@ -260,7 +260,7 @@ ES Modules, Custom Elements, SVG, Pointer Events, Web Animations API, `Intersect
 | 기타 마이크로컨트롤러 및 C++ 프로그램 | C++ 라이브러리, 화면 드라이버 직접 연결 |
 
 
-<img src="../assets/readme/hardware-preview.jpg" alt="시뮬레이터: 원형 TFT의 눈 표정과 배치, 색상, 설정 내보내기" width="100%">
+<img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded 시뮬레이터: 원형 TFT의 눈 표정과 배치, 색상, 설정 내보내기" width="100%">
 
 **보드 없이도 확인하세요.** [시뮬레이터](https://cx-artlab.github.io/BoopFace/hardware/?lang=ko)는 같은 C++ 엔진을 브라우저에서 실행하며 32가지 화면을 재현합니다. 표시 결과를 확인하고 모듈을 비교할 수 있습니다.
 

@@ -27,7 +27,7 @@ Gebaut mit SVG und reinem JavaScript, ist es eine native Web Component ohne Lauf
 ## Neu: [BoopFace Embedded](#boopface-embedded)
 
 <p align="center">
-  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="Dieselben Augenausdrücke auf ESP32-, STM32- und Raspberry-Pi-Pico-Bildschirmen oder in anderen C++-Programmen. Mit Firmware-Beispielen für 28 Konfigurationen und einem Simulator samt Einstellungsexport."></a>
+  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="BoopFace Embedded: dieselben Augenausdrücke auf ESP32-, STM32- und Raspberry-Pi-Pico-Bildschirmen oder in anderen C++-Programmen. Mit Firmware-Beispielen für 28 Konfigurationen und einem Simulator samt Einstellungsexport."></a>
 </p>
 
 Dieselben Augenausdrücke auf ESP32-, STM32- und Raspberry-Pi-Pico-Bildschirmen oder in anderen C++-Programmen. Mit Firmware-Beispielen für 28 Konfigurationen und einem Simulator samt Einstellungsexport.
@@ -207,7 +207,7 @@ Gedrückthalten in der Mitte startet die Stauchung. Nach mehr als 4 CSS-Pixeln B
 
 Alle Skins sind weiterhin reines SVG – ohne Bilder, Canvas oder WebGL. Alle Skins zusammen sind über das Netz nur etwa 70 KB groß (unkomprimiert etwa 290 KB), und das meiste davon lädt erst, wenn eine Seite einen Skin verwendet. Zum Vergleich: Der Avatar selbst (der Lite-Build, ohne Skins) ist etwa 45 KB groß.
 
-<img src="../assets/readme/skin-gallery.jpg" alt="Skin-Galerie: Empfehlungen, Filter und Suche" width="100%">
+<img src="../assets/readme/boopface-skin-gallery.jpg" alt="BoopFace Skin-Galerie: Empfehlungen, Filter und Suche" width="100%">
 
 ```html
 <boop-face skin="301"></boop-face>
@@ -260,7 +260,7 @@ Die Augenausdrücke der Webversion laufen jetzt auf Robotern und Entwicklungspla
 | Andere Mikrocontroller oder C++-Programme | C++-Bibliothek; eigenen Bildschirmtreiber einbinden |
 
 
-<img src="../assets/readme/hardware-preview.jpg" alt="Simulator: Augenausdrücke auf rundem TFT, Anordnung, Farben und Export" width="100%">
+<img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded Simulator: Augenausdrücke auf rundem TFT, Anordnung, Farben und Export" width="100%">
 
 **Ohne Platine ausprobieren.** Der [Simulator](https://cx-artlab.github.io/BoopFace/hardware/?lang=de) führt dieselbe C++-Engine im Browser auf 32 simulierten Bildschirmen aus. So kannst du Module vergleichen und die Darstellung vorab ansehen.
 

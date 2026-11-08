@@ -27,7 +27,7 @@ Feito com SVG e JavaScript puro, é um Web Component nativo sem dependências em
 ## Novo: [BoopFace Embedded](#boopface-embedded)
 
 <p align="center">
-  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="As mesmas expressões nas telas ESP32, STM32 e Raspberry Pi Pico, ou em outros programas C++. Inclui exemplos de firmware para 28 configurações e simulador com exportação de ajustes."></a>
+  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="BoopFace Embedded: as mesmas expressões nas telas ESP32, STM32 e Raspberry Pi Pico, ou em outros programas C++. Inclui exemplos de firmware para 28 configurações e simulador com exportação de ajustes."></a>
 </p>
 
 As mesmas expressões nas telas ESP32, STM32 e Raspberry Pi Pico, ou em outros programas C++. Inclui exemplos de firmware para 28 configurações e simulador com exportação de ajustes.
@@ -207,7 +207,7 @@ Manter o centro pressionado inicia a compressão. Ao mover mais de 4 pixels CSS,
 
 Todas as skins continuam sendo SVG puro: sem imagens, canvas nem WebGL. Todas as skins juntas somam cerca de 70 KB pela rede (cerca de 290 KB sem compressão), e a maior parte só é carregada quando uma página usa uma skin. Para comparar, o avatar em si (a versão lite, sem skins) tem cerca de 45 KB.
 
-<img src="../assets/readme/skin-gallery.jpg" alt="Galeria de skins: destaques, filtros e busca" width="100%">
+<img src="../assets/readme/boopface-skin-gallery.jpg" alt="Galeria de skins do BoopFace: destaques, filtros e busca" width="100%">
 
 ```html
 <boop-face skin="301"></boop-face>
@@ -260,7 +260,7 @@ As expressões dos olhos da versão web agora funcionam em telas de robôs e pla
 | Outros microcontroladores ou programas C++ | Biblioteca C++; forneça o driver da tela |
 
 
-<img src="../assets/readme/hardware-preview.jpg" alt="Simulador: expressões numa TFT redonda, disposição, cores e exportação" width="100%">
+<img src="../assets/readme/boopface-embedded-simulator.jpg" alt="Simulador do BoopFace Embedded: expressões numa TFT redonda, disposição, cores e exportação" width="100%">
 
 **Experimente sem placa.** O [simulador](https://cx-artlab.github.io/BoopFace/hardware/?lang=pt) executa o mesmo motor C++ no navegador com 32 telas simuladas. Ajuda a prever o resultado e comparar módulos.
 

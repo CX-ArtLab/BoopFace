@@ -27,7 +27,7 @@ Construit avec SVG et JavaScript natif, c’est un Web Component natif sans dép
 ## Nouveau : [BoopFace Embedded](#boopface-embedded)
 
 <p align="center">
-  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="Les mêmes expressions sur les écrans ESP32, STM32 et Raspberry Pi Pico, ou dans d’autres programmes C++. Avec des exemples de firmware pour 28 configurations et un simulateur avec export des réglages."></a>
+  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="BoopFace Embedded : les mêmes expressions sur les écrans ESP32, STM32 et Raspberry Pi Pico, ou dans d’autres programmes C++. Avec des exemples de firmware pour 28 configurations et un simulateur avec export des réglages."></a>
 </p>
 
 Les mêmes expressions sur les écrans ESP32, STM32 et Raspberry Pi Pico, ou dans d’autres programmes C++. Avec des exemples de firmware pour 28 configurations et un simulateur avec export des réglages.
@@ -207,7 +207,7 @@ Maintenir le centre lance la compression. Après plus de 4 pixels CSS de déplac
 
 Tous les skins restent en SVG pur : sans images, canvas ni WebGL. Tous les skins réunis pèsent environ 70 Ko sur le réseau (environ 290 Ko non compressés), et l’essentiel ne se charge que lorsqu’une page utilise un skin. À titre de comparaison, l’avatar lui-même (la version lite, sans skins) pèse environ 45 Ko.
 
-<img src="../assets/readme/skin-gallery.jpg" alt="Galerie de skins : sélection, filtres et recherche" width="100%">
+<img src="../assets/readme/boopface-skin-gallery.jpg" alt="Galerie de skins BoopFace : sélection, filtres et recherche" width="100%">
 
 ```html
 <boop-face skin="301"></boop-face>
@@ -260,7 +260,7 @@ Les expressions des yeux de la version web fonctionnent désormais sur les écra
 | Autres microcontrôleurs ou programmes C++ | Bibliothèque C++ ; fournissez votre pilote d’écran |
 
 
-<img src="../assets/readme/hardware-preview.jpg" alt="Simulateur : expressions sur un TFT rond, disposition, couleurs et export" width="100%">
+<img src="../assets/readme/boopface-embedded-simulator.jpg" alt="Simulateur BoopFace Embedded : expressions sur un TFT rond, disposition, couleurs et export" width="100%">
 
 **Essayez sans carte.** Le [simulateur](https://cx-artlab.github.io/BoopFace/hardware/?lang=fr) exécute le même moteur C++ dans le navigateur sur 32 écrans simulés. Il permet de prévisualiser le résultat et de comparer les modules.
 
