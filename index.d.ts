@@ -7,12 +7,8 @@ export type BoopFaceAction =
   | 'waiting-wave'
   | 'input'
   | 'listening'
-  | 'listening-lean'
-  | 'listening-tilt'
+  | 'thinking'
   | 'speaking'
-  | 'speaking-bounce'
-  | 'speaking-nod'
-  | 'speaking-bars'
   | 'affirm'
   | 'success'
   | 'failure'
@@ -116,6 +112,7 @@ export type BoopFaceState =
   | 'random'
   | 'waiting'
   | 'listening'
+  | 'thinking'
   | 'speaking'
   | 'wary'
   | 'refuse'
@@ -130,6 +127,7 @@ export type BoopFaceCanonicalAction =
   | 'waiting'
   | 'input'
   | 'listening'
+  | 'thinking'
   | 'speaking'
   | 'affirm'
   | 'success'
@@ -155,16 +153,6 @@ export interface BoopFaceWaitingOptions {
   variant?: 'default' | 'spin' | 'wrap' | 'wave';
 }
 
-export interface BoopFaceListeningOptions {
-  /** `lean` (default) leans in towards the speaker; `tilt` turns the head like an ear. */
-  variant?: 'lean' | 'tilt';
-}
-
-export interface BoopFaceSpeakingOptions {
-  /** `bounce` (default) hops the eyes, `nod` nods the head, `bars` turns the eyes into a sound meter. */
-  variant?: 'bounce' | 'nod' | 'bars';
-}
-
 export interface BoopFaceActionStateDetail {
   action: BoopFaceCanonicalAction;
   phase: BoopFaceActionPhase;
@@ -185,15 +173,18 @@ export declare class BoopFace extends HTMLElement {
   input(active?: boolean): this | Promise<void>;
   startWaiting(options?: BoopFaceWaitingOptions): Promise<this>;
   stopWaiting(): this;
-  /** Listens to the user until another action starts. */
-  startListening(options?: BoopFaceListeningOptions): Promise<this>;
-  /** Speaks a reply until another action starts. */
-  startSpeaking(options?: BoopFaceSpeakingOptions): Promise<this>;
+  /** Voice conversation: both eyes merge into one that swells with the user's voice. */
+  startListening(): Promise<this>;
+  /** Voice conversation: two crossed ovals breathe and turn while the AI thinks. */
+  startThinking(): Promise<this>;
+  /** Voice conversation: the eyes split back and stretch with the reply. */
+  startSpeaking(): Promise<this>;
   /**
-   * Current loudness from 0 (silent) to 1 (loud) while listening or speaking.
-   * Without it, speaking keeps a speech-like rhythm and listening holds still.
+   * Loudness from 0 (silent) to 1 (loud) while listening or speaking; a pair
+   * `[low, high]` drives the left and right eye separately while speaking.
+   * Without it, speaking keeps a rhythm of its own and listening holds still.
    */
-  setVoiceLevel(level: number): this;
+  setVoiceLevel(level: number | readonly [number, number]): this;
   setPointerFollow(enabled?: boolean): this;
   /** @deprecated Removed in 0.6; does nothing and logs a one-time notice. Deleted in 1.0. */
   setAntennaFlash(enabled?: boolean): this;

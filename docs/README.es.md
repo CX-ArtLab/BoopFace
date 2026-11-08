@@ -55,7 +55,7 @@ Las mismas expresiones en pantallas ESP32, STM32 y Raspberry Pi Pico, o en otros
 - 188 skins numerados en 17 series, con luz que sigue al puntero
 - Versión ligera sin skins para las páginas más pequeñas
 - `connectAgent()`: los eventos de un flujo de IA controlan las expresiones (AG-UI, OpenAI, Anthropic, Vercel AI SDK)
-- Conversación por voz: expresiones de escuchar y hablar que siguen el volumen real
+- Conversación por voz: un conjunto de expresiones para escuchar, pensar y hablar que siguen el volumen real
 - Declaraciones TypeScript incluidas
 
 ## Instalación
@@ -133,8 +133,9 @@ Acciones disponibles:
 | `waiting-wrap` | Los ojos salen por un lado y vuelven por el otro | Esperando respuesta |
 | `waiting-wave` | Los ojos suben y bajan por turnos | Esperando respuesta |
 | `input` | Los ojos se convierten en cursores parpadeantes | El usuario está escribiendo |
-| `listening` | Se inclina hacia delante; los ojos se abren con la voz del usuario | Voz: el usuario está hablando |
-| `speaking` | Los ojos botan al ritmo del habla | Voz: la IA está respondiendo |
+| `listening` | Los dos ojos se funden en uno redondo que se hincha con la voz | Voz: el usuario está hablando |
+| `thinking` | Dos óvalos cruzados respiran y giran como una flor | Voz: la IA está pensando |
+| `speaking` | Los ojos se separan de nuevo y se estiran con la respuesta | Voz: la IA está respondiendo |
 | `affirm` | Asiente | Entendido, confirmado |
 | `success` | Ojos felices y sonrientes | Tarea completada |
 | `failure` | Baja la cabeza y los ojos | Fallo de tarea o conexión |
@@ -283,18 +284,18 @@ Prueba todos los formatos en la [demo Conectar IA](https://cx-artlab.github.io/B
 
 ## Conversación por voz · Novedad en 0.8.1
 
-Escuchar, pensar, hablar: un asistente de voz pasa por estos tres pasos en cada turno, y el avatar tiene una expresión para cada uno.
+Escuchar, pensar, hablar: un asistente de voz pasa por estos tres pasos en cada turno. El avatar tiene para ellos un conjunto de tres expresiones que enlazan entre sí.
 
 ```js
 avatar.startListening();   // el usuario habla
-avatar.startWaiting();     // la IA piensa
+avatar.startThinking();    // la IA piensa
 avatar.startSpeaking();    // la IA responde
 avatar.setVoiceLevel(0.6); // opcional: volumen de 0 a 1
 ```
 
-Al escuchar, el avatar se inclina hacia delante y abre un poco más los ojos cuando el usuario habla; al hablar, los ojos botan al ritmo de la voz. Con `setVoiceLevel()` ambos siguen el volumen real. Sin él, hablar mantiene su propio ritmo y escuchar se queda quieto. Variantes: `startListening({ variant: 'tilt' })` ladea la cabeza como quien presta oído; `startSpeaking({ variant: 'nod' })` asiente al hablar y `'bars'` convierte los ojos en un medidor de sonido.
+Al escuchar, los dos ojos se funden en un solo ojo redondo que se hincha con la voz del usuario. Al pensar, se convierte en una flor de dos óvalos cruzados que respira y gira despacio. Al hablar, vuelve a separarse en dos ojos que se asientan y luego se estiran con la respuesta: los sonidos graves mueven el ojo izquierdo y los agudos el derecho. `setVoiceLevel(level)` o `setVoiceLevel([low, high])` aporta el volumen; sin él, hablar mantiene su propio ritmo y escuchar se queda quieto. Cada paso se repite hasta el siguiente, y al cambiar los ojos se transforman en lugar de saltar.
 
-`connectAgent()` se encarga de todo. Entiende los eventos de OpenAI Realtime y el `mode` que informan SDK de voz como ElevenLabs, y vuelve a escuchar después de cada respuesta:
+`connectAgent()` se encarga de todo. Entiende los eventos de OpenAI Realtime y el `mode` que informan SDK de voz como ElevenLabs, usa la expresión de pensar del conjunto durante una conversación por voz y vuelve a escuchar después de cada respuesta:
 
 ```js
 const agent = connectAgent(avatar);

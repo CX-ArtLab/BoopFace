@@ -180,7 +180,10 @@ if (document.body.dataset.page === 'skins') {
   await import('./boopface-demo-dialog-i18n.js');
   await import('./boopface-demo-chat-avatar-mode.js');
   await import('./boopface-demo-reply-loop.js');
-  if (document.body.dataset.page !== 'skins') await import('./boopface-demo-skins.js');
+  if (document.body.dataset.page !== 'skins') {
+    await import('./boopface-demo-skins.js');
+    await import('./boopface-demo-voice.js');
+  }
   // Apply the final language and row width before exposing interactive content.
   await document.fonts.ready;
   // Place the column again until its height holds for a frame, so a late

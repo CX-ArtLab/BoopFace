@@ -35,7 +35,7 @@ const DEFAULT_ACTIONS = Object.freeze({
 const ACTION_NAMES = new Set([
   'idle', 'bored', 'waiting', 'waiting-spin', 'waiting-wrap', 'waiting-wave', 'input', 'affirm', 'success',
   'failure', 'wary', 'inspect', 'angry', 'refuse', 'surprise', 'love', 'random', 'sleep', 'wake',
-  'listening', 'listening-lean', 'listening-tilt', 'speaking', 'speaking-bounce', 'speaking-nod', 'speaking-bars',
+  'listening', 'thinking', 'speaking',
 ]);
 
 // Plain words: our own state names, useChat status values and common synonyms.
@@ -352,16 +352,21 @@ function audioMeter(context, source) {
   }
   const analyser = context.createAnalyser();
   analyser.fftSize = 1024;
+  analyser.smoothingTimeConstant = 0;
   node.connect(analyser);
-  const data = new Float32Array(analyser.fftSize);
+  const spectrum = new Float32Array(analyser.frequencyBinCount);
+  // Below about 700 Hz is the low band (left eye), above it the high band.
+  const split = Math.max(1, Math.round(700 / (context.sampleRate / analyser.fftSize)));
+  const band = (from, to) => {
+    let power = 0;
+    for (let i = from; i < to; i++) power += 10 ** (spectrum[i] / 10);
+    // About -60 dB (room noise) is silent, -22 dB (speech up close) is full.
+    return clamp01((10 * Math.log10(power || 1e-12) + 60) / 38);
+  };
   return {
     read() {
-      analyser.getFloatTimeDomainData(data);
-      let sum = 0;
-      for (const value of data) sum += value * value;
-      const decibels = 20 * Math.log10(Math.sqrt(sum / data.length) || 1e-8);
-      // About -52 dB (room noise) is silent, -16 dB (speech up close) is full.
-      return clamp01((decibels + 52) / 36);
+      analyser.getFloatFrequencyData(spectrum);
+      return [band(1, split), band(split, spectrum.length)];
     },
     disconnect() {
       try { node.disconnect(analyser); } catch { /* already gone */ }
@@ -378,24 +383,27 @@ function connectAgent(target, options = {}) {
   let state = 'idle';
   let looping = null; // the loop this adapter started, while it may still run
   let timer = 0;
+  // In a voice conversation, thinking shows the voice set's own thinking
+  // expression unless the page chose another one.
+  const customThinking = Boolean(options.actions && Object.hasOwn(options.actions, 'thinking'));
+  const actionFor = next => (next === 'thinking' && memo.voice && !customThinking ? 'thinking' : actions[next]);
 
   // The loop a state shows, if its action is one: waiting, listening or speaking.
   function loopOf(next) {
-    const action = actions[next];
+    const action = actionFor(next);
     if (typeof action !== 'string' || !LOOPING.has(next)) return null;
     const waiting = WAITING_ACTION.exec(action);
     if (waiting) return { key: `waiting:${waiting[1] || 'spin'}`, start: () => avatar.startWaiting({ variant: waiting[1] || 'spin' }) };
-    const voice = /^(listening|speaking)(?:-([a-z]+))?$/.exec(action);
-    if (voice && typeof avatar.startListening === 'function') {
-      const variant = voice[2] ? { variant: voice[2] } : {};
-      const start = voice[1] === 'listening' ? () => avatar.startListening(variant) : () => avatar.startSpeaking(variant);
-      return { key: `${voice[1]}:${voice[2] || ''}`, start };
+    const methods = { listening: 'startListening', thinking: 'startThinking', speaking: 'startSpeaking' };
+    if (methods[action] && typeof avatar[methods[action]] === 'function') {
+      return { key: `voice:${action}`, start: () => avatar[methods[action]]() };
     }
     return null;
   }
 
   function stillLooping(key) {
     if (key.startsWith('waiting:')) return Boolean(avatar._waitingFx || avatar._waitingRequested);
+    if (avatar._voiceFx && avatar._voiceFx.mode !== key.slice(6)) return false;
     return Boolean(avatar._voiceFx || avatar._voiceRequested);
   }
 
@@ -417,7 +425,7 @@ function connectAgent(target, options = {}) {
   }
 
   function apply(next) {
-    const action = actions[next];
+    const action = actionFor(next);
     const loop = loopOf(next);
     looping = loop;
     if (action === null || action === false) return;
@@ -471,7 +479,7 @@ function connectAgent(target, options = {}) {
     state = next;
     if (previous === 'typing' && next !== 'typing' && actions.typing === 'input' && typeof avatar.input === 'function') {
       // Only matters when the next state leaves the cursor eyes on screen.
-      if (actions[next] === null || actions[next] === false) avatar.input(false);
+      if (actionFor(next) === null || actionFor(next) === false) avatar.input(false);
     }
     show(next);
     onChange?.(next, previous);
@@ -542,8 +550,9 @@ function connectAgent(target, options = {}) {
       frame = requestAnimationFrame(tick);
       const meter = state === 'listening' ? meters.input : state === 'speaking' ? meters.output : null;
       if (!meter) return;
-      const level = meter.read();
-      avatar.setVoiceLevel?.(level);
+      const pair = meter.read();
+      avatar.setVoiceLevel?.(pair);
+      const level = Math.max(...pair);
       if (state !== 'speaking' || !memo.pendingDone || meter !== meters.output) {
         quietSince = 0;
         return;

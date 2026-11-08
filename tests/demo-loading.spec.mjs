@@ -88,7 +88,7 @@ test('the deployed Pages entry loads all startup modules from its own directory'
   await page.goto('/.pages-site/?lang=zh-CN');
   await expect(page.locator('html')).toHaveAttribute('data-demo-ready', 'true');
   await expect(page.locator('#face')).toBeVisible();
-  await expect(page.locator('.controls button[data-action]')).toHaveCount(19);
+  await expect(page.locator('.controls button[data-action]')).toHaveCount(17);
   expect(errors).toEqual([]);
 });
 

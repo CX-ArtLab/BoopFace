@@ -56,7 +56,7 @@ BoopFace 是一個輕量、富表現力的機器人頭像組件，適用於 AI �
 - 188 款編號皮膚，分 17 個系列，光線跟隨鼠標
 - 不含皮膚的精簡版，適合對大小特別在意的頁面
 - `connectAgent()`：AI 資料流的事件直接驅動表情（AG-UI、OpenAI、Anthropic、Vercel AI SDK）
-- 語音對話：聆聽和說話兩個表情，跟著真實的音量動
+- 語音對話：聆聽、思考、說話一組三個表情，跟著真實的音量動
 - 內置 TypeScript 類型聲明
 - BoopFace Embedded 嵌入式設備版：同樣的表情跑在 28 種 ESP32、STM32 和樹莓派 Pico 開發板與屏幕組合上，在線模擬器裏調好後直接導出到固件
 
@@ -135,8 +135,9 @@ avatar.reset();
 | `waiting-wrap` | 雙眼從一側轉出、另一側回來 | 等待回覆 |
 | `waiting-wave` | 雙眼輪流上下起伏 | 等待回覆 |
 | `input` | 雙眼變成閃爍的輸入光標 | 用戶正在輸入 |
-| `listening` | 微微前傾，眼睛隨使用者的聲音睜大 | 語音對話：使用者在說話 |
-| `speaking` | 眼睛跟著說話的節奏跳動 | 語音對話：AI 在回答 |
+| `listening` | 兩隻眼睛合成一個圓，隨聲音起伏 | 語音對話：使用者在說話 |
+| `thinking` | 兩個交叉的橢圓像花一樣呼吸、轉動 | 語音對話：AI 在思考 |
+| `speaking` | 眼睛分回兩隻，跟著回答伸縮 | 語音對話：AI 在回答 |
 | `affirm` | 點頭 | 收到、確認 |
 | `success` | 開心的笑眼 | 任務完成 |
 | `failure` | 低頭、眼睛下垂 | 任務或連接失敗 |
@@ -285,18 +286,18 @@ connectAgent(avatar, {
 
 ## 語音對話 · 0.8.1 新增
 
-聆聽、思考、說話：語音助理每一輪都會走這三步，頭像為每一步都準備了表情。
+聆聽、思考、說話：語音助理每一輪都會走這三步。頭像為它們準備了一組三個表情，前後可以自然地銜接。
 
 ```js
 avatar.startListening();   // 使用者在說話
-avatar.startWaiting();     // AI 在思考
+avatar.startThinking();    // AI 在思考
 avatar.startSpeaking();    // AI 在回答
 avatar.setVoiceLevel(0.6); // 選用：音量，0 到 1
 ```
 
-聆聽時頭像微微前傾，使用者一說話眼睛就睜大一點；說話時眼睛跟著語音的節奏跳動。用 `setVoiceLevel()` 傳入音量後，兩者都跟著真實音量動；不傳時，說話會按自己的節奏動，聆聽則保持專注的樣子。其他樣式：`startListening({ variant: 'tilt' })` 像側耳一樣歪頭；`startSpeaking({ variant: 'nod' })` 跟著點頭，`'bars'` 把眼睛變成跳動的聲波條。
+聆聽時兩隻眼睛合成一個圓，隨使用者的聲音一鼓一鼓；思考時變成兩個交叉的橢圓，像一朵慢慢轉動的花；說話時分回兩隻眼睛，先停穩，再跟著回答伸縮：低音驅動左眼，高音驅動右眼。用 `setVoiceLevel(level)` 或 `setVoiceLevel([low, high])` 傳入音量；不傳時，說話會按自己的節奏動，聆聽則保持不動。每一步都會循環到下一步開始，步驟之間眼睛會平滑變形，不會跳變。
 
-`connectAgent()` 可以把這些全部自動接上。它認得 OpenAI Realtime 的事件，也認得 ElevenLabs 這類語音 SDK 回報的 `mode`，每次回答完都會回到聆聽：
+`connectAgent()` 可以把這些全部自動接上。它認得 OpenAI Realtime 的事件，也認得 ElevenLabs 這類語音 SDK 回報的 `mode`；語音對話時，思考會用這一組自己的思考表情，每次回答完都會回到聆聽：
 
 ```js
 const agent = connectAgent(avatar);

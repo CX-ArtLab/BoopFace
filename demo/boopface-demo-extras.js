@@ -54,6 +54,11 @@ const LISTENING_LABELS = Object.freeze({
   fr: { action: 'Écouter', state: 'Écoute' },
 });
 
+const THINKING_LABELS = Object.freeze({
+  'zh-CN': { state: '思考' }, 'zh-TW': { state: '思考' }, en: { state: 'Thinking' }, ja: { state: '考えている' },
+  ko: { state: '생각 중' }, es: { state: 'Pensando' }, pt: { state: 'Pensando' }, de: { state: 'Denkt nach' }, fr: { state: 'Réfléchit' },
+});
+
 const SPEAKING_LABELS = Object.freeze({
   'zh-CN': { action: '说话', state: '说话' }, 'zh-TW': { action: '說話', state: '說話' },
   en: { action: 'Speaking', state: 'Speaking' }, ja: { action: '話す', state: '話している' },
@@ -110,11 +115,7 @@ function syncActionLabels() {
   // New actions go at the very end of the row, in the order they were added.
   const loveButton = ensureActionButton('love', 'sleep');
   const randomButton = ensureActionButton('random', 'love');
-  const listeningButton = ensureActionButton('listening', 'random');
-  const speakingButton = ensureActionButton('speaking', 'listening');
-  for (const button of [loveButton, randomButton, listeningButton, speakingButton]) if (button) markAsNew(button);
-  if (listeningButton) listeningButton.textContent = LISTENING_LABELS[activeLanguage(LISTENING_LABELS)].action;
-  if (speakingButton) speakingButton.textContent = SPEAKING_LABELS[activeLanguage(SPEAKING_LABELS)].action;
+  for (const button of [loveButton, randomButton]) if (button) markAsNew(button);
   if (inspectButton) inspectButton.textContent = inspect.action;
   if (failureButton) failureButton.textContent = failure.action;
   if (loveButton) loveButton.textContent = love.action;
@@ -161,28 +162,11 @@ function mountStateLabels() {
       status.textContent = `random · ${t.state}`;
     } else if (state === 'listening') {
       status.textContent = `listening · ${LISTENING_LABELS[activeLanguage(LISTENING_LABELS)].state}`;
+    } else if (state === 'thinking') {
+      status.textContent = `thinking · ${THINKING_LABELS[activeLanguage(THINKING_LABELS)].state}`;
     } else if (state === 'speaking') {
       status.textContent = `speaking · ${SPEAKING_LABELS[activeLanguage(SPEAKING_LABELS)].state}`;
     }
-  });
-}
-
-// The demo has nobody talking to it, so while it listens it hears a pretend
-// voice: syllables about four times a second with short pauses.
-function mountPretendVoice() {
-  const face = document.getElementById('face');
-  if (!face || typeof face.setVoiceLevel !== 'function') return;
-  let frame = 0;
-  const start = performance.now();
-  const tick = now => {
-    if (face._voiceFx?.mode !== 'listening') { frame = 0; return; }
-    const s = (now - start) / 1000;
-    const syllable = Math.max(0, Math.sin(s * Math.PI * 2 * 3.8 + Math.sin(s * 1.7)));
-    face.setVoiceLevel((now - start) % 3000 > 2300 ? 0 : syllable * (0.6 + 0.4 * Math.sin(s * 2.1)));
-    frame = requestAnimationFrame(tick);
-  };
-  face.addEventListener('face-state', event => {
-    if (event.detail?.state === 'listening' && !frame) frame = requestAnimationFrame(tick);
   });
 }
 
@@ -190,7 +174,6 @@ function mountExtras() {
   syncActionLabels();
   mountWaitingSync();
   mountStateLabels();
-  mountPretendVoice();
 
   new MutationObserver(() => {
     syncActionLabels();

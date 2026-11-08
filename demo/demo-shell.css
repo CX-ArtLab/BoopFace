@@ -8,6 +8,25 @@
 .demo-nav a:focus-visible{outline:2px solid #777d86;outline-offset:3px}
 .canvas>.demo-nav{position:absolute;top:18px;left:50%;transform:translateX(-50%);z-index:30}
 @media(max-width:800px){.canvas>.demo-nav{top:70px}.demo-nav{font-size:13px}.demo-nav a{padding:7px 18px}}
+/* Voice set: one row of its own under the single expressions. */
+.demo-voice-row{width:100%;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;padding:8px;border-radius:16px;background:rgba(255,255,255,.88);box-shadow:0 7px 30px rgba(0,0,0,.08);backdrop-filter:blur(14px)}
+.demo-voice-label{padding:0 6px 0 4px;color:#72777e;font:600 11px Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;white-space:nowrap}
+.demo-voice-divider{width:1px;height:18px;margin:0 2px;background:rgba(0,0,0,.08)}
+.demo-voice-play{position:relative;display:inline-flex;align-items:center;gap:6px}
+.demo-voice-play svg{width:11px;height:11px;fill:currentColor}
+.demo-voice-play.is-playing svg{display:none}
+.demo-voice-play.is-new::after{content:'';position:absolute;top:3px;right:3px;width:7px;height:7px;border-radius:50%;background:#e5484d;box-shadow:0 0 0 2px rgba(255,255,255,.95);pointer-events:none}
+.demo-voice-sound{position:relative;display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:#f1f2f3;color:#656a70;cursor:pointer}
+.demo-voice-sound:hover{background:#e7e8ea}
+.demo-voice-sound input{position:absolute;opacity:0;pointer-events:none}
+.demo-voice-sound svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.demo-voice-sound .mute{display:none}
+.demo-voice-sound:has(input:not(:checked)) .waves{display:none}
+.demo-voice-sound:has(input:not(:checked)) .mute{display:inline}
+.demo-voice-sound:has(input:focus-visible){outline:2px solid #aeb2b8;outline-offset:2px}
+.demo-voice-caption{position:absolute;left:50%;top:12px;z-index:7;transform:translateX(-50%);max-width:calc(100% - 40px);width:max-content;padding:6px 12px;border-radius:12px;background:rgba(255,255,255,.88);box-shadow:0 4px 18px rgba(0,0,0,.06);backdrop-filter:blur(8px);color:#4b5057;font:500 12px/1.45 Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;text-align:center;pointer-events:none}
+.demo-voice-caption[data-who=user]{color:#7a7f86}
+.demo-voice-caption[hidden]{display:none}
 .demo-page-links{justify-self:center;display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
 /* Connect AI: the same pill as the skins button, plain, without the skin colors. */
 .demo-agent-page-link{position:relative;display:inline-flex;align-items:center;margin-top:4px;padding:11px 18px;border-radius:14px;background:rgba(255,255,255,.92);box-shadow:0 7px 30px rgba(0,0,0,.08);color:#2c3035;font:600 13px Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;text-decoration:none;white-space:nowrap;transition:transform .15s}

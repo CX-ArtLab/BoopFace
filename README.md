@@ -55,7 +55,7 @@ The same eye expressions on ESP32, STM32 and Raspberry Pi Pico screens, or in ot
 - 188 numbered skins in 17 series, with light that follows the pointer
 - A lite build without skins for the smallest pages
 - `connectAgent()`: AI stream events drive the expressions (AG-UI, OpenAI, Anthropic, Vercel AI SDK)
-- Voice conversation: listening and speaking expressions that follow the real loudness
+- Voice conversation: a set of listening, thinking and speaking expressions that follow the real loudness
 - TypeScript declarations included
 
 ## Install
@@ -133,8 +133,9 @@ Available actions:
 | `waiting-wrap` | Eyes slide out one side and back in the other | Waiting for a reply |
 | `waiting-wave` | Eyes bob up and down in turn | Waiting for a reply |
 | `input` | Eyes become blinking text cursors | The user is typing |
-| `listening` | Leans in; the eyes open wider with the user's voice | Voice: the user is speaking |
-| `speaking` | The eyes bounce with the rhythm of speech | Voice: the AI is answering |
+| `listening` | Both eyes merge into one round eye that swells with the voice | Voice: the user is speaking |
+| `thinking` | Two crossed ovals breathe and turn like a slow flower | Voice: the AI is thinking |
+| `speaking` | The eyes split back and stretch with the reply | Voice: the AI is answering |
 | `affirm` | Nods | Got it, confirmed |
 | `success` | Happy, smiling eyes | Task completed |
 | `failure` | Head and eyes droop | Task or connection failed |
@@ -283,18 +284,18 @@ Try every format on the [Connect AI demo](https://cx-artlab.github.io/BoopFace/a
 
 ## Voice conversation · New in 0.8.1
 
-Listening, thinking, speaking: a voice assistant goes through these three steps on every turn, and the avatar has an expression for each.
+Listening, thinking, speaking: a voice assistant goes through these three steps on every turn. The avatar has a set of three expressions for them, designed to flow into each other.
 
 ```js
 avatar.startListening();   // the user is talking
-avatar.startWaiting();     // the AI is thinking
+avatar.startThinking();    // the AI is thinking
 avatar.startSpeaking();    // the AI is answering
 avatar.setVoiceLevel(0.6); // optional: loudness from 0 to 1
 ```
 
-Listening leans in and opens the eyes wider as the user speaks; speaking makes the eyes bounce with the speech. With `setVoiceLevel()` both follow the real loudness. Without it, speaking keeps a rhythm of its own and listening holds still. Variants: `startListening({ variant: 'tilt' })` turns the head like an ear; `startSpeaking({ variant: 'nod' })` nods along and `'bars'` turns the eyes into a sound meter.
+Listening merges both eyes into one round eye that swells with the user's voice. Thinking turns it into a slow flower of two crossed ovals. Speaking splits it back into two eyes, which settle and then stretch with the reply: low sounds in the left eye, high sounds in the right. `setVoiceLevel(level)` or `setVoiceLevel([low, high])` feeds the loudness; without it, speaking keeps a rhythm of its own and listening holds still. Each step loops until the next one, and moving between them morphs the eyes instead of jumping.
 
-`connectAgent()` drives all of it. It understands OpenAI Realtime events and the `mode` that ElevenLabs-style voice SDKs report, and goes back to listening after each reply:
+`connectAgent()` drives all of it. It understands OpenAI Realtime events and the `mode` that ElevenLabs-style voice SDKs report, uses the set's own thinking expression during a voice conversation, and goes back to listening after each reply:
 
 ```js
 const agent = connectAgent(avatar);

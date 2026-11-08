@@ -55,7 +55,7 @@ Dieselben Augenausdrücke auf ESP32-, STM32- und Raspberry-Pi-Pico-Bildschirmen 
 - 188 nummerierte Skins in 17 Serien, mit Licht, das dem Zeiger folgt
 - Schlanke Version ohne Skins für besonders kleine Seiten
 - `connectAgent()`: Ereignisse eines KI-Streams steuern die Ausdrücke (AG-UI, OpenAI, Anthropic, Vercel AI SDK)
-- Sprachdialog: Ausdrücke für Zuhören und Sprechen, die der echten Lautstärke folgen
+- Sprachdialog: ein Set aus Zuhören, Nachdenken und Sprechen, das der echten Lautstärke folgt
 - TypeScript-Deklarationen enthalten
 
 ## Installation
@@ -133,8 +133,9 @@ Verfügbare Aktionen:
 | `waiting-wrap` | Augen gleiten auf einer Seite hinaus und auf der anderen zurück | Warten auf eine Antwort |
 | `waiting-wave` | Augen wippen abwechselnd auf und ab | Warten auf eine Antwort |
 | `input` | Augen werden zu blinkenden Textcursorn | Nutzer tippt |
-| `listening` | Beugt sich vor; die Augen öffnen sich mit der Stimme des Nutzers | Sprache: der Nutzer spricht |
-| `speaking` | Die Augen hüpfen im Rhythmus der Sprache | Sprache: die KI antwortet |
+| `listening` | Beide Augen verschmelzen zu einem runden Auge, das mit der Stimme anschwillt | Sprache: der Nutzer spricht |
+| `thinking` | Zwei gekreuzte Ovale atmen und drehen sich wie eine Blüte | Sprache: die KI denkt nach |
+| `speaking` | Die Augen teilen sich wieder und strecken sich mit der Antwort | Sprache: die KI antwortet |
 | `affirm` | Nickt | Verstanden, bestätigt |
 | `success` | Fröhlich lächelnde Augen | Aufgabe erledigt |
 | `failure` | Kopf und Augen sinken | Aufgabe oder Verbindung fehlgeschlagen |
@@ -283,18 +284,18 @@ Alle Formate lassen sich in der [Demo „KI anbinden“](https://cx-artlab.githu
 
 ## Sprachdialog · Neu in 0.8.1
 
-Zuhören, nachdenken, sprechen: Diese drei Schritte durchläuft ein Sprachassistent in jeder Runde, und der Avatar hat für jeden einen Ausdruck.
+Zuhören, nachdenken, sprechen: Diese drei Schritte durchläuft ein Sprachassistent in jeder Runde. Der Avatar hat dafür ein Set aus drei Ausdrücken, die ineinander übergehen.
 
 ```js
 avatar.startListening();   // der Nutzer spricht
-avatar.startWaiting();     // die KI denkt nach
+avatar.startThinking();    // die KI denkt nach
 avatar.startSpeaking();    // die KI antwortet
 avatar.setVoiceLevel(0.6); // optional: Lautstärke von 0 bis 1
 ```
 
-Beim Zuhören beugt sich der Avatar vor und öffnet die Augen etwas weiter, sobald der Nutzer spricht; beim Sprechen hüpfen die Augen im Rhythmus der Sprache. Mit `setVoiceLevel()` folgen beide der echten Lautstärke. Ohne sie behält das Sprechen einen eigenen Rhythmus, und das Zuhören hält still. Varianten: `startListening({ variant: 'tilt' })` neigt den Kopf wie ein lauschendes Ohr; `startSpeaking({ variant: 'nod' })` nickt mit, und `'bars'` macht aus den Augen eine Pegelanzeige.
+Beim Zuhören verschmelzen beide Augen zu einem runden Auge, das mit der Stimme des Nutzers anschwillt. Beim Nachdenken wird daraus eine langsam drehende Blüte aus zwei gekreuzten Ovalen. Beim Sprechen teilt es sich wieder in zwei Augen, die kurz zur Ruhe kommen und sich dann mit der Antwort strecken: tiefe Töne im linken, hohe im rechten Auge. `setVoiceLevel(level)` oder `setVoiceLevel([low, high])` liefert die Lautstärke; ohne sie behält das Sprechen einen eigenen Rhythmus, und das Zuhören hält still. Jeder Schritt läuft in Schleife bis zum nächsten, und beim Wechsel verformen sich die Augen, statt zu springen.
 
-`connectAgent()` übernimmt das alles. Es versteht OpenAI-Realtime-Ereignisse und den `mode`, den Sprach-SDKs wie ElevenLabs melden, und kehrt nach jeder Antwort zum Zuhören zurück:
+`connectAgent()` übernimmt das alles. Es versteht OpenAI-Realtime-Ereignisse und den `mode`, den Sprach-SDKs wie ElevenLabs melden, nutzt im Sprachdialog den Denk-Ausdruck des Sets und kehrt nach jeder Antwort zum Zuhören zurück:
 
 ```js
 const agent = connectAgent(avatar);

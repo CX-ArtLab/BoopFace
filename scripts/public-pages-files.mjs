@@ -7,6 +7,6 @@ export const publicDemoFiles = [
   'boopface-demo-controls.js', 'boopface-demo-extras.js',
   'boopface-demo-roundness.js', 'boopface-demo-layout.js',
   'boopface-demo-dialog-i18n.js', 'boopface-demo-chat-avatar-mode.js',
-  'boopface-demo-reply-loop.js',
+  'boopface-demo-reply-loop.js', 'boopface-demo-voice.js',
   'materials/index.html', 'materials/gallery.js', 'materials/gallery.css',
 ];

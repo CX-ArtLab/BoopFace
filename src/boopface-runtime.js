@@ -23,6 +23,7 @@ const baseStartWaiting = proto.startWaiting;
 const baseStopWaiting = proto.stopWaiting;
 const baseStartListening = proto.startListening;
 const baseStartSpeaking = proto.startSpeaking;
+const baseStartThinking = proto.startThinking;
 const baseDraw = proto._draw;
 
 const DEFAULT_SIZE = 112;
@@ -39,12 +40,8 @@ const ACTION_ALIASES = Object.freeze({
   'waiting-wave': 'waiting',
   input: 'input',
   listening: 'listening',
-  'listening-lean': 'listening',
-  'listening-tilt': 'listening',
+  thinking: 'thinking',
   speaking: 'speaking',
-  'speaking-bounce': 'speaking',
-  'speaking-nod': 'speaking',
-  'speaking-bars': 'speaking',
   affirm: 'affirm',
   send: 'affirm',
   success: 'success',
@@ -823,13 +820,13 @@ proto.startWaiting = async function(options = {}) {
 };
 
 // Voice loops behave like waiting: one continuous action until the next one.
-for (const [method, base, action] of [['startListening', baseStartListening, 'listening'], ['startSpeaking', baseStartSpeaking, 'speaking']]) {
+for (const [method, base, action] of [['startListening', baseStartListening, 'listening'], ['startThinking', baseStartThinking, 'thinking'], ['startSpeaking', baseStartSpeaking, 'speaking']]) {
   if (typeof base !== 'function') continue;
   proto[method] = async function(options = {}) {
     ensureRuntime(this);
     clearAutoSleep(this);
     const result = await base.call(this, options);
-    // A new variant restarts the loop (and cancels its record); the same loop keeps it.
+    // The next step of the set starts its own record; the same step keeps it.
     if (this._voiceFx?.mode === action && this._voiceFx.continuous && this._activeActionState?.action !== action) {
       beginAction(this, action, 'api', true);
     }

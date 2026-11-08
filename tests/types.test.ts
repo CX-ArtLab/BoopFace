@@ -123,14 +123,15 @@ connectAgent(avatar, { actions: { done: 'party' } });
 
 // Voice conversation.
 void avatar.startListening();
-void avatar.startListening({ variant: 'tilt' });
-void avatar.startSpeaking({ variant: 'bars' });
+void avatar.startThinking();
+void avatar.startSpeaking();
 avatar.setVoiceLevel(0.4);
-void avatar.play('speaking-nod');
+avatar.setVoiceLevel([0.2, 0.6]);
+void avatar.play('thinking');
 const speakingState: BoopFaceState = 'speaking';
 void speakingState;
-const voiceAgent = connectAgent(avatar, { actions: { listening: 'listening-tilt', speaking: 'speaking-bars' } });
+const voiceAgent = connectAgent(avatar, { actions: { listening: 'listening', speaking: 'speaking', thinking: 'thinking' } });
 const stopAudio: () => void = voiceAgent.connectAudio({ input: new MediaStream() });
 stopAudio();
-// @ts-expect-error unknown variant
-void avatar.startSpeaking({ variant: 'sing' });
+// @ts-expect-error the voice set has no variants
+void avatar.startSpeaking({ variant: 'bars' });

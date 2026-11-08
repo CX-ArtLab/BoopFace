@@ -51,11 +51,12 @@ const TEXT = {
   },
 };
 
-const DEFAULTS = { thinking: 'waiting-spin', tool: 'waiting-wave', replying: 'idle', listening: 'listening-lean', speaking: 'speaking-bounce' };
+const DEFAULTS = { thinking: 'waiting-spin', tool: 'waiting-wave', replying: 'idle' };
 const settings = { format: 'ag-ui', outcome: 'done', ...DEFAULTS };
 // States whose expression the code panel shows, per kind of conversation.
 const TEXT_STATES = ['thinking', 'tool', 'replying'];
-const VOICE_STATES = ['listening', 'thinking', 'speaking'];
+// The voice set brings its own three expressions, so there is nothing to choose.
+const VOICE_STATES = [];
 const isVoice = () => settings.format === 'realtime';
 
 const face = document.getElementById('face');
@@ -105,8 +106,6 @@ function actionsFromSettings() {
     thinking: settings.thinking,
     tool: settings.tool,
     replying: settings.replying === 'keep' ? settings.thinking : settings.replying,
-    listening: settings.listening,
-    speaking: settings.speaking,
   };
 }
 
@@ -396,7 +395,7 @@ function voicePlan() {
   add({ type: 'input_audio_buffer.committed' }, 40);
   add({ type: 'conversation.item.input_audio_transcription.completed', transcript: t('question') }, 300, `${t('you')}${t('question')}\n`);
   add({ type: 'response.created' }, 60);
-  add({ type: 'output_audio_buffer.started' }, 2200, t('ai'));
+  add({ type: 'output_audio_buffer.started' }, 3600, t('ai'));
   for (const piece of pieces(t('reply'))) add({ type: 'response.output_audio_transcript.delta', delta: piece }, 150, piece);
   add({ type: 'response.output_audio.done' });
   add({ type: 'response.done', response: { status: 'completed' } });
@@ -405,7 +404,7 @@ function voicePlan() {
 }
 
 async function runVoice(onChange) {
-  agent = connectAgent(face, { actions: actionsFromSettings(), onChange });
+  agent = connectAgent(face, { onChange });
   let microphone = null;
   let stopAudio = null;
   if (useMic.checked) {

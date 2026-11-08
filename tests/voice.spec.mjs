@@ -1,7 +1,8 @@
 import { expect, test } from '@playwright/test';
 
-// Listening and speaking: the two voice loops, the loudness they follow, and
-// connectAgent() driving them from OpenAI Realtime events.
+// The voice set: listening (one round eye), thinking (a turning flower of two
+// ovals), speaking (two eyes that stretch with the reply), and connectAgent()
+// driving it from OpenAI Realtime events.
 test.beforeEach(async ({ page }) => {
   await page.route('**/voice-test.html', route => route.fulfill({
     contentType: 'text/html',
@@ -15,78 +16,134 @@ test.beforeEach(async ({ page }) => {
     window.wait = ms => new Promise(resolve => setTimeout(resolve, ms));
     window.events = [];
     window.avatar.addEventListener('action-state', event => window.events.push(`${event.detail.action}:${event.detail.phase}`));
-    window.eyeScale = () => Number((window.avatar.shadowRoot.getElementById('leftEye').getAttribute('transform').match(/scale\(([\d.]+)/) || [0, 1])[1]);
+    const root = window.avatar.shadowRoot;
+    window.shape = side => {
+      const rect = root.getElementById(`${side}InputBase`);
+      const eye = root.getElementById(`${side}Eye`).getAttribute('transform');
+      const [, x, y] = eye.match(/translate\(([-\d.]+) ([-\d.]+)\)/) || [];
+      const angle = Number((eye.match(/rotate\(([-\d.]+)\)/) || [0, 0])[1]);
+      return { x: Number(x), y: Number(y), w: Number(rect.getAttribute('width')), h: Number(rect.getAttribute('height')),
+        corner: Number(rect.getAttribute('ry')), shown: rect.getAttribute('opacity') === '1', angle };
+    };
+    window.feed = (level, ms) => new Promise(resolve => {
+      const timer = setInterval(() => window.avatar.setVoiceLevel(level), 25);
+      setTimeout(() => { clearInterval(timer); resolve(); }, ms);
+    });
   });
 });
 
-test('listening leans in and opens the eyes with the loudness', async ({ page }) => {
+test('listening merges the eyes into one round eye that swells with the voice', async ({ page }) => {
   const result = await page.evaluate(async () => {
     await window.avatar.startListening();
-    await window.wait(400);
-    const quiet = window.eyeScale();
-    const timer = setInterval(() => window.avatar.setVoiceLevel(1), 30);
-    await window.wait(400);
-    clearInterval(timer);
-    const loud = window.eyeScale();
-    const head = window.avatar.shadowRoot.getElementById('headMotion').style.transform;
-    window.avatar.reset();
-    await window.wait(50);
-    return { quiet, loud, head, after: window.avatar.shadowRoot.getElementById('headMotion').style.transform, events: window.events };
+    await window.wait(600);
+    const quiet = [window.shape('left'), window.shape('right')];
+    await window.feed(1, 400);
+    return { quiet, loud: window.shape('left'), events: window.events };
   });
-  expect(result.quiet).toBeGreaterThan(1.02);
-  expect(result.loud).toBeGreaterThan(result.quiet + 0.06);
-  expect(result.head).toContain('translateY');
-  expect(result.after).toBe('');
-  expect(result.events).toEqual(['listening:start', 'listening:cancel']);
+  const [left, right] = result.quiet;
+  expect(left).toMatchObject({ x: 120, y: 121, shown: true });
+  expect(right).toMatchObject({ x: 120, y: 121 });
+  expect(left.w).toBeCloseTo(93, 0);
+  expect(left.h).toBeCloseTo(left.w, 1);
+  expect(result.loud.w).toBeGreaterThan(105);
+  expect(result.events).toEqual(['listening:start']);
 });
 
-test('speaking keeps its own rhythm, and the bars follow the loudness', async ({ page }) => {
+test('thinking turns a flower of two crossed ovals', async ({ page }) => {
+  const result = await page.evaluate(async () => {
+    await window.avatar.startThinking();
+    await window.wait(800);
+    const first = [window.shape('left'), window.shape('right')];
+    await window.wait(500);
+    return { first, later: window.shape('left') };
+  });
+  const [left, right] = result.first;
+  expect(left.w).toBeGreaterThan(left.h);
+  expect(right.h).toBeGreaterThan(right.w);
+  expect(Math.max(left.w, right.h)).toBeCloseTo(111, 0);
+  expect(Math.abs(result.later.angle - left.angle)).toBeGreaterThan(15);
+});
+
+test('speaking splits and settles first, then stretches each eye with its band', async ({ page }) => {
+  const result = await page.evaluate(async () => {
+    await window.avatar.startThinking();
+    await window.wait(700);
+    await window.avatar.startSpeaking();
+    await window.wait(700);
+    // Split done, still settling: the standard eyes, even with sound coming in.
+    window.avatar.setVoiceLevel([1, 0]);
+    const settled = [window.shape('left'), window.shape('right')];
+    await window.feed([1, 0], 500);
+    return { settled, left: window.shape('left'), right: window.shape('right'), mode: window.avatar._voiceFx?.mode };
+  });
+  expect(result.settled[0]).toMatchObject({ x: 86.03, y: 126, angle: 0 });
+  expect(result.settled[1].x).toBeCloseTo(153.97, 2);
+  expect(result.settled[0].h).toBeCloseTo(57.98, 0);
+  expect(result.left.h).toBeGreaterThan(66);
+  expect(result.right.h).toBeLessThan(60);
+  // Rounded ends stay the standard size while the eye grows.
+  expect(result.left.corner).toBeCloseTo(28.99, 1);
+  expect(result.left.w).toBeCloseTo(53.94, 1);
+  expect(result.mode).toBe('speaking');
+});
+
+test('speaking keeps a rhythm of its own without any sound fed in', async ({ page }) => {
   const result = await page.evaluate(async () => {
     await window.avatar.startSpeaking();
-    const samples = [];
-    for (let i = 0; i < 20; i++) { await window.wait(40); samples.push(window.eyeScale()); }
-    await window.avatar.startSpeaking({ variant: 'bars' });
-    const ry = () => Number(window.avatar.shadowRoot.getElementById('leftBase').getAttribute('ry'));
-    window.avatar.setVoiceLevel(0);
-    const timerQuiet = setInterval(() => window.avatar.setVoiceLevel(0), 30);
-    await window.wait(450);
-    clearInterval(timerQuiet);
-    const quiet = ry();
-    const timerLoud = setInterval(() => window.avatar.setVoiceLevel(1), 30);
     await window.wait(300);
-    clearInterval(timerLoud);
-    return { moving: Math.max(...samples) - Math.min(...samples), quiet, loud: ry(), state: window.avatar._voiceFx?.mode };
+    const heights = [];
+    for (let i = 0; i < 25; i++) { await window.wait(40); heights.push(window.shape('left').h); }
+    return Math.max(...heights) - Math.min(...heights);
   });
-  expect(result.moving).toBeGreaterThan(0.02);
-  expect(result.quiet).toBeLessThan(14);
-  expect(result.loud).toBeGreaterThan(26);
-  expect(result.state).toBe('speaking');
+  expect(result).toBeGreaterThan(4);
 });
 
-test('one round of play() ends on its own; mistakes are reported', async ({ page }) => {
+test('steps of the set follow each other without resetting, and leaving eases back', async ({ page }) => {
   const result = await page.evaluate(async () => {
-    await window.avatar.play('listening-tilt');
-    const ended = window.events.slice();
-    const errors = [];
-    try { await window.avatar.startSpeaking({ variant: 'sing' }); } catch (error) { errors.push(error.constructor.name); }
-    return { ended, voice: window.avatar._voiceFx, errors };
+    await window.avatar.startListening();
+    await window.wait(500);
+    await window.avatar.startThinking();
+    // Right after the switch the eye is still round: a morph, not a jump.
+    const morphing = window.shape('left');
+    await window.avatar.startSpeaking();
+    await window.wait(1500);
+    window.avatar.play('success');
+    await window.wait(60);
+    const exiting = window.shape('left');
+    await window.wait(2600);
+    const root = window.avatar.shadowRoot;
+    return { morphing, exiting, after: root.getElementById('leftInputBase').getAttribute('opacity'),
+      ellipse: Number(root.getElementById('leftBase').getAttribute('opacity')), events: window.events };
   });
-  expect(result.ended).toEqual(['listening:start', 'listening:end']);
+  expect(result.morphing.w).toBeGreaterThan(85);
+  expect(result.exiting.shown).toBe(true);
+  expect(result.after).toBe('0');
+  expect(result.ellipse).toBe(1);
+  expect(result.events).toEqual([
+    'listening:start', 'listening:cancel', 'thinking:start', 'thinking:cancel',
+    'speaking:start', 'speaking:cancel', 'success:start', 'success:end',
+  ]);
+});
+
+test('one round of play() ends on its own', async ({ page }) => {
+  const result = await page.evaluate(async () => {
+    await window.avatar.play('listening');
+    return { events: window.events, voice: window.avatar._voiceFx };
+  });
+  expect(result.events).toEqual(['listening:start', 'listening:end']);
   expect(result.voice).toBeNull();
-  expect(result.errors).toEqual(['TypeError']);
 });
 
 test('reduced motion holds still poses', async ({ page }) => {
   const result = await page.evaluate(async () => {
     window.avatar.setAttribute('motion', 'reduce');
-    await window.avatar.startSpeaking({ variant: 'bars' });
-    const ry = () => window.avatar.shadowRoot.getElementById('leftBase').getAttribute('ry');
+    await window.avatar.startThinking();
     await window.wait(300);
-    const first = ry();
-    await window.wait(300);
-    return { first, second: ry() };
+    const first = window.shape('left');
+    await window.wait(400);
+    return { first, second: window.shape('left') };
   });
-  expect(result.first).toBe(result.second);
+  expect(result.second).toEqual(result.first);
 });
 
 test('connectAgent follows an OpenAI Realtime voice turn', async ({ page }) => {
@@ -97,29 +154,20 @@ test('connectAgent follows an OpenAI Realtime voice turn', async ({ page }) => {
     await window.wait(200);
     agent.handle({ type: 'input_audio_buffer.speech_stopped' });
     agent.handle({ type: 'response.created' });
-    await window.wait(200);
+    await window.wait(300);
+    const thinking = window.avatar._voiceFx?.mode;
     agent.handle({ type: 'output_audio_buffer.started' });
     agent.handle({ type: 'response.output_audio_transcript.delta', delta: 'Hi' });
     // Generation can end while the reply is still playing.
     agent.handle({ type: 'response.done', response: { status: 'completed' } });
     const whilePlaying = agent.state;
     agent.handle({ type: 'output_audio_buffer.stopped' });
-    await window.wait(2000);
-    return { states, whilePlaying, state: agent.state, voice: window.avatar._voiceFx?.mode, events: window.events };
+    await window.wait(600);
+    return { states, thinking, whilePlaying, state: agent.state, voice: window.avatar._voiceFx?.mode, events: window.events };
   });
   expect(result.states).toEqual(['listening', 'thinking', 'speaking', 'listening']);
+  expect(result.thinking).toBe('thinking');
   expect(result.whilePlaying).toBe('speaking');
   expect(result.voice).toBe('listening');
   expect(result.events).not.toContain('success:start');
-});
-
-test('switching the listening style keeps one running action', async ({ page }) => {
-  const result = await page.evaluate(async () => {
-    await window.avatar.startListening();
-    await window.avatar.startListening();
-    await window.avatar.startListening({ variant: 'tilt' });
-    return { events: window.events, active: window.avatar._activeActionState?.action, variant: window.avatar._voiceFx?.variant };
-  });
-  expect(result.events).toEqual(['listening:start', 'listening:cancel', 'listening:start']);
-  expect(result).toMatchObject({ active: 'listening', variant: 'tilt' });
 });
