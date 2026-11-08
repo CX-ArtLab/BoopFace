@@ -10,7 +10,8 @@ const TEXT = {
     outcomeRefused: '拒绝回答', outcomeApproval: '需要确认', tools: '中途用工具', toolsHint: '比如上网搜索',
     thinking: '思考时', tool: '用工具时', replying: '回复文字时', spin: '等待 · 旋转', wrap: '等待 · 环绕',
     wave: '等待 · 波动', inspect: '审视', idle: '正常', input: '输入', keep: '继续等待', stop: '中途停止',
-    run: '发一条消息', code: '你的代码', empty: '点「发一条消息」，看头像怎么跟着 AI 的状态变。右边是实际收到的事件。',
+    run: '发一条消息', code: '你的代码', codeComment: '// 照常显示回复',
+    codeNote: '「接口格式」决定代码怎么接；「这次结果」和「中途用工具」不用改代码，头像自己会处理；下面三排会改 actions 那一行。', empty: '点「发一条消息」，看头像怎么跟着 AI 的状态变。右边是实际收到的事件。',
     reply: '明天上海多云，最高 18°C，最低 11°C，傍晚可能有小雨，出门记得带把伞。',
     refusal: '抱歉，这个请求我没法帮忙。',
     failed: '（连接中断，回复失败）',
@@ -26,7 +27,8 @@ const TEXT = {
     outcomeRefused: 'Refuses', outcomeApproval: 'Needs approval', tools: 'Uses a tool', toolsHint: 'Such as web search',
     thinking: 'Thinking', tool: 'Using a tool', replying: 'Writing text', spin: 'Waiting · Spin', wrap: 'Waiting · Wrap',
     wave: 'Waiting · Wave', inspect: 'Inspect', idle: 'Normal', input: 'Input', keep: 'Keep waiting', stop: 'Stop',
-    run: 'Send a message', code: 'Your code', empty: 'Press “Send a message” and watch the avatar follow the AI. The events it receives are listed on the right.',
+    run: 'Send a message', code: 'Your code', codeComment: '// show the reply as usual',
+    codeNote: '“Format” decides how the code connects. “Outcome” and “Uses a tool” need no code: the avatar handles them. The three rows below change the actions line.', empty: 'Press “Send a message” and watch the avatar follow the AI. The events it receives are listed on the right.',
     reply: 'Tomorrow in Shanghai: cloudy, high 18°C, low 11°C. Light rain is likely in the evening, so take an umbrella.',
     refusal: 'Sorry, I can’t help with that request.',
     failed: '(Connection lost, the reply failed)',
@@ -78,6 +80,8 @@ function applyLanguage() {
   }
   document.title = `${navLabel('agent', 0, navLang)} · BoopFace`;
   showState(agent?.state || 'idle');
+  shownLines = null;
+  renderCode();
 }
 
 function actionsFromSettings() {
@@ -88,13 +92,77 @@ function actionsFromSettings() {
   };
 }
 
+// The code a page would write for the chosen format. Lines that changed since
+// the last choice flash briefly, so it is clear what each setting touches.
+const SOURCES = {
+  'ag-ui': {
+    imports: ["import { HttpAgent } from '@ag-ui/client';"],
+    body: [
+      "const remote = new HttpAgent({ url: '/api/agent' });",
+      '',
+      'await remote.runAgent({}, {',
+      '  onEvent: ({ event }) => agent.handle(event),',
+      '});',
+    ],
+  },
+  openai: {
+    imports: ["import OpenAI from 'openai';"],
+    body: [
+      'const stream = await new OpenAI().responses.create({',
+      '  model: MODEL, input: question, stream: true,',
+      '});',
+      '',
+      'for await (const event of agent.track(stream)) {',
+      '  COMMENT',
+      '}',
+    ],
+  },
+  anthropic: {
+    imports: ["import Anthropic from '@anthropic-ai/sdk';"],
+    body: [
+      'const stream = await new Anthropic().messages.create({',
+      '  model: MODEL, max_tokens: 1024, stream: true,',
+      "  messages: [{ role: 'user', content: question }],",
+      '});',
+      '',
+      'for await (const event of agent.track(stream)) {',
+      '  COMMENT',
+      '}',
+    ],
+  },
+  'ai-sdk': {
+    imports: ["import { streamText } from 'ai';"],
+    body: [
+      'const result = streamText({ model, prompt: question });',
+      '',
+      'for await (const part of agent.track(result.fullStream)) {',
+      '  COMMENT',
+      '}',
+    ],
+  },
+};
+
+let shownLines = null;
+
 function renderCode() {
   const actions = actionsFromSettings();
   const changed = Object.entries(actions).filter(([state, action]) => DEFAULTS[state] !== action);
-  const options = changed.length
-    ? `, {\n  actions: { ${changed.map(([state, action]) => `${state}: '${action}'`).join(', ')} },\n}`
-    : '';
-  codeEl.textContent = `import { connectAgent } from 'boopface';\n\nconst agent = connectAgent(avatar${options});\n\nfor await (const event of agent.track(stream)) {\n  // show the reply as usual\n}`;
+  const source = SOURCES[settings.format];
+  const create = changed.length
+    ? ['const agent = connectAgent(avatar, {', `  actions: { ${changed.map(([state, action]) => `${state}: '${action}'`).join(', ')} },`, '});']
+    : ['const agent = connectAgent(avatar);'];
+  const lines = [...source.imports, "import { connectAgent } from 'boopface';", '', ...create, ...source.body.length ? [''] : [], ...source.body]
+    .map(line => line.replace('COMMENT', t('codeComment')));
+  const before = shownLines ? new Set(shownLines) : null;
+  codeEl.textContent = '';
+  for (const line of lines) {
+    const row = document.createElement('span');
+    row.className = 'line';
+    row.textContent = line || ' ';
+    if (before && line && !before.has(line)) row.classList.add('fresh');
+    codeEl.append(row);
+  }
+  shownLines = lines;
 }
 
 function syncChips() {

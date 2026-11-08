@@ -49,10 +49,15 @@
   .run:hover{background:#585d63}
   .run:disabled{opacity:.45;cursor:default}
 
-  .log{position:sticky;top:20px;display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:10px;height:min(640px,calc(100vh - 120px));padding:12px;border-radius:16px;background:rgba(255,255,255,.88);box-shadow:0 7px 30px rgba(0,0,0,.08);backdrop-filter:blur(14px)}
+  .log{position:sticky;top:20px;display:grid;grid-template-rows:auto auto auto minmax(0,1fr);gap:10px;height:min(640px,calc(100vh - 120px));padding:12px;border-radius:16px;background:rgba(255,255,255,.88);box-shadow:0 7px 30px rgba(0,0,0,.08);backdrop-filter:blur(14px)}
   .log-head{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:600;color:#72777e}
   .log-head button{padding:4px 8px;font-size:11px;color:#72777e;background:#f4f5f6}
   .code{margin:0;padding:10px;border-radius:10px;background:#f4f5f6;font:11px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#4d5258;white-space:pre-wrap;word-break:break-word}
+  .code .line{display:block;margin:0 -4px;padding:0 4px;border-radius:4px}
+  .code .fresh{animation:code-fresh 1.8s ease-out}
+  @keyframes code-fresh{from{background:#dcdfe3;color:#25282d}to{background:transparent}}
+  @media(prefers-reduced-motion:reduce){.code .fresh{animation:none;background:#e6e8eb}}
+  .code-note{margin:-2px 2px 0;font-size:10px;line-height:1.5;color:#a0a4aa}
   .events{margin:0;padding:0;list-style:none;overflow:auto;font:11px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
   .events li{display:flex;justify-content:space-between;gap:8px;padding:4px 6px;border-radius:7px;color:#565b62}
   .events li:nth-child(odd){background:#f6f7f7}
@@ -148,6 +153,7 @@
     <aside class="log" aria-label="Events">
       <div class="log-head"><span data-i18n="code">你的代码</span></div>
       <pre class="code" id="code"></pre>
+      <p class="code-note" data-i18n="codeNote"></p>
       <ol class="events" id="events"></ol>
     </aside>
   </div>
