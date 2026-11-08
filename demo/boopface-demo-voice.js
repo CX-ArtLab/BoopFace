@@ -4,15 +4,15 @@
 import { settleNewDots } from './skins-i18n.js';
 
 const LABELS = Object.freeze({
-  'zh-CN': { group: '语音交互表情套件', listening: '聆听', thinking: '思考', speaking: '说话', play: '播放一轮对话', stop: '停止', sound: '声音' , style: '思考样式', bloom: '绽放', spin: '旋转', wrap: '滚动', wave: '波动' , user: '用户', ai: 'AI', hint: '模拟语音助手的一轮对话：先听用户说，再思考，最后回答' },
-  'zh-TW': { group: '語音互動表情套件', listening: '聆聽', thinking: '思考', speaking: '說話', play: '播放一輪對話', stop: '停止', sound: '聲音' , style: '思考樣式', bloom: '綻放', spin: '旋轉', wrap: '滾動', wave: '波動' , user: '使用者', ai: 'AI', hint: '模擬語音助理的一輪對話：先聽使用者說，再思考，最後回答' },
-  en: { group: 'Voice Interaction Kit', listening: 'Listening', thinking: 'Thinking', speaking: 'Speaking', play: 'Play a turn', stop: 'Stop', sound: 'Sound' , style: 'Thinking style', bloom: 'Bloom', spin: 'Spin', wrap: 'Scroll', wave: 'Wave' , user: 'User', ai: 'AI', hint: 'One turn with a voice assistant: it listens, thinks, then answers' },
-  ja: { group: '音声対話表情キット', listening: '聞く', thinking: '考える', speaking: '話す', play: '1 往復を再生', stop: '停止', sound: '音声' , style: '考えるときの形', bloom: 'ブルーム', spin: '回転', wrap: '回り込み', wave: 'ウェーブ' , user: 'ユーザー', ai: 'AI', hint: '音声アシスタントとの 1 往復：聞いて、考えて、答える' },
-  ko: { group: '음성 인터랙션 표정 키트', listening: '듣기', thinking: '생각', speaking: '말하기', play: '한 번 재생', stop: '정지', sound: '소리' , style: '생각 스타일', bloom: '피어나기', spin: '회전', wrap: '감싸기', wave: '물결' , user: '사용자', ai: 'AI', hint: '음성 비서와의 한 턴: 듣고, 생각하고, 답합니다' },
-  es: { group: 'Kit de expresiones de voz', listening: 'Escuchar', thinking: 'Pensar', speaking: 'Hablar', play: 'Reproducir turno', stop: 'Detener', sound: 'Sonido' , style: 'Estilo al pensar', bloom: 'Florecer', spin: 'Giro', wrap: 'Envoltura', wave: 'Onda' , user: 'Usuario', ai: 'IA', hint: 'Un turno con un asistente de voz: escucha, piensa y responde' },
-  pt: { group: 'Kit de expressões de voz', listening: 'Ouvir', thinking: 'Pensar', speaking: 'Falar', play: 'Tocar rodada', stop: 'Parar', sound: 'Som' , style: 'Estilo ao pensar', bloom: 'Florescer', spin: 'Giro', wrap: 'Contorno', wave: 'Onda' , user: 'Usuário', ai: 'IA', hint: 'Uma rodada com um assistente de voz: ouve, pensa e responde' },
-  de: { group: 'Sprach-Interaktions-Kit', listening: 'Zuhören', thinking: 'Denken', speaking: 'Sprechen', play: 'Runde abspielen', stop: 'Stopp', sound: 'Ton' , style: 'Denkstil', bloom: 'Erblühen', spin: 'Drehen', wrap: 'Umlauf', wave: 'Welle' , user: 'Nutzer', ai: 'KI', hint: 'Eine Runde mit einem Sprachassistenten: zuhören, nachdenken, antworten' },
-  fr: { group: 'Kit d’expressions vocales', listening: 'Écouter', thinking: 'Réfléchir', speaking: 'Parler', play: 'Lire un échange', stop: 'Arrêter', sound: 'Son' , style: 'Style de réflexion', bloom: 'Éclosion', spin: 'Rotation', wrap: 'Boucle', wave: 'Vague' , user: 'Utilisateur', ai: 'IA', hint: 'Un échange avec un assistant vocal : il écoute, réfléchit, puis répond' },
+  'zh-CN': { group: '语音交互表情套件', listening: '聆听', thinking: '思考', speaking: '说话', play: '播放一轮对话', stop: '停止', sound: '声音' , style: '思考样式', bloom: '绽放', spin: '旋转', wrap: '滚动', wave: '波动' , user: '用户', ai: 'AI', hint: '模拟语音助手的一轮对话：先听用户说，再思考，最后回答' , listeningNow: '正在聆听…', thinkingNow: '正在思考…' },
+  'zh-TW': { group: '語音互動表情套件', listening: '聆聽', thinking: '思考', speaking: '說話', play: '播放一輪對話', stop: '停止', sound: '聲音' , style: '思考樣式', bloom: '綻放', spin: '旋轉', wrap: '滾動', wave: '波動' , user: '使用者', ai: 'AI', hint: '模擬語音助理的一輪對話：先聽使用者說，再思考，最後回答' , listeningNow: '正在聆聽…', thinkingNow: '正在思考…' },
+  en: { group: 'Voice Interaction Kit', listening: 'Listening', thinking: 'Thinking', speaking: 'Speaking', play: 'Play a turn', stop: 'Stop', sound: 'Sound' , style: 'Thinking style', bloom: 'Bloom', spin: 'Spin', wrap: 'Scroll', wave: 'Wave' , user: 'User', ai: 'AI', hint: 'One turn with a voice assistant: it listens, thinks, then answers' , listeningNow: 'Listening…', thinkingNow: 'Thinking…' },
+  ja: { group: '音声対話表情キット', listening: '聞く', thinking: '考える', speaking: '話す', play: '1 往復を再生', stop: '停止', sound: '音声' , style: '考えるときの形', bloom: 'ブルーム', spin: '回転', wrap: '回り込み', wave: 'ウェーブ' , user: 'ユーザー', ai: 'AI', hint: '音声アシスタントとの 1 往復：聞いて、考えて、答える' , listeningNow: '聞いています…', thinkingNow: '考えています…' },
+  ko: { group: '음성 인터랙션 표정 키트', listening: '듣기', thinking: '생각', speaking: '말하기', play: '한 번 재생', stop: '정지', sound: '소리' , style: '생각 스타일', bloom: '피어나기', spin: '회전', wrap: '감싸기', wave: '물결' , user: '사용자', ai: 'AI', hint: '음성 비서와의 한 턴: 듣고, 생각하고, 답합니다' , listeningNow: '듣는 중…', thinkingNow: '생각하는 중…' },
+  es: { group: 'Kit de expresiones de voz', listening: 'Escuchar', thinking: 'Pensar', speaking: 'Hablar', play: 'Reproducir turno', stop: 'Detener', sound: 'Sonido' , style: 'Estilo al pensar', bloom: 'Florecer', spin: 'Giro', wrap: 'Envoltura', wave: 'Onda' , user: 'Usuario', ai: 'IA', hint: 'Un turno con un asistente de voz: escucha, piensa y responde' , listeningNow: 'Escuchando…', thinkingNow: 'Pensando…' },
+  pt: { group: 'Kit de expressões de voz', listening: 'Ouvir', thinking: 'Pensar', speaking: 'Falar', play: 'Tocar rodada', stop: 'Parar', sound: 'Som' , style: 'Estilo ao pensar', bloom: 'Florescer', spin: 'Giro', wrap: 'Contorno', wave: 'Onda' , user: 'Usuário', ai: 'IA', hint: 'Uma rodada com um assistente de voz: ouve, pensa e responde' , listeningNow: 'Ouvindo…', thinkingNow: 'Pensando…' },
+  de: { group: 'Sprach-Interaktions-Kit', listening: 'Zuhören', thinking: 'Denken', speaking: 'Sprechen', play: 'Runde abspielen', stop: 'Stopp', sound: 'Ton' , style: 'Denkstil', bloom: 'Erblühen', spin: 'Drehen', wrap: 'Umlauf', wave: 'Welle' , user: 'Nutzer', ai: 'KI', hint: 'Eine Runde mit einem Sprachassistenten: zuhören, nachdenken, antworten' , listeningNow: 'Hört zu…', thinkingNow: 'Denkt nach…' },
+  fr: { group: 'Kit d’expressions vocales', listening: 'Écouter', thinking: 'Réfléchir', speaking: 'Parler', play: 'Lire un échange', stop: 'Arrêter', sound: 'Son' , style: 'Style de réflexion', bloom: 'Éclosion', spin: 'Rotation', wrap: 'Boucle', wave: 'Vague' , user: 'Utilisateur', ai: 'IA', hint: 'Un échange avec un assistant vocal : il écoute, réfléchit, puis répond' , listeningNow: 'Écoute…', thinkingNow: 'Réfléchit…' },
 });
 
 function labels() {
@@ -76,7 +76,7 @@ function relabel() {
   row.querySelector('.demo-voice-label').title = t.hint;
   row.title = '';
   playButton.title = t.hint;
-  if (turn && caption.dataset.text) caption.textContent = `${t[caption.dataset.who === 'user' ? 'user' : 'ai']} · ${caption.dataset.text}`;
+  if (turn && caption.dataset.who) caption.textContent = captionText(caption.dataset.who, caption.dataset.text);
   for (const button of row.querySelectorAll('[data-voice]:not([data-voice="thinking"])')) button.textContent = t[button.dataset.voice];
   // The thinking button names the waiting style it plays. Every style's label
   // sits in the same spot, so the button keeps one width whichever is shown.
@@ -159,6 +159,7 @@ row.addEventListener('click', event => {
   const button = event.target.closest('button[data-voice]');
   if (!button) return;
   stopTurn();
+  if (button.dataset.voice !== 'speaking') playCue();
   const action = button.dataset.voice === 'thinking' ? `waiting-${thinkingStyle}` : button.dataset.voice;
   face.play(action);
   if (action === 'listening') pretendVoice(performance.now());
@@ -232,7 +233,7 @@ function cueTone() {
   for (let n = 0; n < samples.length; n++) {
     const t = n / rate;
     const shape = t < attack ? Math.sin(Math.PI * t / (2 * attack)) ** 2 : Math.cos(Math.PI * (t - attack) / (2 * (end - attack))) ** 2;
-    samples[n] = 0.055 * shape * (Math.sin(2 * Math.PI * 392 * t) + 0.12 * Math.sin(2 * Math.PI * 588 * t)) / 1.12;
+    samples[n] = 0.11 * shape * (Math.sin(2 * Math.PI * 392 * t) + 0.12 * Math.sin(2 * Math.PI * 588 * t)) / 1.12;
   }
   return buffer;
 }
@@ -242,8 +243,33 @@ async function loadClips() {
   const data = await import('./voice/voice-audio-data.js');
   const user = decodeWav(data.userPCM);
   const reply = decodeWav(data.replyPCM);
-  clips = { user, reply, cue: cueTone(), text: data.speechText, userLevels: envelope(user), replyLevels: envelope(reply) };
+  cueBuffer ??= cueTone();
+  clips = { user, reply, cue: cueBuffer, text: data.speechText, userLevels: envelope(user), replyLevels: envelope(reply) };
   return clips;
+}
+
+async function audioReady() {
+  context ??= new (window.AudioContext || window.webkitAudioContext)();
+  await context.resume();
+  if (!output) {
+    output = context.createGain();
+    output.connect(context.destination);
+  }
+  output.gain.value = soundInput.checked ? 1 : 0;
+}
+
+// The same soft cue marks the start of listening and of thinking.
+let cueBuffer = null;
+async function playCue() {
+  if (!soundInput.checked) return;
+  try {
+    await audioReady();
+    cueBuffer ??= cueTone();
+    const source = context.createBufferSource();
+    source.buffer = cueBuffer;
+    source.connect(output);
+    source.start();
+  } catch { /* no sound available */ }
 }
 
 function play(buffer, at) {
@@ -254,11 +280,20 @@ function play(buffer, at) {
   turn.sources.push(source);
 }
 
-function showCaption(who, text) {
+// who: 'user' or 'reply' for spoken words, 'listening' or 'thinking' for a
+// status line between them.
+function captionText(who, text) {
+  const t = labels();
+  if (who === 'listening') return t.listeningNow;
+  if (who === 'thinking') return `${t.ai} · ${t.thinkingNow}`;
+  return `${t[who === 'user' ? 'user' : 'ai']} · ${text}`;
+}
+
+function showCaption(who, text = '') {
   caption.hidden = false;
   caption.dataset.who = who;
   caption.dataset.text = text;
-  caption.textContent = `${labels()[who === 'user' ? 'user' : 'ai']} · ${text}`;
+  caption.textContent = captionText(who, text);
 }
 
 // While a turn plays, the step that is on screen lights up.
@@ -279,19 +314,14 @@ function stopTurn() {
   turn = null;
   caption.hidden = true;
   delete caption.dataset.text;
+  delete caption.dataset.who;
   markStep(null);
   playButton.classList.remove('is-playing');
   relabel();
 }
 
 async function startTurn() {
-  context ??= new (window.AudioContext || window.webkitAudioContext)();
-  await context.resume();
-  if (!output) {
-    output = context.createGain();
-    output.connect(context.destination);
-  }
-  output.gain.value = soundInput.checked ? 1 : 0;
+  await audioReady();
   const clip = await loadClips();
   stopTurn();
   const begin = context.currentTime + 0.08;
@@ -323,10 +353,14 @@ async function startTurn() {
     if (active.step === 'listening') {
       face.setVoiceLevel(clock >= userStart ? sample(clip.userLevels, clock - userStart)[0] : 0);
       if (clock >= userStart) showCaption('user', reveal(clip.text.user, (clock - userStart) / clip.user.duration));
+      else if (caption.dataset.who !== 'listening') showCaption('listening');
+    } else if (active.step === 'thinking') {
+      if (caption.dataset.who !== 'thinking') showCaption('thinking');
     } else if (active.step === 'speaking') {
       const [, low, high] = clock >= replyStart ? sample(clip.replyLevels, clock - replyStart) : [0, 0, 0];
       face.setVoiceLevel([low, high]);
       if (clock >= replyStart) showCaption('reply', reveal(clip.text.reply, (clock - replyStart) / clip.reply.duration));
+      else if (caption.dataset.who !== 'thinking') showCaption('thinking');
     }
     if (clock >= end) {
       active.step = 'done';
