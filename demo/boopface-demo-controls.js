@@ -527,7 +527,7 @@ function mountDemoControls() {
     loopEnabled = loopToggle.checked;
     if (!loopEnabled) {
       loopToken += 1;
-      if (['waiting-spin', 'waiting-wrap', 'waiting-wave'].includes(activeAction)) face.stopWaiting();
+      if (['waiting-spin', 'waiting-wrap', 'waiting-wave', 'waiting-flower'].includes(activeAction)) face.stopWaiting();
     }
   });
 
@@ -544,6 +544,10 @@ function mountDemoControls() {
     }
     if (action === 'waiting-wave' && loopEnabled) {
       await face.startWaiting({ variant:'wave' });
+      return;
+    }
+    if (action === 'waiting-flower' && loopEnabled) {
+      await face.startWaiting({ variant:'flower' });
       return;
     }
     if (action === 'wake') {
@@ -571,7 +575,7 @@ function mountDemoControls() {
       if (token !== loopToken) return;
       await playOneCycle(action, token);
       if (action === 'wake') return;
-      if (['waiting-spin', 'waiting-wrap', 'waiting-wave'].includes(action) && loopEnabled) return;
+      if (['waiting-spin', 'waiting-wrap', 'waiting-wave', 'waiting-flower'].includes(action) && loopEnabled) return;
       if (token !== loopToken || !loopEnabled) return;
       const delay = extraLoopDelay[action] ?? 140;
       if (delay > 0) await wait(delay);

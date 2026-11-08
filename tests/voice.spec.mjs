@@ -49,9 +49,9 @@ test('listening merges the eyes into one round eye that swells with the voice', 
   expect(result.events).toEqual(['listening:start']);
 });
 
-test('thinking turns a flower of two crossed ovals', async ({ page }) => {
+test('the flower waiting style turns two crossed ovals', async ({ page }) => {
   const result = await page.evaluate(async () => {
-    await window.avatar.startThinking();
+    await window.avatar.startWaiting({ variant: 'flower' });
     await window.wait(800);
     const first = [window.shape('left'), window.shape('right')];
     await window.wait(500);
@@ -66,7 +66,7 @@ test('thinking turns a flower of two crossed ovals', async ({ page }) => {
 
 test('speaking splits and settles first, then stretches each eye with its band', async ({ page }) => {
   const result = await page.evaluate(async () => {
-    await window.avatar.startThinking();
+    await window.avatar.startWaiting({ variant: 'flower' });
     await window.wait(700);
     await window.avatar.startSpeaking();
     await window.wait(700);
@@ -102,7 +102,7 @@ test('steps of the set follow each other without resetting, and leaving eases ba
   const result = await page.evaluate(async () => {
     await window.avatar.startListening();
     await window.wait(500);
-    await window.avatar.startThinking();
+    await window.avatar.startWaiting({ variant: 'flower' });
     // Right after the switch the eye is still round: a morph, not a jump.
     const morphing = window.shape('left');
     await window.avatar.startSpeaking();
@@ -120,7 +120,7 @@ test('steps of the set follow each other without resetting, and leaving eases ba
   expect(result.after).toBe('0');
   expect(result.ellipse).toBe(1);
   expect(result.events).toEqual([
-    'listening:start', 'listening:cancel', 'thinking:start', 'thinking:cancel',
+    'listening:start', 'listening:cancel', 'waiting:start', 'waiting:cancel',
     'speaking:start', 'speaking:cancel', 'success:start', 'success:end',
   ]);
 });
@@ -137,7 +137,7 @@ test('one round of play() ends on its own', async ({ page }) => {
 test('reduced motion holds still poses', async ({ page }) => {
   const result = await page.evaluate(async () => {
     window.avatar.setAttribute('motion', 'reduce');
-    await window.avatar.startThinking();
+    await window.avatar.startWaiting({ variant: 'flower' });
     await window.wait(300);
     const first = window.shape('left');
     await window.wait(400);
@@ -170,4 +170,38 @@ test('connectAgent follows an OpenAI Realtime voice turn', async ({ page }) => {
   expect(result.whilePlaying).toBe('speaking');
   expect(result.voice).toBe('listening');
   expect(result.events).not.toContain('success:start');
+});
+
+test('the flower is a waiting style: one round, stopWaiting, and the same waiting events', async ({ page }) => {
+  const result = await page.evaluate(async () => {
+    const states = [];
+    window.avatar.addEventListener('face-state', event => states.push(event.detail.state));
+    await window.avatar.play('waiting-flower');
+    const round = window.events.slice();
+    await window.avatar.startWaiting({ variant: 'flower' });
+    window.avatar.stopWaiting();
+    return { round, events: window.events, states, voice: window.avatar._voiceFx };
+  });
+  expect(result.round).toEqual(['waiting:start', 'waiting:end']);
+  expect(result.events.slice(2)).toEqual(['waiting:start', 'waiting:end']);
+  expect(result.states).toContain('waiting');
+  expect(result.states).not.toContain('thinking');
+  expect(result.voice).toBeNull();
+});
+
+test('a voice conversation can think with any other waiting style', async ({ page }) => {
+  const result = await page.evaluate(async () => {
+    const agent = window.boop.connectAgent(window.avatar, { actions: { thinking: 'waiting-wave' } });
+    agent.handle({ type: 'input_audio_buffer.speech_started' });
+    await window.wait(600);
+    agent.handle({ type: 'input_audio_buffer.speech_stopped' });
+    await window.wait(600);
+    const thinking = { wave: window.avatar._waitingFx?.variant, voice: window.avatar._voiceFx?.mode ?? null };
+    agent.handle({ type: 'response.output_audio.delta' });
+    await window.wait(1200);
+    return { thinking, speaking: window.avatar._voiceFx?.mode, waiting: window.avatar._waitingFx };
+  });
+  expect(result.thinking).toEqual({ wave: 'wave', voice: null });
+  expect(result.speaking).toBe('speaking');
+  expect(result.waiting).toBeNull();
 });

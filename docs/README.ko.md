@@ -132,9 +132,9 @@ avatar.reset();
 | `waiting-spin` | 두 눈이 좌우로 회전 | 응답 대기 (기본) |
 | `waiting-wrap` | 두 눈이 한쪽으로 나갔다 반대쪽으로 돌아옴 | 응답 대기 |
 | `waiting-wave` | 두 눈이 번갈아 위아래로 출렁임 | 응답 대기 |
+| `waiting-flower` | 교차한 두 타원이 꽃처럼 숨 쉬며 돎 | 답변 대기. 음성 대화를 위해 만든 모양 |
 | `input` | 두 눈이 깜박이는 입력 커서가 됨 | 사용자가 입력 중 |
 | `listening` | 두 눈이 하나의 둥근 눈으로 합쳐져 목소리에 따라 부풂 | 음성 대화: 사용자가 말하는 중 |
-| `thinking` | 교차한 두 타원이 꽃처럼 숨 쉬며 돎 | 음성 대화: AI가 생각하는 중 |
 | `speaking` | 두 눈으로 다시 나뉘어 답변에 맞춰 늘어남 | 음성 대화: AI가 답하는 중 |
 | `affirm` | 고개를 끄덕임 | 확인, 알겠음 |
 | `success` | 기쁘게 웃는 눈 | 작업 완료 |
@@ -149,7 +149,7 @@ avatar.reset();
 | `sleep` | 눈을 감고 잠듦 | 오랫동안 조작이 없을 때 |
 | `wake` | 눈을 뜨고 깨어남 | 활동이 다시 시작될 때 |
 
-대기 동작은 `play()`로 한 번 재생됩니다. `startWaiting({ variant: 'spin' | 'wrap' | 'wave' })`는 다른 동작을 재생하거나 `stopWaiting()`을 호출할 때까지 반복됩니다.
+대기 동작은 `play()`로 한 번 재생됩니다. `startWaiting({ variant: 'spin' | 'wrap' | 'wave' | 'flower' })`는 다른 동작을 재생하거나 `stopWaiting()`을 호출할 때까지 반복됩니다.
 
 0.5의 이전 이름(`send`, `warning`, `error`, `blocked`, `slot` 등)은 1.0 전까지 계속 동작하지만 콘솔에 이름 변경 안내가 표시됩니다. [업그레이드 표](../CHANGELOG.md#upgrading-from-05x)를 참고하세요.
 
@@ -287,15 +287,17 @@ connectAgent(avatar, {
 듣기, 생각하기, 말하기. 음성 비서는 매 턴마다 이 세 단계를 거칩니다. 아바타에는 서로 자연스럽게 이어지는 세 가지 표정 세트가 있습니다.
 
 ```js
-avatar.startListening();   // 사용자가 말하는 중
-avatar.startThinking();    // AI가 생각하는 중
-avatar.startSpeaking();    // AI가 답하는 중
-avatar.setVoiceLevel(0.6); // 선택: 음량 0~1
+avatar.startListening();                    // 사용자가 말하는 중
+avatar.startWaiting({ variant: 'flower' }); // AI가 생각하는 중
+avatar.startSpeaking();                     // AI가 답하는 중
+avatar.setVoiceLevel(0.6);                  // 선택: 음량 0~1
 ```
 
 듣기에서는 두 눈이 하나의 둥근 눈으로 합쳐져 사용자의 목소리에 따라 부풀어 오릅니다. 생각하기에서는 교차한 두 타원이 천천히 도는 꽃처럼 숨 쉽니다. 말하기에서는 두 눈으로 다시 나뉘어 잠시 멈춘 뒤, 답변에 맞춰 늘어났다 줄어듭니다. 낮은 소리는 왼쪽 눈, 높은 소리는 오른쪽 눈을 움직입니다. 음량은 `setVoiceLevel(level)` 또는 `setVoiceLevel([low, high])`로 넘깁니다. 넘기지 않으면 말하기는 자체 리듬으로 움직이고 듣기는 가만히 있습니다. 각 단계는 다음 단계가 시작될 때까지 반복되며, 단계가 바뀔 때 눈이 튀지 않고 부드럽게 변형됩니다.
 
-`connectAgent()`가 이 모든 것을 자동으로 처리합니다. OpenAI Realtime 이벤트와 ElevenLabs 같은 음성 SDK가 알려 주는 `mode`를 이해하고, 음성 대화에서는 이 세트의 생각하기 표정을 쓰며, 답변이 끝날 때마다 듣기로 돌아갑니다.
+생각하기는 대기의 한 종류입니다. 꽃(`variant: 'flower'`)은 듣기의 둥근 눈에서 바로 변형되며, 다른 대기 스타일도 쓸 수 있습니다.
+
+`connectAgent()`가 이 모든 것을 자동으로 처리합니다. OpenAI Realtime 이벤트와 ElevenLabs 같은 음성 SDK가 알려 주는 `mode`를 이해하고, 음성 대화에서 생각하는 동안 꽃으로 대기하며(`actions.thinking`으로 다른 스타일 지정 가능), 답변이 끝날 때마다 듣기로 돌아갑니다.
 
 ```js
 const agent = connectAgent(avatar);

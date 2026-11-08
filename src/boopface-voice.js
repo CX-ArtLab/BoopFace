@@ -1,8 +1,10 @@
 import BoopFace, { registerAvatarExtension } from './boopface-extension-host.js';
 
-// Voice conversation, as one set of three expressions:
+// Voice conversation, as one set of three steps:
 //   listening: both eyes merge into one round eye that swells with the voice;
-//   thinking:  two crossed ovals that breathe and turn, like a slow flower;
+//   thinking:  any waiting style; the flower (two crossed ovals that breathe
+//              and turn) is made for the set and morphs straight out of the
+//              listening eye. It is startWaiting({ variant: 'flower' });
 //   speaking:  the eyes split back and stretch with the reply, low sounds in
 //              the left eye and high sounds in the right.
 // Each one loops until the next action. Moving between them morphs the eyes;
@@ -27,7 +29,7 @@ const EXIT = 260;    // back to the normal face
 const LEVEL_FRESH = 260;
 const ROUNDS = Object.freeze({ listening: 2600, thinking: 3600, speaking: 2600 });
 const KEYS = ['x', 'y', 'rx', 'ry', 'capX', 'capY', 'angle'];
-const MODES = ['listening', 'thinking', 'speaking'];
+const OWN_ACTIONS = ['listening', 'speaking', 'waiting-flower'];
 const proto = BoopFace.prototype;
 
 const clamp01 = value => Math.max(0, Math.min(1, value));
@@ -94,8 +96,9 @@ function shownPoses(instance) {
   return instance._voiceShown?.map(pose => ({ ...pose })) || [neutralPose(0), neutralPose(1)];
 }
 
+// The flower is a waiting style, so it reports itself as waiting.
 function dispatchVoiceState(instance, state) {
-  instance.dispatchEvent(new CustomEvent('face-state', { detail: { state } }));
+  instance.dispatchEvent(new CustomEvent('face-state', { detail: { state: state === 'thinking' ? 'waiting' : state } }));
 }
 
 // Starts a voice mode. From another voice mode the eyes morph in place; from
@@ -176,7 +179,8 @@ proto.startListening = async function() {
   return this;
 };
 
-proto.startThinking = async function() {
+// Used by startWaiting({ variant: 'flower' }).
+proto._startFlower = async function() {
   await enterVoice(this, 'thinking', true);
   return this;
 };
@@ -310,11 +314,11 @@ registerAvatarExtension({
   name: 'voice',
   actions: {
     listening() { return voiceRound(this, 'listening'); },
-    thinking() { return voiceRound(this, 'thinking'); },
+    'waiting-flower'() { return voiceRound(this, 'thinking'); },
     speaking() { return voiceRound(this, 'speaking'); },
   },
   beforePlay(action) {
-    if (MODES.includes(action)) return;
+    if (OWN_ACTIONS.includes(action)) return;
     clearVoice(this);
   },
   reset() {

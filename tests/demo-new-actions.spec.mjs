@@ -16,7 +16,7 @@ test.afterEach(async ({ page }) => {
 // (or ending the test) aborts in-flight imports and the browser reports page errors.
 async function openDemo(page, query = '') {
   await page.goto(`/demo/${query}`, { waitUntil: 'networkidle' });
-  await expect(page.locator('.controls button[data-action]')).toHaveCount(17);
+  await expect(page.locator('.controls button[data-action]')).toHaveCount(18);
   await expect(page.locator('#agent-demo-build')).toHaveText(/^Demo \d/);
 }
 
@@ -33,7 +33,7 @@ test('the demo lists the newest actions last, each flagged with a red dot', asyn
     isNew: button.classList.contains('is-new'),
     badge: getComputedStyle(button, '::after').content,
   })));
-  expect(flags.filter(flag => flag.isNew).map(flag => flag.action)).toEqual(['waiting-wave', 'love', 'random']);
+  expect(flags.filter(flag => flag.isNew).map(flag => flag.action)).toEqual(['waiting-wave', 'waiting-flower', 'love', 'random']);
   // New actions carry a red corner dot.
   for (const flag of flags.filter(flag => flag.isNew)) expect(flag.badge).toBe('""');
   for (const flag of flags.filter(flag => !flag.isNew)) expect(['none', 'normal']).toContain(flag.badge);
@@ -58,11 +58,11 @@ test('the new demo buttons play their real actions and stay labelled in every la
   await page.evaluate(() => localStorage.removeItem('boopFaceDemoSeen'));
   for (const lang of ['zh-CN', 'zh-TW', 'ja', 'ko', 'es', 'pt', 'de', 'fr']) {
     await openDemo(page, `?lang=${lang}`);
-    await expect(page.locator('.controls button.is-new')).toHaveCount(3);
+    await expect(page.locator('.controls button.is-new')).toHaveCount(4);
     const labels = await page.locator('.controls button.is-new').evaluateAll(list => list.map(button => button.textContent.trim()));
-    expect(labels).toHaveLength(3);
+    expect(labels).toHaveLength(4);
     for (const label of labels) expect(label).not.toBe('');
-    expect(new Set(labels).size).toBe(3);
+    expect(new Set(labels).size).toBe(4);
   }
 });
 
@@ -71,7 +71,7 @@ for (const [name, viewport] of [['phone', { width: 390, height: 844 }], ['small 
     await page.setViewportSize(viewport);
     for (const lang of ['zh-CN', 'de']) {
       await openDemo(page, `?lang=${lang}`);
-      await expect(page.locator('.controls button.is-new')).toHaveCount(3);
+      await expect(page.locator('.controls button.is-new')).toHaveCount(4);
       const layout = await page.evaluate(() => {
         const controls = document.querySelector('.controls').getBoundingClientRect();
         const rects = [...document.querySelectorAll('.controls button[data-action]')].map(button => button.getBoundingClientRect());
@@ -100,7 +100,7 @@ for (const [name, viewport] of [['phone', { width: 390, height: 844 }], ['small 
           scrolls: document.documentElement.scrollWidth > innerWidth,
         };
       });
-      expect(layout.count).toBe(17);
+      expect(layout.count).toBe(18);
       expect(layout.outside).toBe(0);
       expect(layout.overlaps).toBe(0);
       expect(layout.scrolls).toBe(false);

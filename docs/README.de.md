@@ -132,9 +132,9 @@ Verfügbare Aktionen:
 | `waiting-spin` | Augen kreisen von Seite zu Seite | Warten auf eine Antwort (Standard) |
 | `waiting-wrap` | Augen gleiten auf einer Seite hinaus und auf der anderen zurück | Warten auf eine Antwort |
 | `waiting-wave` | Augen wippen abwechselnd auf und ab | Warten auf eine Antwort |
+| `waiting-flower` | Zwei gekreuzte Ovale atmen und drehen sich wie eine Blüte | Auf eine Antwort warten; gemacht für Sprachdialoge |
 | `input` | Augen werden zu blinkenden Textcursorn | Nutzer tippt |
 | `listening` | Beide Augen verschmelzen zu einem runden Auge, das mit der Stimme anschwillt | Sprache: der Nutzer spricht |
-| `thinking` | Zwei gekreuzte Ovale atmen und drehen sich wie eine Blüte | Sprache: die KI denkt nach |
 | `speaking` | Die Augen teilen sich wieder und strecken sich mit der Antwort | Sprache: die KI antwortet |
 | `affirm` | Nickt | Verstanden, bestätigt |
 | `success` | Fröhlich lächelnde Augen | Aufgabe erledigt |
@@ -149,7 +149,7 @@ Verfügbare Aktionen:
 | `sleep` | Schließt die Augen und schläft | Lange keine Aktivität |
 | `wake` | Öffnet die Augen und wacht auf | Aktivität setzt wieder ein |
 
-Warte-Aktionen spielen mit `play()` eine Runde. `startWaiting({ variant: 'spin' | 'wrap' | 'wave' })` läuft in Schleife, bis eine andere Aktion startet oder `stopWaiting()` aufgerufen wird.
+Warte-Aktionen spielen mit `play()` eine Runde. `startWaiting({ variant: 'spin' | 'wrap' | 'wave' | 'flower' })` läuft in Schleife, bis eine andere Aktion startet oder `stopWaiting()` aufgerufen wird.
 
 Namen aus 0.5 (`send`, `warning`, `error`, `blocked`, `slot` und weitere) funktionieren bis 1.0 weiter, mit einem Hinweis in der Konsole; siehe die [Upgrade-Tabelle](../CHANGELOG.md#upgrading-from-05x).
 
@@ -287,15 +287,17 @@ Alle Formate lassen sich in der [Demo „KI anbinden“](https://cx-artlab.githu
 Zuhören, nachdenken, sprechen: Diese drei Schritte durchläuft ein Sprachassistent in jeder Runde. Der Avatar hat dafür ein Set aus drei Ausdrücken, die ineinander übergehen.
 
 ```js
-avatar.startListening();   // der Nutzer spricht
-avatar.startThinking();    // die KI denkt nach
-avatar.startSpeaking();    // die KI antwortet
-avatar.setVoiceLevel(0.6); // optional: Lautstärke von 0 bis 1
+avatar.startListening();                    // der Nutzer spricht
+avatar.startWaiting({ variant: 'flower' }); // die KI denkt nach
+avatar.startSpeaking();                     // die KI antwortet
+avatar.setVoiceLevel(0.6);                  // optional: Lautstärke von 0 bis 1
 ```
 
 Beim Zuhören verschmelzen beide Augen zu einem runden Auge, das mit der Stimme des Nutzers anschwillt. Beim Nachdenken wird daraus eine langsam drehende Blüte aus zwei gekreuzten Ovalen. Beim Sprechen teilt es sich wieder in zwei Augen, die kurz zur Ruhe kommen und sich dann mit der Antwort strecken: tiefe Töne im linken, hohe im rechten Auge. `setVoiceLevel(level)` oder `setVoiceLevel([low, high])` liefert die Lautstärke; ohne sie behält das Sprechen einen eigenen Rhythmus, und das Zuhören hält still. Jeder Schritt läuft in Schleife bis zum nächsten, und beim Wechsel verformen sich die Augen, statt zu springen.
 
-`connectAgent()` übernimmt das alles. Es versteht OpenAI-Realtime-Ereignisse und den `mode`, den Sprach-SDKs wie ElevenLabs melden, nutzt im Sprachdialog den Denk-Ausdruck des Sets und kehrt nach jeder Antwort zum Zuhören zurück:
+Nachdenken ist ein Warteschritt. Die Blüte (`variant: 'flower'`) geht direkt aus dem Zuhör-Auge hervor; jeder andere Wartestil funktioniert ebenso.
+
+`connectAgent()` übernimmt das alles. Es versteht OpenAI-Realtime-Ereignisse und den `mode`, den Sprach-SDKs wie ElevenLabs melden, wartet beim Nachdenken im Sprachdialog mit der Blüte (oder mit dem Stil aus `actions.thinking`) und kehrt nach jeder Antwort zum Zuhören zurück:
 
 ```js
 const agent = connectAgent(avatar);

@@ -4,15 +4,15 @@
 import { settleNewDots } from './skins-i18n.js';
 
 const LABELS = Object.freeze({
-  'zh-CN': { group: '语音对话', listening: '聆听', thinking: '思考', speaking: '说话', play: '连着播', stop: '停止', sound: '声音' },
-  'zh-TW': { group: '語音對話', listening: '聆聽', thinking: '思考', speaking: '說話', play: '連著播', stop: '停止', sound: '聲音' },
-  en: { group: 'Voice', listening: 'Listening', thinking: 'Thinking', speaking: 'Speaking', play: 'Play all', stop: 'Stop', sound: 'Sound' },
-  ja: { group: '音声会話', listening: '聞く', thinking: '考える', speaking: '話す', play: '通して再生', stop: '停止', sound: '音声' },
-  ko: { group: '음성 대화', listening: '듣기', thinking: '생각', speaking: '말하기', play: '이어서 재생', stop: '정지', sound: '소리' },
-  es: { group: 'Voz', listening: 'Escuchar', thinking: 'Pensar', speaking: 'Hablar', play: 'Reproducir todo', stop: 'Detener', sound: 'Sonido' },
-  pt: { group: 'Voz', listening: 'Ouvir', thinking: 'Pensar', speaking: 'Falar', play: 'Tocar tudo', stop: 'Parar', sound: 'Som' },
-  de: { group: 'Sprache', listening: 'Zuhören', thinking: 'Denken', speaking: 'Sprechen', play: 'Alles abspielen', stop: 'Stopp', sound: 'Ton' },
-  fr: { group: 'Voix', listening: 'Écouter', thinking: 'Réfléchir', speaking: 'Parler', play: 'Tout lire', stop: 'Arrêter', sound: 'Son' },
+  'zh-CN': { group: '语音对话', listening: '聆听', thinking: '思考', speaking: '说话', play: '连着播', stop: '停止', sound: '声音' , style: '思考样式', flower: '十字花', spin: '旋转', wrap: '滚动', wave: '波动' },
+  'zh-TW': { group: '語音對話', listening: '聆聽', thinking: '思考', speaking: '說話', play: '連著播', stop: '停止', sound: '聲音' , style: '思考樣式', flower: '十字花', spin: '旋轉', wrap: '滾動', wave: '波動' },
+  en: { group: 'Voice', listening: 'Listening', thinking: 'Thinking', speaking: 'Speaking', play: 'Play all', stop: 'Stop', sound: 'Sound' , style: 'Thinking style', flower: 'Flower', spin: 'Spin', wrap: 'Scroll', wave: 'Wave' },
+  ja: { group: '音声会話', listening: '聞く', thinking: '考える', speaking: '話す', play: '通して再生', stop: '停止', sound: '音声' , style: '考えるときの形', flower: 'フラワー', spin: '回転', wrap: '回り込み', wave: 'ウェーブ' },
+  ko: { group: '음성 대화', listening: '듣기', thinking: '생각', speaking: '말하기', play: '이어서 재생', stop: '정지', sound: '소리' , style: '생각 스타일', flower: '꽃', spin: '회전', wrap: '감싸기', wave: '물결' },
+  es: { group: 'Voz', listening: 'Escuchar', thinking: 'Pensar', speaking: 'Hablar', play: 'Reproducir todo', stop: 'Detener', sound: 'Sonido' , style: 'Estilo al pensar', flower: 'Flor', spin: 'Giro', wrap: 'Envoltura', wave: 'Onda' },
+  pt: { group: 'Voz', listening: 'Ouvir', thinking: 'Pensar', speaking: 'Falar', play: 'Tocar tudo', stop: 'Parar', sound: 'Som' , style: 'Estilo ao pensar', flower: 'Flor', spin: 'Giro', wrap: 'Contorno', wave: 'Onda' },
+  de: { group: 'Sprache', listening: 'Zuhören', thinking: 'Denken', speaking: 'Sprechen', play: 'Alles abspielen', stop: 'Stopp', sound: 'Ton' , style: 'Denkstil', flower: 'Blüte', spin: 'Drehen', wrap: 'Umlauf', wave: 'Welle' },
+  fr: { group: 'Voix', listening: 'Écouter', thinking: 'Réfléchir', speaking: 'Parler', play: 'Tout lire', stop: 'Arrêter', sound: 'Son' , style: 'Style de réflexion', flower: 'Fleur', spin: 'Rotation', wrap: 'Boucle', wave: 'Vague' },
 });
 
 function labels() {
@@ -37,6 +37,13 @@ row.innerHTML = `
   <button type="button" data-voice="speaking"></button>
   <span class="demo-voice-divider" aria-hidden="true"></span>
   <button type="button" class="demo-voice-play is-new" data-new-key="voice-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg><span></span></button>
+  <span class="demo-voice-styles" role="radiogroup">
+    <span class="demo-voice-style-label"></span>
+    <button type="button" data-style="flower" aria-pressed="true"></button>
+    <button type="button" data-style="spin" aria-pressed="false"></button>
+    <button type="button" data-style="wrap" aria-pressed="false"></button>
+    <button type="button" data-style="wave" aria-pressed="false"></button>
+  </span>
   <label class="demo-voice-sound">
     <input type="checkbox" checked>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path class="speaker" d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="waves" d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/><path class="mute" d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
@@ -58,10 +65,23 @@ function relabel() {
   row.setAttribute('aria-label', t.group);
   row.querySelector('.demo-voice-label').textContent = t.group;
   for (const button of row.querySelectorAll('[data-voice]')) button.textContent = t[button.dataset.voice];
+  row.querySelector('.demo-voice-style-label').textContent = t.style;
+  row.querySelector('.demo-voice-styles').setAttribute('aria-label', t.style);
+  for (const button of row.querySelectorAll('[data-style]')) button.textContent = t[button.dataset.style];
   playButton.querySelector('span').textContent = turn ? t.stop : t.play;
   row.querySelector('.demo-voice-sound').title = t.sound;
   soundInput.setAttribute('aria-label', t.sound);
 }
+
+// --- Thinking style: any waiting style can be the middle step ------------------
+
+let thinkingStyle = 'flower';
+row.addEventListener('click', event => {
+  const button = event.target.closest('button[data-style]');
+  if (!button) return;
+  thinkingStyle = button.dataset.style;
+  for (const option of row.querySelectorAll('[data-style]')) option.setAttribute('aria-pressed', String(option === button));
+});
 
 // --- Single expressions --------------------------------------------------------
 
@@ -83,7 +103,7 @@ row.addEventListener('click', event => {
   const button = event.target.closest('button[data-voice]');
   if (!button) return;
   stopTurn();
-  const action = button.dataset.voice;
+  const action = button.dataset.voice === 'thinking' ? `waiting-${thinkingStyle}` : button.dataset.voice;
   face.play(action);
   if (action === 'listening') pretendVoice(performance.now());
 });
@@ -228,7 +248,7 @@ async function startTurn() {
   const tick = () => {
     if (turn !== active) return;
     const clock = context.currentTime;
-    if (clock >= thinkStart && active.step === 'listening') { active.step = 'thinking'; face.startThinking(); }
+    if (clock >= thinkStart && active.step === 'listening') { active.step = 'thinking'; face.startWaiting({ variant: thinkingStyle }); }
     if (clock >= speakStart && active.step === 'thinking') { active.step = 'speaking'; face.startSpeaking(); }
     if (active.step === 'listening') {
       face.setVoiceLevel(clock >= userStart ? sample(clip.userLevels, clock - userStart)[0] : 0);
@@ -268,7 +288,7 @@ soundInput.addEventListener('change', () => {
 // Any other expression ends the turn.
 face.addEventListener('action-state', event => {
   if (!turn || event.detail.phase !== 'start') return;
-  if (!['listening', 'thinking', 'speaking'].includes(event.detail.action)) stopTurn();
+  if (!['listening', 'waiting', 'speaking'].includes(event.detail.action)) stopTurn();
 });
 
 new MutationObserver(relabel).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });

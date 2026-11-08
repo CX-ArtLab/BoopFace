@@ -134,9 +134,9 @@ avatar.reset();
 | `waiting-spin` | 双眼左右绕圈 | 等待回复（默认） |
 | `waiting-wrap` | 双眼从一侧转出、另一侧回来 | 等待回复 |
 | `waiting-wave` | 双眼轮流上下起伏 | 等待回复 |
+| `waiting-flower` | 两个交叉的椭圆像花一样呼吸、转动 | 等待回复；专为语音对话设计 |
 | `input` | 双眼变成闪烁的输入光标 | 用户正在输入 |
 | `listening` | 两只眼睛合成一个圆，随声音起伏 | 语音对话：用户在说话 |
-| `thinking` | 两个交叉的椭圆像花一样呼吸、转动 | 语音对话：AI 在思考 |
 | `speaking` | 眼睛分回两只，跟着回答伸缩 | 语音对话：AI 在回答 |
 | `affirm` | 点头 | 收到、确认 |
 | `success` | 开心的笑眼 | 任务完成 |
@@ -151,7 +151,7 @@ avatar.reset();
 | `sleep` | 闭眼睡觉 | 长时间无操作 |
 | `wake` | 睁眼醒来 | 重新有动静 |
 
-等待类动作用 `play()` 播放一轮；用 `startWaiting({ variant: 'spin' | 'wrap' | 'wave' })` 会一直循环，直到播放其他动作或调用 `stopWaiting()`。
+等待类动作用 `play()` 播放一轮；用 `startWaiting({ variant: 'spin' | 'wrap' | 'wave' | 'flower' })` 会一直循环，直到播放其他动作或调用 `stopWaiting()`。
 
 0.5 版的旧名字（`send`、`warning`、`error`、`blocked`、`slot` 等）在 1.0 之前仍可使用，但会在控制台提示改名，详见[升级对照表](../CHANGELOG.md#upgrading-from-05x)。
 
@@ -289,15 +289,17 @@ connectAgent(avatar, {
 聆听、思考、说话：语音助手每一轮都会走这三步。头像为它们准备了一组三个表情，前后可以自然地衔接。
 
 ```js
-avatar.startListening();   // 用户在说话
-avatar.startThinking();    // AI 在思考
-avatar.startSpeaking();    // AI 在回答
-avatar.setVoiceLevel(0.6); // 可选：音量，0 到 1
+avatar.startListening();                    // 用户在说话
+avatar.startWaiting({ variant: 'flower' }); // AI 在思考
+avatar.startSpeaking();                     // AI 在回答
+avatar.setVoiceLevel(0.6);                  // 可选：音量，0 到 1
 ```
 
 聆听时两只眼睛合成一个圆，随用户的声音一鼓一鼓；思考时变成两个交叉的椭圆，像一朵慢慢转动的花；说话时分回两只眼睛，先停稳，再跟着回答伸缩：低音驱动左眼，高音驱动右眼。用 `setVoiceLevel(level)` 或 `setVoiceLevel([low, high])` 传入音量；不传时，说话会按自己的节奏动，聆听则保持不动。每一步都会循环到下一步开始，步骤之间眼睛会平滑变形，不会跳变。
 
-`connectAgent()` 可以把这些全部自动接上。它认得 OpenAI Realtime 的事件，也认得 ElevenLabs 这类语音 SDK 报告的 `mode`；语音对话时，思考会用这一组自己的思考表情，每次回答完都会回到聆听：
+思考这一步其实是一种等待。十字花（`variant: 'flower'`）可以直接从聆听的圆变形出来；换成其他任何一种等待样式也可以。
+
+`connectAgent()` 可以把这些全部自动接上。它认得 OpenAI Realtime 的事件，也认得 ElevenLabs 这类语音 SDK 报告的 `mode`；语音对话思考时默认用十字花等待（也可以用 `actions.thinking` 换成别的样式），每次回答完都会回到聆听：
 
 ```js
 const agent = connectAgent(avatar);

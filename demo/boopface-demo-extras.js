@@ -77,6 +77,11 @@ const WAVE_WAITING_LABELS = Object.freeze({
   ko:'대기 · 물결', es:'Espera · Onda', pt:'Espera · Onda', de:'Warten · Welle', fr:'Attente · Vague',
 });
 
+const FLOWER_WAITING_LABELS = Object.freeze({
+  'zh-CN':'等待 · 十字花', 'zh-TW':'等待 · 十字花', en:'Waiting · Flower', ja:'待機 · フラワー',
+  ko:'대기 · 꽃', es:'Espera · Flor', pt:'Espera · Flor', de:'Warten · Blüte', fr:'Attente · Fleur',
+});
+
 function activeLanguage(table) {
   const lang = document.documentElement.lang || 'zh-CN';
   if (table[lang]) return lang;
@@ -112,6 +117,7 @@ function syncActionLabels() {
   const failureButton = ensureActionButton('failure', 'success');
   const wrapButton = ensureActionButton('waiting-wrap', 'waiting-spin');
   const waveButton = ensureActionButton('waiting-wave', 'waiting-wrap');
+  const flowerButton = ensureActionButton('waiting-flower', 'waiting-wave');
   // New actions go at the very end of the row, in the order they were added.
   const loveButton = ensureActionButton('love', 'sleep');
   const randomButton = ensureActionButton('random', 'love');
@@ -124,6 +130,10 @@ function syncActionLabels() {
   if (waveButton) {
     waveButton.textContent = WAVE_WAITING_LABELS[activeLanguage(WAVE_WAITING_LABELS)];
     markAsNew(waveButton);
+  }
+  if (flowerButton) {
+    flowerButton.textContent = FLOWER_WAITING_LABELS[activeLanguage(FLOWER_WAITING_LABELS)];
+    markAsNew(flowerButton);
   }
 }
 

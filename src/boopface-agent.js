@@ -35,7 +35,7 @@ const DEFAULT_ACTIONS = Object.freeze({
 const ACTION_NAMES = new Set([
   'idle', 'bored', 'waiting', 'waiting-spin', 'waiting-wrap', 'waiting-wave', 'input', 'affirm', 'success',
   'failure', 'wary', 'inspect', 'angry', 'refuse', 'surprise', 'love', 'random', 'sleep', 'wake',
-  'listening', 'thinking', 'speaking',
+  'waiting-flower', 'listening', 'speaking',
 ]);
 
 // Plain words: our own state names, useChat status values and common synonyms.
@@ -114,7 +114,7 @@ const TOOL_ITEM = /(?:^|_)(?:call|tool_use)$/;
 // short stage never cuts an orbit or a wave in half. Spin: one orbit of its
 // two-orbit cycle; wave: one bob; wrap: one pass.
 const LOOP_SEAM = Object.freeze({ spin: 1600, wave: 1100, wrap: 2400 });
-const WAITING_ACTION = /^waiting(?:-(spin|wrap|wave))?$/;
+const WAITING_ACTION = /^waiting(?:-(spin|wrap|wave|flower))?$/;
 
 function lower(value) {
   return typeof value === 'string' ? value.trim().toLowerCase() : '';
@@ -383,10 +383,10 @@ function connectAgent(target, options = {}) {
   let state = 'idle';
   let looping = null; // the loop this adapter started, while it may still run
   let timer = 0;
-  // In a voice conversation, thinking shows the voice set's own thinking
-  // expression unless the page chose another one.
+  // In a voice conversation, thinking waits with the flower, which morphs out
+  // of the listening eye, unless the page chose another waiting style.
   const customThinking = Boolean(options.actions && Object.hasOwn(options.actions, 'thinking'));
-  const actionFor = next => (next === 'thinking' && memo.voice && !customThinking ? 'thinking' : actions[next]);
+  const actionFor = next => (next === 'thinking' && memo.voice && !customThinking ? 'waiting-flower' : actions[next]);
 
   // The loop a state shows, if its action is one: waiting, listening or speaking.
   function loopOf(next) {
@@ -394,7 +394,7 @@ function connectAgent(target, options = {}) {
     if (typeof action !== 'string' || !LOOPING.has(next)) return null;
     const waiting = WAITING_ACTION.exec(action);
     if (waiting) return { key: `waiting:${waiting[1] || 'spin'}`, start: () => avatar.startWaiting({ variant: waiting[1] || 'spin' }) };
-    const methods = { listening: 'startListening', thinking: 'startThinking', speaking: 'startSpeaking' };
+    const methods = { listening: 'startListening', speaking: 'startSpeaking' };
     if (methods[action] && typeof avatar[methods[action]] === 'function') {
       return { key: `voice:${action}`, start: () => avatar[methods[action]]() };
     }
@@ -402,6 +402,7 @@ function connectAgent(target, options = {}) {
   }
 
   function stillLooping(key) {
+    if (key === 'waiting:flower') return avatar._voiceFx?.mode === 'thinking' || avatar._voiceRequested === 'thinking';
     if (key.startsWith('waiting:')) return Boolean(avatar._waitingFx || avatar._waitingRequested);
     if (avatar._voiceFx && avatar._voiceFx.mode !== key.slice(6)) return false;
     return Boolean(avatar._voiceFx || avatar._voiceRequested);

@@ -16,6 +16,11 @@
 .demo-voice-play svg{width:11px;height:11px;fill:currentColor}
 .demo-voice-play.is-playing svg{display:none}
 .demo-voice-play.is-new::after{content:'';position:absolute;top:3px;right:3px;width:7px;height:7px;border-radius:50%;background:#e5484d;box-shadow:0 0 0 2px rgba(255,255,255,.95);pointer-events:none}
+.demo-voice-styles{order:10;flex-basis:100%;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px;padding-top:6px;border-top:1px solid rgba(0,0,0,.05)}
+.demo-voice-style-label{padding:0 6px 0 4px;color:#a0a4aa;font:600 10px Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;white-space:nowrap}
+.demo-voice-styles button{padding:5px 9px;border-radius:8px;font-size:11px;color:#656a70;background:#f4f5f6}
+.demo-voice-styles button:hover{background:#e9eaec}
+.demo-voice-styles button[aria-pressed=true]{background:#dfe1e4;color:#25282c;font-weight:600}
 .demo-voice-sound{position:relative;display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:#f1f2f3;color:#656a70;cursor:pointer}
 .demo-voice-sound:hover{background:#e7e8ea}
 .demo-voice-sound input{position:absolute;opacity:0;pointer-events:none}

@@ -74,6 +74,8 @@ proto.waiting = async function(options = {}) {
 // Runtime/Agent behavior: call when a request has been sent and the reply has not arrived yet.
 // It stays seamless until another action or stopWaiting() occurs.
 proto.startWaiting = async function(options = {}) {
+  // The flower is drawn by the voice set, which can morph it out of listening.
+  if (options?.variant === 'flower' && typeof this._startFlower === 'function') return this._startFlower();
   await enterWaiting(this, true, 'runtime', options);
   return this;
 };

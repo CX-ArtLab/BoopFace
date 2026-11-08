@@ -132,9 +132,9 @@ Available actions:
 | `waiting-spin` | Eyes circle from side to side | Waiting for a reply (default) |
 | `waiting-wrap` | Eyes slide out one side and back in the other | Waiting for a reply |
 | `waiting-wave` | Eyes bob up and down in turn | Waiting for a reply |
+| `waiting-flower` | Two crossed ovals breathe and turn like a slow flower | Waiting for a reply; made for voice conversations |
 | `input` | Eyes become blinking text cursors | The user is typing |
 | `listening` | Both eyes merge into one round eye that swells with the voice | Voice: the user is speaking |
-| `thinking` | Two crossed ovals breathe and turn like a slow flower | Voice: the AI is thinking |
 | `speaking` | The eyes split back and stretch with the reply | Voice: the AI is answering |
 | `affirm` | Nods | Got it, confirmed |
 | `success` | Happy, smiling eyes | Task completed |
@@ -149,7 +149,7 @@ Available actions:
 | `sleep` | Closes its eyes and sleeps | No activity for a long time |
 | `wake` | Opens its eyes and wakes up | Activity resumes |
 
-Waiting actions play one round with `play()`. `startWaiting({ variant: 'spin' | 'wrap' | 'wave' })` loops until another action starts or `stopWaiting()` is called.
+Waiting actions play one round with `play()`. `startWaiting({ variant: 'spin' | 'wrap' | 'wave' | 'flower' })` loops until another action starts or `stopWaiting()` is called.
 
 Names from 0.5 (`send`, `warning`, `error`, `blocked`, `slot` and others) still work with a console notice until 1.0; see the [upgrade table](CHANGELOG.md#upgrading-from-05x).
 
@@ -287,15 +287,17 @@ Try every format on the [Connect AI demo](https://cx-artlab.github.io/BoopFace/a
 Listening, thinking, speaking: a voice assistant goes through these three steps on every turn. The avatar has a set of three expressions for them, designed to flow into each other.
 
 ```js
-avatar.startListening();   // the user is talking
-avatar.startThinking();    // the AI is thinking
-avatar.startSpeaking();    // the AI is answering
-avatar.setVoiceLevel(0.6); // optional: loudness from 0 to 1
+avatar.startListening();                    // the user is talking
+avatar.startWaiting({ variant: 'flower' }); // the AI is thinking
+avatar.startSpeaking();                     // the AI is answering
+avatar.setVoiceLevel(0.6);                  // optional: loudness from 0 to 1
 ```
 
 Listening merges both eyes into one round eye that swells with the user's voice. Thinking turns it into a slow flower of two crossed ovals. Speaking splits it back into two eyes, which settle and then stretch with the reply: low sounds in the left eye, high sounds in the right. `setVoiceLevel(level)` or `setVoiceLevel([low, high])` feeds the loudness; without it, speaking keeps a rhythm of its own and listening holds still. Each step loops until the next one, and moving between them morphs the eyes instead of jumping.
 
-`connectAgent()` drives all of it. It understands OpenAI Realtime events and the `mode` that ElevenLabs-style voice SDKs report, uses the set's own thinking expression during a voice conversation, and goes back to listening after each reply:
+Thinking is a waiting step. The flower (`variant: 'flower'`) morphs straight out of the listening eye; any other waiting style works too.
+
+`connectAgent()` drives all of it. It understands OpenAI Realtime events and the `mode` that ElevenLabs-style voice SDKs report, waits with the flower while a voice conversation thinks (or with the style in `actions.thinking`), and goes back to listening after each reply:
 
 ```js
 const agent = connectAgent(avatar);

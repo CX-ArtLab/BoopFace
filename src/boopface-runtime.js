@@ -23,7 +23,6 @@ const baseStartWaiting = proto.startWaiting;
 const baseStopWaiting = proto.stopWaiting;
 const baseStartListening = proto.startListening;
 const baseStartSpeaking = proto.startSpeaking;
-const baseStartThinking = proto.startThinking;
 const baseDraw = proto._draw;
 
 const DEFAULT_SIZE = 112;
@@ -39,8 +38,8 @@ const ACTION_ALIASES = Object.freeze({
   'waiting-wrap': 'waiting',
   'waiting-wave': 'waiting',
   input: 'input',
+  'waiting-flower': 'waiting',
   listening: 'listening',
-  thinking: 'thinking',
   speaking: 'speaking',
   affirm: 'affirm',
   send: 'affirm',
@@ -815,12 +814,15 @@ proto.startWaiting = async function(options = {}) {
   ensureRuntime(this);
   clearAutoSleep(this);
   const result = await baseStartWaiting.call(this, options);
-  if (this._waitingRequested && this._waitingFx) beginAction(this, 'waiting', 'api', true);
+  const flower = this._voiceFx?.mode === 'thinking' && this._voiceFx.continuous;
+  if ((this._waitingRequested && this._waitingFx) || (flower && this._activeActionState?.action !== 'waiting')) {
+    beginAction(this, 'waiting', 'api', true);
+  }
   return result;
 };
 
 // Voice loops behave like waiting: one continuous action until the next one.
-for (const [method, base, action] of [['startListening', baseStartListening, 'listening'], ['startThinking', baseStartThinking, 'thinking'], ['startSpeaking', baseStartSpeaking, 'speaking']]) {
+for (const [method, base, action] of [['startListening', baseStartListening, 'listening'], ['startSpeaking', baseStartSpeaking, 'speaking']]) {
   if (typeof base !== 'function') continue;
   proto[method] = async function(options = {}) {
     ensureRuntime(this);

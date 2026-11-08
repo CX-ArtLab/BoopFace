@@ -132,9 +132,9 @@ Ações disponíveis:
 | `waiting-spin` | Os olhos giram de um lado para o outro | Aguardando resposta (padrão) |
 | `waiting-wrap` | Os olhos saem por um lado e voltam pelo outro | Aguardando resposta |
 | `waiting-wave` | Os olhos sobem e descem alternadamente | Aguardando resposta |
+| `waiting-flower` | Dois ovais cruzados respiram e giram como uma flor | Aguardando resposta; feita para conversas por voz |
 | `input` | Os olhos viram cursores piscantes | O usuário está digitando |
 | `listening` | Os dois olhos se fundem em um olho redondo que cresce com a voz | Voz: o usuário está falando |
-| `thinking` | Dois ovais cruzados respiram e giram como uma flor | Voz: a IA está pensando |
 | `speaking` | Os olhos se separam de novo e se esticam com a resposta | Voz: a IA está respondendo |
 | `affirm` | Acena com a cabeça | Entendido, confirmado |
 | `success` | Olhos felizes e sorridentes | Tarefa concluída |
@@ -149,7 +149,7 @@ Ações disponíveis:
 | `sleep` | Fecha os olhos e dorme | Muito tempo sem atividade |
 | `wake` | Abre os olhos e acorda | A atividade volta |
 
-As ações de espera tocam uma rodada com `play()`. `startWaiting({ variant: 'spin' | 'wrap' | 'wave' })` repete até outra ação começar ou `stopWaiting()` ser chamado.
+As ações de espera tocam uma rodada com `play()`. `startWaiting({ variant: 'spin' | 'wrap' | 'wave' | 'flower' })` repete até outra ação começar ou `stopWaiting()` ser chamado.
 
 Os nomes da 0.5 (`send`, `warning`, `error`, `blocked`, `slot` e outros) continuam funcionando até a 1.0, com um aviso no console; consulte a [tabela de atualização](../CHANGELOG.md#upgrading-from-05x).
 
@@ -287,15 +287,17 @@ Experimente todos os formatos na [demo Conectar IA](https://cx-artlab.github.io/
 Ouvir, pensar, falar: um assistente de voz passa por esses três passos a cada turno. O avatar tem para eles um conjunto de três expressões que se encadeiam.
 
 ```js
-avatar.startListening();   // o usuário está falando
-avatar.startThinking();    // a IA está pensando
-avatar.startSpeaking();    // a IA está respondendo
-avatar.setVoiceLevel(0.6); // opcional: volume de 0 a 1
+avatar.startListening();                    // o usuário está falando
+avatar.startWaiting({ variant: 'flower' }); // a IA está pensando
+avatar.startSpeaking();                     // a IA está respondendo
+avatar.setVoiceLevel(0.6);                  // opcional: volume de 0 a 1
 ```
 
 Ao ouvir, os dois olhos se fundem em um único olho redondo que cresce com a voz do usuário. Ao pensar, ele vira uma flor de dois ovais cruzados que respira e gira devagar. Ao falar, volta a se dividir em dois olhos, que se acomodam e depois se esticam com a resposta: sons graves no olho esquerdo, agudos no direito. `setVoiceLevel(level)` ou `setVoiceLevel([low, high])` informa o volume; sem ele, falar mantém um ritmo próprio e ouvir fica parado. Cada passo se repete até o próximo, e na troca os olhos se transformam em vez de pular.
 
-`connectAgent()` cuida de tudo. Ele entende os eventos do OpenAI Realtime e o `mode` informado por SDKs de voz como o ElevenLabs, usa a expressão de pensar do conjunto durante uma conversa por voz e volta a ouvir depois de cada resposta:
+Pensar é um passo de espera. A flor (`variant: 'flower'`) surge direto do olho de ouvir; qualquer outro estilo de espera também funciona.
+
+`connectAgent()` cuida de tudo. Ele entende os eventos do OpenAI Realtime e o `mode` informado por SDKs de voz como o ElevenLabs, espera com a flor enquanto uma conversa por voz pensa (ou com o estilo de `actions.thinking`) e volta a ouvir depois de cada resposta:
 
 ```js
 const agent = connectAgent(avatar);

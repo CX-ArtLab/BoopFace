@@ -5,9 +5,9 @@ export type BoopFaceAction =
   | 'waiting-spin'
   | 'waiting-wrap'
   | 'waiting-wave'
+  | 'waiting-flower'
   | 'input'
   | 'listening'
-  | 'thinking'
   | 'speaking'
   | 'affirm'
   | 'success'
@@ -112,7 +112,6 @@ export type BoopFaceState =
   | 'random'
   | 'waiting'
   | 'listening'
-  | 'thinking'
   | 'speaking'
   | 'wary'
   | 'refuse'
@@ -127,7 +126,6 @@ export type BoopFaceCanonicalAction =
   | 'waiting'
   | 'input'
   | 'listening'
-  | 'thinking'
   | 'speaking'
   | 'affirm'
   | 'success'
@@ -150,7 +148,8 @@ export type BoopFaceActionSource = 'api' | 'interaction' | 'automatic';
 export type BoopFaceWakeOn = 'activity' | 'interaction' | 'manual';
 export type BoopFaceMotion = 'auto' | 'reduce' | 'full';
 export interface BoopFaceWaitingOptions {
-  variant?: 'default' | 'spin' | 'wrap' | 'wave';
+  /** `flower` is the voice set's thinking style: two crossed ovals that breathe and turn. */
+  variant?: 'default' | 'spin' | 'wrap' | 'wave' | 'flower';
 }
 
 export interface BoopFaceActionStateDetail {
@@ -175,8 +174,6 @@ export declare class BoopFace extends HTMLElement {
   stopWaiting(): this;
   /** Voice conversation: both eyes merge into one that swells with the user's voice. */
   startListening(): Promise<this>;
-  /** Voice conversation: two crossed ovals breathe and turn while the AI thinks. */
-  startThinking(): Promise<this>;
   /** Voice conversation: the eyes split back and stretch with the reply. */
   startSpeaking(): Promise<this>;
   /**
