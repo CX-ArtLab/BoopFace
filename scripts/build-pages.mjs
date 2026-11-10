@@ -24,7 +24,7 @@ for (const file of publicDemoFiles) {
   let source = await readFile(path.join(demo, file), 'utf8');
   // The deployed demo sits at the artifact root, one directory above local demo/.
   // The demo moves up one level: demo/ becomes the root, next to src/.
-  if (file.startsWith('materials/')) source = source.replaceAll('../../boopface.js', '../boopface.js').replaceAll('../../src/', '../src/');
+  if (file.startsWith('materials/') || file.startsWith('skin-studio/')) source = source.replaceAll('../../boopface.js', '../boopface.js').replaceAll('../../src/', '../src/');
   else source = source.replaceAll('../boopface.js', './boopface.js').replaceAll('../src/', './src/');
   await mkdir(path.dirname(destination), {recursive:true});
   await writeFile(destination, source);
