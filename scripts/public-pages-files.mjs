@@ -1,8 +1,6 @@
 // Explicit publication boundary. Local editors, backups and experimental pages
 // never enter the website simply because they exist under demo/.
 export const publicDemoFiles = [
-  'skin-studio/index.html', 'skin-studio/style.css', 'skin-studio/app.js',
-  'skin-studio/runtime.js', 'skin-studio/interactions.js', 'skin-studio/interaction-sources.json',
   'index.html', 'skins.html', 'skins.js', 'skins.css', 'skins-i18n.js', 'skin-catalog.js', 'skin-catalog-data.js', 'demo-shell.css',
   'boopface-demo.css', 'boopface-demo.js', 'boopface-demo-ui.js',
   'boopface-demo-appearance.js', 'boopface-demo-skins.js',

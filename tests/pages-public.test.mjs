@@ -58,20 +58,3 @@ test('approved material categories cover each public skin exactly once', () => {
   assert.ok(ids.length > 0);
   assert.deepEqual(grouped.sort(), ids.sort());
 });
-
-test('Skin Studio is an explicit public page with no local drafts or authoring history', () => {
-  const studio = files(path.join(output, 'skin-studio')).sort();
-  assert.deepEqual(studio, ['app.js','index.html','interaction-sources.json','interactions.js','runtime.js','style.css']);
-  const html = readFileSync(path.join(output,'skin-studio/index.html'),'utf8');
-  assert.match(html, /皮肤工坊/);
-  assert.match(html, /href="\.\.\/index\.html"/);
-  for (const file of studio) {
-    const source = readFileSync(path.join(output,'skin-studio',file),'utf8');
-    assert.doesNotMatch(source, /local-only\/|localhost:4184|127\.0\.0\.1:4184|spatial-eyes\//, file);
-  }
-  const pack = JSON.parse(readFileSync(path.join(root,'demo/skin-studio/interaction-sources.json'),'utf8'));
-  for (const [file, source] of Object.entries(pack)) {
-    assert.ok(file.startsWith('src/') || file === 'boopface.js' || file === 'demo/skin-studio/interactions.js', file);
-    assert.equal(source, readFileSync(path.join(root,file),'utf8').replace(/\r\n/g,'\n'), `Regenerate the portable module pack after editing ${file}`);
-  }
-});
