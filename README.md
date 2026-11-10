@@ -34,7 +34,7 @@ The same eye expressions on ESP32, STM32 and Raspberry Pi Pico screens, or in ot
 
 ## Live Demo
 
-[Open the interactive demo](https://cx-artlab.github.io/BoopFace/) · [Visit the Skin Gallery](https://cx-artlab.github.io/BoopFace/skins.html) · [皮肤工坊 / Skin Studio](https://cx-artlab.github.io/BoopFace/skin-studio/)
+[Open the interactive demo](https://cx-artlab.github.io/BoopFace/) · [Visit the Skin Gallery](https://cx-artlab.github.io/BoopFace/skins.html)
 
 [Open the embedded simulator](https://cx-artlab.github.io/BoopFace/hardware/?lang=en)
 

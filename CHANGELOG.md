@@ -4,12 +4,6 @@ All notable user-facing changes to BoopFace (called Agent Robot Avatar before 0.
 
 The project follows Semantic Versioning for public releases. Internal development build numbers are not part of the public version history.
 
-## [Unreleased]
-
-### Added
-
-- Skin Studio (皮肤工坊): a browser-based, pure SVG editor for the 24 featured skins, with material controls, perspective previews, volume guides, antenna pulling, squeeze/drag interactions, and local JSON/SVG/offline HTML exports. Personal drafts stay in browser storage.
-
 ## [0.8.0] - 2026-11-05
 
 ### Changed
