@@ -20,24 +20,51 @@ BoopFace 是一个轻量、富表现力的机器人头像组件，适用于 AI �
 
 使用 SVG 与原生 JavaScript 构建，是一个原生 Web Component，运行时零依赖，MIT 开源。另有 188 款[皮肤](#皮肤--07-新功能)可以随时换上。
 
-<p align="center">
-  <img src="../assets/demo/boopface-demo.gif" alt="BoopFace 交互动画演示" width="560">
-</p>
+https://github.com/user-attachments/assets/533940e6-38e8-45e3-a276-606e1e7bba51
 
 ## 新支持：[BoopFace Embedded 嵌入式设备版](#boopface-embedded)
 
 <p align="center">
-  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="BoopFace Embedded 嵌入式设备版：小巧的 C++ 表情引擎，保留网页版的全部表情、动作和节奏；现成固件支持 ESP32、ESP32-S3、STM32 和树莓派 Pico 上的 28 种开发板与屏幕组合"></a>
+  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="BoopFace Embedded 嵌入式设备版：小巧的 C++11 表情引擎，保留网页版眼部表情的动作和节奏；现成固件支持 ESP32、ESP32-S3、STM32 和树莓派 Pico 上的 28 种开发板与屏幕组合"></a>
 </p>
 
-用于 ESP32、STM32、树莓派 Pico 等开发板的屏幕，也可以编译进其他 C++ 程序。\
-在桌面小型机器人或各种嵌入式设备上，显示与网页版相同的眼睛表情。\
-提供固件示例，以及一个支持多种流行开发板和屏幕的在线模拟器，调好后可直接导出设置用于编译。
+用于 ESP32、STM32、树莓派 Pico 等开发板的屏幕，也可以编译进其他 C++ 程序。在桌面小型机器人或各种嵌入式设备上，显示与网页版相同的眼睛表情。提供 28 种开发板与屏幕组合的固件示例，以及一个支持多种流行开发板和屏幕的在线模拟器，调好后可直接导出设置用于编译。
 
 ## 在线 Demo
 
-[打开交互 Demo](https://cx-artlab.github.io/BoopFace/?lang=zh-CN) · [逛逛皮肤美术馆](https://cx-artlab.github.io/BoopFace/skins.html?lang=zh-CN)\
-[打开嵌入式设备模拟器](https://cx-artlab.github.io/BoopFace/hardware/?lang=zh-CN)（可预览 32 种常用嵌入式设备屏幕）
+<h3 align="center">官方网站</h3>
+
+<p align="center">
+  <a href="https://boopface.com/">boopface.com</a>
+</p>
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+<h3 align="center">BoopFace Web 组件</h3>
+
+<p align="center">
+  <a href="https://cx-artlab.github.io/BoopFace/?lang=zh-CN">打开交互 Demo</a> · <a href="https://cx-artlab.github.io/BoopFace/skins.html?lang=zh-CN">逛逛皮肤美术馆</a>
+</p>
+
+<p align="center">
+  <img src="../assets/demo/boopface-demo.gif" alt="BoopFace 交互动画演示" width="560">
+</p>
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+<h3 align="center">BoopFace Embedded 嵌入式设备版</h3>
+
+<p align="center">
+  <a href="https://cx-artlab.github.io/BoopFace/hardware/?lang=zh-CN">打开嵌入式设备模拟器</a> （可预览 32 种嵌入式屏幕预设）
+</p>
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
 ## 特点
 
@@ -56,7 +83,7 @@ BoopFace 是一个轻量、富表现力的机器人头像组件，适用于 AI �
 - 188 款编号皮肤，分 17 个系列，光线跟随鼠标
 - 不含皮肤的精简版，适合对大小特别在意的页面
 - 内置 TypeScript 类型声明
-- BoopFace Embedded 嵌入式设备版：同样的表情跑在 28 种 ESP32、STM32 和树莓派 Pico 开发板与屏幕组合上，在线模拟器里调好后直接导出到固件
+- BoopFace Embedded 嵌入式设备版：同样的眼部表情跑在 28 种 ESP32、ESP32-S3、STM32 和树莓派 Pico 开发板与屏幕组合上，在线模拟器里调好后直接导出到固件
 
 ## 安装
 
@@ -253,7 +280,7 @@ avatar.setSkin(null); // 回到纯色
 
 ## 新支持：BoopFace Embedded 嵌入式设备版
 
-与网页版相同的表情，现在也可以用在机器人和开发板的屏幕上。一个小巧的 C++ 库移植了网页版的全部表情，动作和节奏都与网页版一致。固件示例支持 28 种开发板和屏幕组合，覆盖 ESP32、ESP32-S3、STM32 和树莓派 Pico：圆形和方形 TFT、长条屏、AMOLED 和单色 OLED，也可以自定义屏幕尺寸。
+与网页版相同的表情，现在也可以用在机器人和开发板的屏幕上。小巧的 C++11 引擎保留了网页版眼部表情的动作和节奏。固件示例支持 28 种开发板和屏幕组合，覆盖 ESP32、ESP32-S3、STM32 和树莓派 Pico：圆形和方形 TFT、长条屏、AMOLED 和单色 OLED，也可以自定义屏幕尺寸。
 
 | 你的设备 | 用哪个 |
 | --- | --- |
@@ -265,7 +292,7 @@ avatar.setSkin(null); // 回到纯色
 
 **没有板子也能先预览效果。** [在线模拟器](https://cx-artlab.github.io/BoopFace/hardware/?lang=zh-CN)在浏览器里就能运行同一套 C++ 引擎，模拟 32 种屏幕，你可以大致看到它在真实模组上的样子，选购屏幕时也能拿来参考。
 
-**调好，就能直接用。** 选好你的屏幕，调整布局、颜色和帧率，点「导出设置」。把导出的 `eyes_settings.h` 放进示例固件再编译，板子上显示的就是模拟器里的样子。详见[操作步骤](../embedded/README.zh-CN.md#在模拟器里调好直接用到板子上)。
+**调整、导出、编译。** 选好你的屏幕，调整布局、颜色和帧率，点「导出设置」。把导出的 `eyes_settings.h` 放在示例固件的 `main.cpp` 旁边，使用这些设置编译固件。详见[操作步骤](../embedded/README.zh-CN.md#在模拟器里调好直接用到板子上)。模拟器界面和导出的注释会跟随所选语言。
 
 **安装。** 从[嵌入式发布页](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.1.0)下载 `BoopFace-Embedded-0.1.0.zip`，在 Arduino IDE 里选「项目 → 导入库 → 添加 .ZIP 库」安装。Arduino 库管理器索引仍在更新，目前请使用 ZIP 或源码。[PlatformIO](https://registry.platformio.org/libraries/cxlab/BoopFace) 用户可在 `platformio.ini` 的环境配置中添加：
 
