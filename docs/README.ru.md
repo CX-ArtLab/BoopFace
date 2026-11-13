@@ -20,9 +20,7 @@ BoopFace — лёгкий выразительный компонент ават
 
 Построен на SVG и чистом JavaScript: это нативный Web Component без зависимостей во время выполнения, под лицензией MIT. 188 [скинов](#скины--новое-в-07) можно надеть в любой момент.
 
-<p align="center">
-  <img src="../assets/demo/boopface-demo.gif" alt="Интерактивная анимационная демонстрация BoopFace" width="560">
-</p>
+https://github.com/user-attachments/assets/533940e6-38e8-45e3-a276-606e1e7bba51
 
 ## Новое: [BoopFace Embedded](#boopface-embedded)
 
@@ -34,9 +32,39 @@ BoopFace — лёгкий выразительный компонент ават
 
 ## Демонстрация в реальном времени
 
-[Открыть интерактивную демонстрацию](https://cx-artlab.github.io/BoopFace/?lang=ru) · [Открыть галерею скинов](https://cx-artlab.github.io/BoopFace/skins.html?lang=ru)
+<h3 align="center">Официальный сайт</h3>
 
-[Открыть симулятор устройств](https://cx-artlab.github.io/BoopFace/hardware/?lang=ru)
+<p align="center">
+  <a href="https://boopface.com/">boopface.com</a>
+</p>
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+<h3 align="center">BoopFace Web Component</h3>
+
+<p align="center">
+  <a href="https://cx-artlab.github.io/BoopFace/?lang=ru">Открыть интерактивную демонстрацию</a> · <a href="https://cx-artlab.github.io/BoopFace/skins.html?lang=ru">Открыть галерею скинов</a>
+</p>
+
+<p align="center">
+  <img src="../assets/demo/boopface-demo.gif" alt="Интерактивная анимационная демонстрация BoopFace" width="560">
+</p>
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+<h3 align="center">BoopFace Embedded</h3>
+
+<p align="center">
+  <a href="https://cx-artlab.github.io/BoopFace/hardware/?lang=ru">Открыть симулятор устройств</a> (предпросмотр 32 предустановок экранов встраиваемых устройств)
+</p>
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
 ## Основные возможности
 
@@ -55,6 +83,7 @@ BoopFace — лёгкий выразительный компонент ават
 - 188 пронумерованных скинов в 17 сериях, свет следует за указателем
 - Облегчённая версия без скинов для самых лёгких страниц
 - TypeScript-декларации включены
+- BoopFace Embedded воспроизводит те же выражения глаз на 28 конфигурациях плат и экранов ESP32, ESP32-S3, STM32 и Raspberry Pi Pico с экспортом настроек симулятора для прошивки
 
 ## Установка
 
@@ -277,7 +306,7 @@ lib_deps = cxlab/BoopFace@^0.1.0
 ```cpp
 #include <BoopFace.h>
 boopface::Eyes eyes;
-uint8_t pixels[4800]; // 240 x 160, 1 bit per pixel
+uint8_t pixels[4800]; // 240 x 160, 1 бит на пиксель
 
 void setup() {
   boopface::EyesConfig config;
@@ -286,11 +315,12 @@ void setup() {
 
 void loop() {
   if (eyes.update(millis())) {
-    // Send eyes.data() to the display driver.
+    // Передать eyes.data() драйверу дисплея.
   }
 }
 
-// When needed: eyes.play("success", millis());
+// При необходимости
+// eyes.play("success", millis());
 ```
 
 Экспериментальная версия: все конфигурации собираются в CI, но ещё не проверены на реальных устройствах. После проверки отправьте [отчёт](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml). API и подключение описаны в [руководстве](../embedded/README.md).
