@@ -20,9 +20,7 @@ It also works for desktop companions, virtual pets, digital mascots, chatbot ava
 
 Built with SVG and vanilla JavaScript, it is a native Web Component with zero runtime dependencies, MIT licensed. 188 [skins](#skins--new-in-07) are ready to put on at any time.
 
-<p align="center">
-  <img src="./assets/demo/boopface-demo.gif" alt="BoopFace interactive animation demo" width="560">
-</p>
+https://github.com/user-attachments/assets/533940e6-38e8-45e3-a276-606e1e7bba51
 
 ## New: [BoopFace Embedded](#boopface-embedded)
 
@@ -34,9 +32,39 @@ The same eye expressions on ESP32, STM32 and Raspberry Pi Pico screens, or in ot
 
 ## Live Demo
 
-[Open the interactive demo](https://cx-artlab.github.io/BoopFace/) · [Visit the Skin Gallery](https://cx-artlab.github.io/BoopFace/skins.html)
+<h3 align="center">Official website</h3>
 
-[Open the embedded simulator](https://cx-artlab.github.io/BoopFace/hardware/?lang=en)
+<p align="center">
+  <a href="https://boopface.com/">boopface.com</a>
+</p>
+
+<p align="center">
+  <img src="./assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+<h3 align="center">BoopFace Web Component</h3>
+
+<p align="center">
+  <a href="https://cx-artlab.github.io/BoopFace/">Open the interactive demo</a> · <a href="https://cx-artlab.github.io/BoopFace/skins.html">Visit the Skin Gallery</a>
+</p>
+
+<p align="center">
+  <img src="./assets/demo/boopface-demo.gif" alt="BoopFace interactive animation demo" width="560">
+</p>
+
+<p align="center">
+  <img src="./assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+<h3 align="center">BoopFace Embedded</h3>
+
+<p align="center">
+  <a href="https://cx-artlab.github.io/BoopFace/hardware/?lang=en">Open the embedded simulator</a> (preview 32 embedded screen presets)
+</p>
+
+<p align="center">
+  <img src="./assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
 ## Highlights
 
@@ -55,6 +83,7 @@ The same eye expressions on ESP32, STM32 and Raspberry Pi Pico screens, or in ot
 - 188 numbered skins in 17 series, with light that follows the pointer
 - A lite build without skins for the smallest pages
 - TypeScript declarations included
+- BoopFace Embedded brings the same eye expressions to 28 ESP32, ESP32-S3, STM32 and Raspberry Pi Pico board/display configurations, with simulator settings export for firmware
 
 ## Install
 
