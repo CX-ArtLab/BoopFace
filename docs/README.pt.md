@@ -20,9 +20,7 @@ Também serve para companheiros de desktop, pets virtuais, mascotes digitais, av
 
 Feito com SVG e JavaScript puro, é um Web Component nativo sem dependências em tempo de execução, com licença MIT. São 188 [skins](#skins--novidade-na-07) prontas para usar a qualquer momento.
 
-<p align="center">
-  <img src="../assets/demo/boopface-demo.gif" alt="Demonstração animada interativa do BoopFace" width="560">
-</p>
+https://github.com/user-attachments/assets/533940e6-38e8-45e3-a276-606e1e7bba51
 
 ## Novo: [BoopFace Embedded](#boopface-embedded)
 
@@ -34,9 +32,39 @@ As mesmas expressões nas telas ESP32, STM32 e Raspberry Pi Pico, ou em outros p
 
 ## Demo ao vivo
 
-[Abrir a demo interativa](https://cx-artlab.github.io/BoopFace/?lang=pt) · [Visite a galeria de skins](https://cx-artlab.github.io/BoopFace/skins.html?lang=pt)
+<h3 align="center">Site oficial</h3>
 
-[Abrir o simulador embarcado](https://cx-artlab.github.io/BoopFace/hardware/?lang=pt)
+<p align="center">
+  <a href="https://boopface.com/">boopface.com</a>
+</p>
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+<h3 align="center">BoopFace Web Component</h3>
+
+<p align="center">
+  <a href="https://cx-artlab.github.io/BoopFace/?lang=pt">Abrir a demo interativa</a> · <a href="https://cx-artlab.github.io/BoopFace/skins.html?lang=pt">Visite a galeria de skins</a>
+</p>
+
+<p align="center">
+  <img src="../assets/demo/boopface-demo.gif" alt="Demonstração animada interativa do BoopFace" width="560">
+</p>
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+<h3 align="center">BoopFace Embedded</h3>
+
+<p align="center">
+  <a href="https://cx-artlab.github.io/BoopFace/hardware/?lang=pt">Abrir o simulador embarcado</a> (prévia de 32 predefinições de telas embarcadas)
+</p>
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
 ## Destaques
 
@@ -55,6 +83,7 @@ As mesmas expressões nas telas ESP32, STM32 e Raspberry Pi Pico, ou em outros p
 - 188 skins numerados em 17 séries, com luz que segue o ponteiro
 - Versão leve sem skins para as páginas mais enxutas
 - Declarações TypeScript incluídas
+- BoopFace Embedded leva as mesmas expressões dos olhos a 28 configurações de placa e tela ESP32, ESP32-S3, STM32 e Raspberry Pi Pico, com exportação dos ajustes do simulador para o firmware
 
 ## Instalação
 
@@ -277,7 +306,7 @@ lib_deps = cxlab/BoopFace@^0.1.0
 ```cpp
 #include <BoopFace.h>
 boopface::Eyes eyes;
-uint8_t pixels[4800]; // 240 x 160, 1 bit per pixel
+uint8_t pixels[4800]; // 240 x 160, 1 bit por pixel
 
 void setup() {
   boopface::EyesConfig config;
@@ -286,11 +315,12 @@ void setup() {
 
 void loop() {
   if (eyes.update(millis())) {
-    // Send eyes.data() to the display driver.
+    // Enviar eyes.data() para o driver da tela.
   }
 }
 
-// When needed: eyes.play("success", millis());
+// Quando necessário
+// eyes.play("success", millis());
 ```
 
 Experimental: o CI compila todas as configurações, mas nenhuma foi verificada em hardware real. Se testar, envie um [relatório](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml). Veja a [documentação](../embedded/README.md) para API e conexões.

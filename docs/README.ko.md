@@ -20,9 +20,7 @@ AI 어시스턴트와 에이전트의 얼굴이자 상태 피드백으로 쓸 �
 
 SVG와 순수 JavaScript로 만든 네이티브 Web Component로, 런타임 의존성이 없고 MIT 라이선스입니다. 188가지 [스킨](#스킨--07-새-기능)을 언제든지 입힐 수 있습니다.
 
-<p align="center">
-  <img src="../assets/demo/boopface-demo.gif" alt="BoopFace 인터랙티브 애니메이션 데모" width="560">
-</p>
+https://github.com/user-attachments/assets/533940e6-38e8-45e3-a276-606e1e7bba51
 
 ## 새 지원: [BoopFace Embedded](#boopface-embedded)
 
@@ -34,9 +32,39 @@ ESP32, STM32, Raspberry Pi Pico 화면과 다른 C++ 프로그램에서 같은 �
 
 ## 라이브 데모
 
-[인터랙티브 데모 열기](https://cx-artlab.github.io/BoopFace/?lang=ko) · [스킨 갤러리 둘러보기](https://cx-artlab.github.io/BoopFace/skins.html?lang=ko)
+<h3 align="center">공식 웹사이트</h3>
 
-[임베디드 시뮬레이터 열기](https://cx-artlab.github.io/BoopFace/hardware/?lang=ko)
+<p align="center">
+  <a href="https://boopface.com/">boopface.com</a>
+</p>
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+<h3 align="center">BoopFace Web Component</h3>
+
+<p align="center">
+  <a href="https://cx-artlab.github.io/BoopFace/?lang=ko">인터랙티브 데모 열기</a> · <a href="https://cx-artlab.github.io/BoopFace/skins.html?lang=ko">스킨 갤러리 둘러보기</a>
+</p>
+
+<p align="center">
+  <img src="../assets/demo/boopface-demo.gif" alt="BoopFace 인터랙티브 애니메이션 데모" width="560">
+</p>
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+<h3 align="center">BoopFace Embedded</h3>
+
+<p align="center">
+  <a href="https://cx-artlab.github.io/BoopFace/hardware/?lang=ko">임베디드 시뮬레이터 열기</a> (32가지 임베디드 화면 프리셋 미리보기)
+</p>
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
 ## 주요 특징
 
@@ -55,6 +83,7 @@ ESP32, STM32, Raspberry Pi Pico 화면과 다른 C++ 프로그램에서 같은 �
 - 17개 시리즈, 188가지 번호 스킨. 빛이 포인터를 따라갑니다
 - 스킨을 뺀 경량판 제공
 - TypeScript 선언 포함
+- BoopFace Embedded는 ESP32, ESP32-S3, STM32, Raspberry Pi Pico의 28가지 보드·화면 구성에서 같은 눈 표정을 재현하며 시뮬레이터 설정을 펌웨어용으로 내보낼 수 있습니다
 
 ## 설치
 
@@ -277,7 +306,7 @@ lib_deps = cxlab/BoopFace@^0.1.0
 ```cpp
 #include <BoopFace.h>
 boopface::Eyes eyes;
-uint8_t pixels[4800]; // 240 x 160, 1 bit per pixel
+uint8_t pixels[4800]; // 240 x 160, 픽셀당 1비트
 
 void setup() {
   boopface::EyesConfig config;
@@ -286,11 +315,12 @@ void setup() {
 
 void loop() {
   if (eyes.update(millis())) {
-    // Send eyes.data() to the display driver.
+    // eyes.data()를 화면 드라이버로 보냅니다.
   }
 }
 
-// When needed: eyes.play("success", millis());
+// 필요할 때
+// eyes.play("success", millis());
 ```
 
 실험 버전: 모든 구성이 CI에서 컴파일되지만 실기 검증은 아직 없습니다. 사용해 보셨다면 [하드웨어 보고서](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml)를 보내주세요. API와 배선은 [임베디드 안내](../embedded/README.md)를 참고하세요.
