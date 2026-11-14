@@ -45,7 +45,7 @@ As mesmas expressões nas telas ESP32, STM32 e Raspberry Pi Pico, ou em outros p
 <h3 align="center">BoopFace Web Component</h3>
 
 <p align="center">
-  <a href="https://cx-artlab.github.io/BoopFace/?lang=pt">Abrir a demo interativa</a> · <a href="https://cx-artlab.github.io/BoopFace/skins.html?lang=pt">Visite a galeria de skins</a>
+  <a href="https://boopface.com/demo/?lang=pt">Abrir a demo interativa</a> · <a href="https://boopface.com/demo/skins.html?lang=pt">Visite a galeria de skins</a>
 </p>
 
 <p align="center">
@@ -59,7 +59,7 @@ As mesmas expressões nas telas ESP32, STM32 e Raspberry Pi Pico, ou em outros p
 <h3 align="center">BoopFace Embedded</h3>
 
 <p align="center">
-  <a href="https://cx-artlab.github.io/BoopFace/hardware/?lang=pt">Abrir o simulador embarcado</a> (prévia de 32 predefinições de telas embarcadas)
+  <a href="https://boopface.com/hardware/?lang=pt">Abrir o simulador embarcado</a> (prévia de 32 predefinições de telas embarcadas)
 </p>
 
 <p align="center">
@@ -247,7 +247,7 @@ avatar.setSkin(102);  // ou '102'
 avatar.setSkin(null); // volta à cor lisa
 ```
 
-Veja todos os skins com seus números na [página com todos os skins](https://cx-artlab.github.io/BoopFace/materials/?lang=pt).
+Veja todos os skins com seus números na [página com todos os skins](https://boopface.com/demo/materials/?lang=pt).
 
 | Série | Números | Série | Números | Série | Números |
 | --- | --- | --- | --- | --- | --- |
@@ -291,7 +291,7 @@ As expressões dos olhos da versão web agora funcionam em telas de robôs e pla
 
 <img src="../assets/readme/boopface-embedded-simulator.jpg" alt="Simulador do BoopFace Embedded: expressões numa TFT redonda, disposição, cores e exportação" width="100%">
 
-**Experimente sem placa.** O [simulador](https://cx-artlab.github.io/BoopFace/hardware/?lang=pt) executa o mesmo motor C++ no navegador com 32 telas simuladas. Ajuda a prever o resultado e comparar módulos.
+**Experimente sem placa.** O [simulador](https://boopface.com/hardware/?lang=pt) executa o mesmo motor C++ no navegador com 32 telas simuladas. Ajuda a prever o resultado e comparar módulos.
 
 **Ajuste, exporte e compile.** Escolha a tela, disposição, cores e taxa de quadros. Clique em **Exportar ajustes**, salve `eyes_settings.h` ao lado do `main.cpp` do exemplo e compile. Veja os [passos](../embedded/README.md). A interface e os comentários exportados seguem o idioma escolhido.
 
