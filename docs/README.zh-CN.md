@@ -45,7 +45,7 @@ https://github.com/user-attachments/assets/533940e6-38e8-45e3-a276-606e1e7bba51
 <h3 align="center">BoopFace Web 组件</h3>
 
 <p align="center">
-  <a href="https://cx-artlab.github.io/BoopFace/?lang=zh-CN">打开交互 Demo</a> · <a href="https://cx-artlab.github.io/BoopFace/skins.html?lang=zh-CN">逛逛皮肤美术馆</a>
+  <a href="https://boopface.com/demo/?lang=zh-CN">打开交互 Demo</a> · <a href="https://boopface.com/demo/skins.html?lang=zh-CN">逛逛皮肤美术馆</a>
 </p>
 
 <p align="center">
@@ -59,7 +59,7 @@ https://github.com/user-attachments/assets/533940e6-38e8-45e3-a276-606e1e7bba51
 <h3 align="center">BoopFace Embedded 嵌入式设备版</h3>
 
 <p align="center">
-  <a href="https://cx-artlab.github.io/BoopFace/hardware/?lang=zh-CN">打开嵌入式设备模拟器</a> （可预览 32 种嵌入式屏幕预设）
+  <a href="https://boopface.com/hardware/?lang=zh-CN">打开嵌入式设备模拟器</a> （可预览 32 种嵌入式屏幕预设）
 </p>
 
 <p align="center">
@@ -247,7 +247,7 @@ avatar.setSkin(102);  // 也可以写 '102'
 avatar.setSkin(null); // 回到纯色
 ```
 
-所有皮肤及编号见[全部皮肤页](https://cx-artlab.github.io/BoopFace/materials/?lang=zh-CN)。
+所有皮肤及编号见[全部皮肤页](https://boopface.com/demo/materials/?lang=zh-CN)。
 
 | 系列 | 编号 | 系列 | 编号 | 系列 | 编号 |
 | --- | --- | --- | --- | --- | --- |
@@ -290,7 +290,7 @@ avatar.setSkin(null); // 回到纯色
 
 <img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded 嵌入式设备模拟器：圆形 TFT 模组显示眼睛，旁边是布局、颜色和导出设置" width="100%">
 
-**没有板子也能先预览效果。** [在线模拟器](https://cx-artlab.github.io/BoopFace/hardware/?lang=zh-CN)在浏览器里就能运行同一套 C++ 引擎，模拟 32 种屏幕，你可以大致看到它在真实模组上的样子，选购屏幕时也能拿来参考。
+**没有板子也能先预览效果。** [在线模拟器](https://boopface.com/hardware/?lang=zh-CN)在浏览器里就能运行同一套 C++ 引擎，模拟 32 种屏幕，你可以大致看到它在真实模组上的样子，选购屏幕时也能拿来参考。
 
 **调整、导出、编译。** 选好你的屏幕，调整布局、颜色和帧率，点「导出设置」。把导出的 `eyes_settings.h` 放在示例固件的 `main.cpp` 旁边，使用这些设置编译固件。详见[操作步骤](../embedded/README.zh-CN.md#在模拟器里调好直接用到板子上)。模拟器界面和导出的注释会跟随所选语言。
 

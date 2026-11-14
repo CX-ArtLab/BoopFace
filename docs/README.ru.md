@@ -45,7 +45,7 @@ https://github.com/user-attachments/assets/533940e6-38e8-45e3-a276-606e1e7bba51
 <h3 align="center">BoopFace Web Component</h3>
 
 <p align="center">
-  <a href="https://cx-artlab.github.io/BoopFace/?lang=ru">Открыть интерактивную демонстрацию</a> · <a href="https://cx-artlab.github.io/BoopFace/skins.html?lang=ru">Открыть галерею скинов</a>
+  <a href="https://boopface.com/demo/?lang=ru">Открыть интерактивную демонстрацию</a> · <a href="https://boopface.com/demo/skins.html?lang=ru">Открыть галерею скинов</a>
 </p>
 
 <p align="center">
@@ -59,7 +59,7 @@ https://github.com/user-attachments/assets/533940e6-38e8-45e3-a276-606e1e7bba51
 <h3 align="center">BoopFace Embedded</h3>
 
 <p align="center">
-  <a href="https://cx-artlab.github.io/BoopFace/hardware/?lang=ru">Открыть симулятор устройств</a> (предпросмотр 32 предустановок экранов встраиваемых устройств)
+  <a href="https://boopface.com/hardware/?lang=ru">Открыть симулятор устройств</a> (предпросмотр 32 предустановок экранов встраиваемых устройств)
 </p>
 
 <p align="center">
@@ -247,7 +247,7 @@ avatar.setSkin(102);  // или '102'
 avatar.setSkin(null); // вернуться к сплошному цвету
 ```
 
-Все скины с номерами — на [странице со всеми скинами](https://cx-artlab.github.io/BoopFace/materials/?lang=ru).
+Все скины с номерами — на [странице со всеми скинами](https://boopface.com/demo/materials/?lang=ru).
 
 | Серия | Номера | Серия | Номера | Серия | Номера |
 | --- | --- | --- | --- | --- | --- |
@@ -291,7 +291,7 @@ avatar.setSkin(null); // вернуться к сплошному цвету
 
 <img src="../assets/readme/boopface-embedded-simulator.jpg" alt="Симулятор BoopFace Embedded: выражения на круглом TFT, расположение, цвета и экспорт" width="100%">
 
-**Попробуйте без платы.** [Симулятор](https://cx-artlab.github.io/BoopFace/hardware/?lang=ru) запускает тот же движок C++ в браузере на 32 виртуальных экранах. Он помогает оценить результат и сравнить модули.
+**Попробуйте без платы.** [Симулятор](https://boopface.com/hardware/?lang=ru) запускает тот же движок C++ в браузере на 32 виртуальных экранах. Он помогает оценить результат и сравнить модули.
 
 **Настройте, экспортируйте, соберите.** Выберите экран, расположение, цвета и частоту кадров, затем **Экспорт настроек**. Сохраните `eyes_settings.h` рядом с `main.cpp` примера и соберите прошивку. См. [инструкцию](../embedded/README.md). Интерфейс и экспортированные комментарии следуют выбранному языку.
 
