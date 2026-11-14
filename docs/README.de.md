@@ -45,7 +45,7 @@ Dieselben Augenausdrücke auf ESP32-, STM32- und Raspberry-Pi-Pico-Bildschirmen 
 <h3 align="center">BoopFace Web Component</h3>
 
 <p align="center">
-  <a href="https://cx-artlab.github.io/BoopFace/?lang=de">Interaktive Demo öffnen</a> · <a href="https://cx-artlab.github.io/BoopFace/skins.html?lang=de">Zur Skin-Galerie</a>
+  <a href="https://boopface.com/demo/?lang=de">Interaktive Demo öffnen</a> · <a href="https://boopface.com/demo/skins.html?lang=de">Zur Skin-Galerie</a>
 </p>
 
 <p align="center">
@@ -59,7 +59,7 @@ Dieselben Augenausdrücke auf ESP32-, STM32- und Raspberry-Pi-Pico-Bildschirmen 
 <h3 align="center">BoopFace Embedded</h3>
 
 <p align="center">
-  <a href="https://cx-artlab.github.io/BoopFace/hardware/?lang=de">Embedded-Simulator öffnen</a> (Vorschau mit 32 Bildschirmvoreinstellungen für Embedded-Geräte)
+  <a href="https://boopface.com/hardware/?lang=de">Embedded-Simulator öffnen</a> (Vorschau mit 32 Bildschirmvoreinstellungen für Embedded-Geräte)
 </p>
 
 <p align="center">
@@ -247,7 +247,7 @@ avatar.setSkin(102);  // oder '102'
 avatar.setSkin(null); // zurück zur flachen Farbe
 ```
 
-Alle Skins mit Nummer zeigt die [Seite mit allen Skins](https://cx-artlab.github.io/BoopFace/materials/?lang=de).
+Alle Skins mit Nummer zeigt die [Seite mit allen Skins](https://boopface.com/demo/materials/?lang=de).
 
 | Serie | Nummern | Serie | Nummern | Serie | Nummern |
 | --- | --- | --- | --- | --- | --- |
@@ -291,7 +291,7 @@ Die Augenausdrücke der Webversion laufen jetzt auf Robotern und Entwicklungspla
 
 <img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded Simulator: Augenausdrücke auf rundem TFT, Anordnung, Farben und Export" width="100%">
 
-**Ohne Platine ausprobieren.** Der [Simulator](https://cx-artlab.github.io/BoopFace/hardware/?lang=de) führt dieselbe C++-Engine im Browser auf 32 simulierten Bildschirmen aus. So kannst du Module vergleichen und die Darstellung vorab ansehen.
+**Ohne Platine ausprobieren.** Der [Simulator](https://boopface.com/hardware/?lang=de) führt dieselbe C++-Engine im Browser auf 32 simulierten Bildschirmen aus. So kannst du Module vergleichen und die Darstellung vorab ansehen.
 
 **Anpassen, exportieren, bauen.** Wähle Bildschirm, Anordnung, Farben und Bildrate, dann **Einstellungen exportieren**. Speichere `eyes_settings.h` neben der `main.cpp` des Beispiels und kompiliere. Siehe die [Anleitung](../embedded/README.md). Oberfläche und exportierte Kommentare folgen der gewählten Sprache.
 

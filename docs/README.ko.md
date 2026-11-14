@@ -45,7 +45,7 @@ ESP32, STM32, Raspberry Pi Pico 화면과 다른 C++ 프로그램에서 같은 �
 <h3 align="center">BoopFace Web Component</h3>
 
 <p align="center">
-  <a href="https://cx-artlab.github.io/BoopFace/?lang=ko">인터랙티브 데모 열기</a> · <a href="https://cx-artlab.github.io/BoopFace/skins.html?lang=ko">스킨 갤러리 둘러보기</a>
+  <a href="https://boopface.com/demo/?lang=ko">인터랙티브 데모 열기</a> · <a href="https://boopface.com/demo/skins.html?lang=ko">스킨 갤러리 둘러보기</a>
 </p>
 
 <p align="center">
@@ -59,7 +59,7 @@ ESP32, STM32, Raspberry Pi Pico 화면과 다른 C++ 프로그램에서 같은 �
 <h3 align="center">BoopFace Embedded</h3>
 
 <p align="center">
-  <a href="https://cx-artlab.github.io/BoopFace/hardware/?lang=ko">임베디드 시뮬레이터 열기</a> (32가지 임베디드 화면 프리셋 미리보기)
+  <a href="https://boopface.com/hardware/?lang=ko">임베디드 시뮬레이터 열기</a> (32가지 임베디드 화면 프리셋 미리보기)
 </p>
 
 <p align="center">
@@ -247,7 +247,7 @@ avatar.setSkin(102);  // '102'도 가능
 avatar.setSkin(null); // 단색으로 돌아가기
 ```
 
-모든 스킨과 번호는 [전체 스킨 페이지](https://cx-artlab.github.io/BoopFace/materials/?lang=ko)에서 볼 수 있습니다.
+모든 스킨과 번호는 [전체 스킨 페이지](https://boopface.com/demo/materials/?lang=ko)에서 볼 수 있습니다.
 
 | 시리즈 | 번호 | 시리즈 | 번호 | 시리즈 | 번호 |
 | --- | --- | --- | --- | --- | --- |
@@ -291,7 +291,7 @@ ES Modules, Custom Elements, SVG, Pointer Events, Web Animations API, `Intersect
 
 <img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded 시뮬레이터: 원형 TFT의 눈 표정과 배치, 색상, 설정 내보내기" width="100%">
 
-**보드 없이도 확인하세요.** [시뮬레이터](https://cx-artlab.github.io/BoopFace/hardware/?lang=ko)는 같은 C++ 엔진을 브라우저에서 실행하며 32가지 화면을 재현합니다. 표시 결과를 확인하고 모듈을 비교할 수 있습니다.
+**보드 없이도 확인하세요.** [시뮬레이터](https://boopface.com/hardware/?lang=ko)는 같은 C++ 엔진을 브라우저에서 실행하며 32가지 화면을 재현합니다. 표시 결과를 확인하고 모듈을 비교할 수 있습니다.
 
 **조정, 내보내기, 빌드.** 화면, 배치, 색상, 프레임 속도를 조정한 후 **설정 내보내기**를 누르세요. `eyes_settings.h`를 예제의 `main.cpp` 옆에 저장하고 빌드합니다. [사용 방법](../embedded/README.md)을 참고하세요. 화면과 내보낸 주석은 선택한 언어를 따릅니다.
 

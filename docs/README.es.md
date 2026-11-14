@@ -45,7 +45,7 @@ Las mismas expresiones en pantallas ESP32, STM32 y Raspberry Pi Pico, o en otros
 <h3 align="center">BoopFace Web Component</h3>
 
 <p align="center">
-  <a href="https://cx-artlab.github.io/BoopFace/?lang=es">Abrir la demo interactiva</a> · <a href="https://cx-artlab.github.io/BoopFace/skins.html?lang=es">Visita la galería de pieles</a>
+  <a href="https://boopface.com/demo/?lang=es">Abrir la demo interactiva</a> · <a href="https://boopface.com/demo/skins.html?lang=es">Visita la galería de pieles</a>
 </p>
 
 <p align="center">
@@ -59,7 +59,7 @@ Las mismas expresiones en pantallas ESP32, STM32 y Raspberry Pi Pico, o en otros
 <h3 align="center">BoopFace Embedded</h3>
 
 <p align="center">
-  <a href="https://cx-artlab.github.io/BoopFace/hardware/?lang=es">Abrir el simulador integrado</a> (vista previa de 32 configuraciones de pantalla para dispositivos integrados)
+  <a href="https://boopface.com/hardware/?lang=es">Abrir el simulador integrado</a> (vista previa de 32 configuraciones de pantalla para dispositivos integrados)
 </p>
 
 <p align="center">
@@ -247,7 +247,7 @@ avatar.setSkin(102);  // o '102'
 avatar.setSkin(null); // vuelve al color plano
 ```
 
-Consulta todos los skins con su número en la [página de todos los skins](https://cx-artlab.github.io/BoopFace/materials/?lang=es).
+Consulta todos los skins con su número en la [página de todos los skins](https://boopface.com/demo/materials/?lang=es).
 
 | Serie | Números | Serie | Números | Serie | Números |
 | --- | --- | --- | --- | --- | --- |
@@ -291,7 +291,7 @@ Las expresiones oculares de la versión web ahora funcionan en pantallas de robo
 
 <img src="../assets/readme/boopface-embedded-simulator.jpg" alt="Simulador de BoopFace Embedded: expresiones en una TFT redonda, distribución, colores y exportación" width="100%">
 
-**Pruébalo sin placa.** El [simulador](https://cx-artlab.github.io/BoopFace/hardware/?lang=es) ejecuta el mismo motor C++ en el navegador con 32 pantallas simuladas. Permite anticipar el resultado y comparar módulos.
+**Pruébalo sin placa.** El [simulador](https://boopface.com/hardware/?lang=es) ejecuta el mismo motor C++ en el navegador con 32 pantallas simuladas. Permite anticipar el resultado y comparar módulos.
 
 **Ajusta, exporta y compila.** Elige pantalla, distribución, colores y fotogramas por segundo. Pulsa **Exportar ajustes**, guarda `eyes_settings.h` junto al `main.cpp` del ejemplo y compila. Consulta los [pasos](../embedded/README.md). La interfaz y los comentarios exportados siguen el idioma elegido.
 
