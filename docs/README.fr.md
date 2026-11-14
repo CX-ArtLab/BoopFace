@@ -45,7 +45,7 @@ Les mêmes expressions sur les écrans ESP32, STM32 et Raspberry Pi Pico, ou dan
 <h3 align="center">BoopFace Web Component</h3>
 
 <p align="center">
-  <a href="https://cx-artlab.github.io/BoopFace/?lang=fr">Ouvrir la démo interactive</a> · <a href="https://cx-artlab.github.io/BoopFace/skins.html?lang=fr">Voir la galerie de skins</a>
+  <a href="https://boopface.com/demo/?lang=fr">Ouvrir la démo interactive</a> · <a href="https://boopface.com/demo/skins.html?lang=fr">Voir la galerie de skins</a>
 </p>
 
 <p align="center">
@@ -59,7 +59,7 @@ Les mêmes expressions sur les écrans ESP32, STM32 et Raspberry Pi Pico, ou dan
 <h3 align="center">BoopFace Embedded</h3>
 
 <p align="center">
-  <a href="https://cx-artlab.github.io/BoopFace/hardware/?lang=fr">Ouvrir le simulateur embarqué</a> (aperçu de 32 préréglages d’écrans embarqués)
+  <a href="https://boopface.com/hardware/?lang=fr">Ouvrir le simulateur embarqué</a> (aperçu de 32 préréglages d’écrans embarqués)
 </p>
 
 <p align="center">
@@ -247,7 +247,7 @@ avatar.setSkin(102);  // ou '102'
 avatar.setSkin(null); // retour à la couleur unie
 ```
 
-Retrouvez tous les skins et leur numéro dans la [page de tous les skins](https://cx-artlab.github.io/BoopFace/materials/?lang=fr).
+Retrouvez tous les skins et leur numéro dans la [page de tous les skins](https://boopface.com/demo/materials/?lang=fr).
 
 | Série | Numéros | Série | Numéros | Série | Numéros |
 | --- | --- | --- | --- | --- | --- |
@@ -291,7 +291,7 @@ Les expressions des yeux de la version web fonctionnent désormais sur les écra
 
 <img src="../assets/readme/boopface-embedded-simulator.jpg" alt="Simulateur BoopFace Embedded : expressions sur un TFT rond, disposition, couleurs et export" width="100%">
 
-**Essayez sans carte.** Le [simulateur](https://cx-artlab.github.io/BoopFace/hardware/?lang=fr) exécute le même moteur C++ dans le navigateur sur 32 écrans simulés. Il permet de prévisualiser le résultat et de comparer les modules.
+**Essayez sans carte.** Le [simulateur](https://boopface.com/hardware/?lang=fr) exécute le même moteur C++ dans le navigateur sur 32 écrans simulés. Il permet de prévisualiser le résultat et de comparer les modules.
 
 **Réglez, exportez, compilez.** Choisissez l’écran, la disposition, les couleurs et la cadence, puis **Exporter les réglages**. Placez `eyes_settings.h` à côté du `main.cpp` de l’exemple et compilez. Voir les [étapes](../embedded/README.md). L’interface et les commentaires exportés suivent la langue choisie.
 
