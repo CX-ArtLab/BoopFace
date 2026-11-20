@@ -324,6 +324,12 @@ void loop() {
 
 Experimental: CI compiles every configuration, but none has been verified on physical hardware yet. If you try one, please send a [hardware report](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml). See the [embedded guide](embedded/README.md) for the full API and wiring.
 
+## Built with BoopFace
+
+Welcome to join this list, and let more people see the cool things you've created. To submit yours, open the submission form: https://github.com/CX-ArtLab/BoopFace/issues/new?template=showcase-submission.yml
+
+[View the community showcase](./SHOWCASE.md)
+
 ## Contributing
 
 Issues and pull requests are welcome. See [`CONTRIBUTING.md`](./CONTRIBUTING.md) before submitting changes.
