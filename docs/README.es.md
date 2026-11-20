@@ -325,6 +325,12 @@ void loop() {
 
 Experimental: CI compila todas las configuraciones, pero aún no se han verificado en hardware real. Si pruebas una, envía un [informe](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml). La [guía](../embedded/README.md) incluye la API y las conexiones.
 
+## Proyectos hechos con BoopFace
+
+Te invitamos a sumarte a esta lista y a compartir lo que has creado con BoopFace. Para enviar tu proyecto, abre el formulario: https://github.com/CX-ArtLab/BoopFace/issues/new?template=showcase-submission.yml
+
+[Ver los proyectos de la comunidad](../SHOWCASE.md)
+
 ## Contribuir
 
 Se aceptan Issues y Pull Requests. Consulta [`CONTRIBUTING.md`](../CONTRIBUTING.md) antes de enviar cambios.

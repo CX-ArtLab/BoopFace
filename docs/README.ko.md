@@ -325,6 +325,12 @@ void loop() {
 
 실험 버전: 모든 구성이 CI에서 컴파일되지만 실기 검증은 아직 없습니다. 사용해 보셨다면 [하드웨어 보고서](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml)를 보내주세요. API와 배선은 [임베디드 안내](../embedded/README.md)를 참고하세요.
 
+## BoopFace로 만든 프로젝트
+
+BoopFace로 만든 프로젝트를 이 목록에 올려 더 많은 사람에게 보여 주세요. 프로젝트를 제출하려면 아래 양식을 열어 주세요. https://github.com/CX-ArtLab/BoopFace/issues/new?template=showcase-submission.yml
+
+[커뮤니티 프로젝트 보기](../SHOWCASE.md)
+
 ## 기여
 
 Issue와 Pull Request를 환영합니다. 변경 사항을 제출하기 전에 [`CONTRIBUTING.md`](../CONTRIBUTING.md)를 확인하세요.
