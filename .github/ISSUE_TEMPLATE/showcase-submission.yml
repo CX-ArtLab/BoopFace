@@ -1,0 +1,30 @@
+name: Showcase submission
+description: Submit a project built with BoopFace
+title: "[Showcase] "
+labels: [showcase]
+body:
+  - type: input
+    id: project-name
+    attributes:
+      label: Project name
+    validations:
+      required: true
+  - type: input
+    id: project-link
+    attributes:
+      label: Project link
+    validations:
+      required: true
+  - type: input
+    id: description
+    attributes:
+      label: One-line description
+    validations:
+      required: true
+  - type: checkboxes
+    id: website-permission
+    attributes:
+      label: Website feature permission
+      options:
+        - label: If my project is selected, I agree to it being featured on boopface.com.
+          required: false
