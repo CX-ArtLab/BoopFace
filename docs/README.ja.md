@@ -325,6 +325,12 @@ void loop() {
 
 実験版：全構成をCIでコンパイルしていますが、実機では未確認です。試した場合は[実機レポート](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml)をお寄せください。APIと配線は[組み込み版ガイド](../embedded/README.md)に記載しています。
 
+## BoopFace で作られた作品
+
+BoopFace で作った作品をこの一覧に載せて、もっと多くの人に見てもらいませんか？ 作品の応募はこちらのフォームからどうぞ。 https://github.com/CX-ArtLab/BoopFace/issues/new?template=showcase-submission.yml
+
+[コミュニティの作品を見る](../SHOWCASE.md)
+
 ## コントリビューション
 
 Issue と Pull Request を歓迎します。変更を送る前に [`CONTRIBUTING.md`](../CONTRIBUTING.md) を確認してください。

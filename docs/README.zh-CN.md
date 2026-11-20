@@ -323,6 +323,12 @@ void loop() {
 
 实验版：所有配置都在 CI 中编译通过，但还没有在真实硬件上验证。如果你在实物上运行过，欢迎提交[实机验证报告](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml)。完整说明见[嵌入式设备版说明](../embedded/README.zh-CN.md)。
 
+## BoopFace 作品展示
+
+欢迎把你的作品加入这份名单，让更多人看到你用 BoopFace 做出的精彩作品。投稿请打开表单： https://github.com/CX-ArtLab/BoopFace/issues/new?template=showcase-submission.yml
+
+[查看社区作品名单](../SHOWCASE.md)
+
 ## 参与贡献
 
 欢迎提交 Issue 和 Pull Request。提交修改前请阅读 [`CONTRIBUTING.md`](../CONTRIBUTING.md)。
