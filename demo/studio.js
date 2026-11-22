@@ -2506,3 +2506,12 @@ requestAnimationFrame(() => {
   syncSkinPreviewFace();
 });
 scheduleStageHintsLayout();
+
+// Old links: skins.html and agent.html now land here on the matching place.
+function openFromHash() {
+  const hash = location.hash.slice(1);
+  if (hash === 'skins') setInspectorTab('skins');
+  else if (hash === 'agent') { setScene('chat'); setInspectorTab('behavior'); }
+}
+openFromHash();
+addEventListener('hashchange', openFromHash);

@@ -1,12 +1,13 @@
 // Explicit publication boundary. Local editors, backups and experimental pages
 // never enter the website simply because they exist under demo/.
 export const publicDemoFiles = [
-  'index.html', 'skins.html', 'agent.html', 'agent.js', 'skins.js', 'skins.css', 'skins-i18n.js', 'skin-catalog.js', 'skin-catalog-data.js', 'demo-shell.css',
-  'boopface-demo.css', 'boopface-demo.js', 'boopface-demo-ui.js',
-  'boopface-demo-appearance.js', 'boopface-demo-skins.js',
-  'boopface-demo-controls.js', 'boopface-demo-extras.js',
-  'boopface-demo-roundness.js', 'boopface-demo-layout.js',
-  'boopface-demo-dialog-i18n.js', 'boopface-demo-chat-avatar-mode.js',
-  'boopface-demo-reply-loop.js', 'boopface-demo-voice.js', 'voice/voice-audio-data.js',
-  'materials/index.html', 'materials/gallery.js', 'materials/gallery.css',
+  // The Studio (the demo home) and its parts.
+  'index.html', 'studio.js', 'studio.css', 'studio-voice.js', 'studio-agent.js', 'roundness-feedback.js', 'roundness-tick.wav',
+  'favicon-white.svg', 'fonts/geist.css', 'fonts/OFL.txt',
+  'fonts/geist-wordmark-0.ttf', 'fonts/geist-wordmark-1.ttf', 'fonts/geist-wordmark-2.ttf', 'fonts/geist-wordmark-3.ttf', 'fonts/geist-wordmark-4.ttf',
+  'skin-catalog.js', 'skin-catalog-data.js', 'voice/voice-audio-data.js',
+  // Old addresses, now short redirects into the Studio.
+  'skins.html', 'agent.html',
+  // The full skin gallery.
+  'materials/index.html', 'materials/gallery.js', 'materials/gallery.css', 'skins-i18n.js', 'demo-shell.css',
 ];
