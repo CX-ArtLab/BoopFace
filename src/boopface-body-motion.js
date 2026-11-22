@@ -89,7 +89,8 @@ const REDO = {
     const shiver = (1 - u) ** 2;
     return { pitch: 1.5, y: -3, s: 1.02, jit: { s: .01 * Math.sin(u * Math.PI * 4) * shiver, roll: .6 * Math.sin(u * Math.PI * 4) * shiver, yaw: 1 * Math.sin(u * Math.PI * 4 + 1) * shiver } };
   } },
-  sleep: { zh: '睡着', ms: 0, motion: (t, ms) => { const k = ease(clamp(ms / 1400, 0, 1)); return { pitch: -10 * k, y: 4 * k, s: 1 + .012 * Math.sin(ms / 900) * k }; } },
+  // Head down, then still: a sleeping avatar draws nothing (rests: the loop stops once settled).
+  sleep: { zh: '睡着', ms: 0, rests: 1600, motion: (t, ms) => { const k = ease(clamp(ms / 1400, 0, 1)); return { pitch: -10 * k, y: 4 * k }; } },
   wake: { zh: '醒来', ms: 1500, motion: (t, ms) => { const up = ease(clamp(t / .45, 0, 1)); return { pitch: -10 * (1 - up), y: 4 * (1 - up), yaw: 5 * Math.sin(ms / 85) * bell(t, .45, .75), s: 1 + .03 * bell(t, .4, .7) }; } },
   // The head beats with the heart: it swells on each "lub-dub" of the official
   // heart and quivers a little while it does.
@@ -216,7 +217,10 @@ function createRedo({ flat, brains, hosts }) {
       el.style.transformOrigin = '50% 55%';
       el.style.transform = `translate(${(x * k).toFixed(2)}px,${(y * k).toFixed(2)}px) rotate(${out.roll.toFixed(2)}deg) scale(${sx.toFixed(4)},${sy.toFixed(4)})`;
     }
-    if (cur || out) raf = requestAnimationFrame(tick);
+    // A resting pose (asleep) holds its transform without asking for frames;
+    // the next action, stop or reset wakes the loop again.
+    const resting = cur?.def.rests && now - cur.start > cur.def.rests && !moving && !braking;
+    if ((cur || out) && !resting) raf = requestAnimationFrame(tick);
   }
   return {
     stop() { cur = null; wake(); },
