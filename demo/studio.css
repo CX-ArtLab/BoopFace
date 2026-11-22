@@ -2800,3 +2800,7 @@ body.has-chat-modal {
   .stage-hints.is-drawing .hint-shaft,
   .stage-hints.is-drawing .hint-head { animation: none; }
 }
+
+/* Caption under the avatar during a spoken voice turn */
+.voice-caption{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);max-width:min(560px,88%);padding:8px 14px;border-radius:12px;background:rgba(20,20,22,.78);border:1px solid rgba(255,255,255,.08);color:#ededf0;font-size:13px;line-height:1.5;text-align:center;backdrop-filter:blur(8px);pointer-events:none}
+.voice-caption[hidden]{display:none}

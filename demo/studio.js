@@ -1,5 +1,6 @@
 import { VERSION } from '../boopface.js';
 import { createRoundnessFeedback } from './roundness-feedback.js';
+import { createVoiceEngine } from './studio-voice.js';
 import {
   featured,
   filters,
@@ -159,11 +160,13 @@ const CP_QUICK_COLORS = ['#3478f6', '#9b7bf7', '#ea6aa8', '#e65555', '#ea8b42', 
 const CP_MODES = ['hex', 'rgb', 'hsl'];
 const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 
+// Any waiting style can be the thinking step of a voice turn.
 const THINK_STYLES = {
-  bloom: { label: '绽放', runtime: 'waiting-wrap' },
-  spin: { label: '旋转', runtime: 'waiting-spin' },
-  wrap: { label: '滚动', runtime: 'waiting-wrap' },
-  wave: { label: '波动', runtime: 'waiting-wave' },
+  bloom: { label: '绽放' },
+  cross: { label: '十字' },
+  spin: { label: '旋转' },
+  wrap: { label: '滚动' },
+  wave: { label: '波动' },
 };
 
 const CHAT_SCALE = {
@@ -734,10 +737,8 @@ function activeAvatarFace() {
 
 function formatApiCall(action) {
   if (state.dockTab === 'voice' && state.voiceStage) {
-    if (state.voiceStage === 'thinking') {
-      return `avatar.playVoice('thinking', { style: '${state.voiceThinkStyle}' })`;
-    }
-    return `avatar.playVoice('${state.voiceStage}')`;
+    if (state.voiceStage === 'thinking') return `avatar.startWaiting({ variant: '${state.voiceThinkStyle}' })`;
+    return state.voiceStage === 'listening' ? 'avatar.startListening()' : 'avatar.startSpeaking()';
   }
   if (action.startsWith('waiting-') && state.loop) {
     return `avatar.startWaiting({ variant: '${action.replace('waiting-', '')}' })`;
@@ -871,21 +872,21 @@ function setVoiceStage(stage, { play = true } = {}) {
   updateDevCode();
 
   if (!play) return;
+  // The real Voice Kit: listening, any waiting style as thinking, speaking.
   const targetFace = activeAvatarFace();
   loopToken++;
-  targetFace.stopWaiting?.();
+  voice.stopTurn();
   if (stage === 'listening') {
-    targetFace.play('input');
+    voice.playCue();
+    targetFace.startListening();
+    voice.pretendVoice();
   } else if (stage === 'thinking') {
-    if (state.voiceDemoPlaying) {
-      targetFace.startWaiting?.({ variant: thinkStyle.runtime.replace('waiting-', '') });
-    } else {
-      targetFace.play(thinkStyle.runtime);
-    }
+    voice.playCue();
+    targetFace.startWaiting({ variant: state.voiceThinkStyle });
   } else if (stage === 'speaking') {
-    targetFace.play('affirm');
+    targetFace.startSpeaking();
   } else {
-    targetFace.play('idle');
+    targetFace.reset();
   }
 }
 
@@ -909,14 +910,34 @@ function syncVoiceDemoButton() {
   $('voiceDemoLabel').textContent = state.voiceDemoPlaying ? '停止演示' : '播放演示对话';
 }
 
+// One spoken turn with the recorded lines, captions and the eyes driven by the audio.
+const voiceCaption = document.createElement('div');
+voiceCaption.className = 'voice-caption';
+voiceCaption.setAttribute('aria-live', 'polite');
+voiceCaption.hidden = true;
+const voice = createVoiceEngine({
+  face: () => activeAvatarFace(),
+  sound: () => !state.voiceMuted,
+  style: () => state.voiceThinkStyle,
+  onStep: step => {
+    if (!step && state.voiceDemoPlaying) { state.voiceDemoPlaying = false; syncVoiceDemoButton(); }
+    setVoiceStage(step, { play: false });
+  },
+  onCaption: (who, text) => {
+    if (!who) { voiceCaption.hidden = true; return; }
+    if (!voiceCaption.isConnected) $('stageCanvas')?.append(voiceCaption);
+    voiceCaption.hidden = false;
+    voiceCaption.textContent = who === 'listening' ? '正在聆听…' : who === 'thinking' ? 'AI · 正在思考…' : `${who === 'user' ? '用户' : 'AI'} · ${text}`;
+  },
+});
+
 function stopVoiceDemo(resetFace = true) {
   voiceDemoToken++;
-  if (!state.voiceDemoPlaying) return;
+  if (!state.voiceDemoPlaying && !voice.playing) return;
   state.voiceDemoPlaying = false;
+  voice.stopTurn();
   syncVoiceDemoButton();
-  if (resetFace) {
-    setVoiceStage(null, { play: true });
-  }
+  if (resetFace) setVoiceStage(null, { play: true });
 }
 
 async function playVoiceDemo() {
@@ -924,24 +945,9 @@ async function playVoiceDemo() {
     stopVoiceDemo(true);
     return;
   }
-  const token = ++voiceDemoToken;
   state.voiceDemoPlaying = true;
   syncVoiceDemoButton();
-
-  const steps = [
-    ['listening', 1500],
-    ['thinking', 1800],
-    ['speaking', 1900],
-  ];
-  for (const [stage, duration] of steps) {
-    if (token !== voiceDemoToken) return;
-    setVoiceStage(stage);
-    await new Promise(r => setTimeout(r, duration));
-  }
-  if (token !== voiceDemoToken) return;
-  state.voiceDemoPlaying = false;
-  syncVoiceDemoButton();
-  setVoiceStage(null, { play: true });
+  voice.startTurn().catch(error => { console.error(error); stopVoiceDemo(true); });
 }
 
 document.querySelectorAll('[data-dock-tab]').forEach(tab => {
@@ -972,6 +978,7 @@ $('voiceMuteBtn').addEventListener('click', () => {
   btn.setAttribute('aria-pressed', String(state.voiceMuted));
   btn.querySelector('.vol-on').hidden = state.voiceMuted;
   btn.querySelector('.vol-off').hidden = !state.voiceMuted;
+  voice.setSound(!state.voiceMuted);
 });
 
 /* Inspector Tabs & Skin Search */
