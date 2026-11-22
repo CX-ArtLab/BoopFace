@@ -18,7 +18,7 @@ function targets(instance) {
   // A changed eye-style must show even while the avatar rests.
   if (typeof MutationObserver !== 'undefined') {
     new MutationObserver(() => { instance._roundEyeSig = ''; instance._resumeFrames?.(); })
-      .observe(instance, { attributes: true, attributeFilter: ['eye-style'] });
+      .observe(instance, { attributes: true, attributeFilter: ['eye-style', 'eye-color'] });
   }
   return instance._roundEyeTargets;
 }
@@ -31,7 +31,11 @@ registerAvatarExtension({
   // eyes this frame is already in place.
   draw() {
     const list = targets(this); if (!list) return;
-    const R = String(this.getAttribute('eye-style') || '').trim().toLowerCase() === 'sharp' ? 0 : ROUND;
+    const sharp = String(this.getAttribute('eye-style') || '').trim().toLowerCase() === 'sharp';
+    // See-through eyes hide the lids, so the cut must come from the clip even
+    // when sharp (a radius too small to see).
+    const through = /^(transparent|none|through)$/i.test(String(this.getAttribute('eye-color') || '').trim());
+    const R = sharp ? (through ? 0.01 : 0) : ROUND;
     // The core writes the cursor's corner (3) every frame: round it every frame.
     if (R > 0) for (const t of list) { const el = t.input, rx = el && ((+el.getAttribute('width') || 0) / 2).toFixed(2); if (el && el.getAttribute('rx') !== rx) el.setAttribute('rx', rx); }
     let sig = String(R);

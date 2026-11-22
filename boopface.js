@@ -11,6 +11,7 @@ import './src/boopface-head-roundness.js';
 import './src/boopface-gestures.js';
 import { SKIN_NAMES, SKINS, SKIN_SERIES, loadSkins } from './src/boopface-skins.js';
 import './src/boopface-runtime.js';
+import './src/boopface-eye-color.js';
 // Last, so it rounds whatever the other modules drew this frame.
 import './src/boopface-round-eyes.js';
 import { VERSION } from './src/boopface-version.js';
