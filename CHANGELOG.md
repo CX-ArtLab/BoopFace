@@ -4,13 +4,23 @@ All notable user-facing changes to BoopFace (called Agent Robot Avatar before 0.
 
 The project follows Semantic Versioning for public releases. Internal development build numbers are not part of the public version history.
 
-## [0.8.1] - 2026-11-07
+## [0.9.0] - Unreleased
+
+This release brings the 3D head, a new demo, and everything planned for 0.8.1 (Connect AI and the Voice Interaction Kit), which was never published on its own.
 
 ### Added
 
+- **3D view.** `view="3d"` (or `setView('3d')`) turns the avatar into a layered 3D head that really turns toward the pointer, with depth, a curved face and a springy settle after each turn. All expressions, gestures, skins and colours work the same. `view="2d"` (the default) keeps the flat drawing.
+- **Rounded eyes.** Wherever a lid cuts an eye, the corner is now rounded, and a thin slit (sleep, a squint, a wink, the typing cursor) has half-round ends. `eye-style="sharp"` keeps the old straight cut.
+- **Eye colour.** `eye-color="#2bd67b"` (or `setEyeColor()`) paints the eyes, over a skin's own colour too. `eye-color="transparent"` cuts the eyes out of the head, so whatever is behind the avatar shows in them.
+- **11 new expressions:** `bow`, `shake`, `observe`, `think`, `ponder`, `bounce`, `smug-bounce`, `dizzy`, `wink`, `smug`, and `shape-wait` (one shape turning between a circle and a rounded square).
+- **Cross wait.** `startWaiting({ variant: 'cross' })` (`waiting-cross`): two crossed ovals resting on a ×, turning a quarter at a time, full and slim in turn. Like Bloom, it works as the thinking step of a voice turn.
+- **Body motion.** Every expression now moves the whole head as well: it follows where the eyes look, nods, leans and hops. In 3D the head really turns; in 2D the turn is drawn flat. `motion="reduce"` keeps it still.
+- **Petting.** Stroke the forehead a few times and the avatar closes its eyes and nuzzles in. `setPetting(false)` turns it off.
+- **A new demo, the Studio**, in one page: the stage (2D or 3D), every expression and the Voice Kit, the 188 skins, colours and head shape, the behaviour settings, Connect AI with a live chat, and the code for whatever is shown. The old Skin Gallery and Connect AI addresses open the matching part of the Studio.
 - `connectAgent(avatar)` lets an AI stream drive the avatar. It reads AG-UI events, OpenAI Responses and Chat Completions streams, Anthropic Messages streams, Vercel AI SDK stream parts and `useChat` status, and shows thinking, tool use, replying, approval, done, failure and refusal. `agent.track(stream)` follows a stream while passing every item through; `actions` changes the expression for any state. Both the full and the lite build include it.
-- Voice Interaction Kit, for any product people talk to: a set of three expressions that flow into each other. `listening` merges the eyes into one round eye that swells with the user's voice, the thinking step is any waiting style, with a new Bloom style of two crossed ovals that morphs straight out of the listening eye (`startWaiting({ variant: 'bloom' })`, `waiting-bloom`), and `speaking` splits it back into two eyes that stretch with the reply (low sounds left, high sounds right). `startListening()` and `startSpeaking()` loop until the next action; `setVoiceLevel()` feeds the loudness. `connectAgent()` already understands common voice APIs such as OpenAI Realtime and returns to listening after each reply, and `agent.connectAudio({ input, output })` reads the microphone and the reply by itself. The demo has a Waiting · Bloom button and a Voice Interaction Kit row with the three steps, a thinking style choice and a Play all that runs a whole spoken turn with sound and captions.
-- A Connect AI page, opened from the demo next to the Skin Gallery button, that plays a pretend reply in each of the four formats, and a whole voice turn with an optional microphone.
+- Voice Interaction Kit, for any product people talk to: a set of three expressions that flow into each other. `listening` merges the eyes into one round eye that swells with the user's voice, the thinking step is any waiting style, with a new Bloom style of two crossed ovals that morphs straight out of the listening eye (`startWaiting({ variant: 'bloom' })`, `waiting-bloom`), and `speaking` splits it back into two eyes that stretch with the reply (low sounds left, high sounds right). `startListening()` and `startSpeaking()` loop until the next action; `setVoiceLevel()` feeds the loudness. `connectAgent()` already understands common voice APIs such as OpenAI Realtime and returns to listening after each reply, and `agent.connectAudio({ input, output })` reads the microphone and the reply by itself. The Studio's Voice Kit tab has the three steps, a thinking style choice and a demo turn with sound and captions.
+- Connect AI in the Studio: the chat scene plays a reply in any of the four formats through `connectAgent()`, the Behaviour tab picks the expression for each state, and the Code tab shows the code for each format.
 - React and Vue examples, `examples/react.html` and `examples/vue.html`, and a README section on using the component in both.
 
 ## [0.8.0] - 2026-11-05
