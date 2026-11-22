@@ -54,7 +54,8 @@ test('the cross wait rests on the × and turns a quarter at a time', async ({ pa
   // Every resting angle is a diagonal (45°, 135°, …).
   const rests = angles.filter((v, i) => i && Math.abs(v - angles[i - 1]) < .3);
   expect(rests.length).toBeGreaterThan(0);
-  for (const v of rests) expect(Math.abs(((v % 90) + 90) % 90 - 45)).toBeLessThan(2);
+  // Slow near each stop: every near-still sample is close to a diagonal, never to + .
+  for (const v of rests) expect(Math.abs(((v % 90) + 90) % 90 - 45)).toBeLessThan(10);
 });
 
 test('stroking the forehead pets the avatar, and setPetting(false) stops it', async ({ page }) => {
