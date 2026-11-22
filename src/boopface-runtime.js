@@ -31,6 +31,17 @@ const DEFAULT_SIZE = 112;
 // action, but print a one-time deprecation notice; they are removed in 1.0.
 const ACTION_ALIASES = Object.freeze({
   idle: 'idle',
+  bow: 'bow',
+  shake: 'shake',
+  observe: 'observe',
+  think: 'think',
+  ponder: 'ponder',
+  'shape-wait': 'shape-wait',
+  bounce: 'bounce',
+  'smug-bounce': 'smug-bounce',
+  dizzy: 'dizzy',
+  wink: 'wink',
+  smug: 'smug',
   bored: 'bored',
   waiting: 'waiting',
   'waiting-spin': 'waiting',
