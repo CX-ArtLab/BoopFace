@@ -1,6 +1,7 @@
 import { VERSION } from '../boopface.js';
 import { createRoundnessFeedback } from './roundness-feedback.js';
 import { createVoiceEngine } from './studio-voice.js';
+import { applyLanguage, initialLanguage, rememberLanguage } from './studio-i18n.js';
 import { plan, pretendStream, agentCode, labelOf } from './studio-agent.js';
 import { connectAgent } from '../boopface.js';
 import {
@@ -558,9 +559,8 @@ $('langToggle').addEventListener('click', e => {
 $('langPopover').addEventListener('click', e => {
   const btn = e.target.closest('[data-lang]');
   if (!btn) return;
-  document.documentElement.lang = btn.dataset.lang;
-  $('langToggle').title = `语言：${btn.textContent}`;
-  $('langPopover').querySelectorAll('[data-lang]').forEach(el => el.setAttribute('aria-checked', String(el === btn)));
+  setLanguage(btn.dataset.lang);
+  rememberLanguage(btn.dataset.lang);
   closePopovers();
 });
 
@@ -2515,3 +2515,10 @@ function openFromHash() {
 }
 openFromHash();
 addEventListener('hashchange', openFromHash);
+
+// Languages: start in the linked, last chosen or browser language.
+function setLanguage(next) {
+  const lang = applyLanguage(next);
+  $('langPopover').querySelectorAll('[data-lang]').forEach(el => el.setAttribute('aria-checked', String(el.dataset.lang === lang)));
+}
+setLanguage(initialLanguage());

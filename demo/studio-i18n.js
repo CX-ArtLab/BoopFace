@@ -1,0 +1,411 @@
+// Studio languages. The page is written in Simplified Chinese; other languages
+// are applied by swapping its words (text, titles, labels, placeholders), also
+// for anything the Studio writes later. Chinese stays the source.
+// English is complete; the other languages show English until translated.
+const EN = {
+"24 款": "24 skins",
+"AI · 正在思考…": "AI · Thinking…",
+"BoopFace 官网首页": "BoopFace home page",
+"Full 构建（按需加载 188 皮肤）": "Full build (loads the 188 skins on demand)",
+"GitHub 仓库": "GitHub repository",
+"HEX 色号": "HEX code",
+"JPG 格式固定带当前底色": "JPG always includes the current background",
+"Lite 构建（纯色全动作）": "Lite build (plain colours, every action)",
+"PNG 透明背景": "PNG transparent background",
+"不客气，随时叫我。": "You're welcome, call me any time.",
+"书房想换成木质风格，预算够吗？": "I want a wooden study. Is the budget enough?",
+"互换头部色与背景色": "Swap head and background colours",
+"亮度 L": "Lightness L",
+"仅交互": "Interaction only",
+"今天的糖已经超了 12 克，这杯建议换成无糖的。": "You're 12 g over on sugar today; go sugar-free for this one.",
+"今天还能再喝一杯奶茶吗？": "Can I have another milk tea today?",
+"代码": "Code",
+"代码输出类型": "Code output type",
+"任务已完成，当前表情与材质都在实时同步。": "Done. Expressions and materials are in sync.",
+"任意动态": "Any activity",
+"休眠与唤醒策略": "Sleep and wake",
+"停止演示": "Stop demo",
+"先不删了，帮我导出一份备份": "Don't delete yet, export a backup first",
+"光线跟随": "Light follows pointer",
+"全部": "All",
+"全部图鉴 ↗": "Full gallery ↗",
+"关闭": "Off",
+"关闭搜索": "Close search",
+"内置物理交互": "Built-in interactions",
+"减弱动效": "Reduce",
+"凯尔特人": "Celtics",
+"出错了": "Failed",
+"切换 HEX / RGB / HSL 模式": "Switch HEX / RGB / HSL",
+"切换为「减弱动效」可立即验证无障碍低动态表现。": "Switch to “Reduce” to check the low-motion behaviour right away.",
+"切换思考样式": "Change thinking style",
+"切换语言": "Language",
+"删除此收藏配色": "Delete this saved palette",
+"动作": "Gestures",
+"动作面板模式": "Action panel",
+"动效与无障碍": "Motion and accessibility",
+"动效偏好": "Motion",
+"勇士": "Warriors",
+"十字": "Cross",
+"即将推出": "Coming soon",
+"反馈": "Feedback",
+"发呆": "Bored",
+"发现更优橡木配色": "Found a better oak scheme",
+"发送": "Send",
+"可以，少放点糖，清爽又解暑。": "Sure, less sugar: fresh and cooling.",
+"后续支持帽子、眼镜、贴纸等头部元素": "Hats, glasses, stickers and more are coming",
+"告警：数据库响应超时": "Alert: database timed out",
+"周六只要 2100 元，已经帮你订好了。": "Saturday is only ¥2,100. Booked it for you.",
+"唤醒方式": "Wake on",
+"唤醒策略": "Wake policy",
+"喜欢": "Love",
+"回复中…": "Replying…",
+"回复文字时": "Replying",
+"圆形头像（圆度 100）": "Round head (roundness 100)",
+"在额头上来回划几下，头像会闭眼撒娇": "Stroke the forehead a few times and it nuzzles in",
+"地面阴影": "Ground shadow",
+"场景模式": "Scene",
+"基础": "Basics",
+"备份好了，放在共享盘的“数据备份”文件夹里。": "Backup done, it's in the “Data backup” folder on the shared drive.",
+"备份校验异常，待处理": "Backup check failed, pending",
+"复制代码": "Copy code",
+"复制分享链接": "Copy share link",
+"复制当前色号": "Copy current colour",
+"复制调用": "Copy call",
+"复原": "Reset",
+"外观": "Look",
+"够的，整面橡木书架大约 2 万元。": "Yes, a full oak bookcase is about ¥20,000.",
+"大图": "Large",
+"天线拖拽": "Antenna pull",
+"失败": "Failure",
+"头像": "Avatar",
+"头像尺寸滑块": "Avatar size slider",
+"头像展示位置": "Avatar position",
+"头像配饰扩展位": "Accessory slots",
+"头部": "Head",
+"头部圆度": "Head roundness",
+"头部圆度数值": "Head roundness value",
+"头部形态与部件": "Head shape and parts",
+"头部颜色": "Head colour",
+"好了，三个要点：营收增长 18%，新用户主要来自海外，客服响应时间缩短一半。": "Three points: revenue up 18%, most new users from abroad, support replies twice as fast.",
+"好吧，那来杯柠檬水呢？": "OK, how about a lemonade?",
+"好的，已经按你说的处理好了，表情和材质都在实时同步。": "Done as you asked; expressions and materials are in sync.",
+"好，明天把效果图发给你。": "OK, I'll send the renderings tomorrow.",
+"季度摘要已更新": "Quarterly summary updated",
+"完整": "Full",
+"实时组件事件流": "Live component events",
+"审视": "Inspect",
+"室内设计师": "Interior designer",
+"对话场景": "Chat scene",
+"对话场景和代码都按这里来": "Used by the chat scene and the code",
+"对话窗口主题": "Chat window theme",
+"对话窗口缩放": "Chat window zoom",
+"对话角色列表": "Chat characters",
+"导出": "Export",
+"导出 JPG": "Export JPG",
+"导出 PNG": "Export PNG",
+"导出分辨率": "Export resolution",
+"导出失败，请重试": "Export failed, please try again",
+"导出头像图片": "Export avatar image",
+"导出当前头像为 PNG 或 JPG 图片": "Export the avatar as a PNG or JPG",
+"导出当前皮肤、圆度与瞬时表情": "Exports the current skin, roundness and expression",
+"就按这个方案做！": "Let's go with that!",
+"屏幕吸管取色": "Pick a colour from the screen",
+"属性检查器": "Inspector",
+"嵌入式": "Embedded",
+"左右拖动调节宽度（拖至最左收起为图标栏，双击切换）": "Drag to resize (drag fully left for icons only; double-click to toggle)",
+"已停止": "Stopped",
+"已复制": "Copied",
+"已复制代码": "Code copied",
+"已复制色号": "Colour copied",
+"已复制链接": "Link copied",
+"已完成": "Done",
+"已拒绝": "Refused",
+"已推荐低糖替代方案": "Suggested a low-sugar option",
+"已收到": "Received",
+"已收藏": "Saved",
+"已收藏配色": "Saved palettes",
+"已经套用你当前调试的外观与动作，去右栏切换外观或皮肤，这里会实时同步。": "This uses your current look and actions. Change the look or skin on the right and it updates here live.",
+"巴萨": "Barça",
+"帮我把这份季度报告总结成三点": "Sum up this quarterly report in three points",
+"帮我看看现在的样式效果怎么样？": "How does the current style look?",
+"平面": "2D",
+"开启后持续循环播放所选动作或等待变体": "Keeps replaying the chosen action or waiting style",
+"弹跳": "Bounce",
+"当前": "Current",
+"当前表情": "Current expression",
+"当前角色": "Current character",
+"待机就绪": "Ready",
+"待确认": "Needs approval",
+"得意": "Smug",
+"得意弹跳": "Smug bounce",
+"循环播放": "Loop",
+"思考": "Think",
+"思考 ·": "Thinking ·",
+"思考中…": "Thinking…",
+"思考时": "Thinking",
+"思考样式": "Thinking style",
+"恢复全部默认外观与状态": "Restore all default looks and states",
+"悬停预览 · 18 套": "Hover to preview · 18 palettes",
+"悬浮": "Floating",
+"情绪": "Emotions",
+"惊讶": "Surprise",
+"成功": "Success",
+"或长按挤压": "or press and hold",
+"手动": "Manual",
+"把旧的用户数据表删掉": "Delete the old user tables",
+"抚摸": "Petting",
+"报告助手": "Report helper",
+"抱歉，这个请求超出了演示范围，我先礼貌拒绝。": "Sorry, that is beyond this demo, so I'll politely decline.",
+"拉一下天线": "Pull the antenna",
+"拉动顶部天线回弹并触发嗔怒反应": "Pull the antenna: it springs back and gets cross",
+"拒绝": "Refuse",
+"拖拽头像": "Drag the avatar",
+"指针在舞台内移动时眼睛与头部轻微转向": "Eyes and head turn a little toward the pointer on the stage",
+"按住头像中心产生弹性压扁反馈": "Press the middle to squash it",
+"按压挤压": "Press squeeze",
+"挤眼": "Wink",
+"捕捉到一个意外输入！不过状态已安全接管。": "Caught an unexpected input! All handled safely.",
+"接入 AI": "Connect AI",
+"接口格式": "Format",
+"控制顶部球形天线显隐": "Shows or hides the antenna ball",
+"提醒：今日糖分偏高": "Note: high sugar today",
+"提醒：周六余票紧张": "Note: few seats left Saturday",
+"搜索皮肤": "Search skins",
+"搜索皮肤名称或编号（如 705 / 金属）": "Search by name or number (e.g. 705 / metal)",
+"搜索结果": "Results",
+"摇头": "Shake",
+"播放演示对话": "Play a demo turn",
+"收藏": "Save",
+"收藏当前头色与背景搭配": "Save this head and background pair",
+"收藏当前皮肤": "Save this skin",
+"收起": "Collapse",
+"放大": "Expand",
+"放大对话窗口": "Expand the chat window",
+"效果图已生成": "Rendering ready",
+"数据管家": "Data keeper",
+"方圆": "Shape",
+"方形头像（圆度 0）": "Square head (roundness 0)",
+"旅行规划": "Trip planner",
+"旋转": "Spin",
+"日本語": "日本語",
+"显示天线": "Show antenna",
+"曼城": "Man City",
+"有新发现": "Found something",
+"服务已恢复正常": "Service restored",
+"未找到匹配的皮肤": "No matching skin",
+"查看全部": "View all",
+"标准": "Standard",
+"标准语音状态流": "Standard voice flow",
+"核对中": "Checking",
+"检查器分类": "Inspector sections",
+"正在巡检主库节点…": "Checking the main database nodes…",
+"正在扫描冗余数据表…": "Scanning for unused tables…",
+"正在搜索大阪机票…": "Searching flights to Osaka…",
+"正在核对参数与渲染状态，目前一切正常。": "Checking settings and rendering, all fine so far.",
+"正在核对财务口径…": "Checking the accounting basis…",
+"正在核算今日摄入…": "Adding up today's intake…",
+"正在汇总季度数据…": "Summing up the quarter…",
+"正在渲染书房方案…": "Rendering the study…",
+"正在聆听": "Listening",
+"正在聆听…": "Listening…",
+"正在自动切换备库…": "Switching to the backup database…",
+"正在规划 5 日路程…": "Planning a 5-day trip…",
+"正在说话": "Speaking",
+"正常": "Idle",
+"沉思": "Ponder",
+"波动": "Wave",
+"浅色窗口": "Light window",
+"浅色背景": "Light background",
+"消息旁": "Beside messages",
+"深色窗口": "Dark window",
+"深色背景": "Dark background",
+"清空日志": "Clear log",
+"渲染维度模式": "View",
+"湖人": "Lakers",
+"滚动": "Wrap",
+"点击复制 HEX 色号": "Click to copy the HEX code",
+"点击复制头部色号": "Click to copy the head colour",
+"点击复制当前外观属性": "Click to copy the look attributes",
+"点击复制当前皮肤属性": "Click to copy the skin attribute",
+"独立舞台": "Stage",
+"生气": "Angry",
+"用工具中…": "Using a tool…",
+"用工具时": "Using a tool",
+"白黑反色": "Inverted",
+"皮肤": "Skins",
+"皮肤 #101": "Skin #101",
+"皮肤分类": "Skin categories",
+"眩晕": "Dizzy",
+"眼睛穿透": "See-through eyes",
+"眼神跟随": "Gaze follow",
+"睡着": "Sleep",
+"神态": "Moods",
+"立体": "3D",
+"等待": "Waiting",
+"简体中文": "简体中文",
+"精选": "Featured",
+"繁體中文": "繁體中文",
+"红色 R": "Red R",
+"纯色": "Color",
+"纯色模式下眼眶自动透出当前舞台背景色": "In colour mode the eyes show the stage background",
+"经典纯色": "Classic colour",
+"经典黑白": "Classic black and white",
+"继续等待": "Keep waiting",
+"绽放": "Bloom",
+"绿色 G": "Green G",
+"缩放尺寸": "Size",
+"网络恢复了，再试一次": "Network is back, try again",
+"聆听": "Listen",
+"肯定": "Affirm",
+"背景": "Background",
+"自动休眠": "Auto sleep",
+"自动休眠时间": "Auto sleep after",
+"自由选色": "Custom colour",
+"舞台与表情控制": "Stage and expressions",
+"舞台控制栏": "Stage toolbar",
+"舞台背景": "Stage background",
+"色彩方案": "Palettes",
+"色相 H": "Hue H",
+"营养师": "Nutritionist",
+"蓝色 B": "Blue B",
+"行为": "Behaviour",
+"行程方案已备好": "Trip plan ready",
+"表情与状态控制": "Expressions and states",
+"表面材质模式": "Surface",
+"观察": "Observe",
+"警告：发现 3 张待删旧表": "Warning: 3 old tables to delete",
+"警惕": "Wary",
+"订下周五去大阪的机票": "Book a flight to Osaka next Friday",
+"语言：简体中文": "Language: English",
+"语音交互表情套件": "Voice Interaction Kit",
+"语音套件": "Voice Kit",
+"说话": "Speak",
+"调整头像尺寸": "Avatar size",
+"调节侧边栏宽度": "Resize the sidebar",
+"谢谢你，帮了大忙！": "Thanks, that helped a lot!",
+"跟随系统": "System",
+"输入": "Input",
+"输入任意内容，观察头像从输入 → 等待 → 回复表情…": "Type anything and watch the avatar go from typing → waiting → reply…",
+"运维值班": "On-call ops",
+"这一步会修改配置，需要你确认后再继续。": "This changes the configuration. Please confirm to continue.",
+"这一步操作会修改配置，请确认是否继续？": "This changes the configuration. Continue?",
+"这个测试请求超出演示范围，我先礼貌拒绝。": "That test request is beyond this demo, so I'll politely decline.",
+"这会永久删除 3 张表，共 12 万条记录。确定要删除吗？": "This permanently deletes 3 tables, 120,000 records. Delete them?",
+"这趟要 3800 元，比平时贵两成。要现在下单吗？": "This one is ¥3,800, 20% above usual. Book it now?",
+"连上了，数据库运行正常。": "Connected, the database is fine.",
+"连接一下公司的数据库": "Connect to the company database",
+"连接失败了：数据库没有响应。请检查网络后再试一次。": "Connection failed: the database didn't answer. Check the network and try again.",
+"退出放大对话（Esc）": "Leave the expanded chat (Esc)",
+"选择皮肤": "Choose a skin",
+"选择颜色": "Choose a colour",
+"通用表情": "Expressions",
+"那改到周六": "Make it Saturday then",
+"配饰": "Accessories",
+"醒来": "Wake",
+"重置": "Reset",
+"重置对话": "Reset chat",
+"重置当前对话内容": "Reset this conversation",
+"重置默认黑白与预设彩点": "Reset to the default colours",
+"随机": "Random",
+"随机切换皮肤": "Random skin",
+"随机切换配色方案": "Random palette",
+"随机动作": "Random action",
+"随机触发一个动作": "Play a random action",
+"随皮肤背景": "Skin background",
+"静音切换": "Mute",
+"鞠躬": "Bow",
+"顶栏": "Top bar",
+"饱和度 S": "Saturation S",
+"（连接中断，回复失败）": "(Connection lost, the reply failed)",
+"用户": "User",
+"款": "skins",
+"预设彩点": "Preset",
+"点击应用": "click to apply",
+"固定黑白": "Fixed",
+"点击直接切换": "click to switch",
+"自定义选色": "Custom colour",
+"调色盘 · 点此自定义颜色": "Palette · click to pick a colour",
+"再点可互换": "click again to swap",
+"点击复制": "click to copy"
+};
+const DICTS = { en: EN };
+const CJK = /[\u3400-\u9fff]/;
+const ATTRS = ['title', 'aria-label', 'placeholder'];
+const LANGS = ['zh-CN', 'zh-TW', 'en', 'ja', 'ko', 'es', 'pt', 'de', 'fr'];
+let lang = 'zh-CN', dict = null, observer = null, writing = false;
+const originalText = new WeakMap(), originalAttr = new WeakMap();
+let fragments = [];
+
+function translate(source) {
+  if (!dict || !source || !CJK.test(source)) return source;
+  const trimmed = source.trim();
+  if (dict[trimmed]) return source.replace(trimmed, dict[trimmed]);
+  // Built strings ("头部预设彩点 3 …"): swap the known pieces, longest first.
+  let out = source;
+  for (const [zh, other] of fragments) if (out.includes(zh)) out = out.split(zh).join(other);
+  return out;
+}
+
+function textNode(node) {
+  if (!originalText.has(node)) { if (!CJK.test(node.nodeValue)) return; originalText.set(node, node.nodeValue); }
+  const next = dict ? translate(originalText.get(node)) : originalText.get(node);
+  if (node.nodeValue !== next) node.nodeValue = next;
+}
+
+function element(el) {
+  let saved = originalAttr.get(el);
+  for (const name of ATTRS) {
+    const value = el.getAttribute(name);
+    if (value == null) continue;
+    if (!saved?.[name] || (CJK.test(value) && value !== saved[name])) { if (!CJK.test(value)) continue; saved = saved || {}; saved[name] = value; originalAttr.set(el, saved); }
+    const next = dict ? translate(saved[name]) : saved[name];
+    if (value !== next) el.setAttribute(name, next);
+  }
+}
+
+function walk(root) {
+  if (root.nodeType === 3) { textNode(root); return; }
+  if (root.nodeType !== 1) return;
+  if (/^(SCRIPT|STYLE|PRE|CODE)$/.test(root.tagName)) return;
+  element(root);
+  const it = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, {
+    acceptNode: n => (n.nodeType === 1 && /^(SCRIPT|STYLE|PRE|CODE)$/.test(n.tagName) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT),
+  });
+  for (let n = it.nextNode(); n; n = it.nextNode()) n.nodeType === 3 ? textNode(n) : element(n);
+}
+
+export function applyLanguage(next) {
+  lang = LANGS.includes(next) ? next : 'en';
+  dict = lang.startsWith('zh') ? null : (DICTS[lang] || DICTS.en);
+  fragments = dict ? Object.entries(dict).filter(([zh]) => CJK.test(zh)).sort((a, b) => b[0].length - a[0].length) : [];
+  document.documentElement.lang = lang;
+  writing = true;
+  walk(document.body);
+  if (document.title && CJK.test(document.title)) { document.documentElement.dataset.zhTitle ??= document.title; }
+  if (document.documentElement.dataset.zhTitle) document.title = dict ? translate(document.documentElement.dataset.zhTitle) : document.documentElement.dataset.zhTitle;
+  writing = false;
+  if (!observer) {
+    observer = new MutationObserver(records => {
+      if (writing || !dict) return;
+      writing = true;
+      for (const r of records) {
+        if (r.type === 'characterData') textNode(r.target);
+        else if (r.type === 'attributes') element(r.target);
+        else for (const n of r.addedNodes) walk(n);
+      }
+      writing = false;
+    });
+    observer.observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ATTRS });
+  }
+  return lang;
+}
+
+// The language to start in: ?lang=…, then the last choice, then the browser.
+export function initialLanguage() {
+  const asked = new URLSearchParams(location.search).get('lang');
+  let saved = null; try { saved = localStorage.getItem('boopface-studio-lang'); } catch { /* private mode */ }
+  const pick = asked || saved || navigator.language || 'zh-CN';
+  if (/^zh/i.test(pick)) return /tw|hk|hant/i.test(pick) ? 'zh-TW' : 'zh-CN';
+  return LANGS.find(l => l === pick) || LANGS.find(l => l === pick.slice(0, 2)) || 'en';
+}
+export function rememberLanguage(next) { try { localStorage.setItem('boopface-studio-lang', next); } catch { /* private mode */ } }
