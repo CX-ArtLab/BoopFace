@@ -307,7 +307,10 @@ function drawExit(instance, now) {
   }
   const poses = exit.from.map((pose, i) => between(pose, targets[i], t));
   instance._voiceShown = poses;
-  paint(instance, poses, false);
+  // The lids stay away while the shape is still large and turned (the bloom's
+  // ovals); shown too early they cut a slanted slice off it. They come back
+  // for the last quarter, when the shape is nearly the next eye.
+  paint(instance, poses, t < 0.75);
 }
 
 registerAvatarExtension({
