@@ -6,6 +6,7 @@ export type BoopFaceAction =
   | 'waiting-wrap'
   | 'waiting-wave'
   | 'waiting-bloom'
+  | 'waiting-cross'
   | 'input'
   | 'listening'
   | 'speaking'
@@ -21,6 +22,18 @@ export type BoopFaceAction =
   | 'random'
   | 'sleep'
   | 'wake'
+  // 0.9: new expressions.
+  | 'bow'
+  | 'shake'
+  | 'observe'
+  | 'think'
+  | 'ponder'
+  | 'shape-wait'
+  | 'bounce'
+  | 'smug-bounce'
+  | 'dizzy'
+  | 'wink'
+  | 'smug'
   | BoopFaceDeprecatedAction;
 
 /**
@@ -149,7 +162,7 @@ export type BoopFaceWakeOn = 'activity' | 'interaction' | 'manual';
 export type BoopFaceMotion = 'auto' | 'reduce' | 'full';
 export interface BoopFaceWaitingOptions {
   /** `bloom` is the voice set's thinking style: two crossed ovals that breathe and turn. */
-  variant?: 'default' | 'spin' | 'wrap' | 'wave' | 'bloom';
+  variant?: 'default' | 'spin' | 'wrap' | 'wave' | 'bloom' | 'cross';
 }
 
 export interface BoopFaceActionStateDetail {
@@ -188,6 +201,20 @@ export declare class BoopFace extends HTMLElement {
   setPressSqueeze(enabled?: boolean): this;
   setAntennaDrag(enabled?: boolean): this;
   setHeadRoundness(value?: number): this;
+  /**
+   * Flat drawing ('2d', the default) or the layered 3D head ('3d') that turns
+   * for real. Same as the `view` attribute.
+   */
+  setView(view?: '2d' | '3d'): this;
+  readonly view: '2d' | '3d';
+  /**
+   * Eye colour, over a skin's own too. `'transparent'` cuts the eyes out of the
+   * head so whatever is behind the avatar shows in them. `null` restores it.
+   * Same as the `eye-color` attribute.
+   */
+  setEyeColor(color?: string | null): this;
+  /** Stroking the forehead makes the avatar nuzzle in (on by default). */
+  setPetting(enabled?: boolean): this;
   getHeadRoundness(): number;
   /**
    * Dresses the head in a numbered skin with light that follows the pointer.
