@@ -75,7 +75,7 @@ proto.waiting = async function(options = {}) {
 // It stays seamless until another action or stopWaiting() occurs.
 proto.startWaiting = async function(options = {}) {
   // The bloom is drawn by the voice set, which can morph it out of listening.
-  if (options?.variant === 'bloom' && typeof this._startBloom === 'function') return this._startBloom();
+  if ((options?.variant === 'bloom' || options?.variant === 'cross') && typeof this._startBloom === 'function') return this._startBloom(options.variant);
   await enterWaiting(this, true, 'runtime', options);
   return this;
 };

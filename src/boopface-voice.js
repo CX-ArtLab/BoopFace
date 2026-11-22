@@ -29,7 +29,7 @@ const EXIT = 260;    // back to the normal face
 const LEVEL_FRESH = 260;
 const ROUNDS = Object.freeze({ listening: 2600, thinking: 3600, speaking: 2600 });
 const KEYS = ['x', 'y', 'rx', 'ry', 'capX', 'capY', 'angle'];
-const OWN_ACTIONS = ['listening', 'speaking', 'waiting-bloom'];
+const OWN_ACTIONS = ['listening', 'speaking', 'waiting-bloom', 'waiting-cross'];
 const proto = BoopFace.prototype;
 
 const clamp01 = value => Math.max(0, Math.min(1, value));
@@ -64,6 +64,22 @@ function speechRhythm(ms, offset) {
   return (ms % 2900) > 2350 ? 0 : Math.pow(syllable, 0.8) * phrase;
 }
 
+// The cross wait: the bloom's two ovals resting on the ×, turning a quarter at
+// a time (each step easing in and out, so it pauses on every ×), and every
+// turn swaps full and slim ovals.
+const CROSS = Object.freeze({ step: 850, long: 55.5, thin: 0.548, full: 0.754 });
+const easeInOut = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+function crossPoses(fx, now) {
+  const p = SET.think, ms = fx.reduced ? 0 : Math.max(0, now - fx.modeStart);
+  const n = Math.floor(ms / CROSS.step), u = easeInOut((ms % CROSS.step) / CROSS.step);
+  const angle = ((45 + 90 * n + 90 * u + 180) % 360 + 360) % 360 - 180;
+  const slim = n % 2 ? 1 - u : u, short = CROSS.long * (CROSS.full + (CROSS.thin - CROSS.full) * slim);
+  return [0, 1].map(i => {
+    const rx = i === 0 ? CROSS.long : short, ry = i === 0 ? short : CROSS.long;
+    return { x: p.x, y: p.y, rx, ry, capX: rx, capY: ry, angle };
+  });
+}
+
 function targetPoses(fx, now) {
   const [all, low, high] = fx.levels;
   if (fx.mode === 'listening') {
@@ -71,6 +87,7 @@ function targetPoses(fx, now) {
     const pose = { x: SET.listen.x, y: SET.listen.y, rx: r, ry: r, capX: r, capY: r, angle: 0 };
     return [pose, { ...pose }];
   }
+  if (fx.mode === 'thinking' && fx.style === 'cross') return crossPoses(fx, now);
   if (fx.mode === 'thinking') {
     const p = SET.think;
     const time = fx.reduced ? p.period / 4 : (now - fx.modeStart) / 1000;
@@ -103,10 +120,10 @@ function dispatchVoiceState(instance, state) {
 
 // Starts a voice mode. From another voice mode the eyes morph in place; from
 // any other expression the face settles first.
-async function enterVoice(instance, mode, continuous) {
+async function enterVoice(instance, mode, continuous, style = 'bloom') {
   instance.noteActivity();
   const fx = instance._voiceFx;
-  if (fx && fx.mode === mode && fx.continuous && continuous) return instance._transitionToken;
+  if (fx && fx.mode === mode && fx.continuous && continuous && (fx.style || 'bloom') === style) return instance._transitionToken;
   if (fx) {
     // Same face, next step of the conversation: no reset in between.
     ++instance._transitionToken;
@@ -130,6 +147,7 @@ async function enterVoice(instance, mode, continuous) {
   instance._voiceFx = {
     mode,
     continuous,
+    style,
     start: previous?.start ?? start,
     modeStart: start,
     last: start,
@@ -148,8 +166,8 @@ async function enterVoice(instance, mode, continuous) {
   return token;
 }
 
-async function voiceRound(instance, mode) {
-  const token = await enterVoice(instance, mode, false);
+async function voiceRound(instance, mode, style) {
+  const token = await enterVoice(instance, mode, false, style);
   if (token == null) return;
   const fx = instance._voiceFx;
   const lead = fx?.transition ? fx.transition.duration + fx.transition.settle : 0;
@@ -179,9 +197,9 @@ proto.startListening = async function() {
   return this;
 };
 
-// Used by startWaiting({ variant: 'bloom' }).
-proto._startBloom = async function() {
-  await enterVoice(this, 'thinking', true);
+// Used by startWaiting({ variant: 'bloom' }) and ({ variant: 'cross' }).
+proto._startBloom = async function(style = 'bloom') {
+  await enterVoice(this, 'thinking', true, style === 'cross' ? 'cross' : 'bloom');
   return this;
 };
 
@@ -318,6 +336,7 @@ registerAvatarExtension({
   actions: {
     listening() { return voiceRound(this, 'listening'); },
     'waiting-bloom'() { return voiceRound(this, 'thinking'); },
+    'waiting-cross'() { return voiceRound(this, 'thinking', 'cross'); },
     speaking() { return voiceRound(this, 'speaking'); },
   },
   beforePlay(action) {

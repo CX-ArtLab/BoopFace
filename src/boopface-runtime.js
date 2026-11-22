@@ -50,6 +50,7 @@ const ACTION_ALIASES = Object.freeze({
   'waiting-wave': 'waiting',
   input: 'input',
   'waiting-bloom': 'waiting',
+  'waiting-cross': 'waiting',
   listening: 'listening',
   speaking: 'speaking',
   affirm: 'affirm',
