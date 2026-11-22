@@ -153,8 +153,8 @@
                 <button type="button" data-surface-btn="flat" aria-pressed="false">纯色</button>
               </div>
               <div class="seg-group" role="group" aria-label="渲染维度模式">
-                <button type="button" data-dimension-btn="2d" aria-pressed="true">2D</button>
-                <button type="button" data-dimension-btn="3d" aria-pressed="false" title="3D 立体预览（即将支持）">3D</button>
+                <button type="button" data-dimension-btn="2d" aria-pressed="false" title="avatar.setView('2d')">平面</button>
+                <button type="button" data-dimension-btn="3d" aria-pressed="true" title="avatar.setView('3d')">立体</button>
               </div>
             </div>
 
@@ -274,7 +274,9 @@
                   <button type="button" data-action="waiting-spin" title="avatar.startWaiting({ variant: 'spin' })">旋转</button>
                   <button type="button" data-action="waiting-wrap" title="avatar.startWaiting({ variant: 'wrap' })">滚动</button>
                   <button type="button" data-action="waiting-wave" title="avatar.startWaiting({ variant: 'wave' })">波动</button>
-                  <button type="button" data-action="waiting-bloom" data-new="true" title="avatar.startWaiting({ variant: 'bloom' })">绽放</button>
+                  <button type="button" data-action="waiting-bloom" title="avatar.startWaiting({ variant: 'bloom' })">绽放</button>
+                  <button type="button" data-action="waiting-cross" data-new="true" title="avatar.startWaiting({ variant: 'cross' })">十字</button>
+                  <button type="button" data-action="shape-wait" data-new="true" title="avatar.play('shape-wait')">方圆</button>
                 </div>
               </div>
               <div class="action-row">
@@ -295,6 +297,26 @@
                   <button type="button" data-action="angry" title="avatar.play('angry')">生气</button>
                   <button type="button" data-action="refuse" title="avatar.play('refuse')">拒绝</button>
                   <button type="button" data-action="random" title="avatar.play('random')">随机</button>
+                </div>
+              </div>
+              <div class="action-row">
+                <span class="row-label">动作</span>
+                <div class="row-btns">
+                  <button type="button" data-action="bow" data-new="true" title="avatar.play('bow')">鞠躬</button>
+                  <button type="button" data-action="shake" data-new="true" title="avatar.play('shake')">摇头</button>
+                  <button type="button" data-action="wink" data-new="true" title="avatar.play('wink')">挤眼</button>
+                  <button type="button" data-action="bounce" data-new="true" title="avatar.play('bounce')">弹跳</button>
+                  <button type="button" data-action="smug-bounce" data-new="true" title="avatar.play('smug-bounce')">得意弹跳</button>
+                </div>
+              </div>
+              <div class="action-row">
+                <span class="row-label">神态</span>
+                <div class="row-btns">
+                  <button type="button" data-action="observe" data-new="true" title="avatar.play('observe')">观察</button>
+                  <button type="button" data-action="think" data-new="true" title="avatar.play('think')">思考</button>
+                  <button type="button" data-action="ponder" data-new="true" title="avatar.play('ponder')">沉思</button>
+                  <button type="button" data-action="dizzy" data-new="true" title="avatar.play('dizzy')">眩晕</button>
+                  <button type="button" data-action="smug" data-new="true" title="avatar.play('smug')">得意</button>
                 </div>
               </div>
             </div>

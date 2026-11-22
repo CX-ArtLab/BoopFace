@@ -179,7 +179,7 @@ const state = {
   exportSize: '512',
   exportAlpha: true,
   surface: 'skin',
-  dimension: '2d',
+  dimension: '3d',
   skinId: '101',
   lightFollow: true,
   groundShadow: true,
@@ -312,13 +312,15 @@ function paintCustomFace(face, { isStage = false, bot = null } = {}) {
     face.setAttribute('data-custom-color', 'true');
     face.setSkin(null);
     face.setAttribute('color', state.flatHead);
-    const root = face.shadowRoot;
-    if (root) {
-      HEAD_PARTS.forEach(id => root.getElementById(id)?.setAttribute('fill', state.flatHead));
-      const eyeColor = state.eyeThrough ? (isStage ? effectiveBgColor() : (state.chatLook === 'dark' ? '#1f1f21' : '#e8e9ec')) : '#ffffff';
-      EYE_PARTS.forEach(id => root.getElementById(id)?.setAttribute('fill', eyeColor));
-    }
+    // The component's own eye colour: see-through on the flat stage (the real
+    // background shows in the eyes); the 3D head and the chat faces take the
+    // background colour instead (the same look on a plain colour).
+    const eyeColor = !state.eyeThrough ? null : isStage ? (state.dimension === '3d' ? effectiveBgColor() : 'transparent') : (state.chatLook === 'dark' ? '#1f1f21' : '#e8e9ec');
+    face.setEyeColor(eyeColor);
   }
+  if (state.surface === 'skin' || bot) face.setEyeColor(null);
+  // Only the main stage shows the 3D head (the small previews stay flat).
+  if (isStage) face.setView(state.dimension === '3d' ? '3d' : '2d');
   syncFaceGeometry(face, state.roundness);
 }
 
@@ -343,13 +345,9 @@ function syncLookPreviewFace() {
     lookPreviewFace.setSkin(null);
     lookPreviewFace.setAttribute('color', state.flatHead);
     lookPreviewStage.style.setProperty('--live-bg', state.flatBg);
-    const root = lookPreviewFace.shadowRoot;
-    if (root) {
-      HEAD_PARTS.forEach(id => root.getElementById(id)?.setAttribute('fill', state.flatHead));
-      const eyeColor = state.eyeThrough ? state.flatBg : '#ffffff';
-      EYE_PARTS.forEach(id => root.getElementById(id)?.setAttribute('fill', eyeColor));
-    }
+    lookPreviewFace.setEyeColor(state.eyeThrough ? state.flatBg : null);
   }
+  if (state.surface === 'skin') lookPreviewFace.setEyeColor(null);
   syncFaceGeometry(lookPreviewFace, state.roundness);
 }
 
@@ -692,7 +690,7 @@ document.querySelectorAll('[data-surface-btn]').forEach(btn => {
 document.querySelectorAll('[data-dimension-btn]').forEach(btn => {
   btn.addEventListener('click', () => {
     state.dimension = btn.dataset.dimensionBtn;
-    updateUI();
+    syncAllFaces();
   });
 });
 document.querySelectorAll('[data-backdrop-btn]').forEach(btn => {
@@ -705,7 +703,7 @@ $('stageResetBtn').addEventListener('click', () => {
   stopVoiceDemo(false);
   setVoiceStage(null, { play: false });
   Object.assign(state, {
-    backdrop: 'dark', size: 168, surface: 'skin', dimension: '2d', skinId: '101',
+    backdrop: 'dark', size: 168, surface: 'skin', dimension: '3d', skinId: '101',
     roundness: 50, antenna: true, pointerFollow: true,
     pressSqueeze: true, antennaDrag: true, autoSleep: '0', wakeOn: 'activity', motion: 'auto',
     flatBg: DEFAULT_FLAT.bg, flatHead: DEFAULT_FLAT.head, eyeThrough: true,
@@ -782,7 +780,7 @@ async function playAction(action) {
   updateDevCode();
 
   const targetFace = activeAvatarFace();
-  const runtimeAction = action === 'waiting-bloom' ? 'waiting-wrap' : action;
+  const runtimeAction = action;
   if (state.loop && runtimeAction.startsWith('waiting-')) {
     await targetFace.startWaiting({ variant: runtimeAction.replace('waiting-', '') });
     return;
