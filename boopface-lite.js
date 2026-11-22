@@ -13,6 +13,7 @@ import './src/boopface-random.js';
 import './src/boopface-head-roundness.js';
 import './src/boopface-gestures.js';
 import './src/boopface-new-expressions.js';
+import './src/boopface-body-motion.js';
 import './src/boopface-runtime.js';
 import './src/boopface-eye-color.js';
 // Last, so it rounds whatever the other modules drew this frame.
