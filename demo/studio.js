@@ -1,6 +1,8 @@
 import { VERSION } from '../boopface.js';
 import { createRoundnessFeedback } from './roundness-feedback.js';
 import { createVoiceEngine } from './studio-voice.js';
+import { plan, pretendStream, agentCode, labelOf } from './studio-agent.js';
+import { connectAgent } from '../boopface.js';
 import {
   featured,
   filters,
@@ -212,6 +214,8 @@ const state = {
   skinQuery: '',
   inspectorTab: 'look',
   devTab: 'html',
+  // Connect AI: the format the chat scene and the code use, and which expression each AI state shows.
+  agent: { format: 'openai', thinking: 'waiting-spin', tool: 'waiting-wave', replying: 'idle' },
   chatLook: 'dark',
   chatAvatarPos: 'inline',
   chatExpanded: false,
@@ -2130,6 +2134,28 @@ $('chatInput').addEventListener('input', () => {
   if (!chatBusy && $('chatInput').value.trim()) activeTalkFace?.play('input');
 });
 
+// The chat scene runs on the real connectAgent(): a pretend reply in the chosen
+// wire format is fed to it event by event, exactly like a page would, and the
+// avatar shows thinking, tool use, replying and the ending by itself.
+function agentActions() {
+  const a = state.agent;
+  return { thinking: a.thinking, tool: a.tool, replying: a.replying === 'keep' ? a.thinking : a.replying };
+}
+const AGENT_TEXT = {
+  reply: '好的，已经按你说的处理好了，表情和材质都在实时同步。',
+  refusal: '抱歉，这个请求超出了演示范围，我先礼貌拒绝。',
+  approval: '这一步会修改配置，需要你确认后再继续。',
+};
+const AGENT_STATUS = {
+  thinking: ['thinking', '思考中…'], tool: ['thinking', '用工具中…'], replying: ['thinking', '回复中…'], approval: ['asking', '待确认'],
+  done: ['done', '已完成'], error: ['failed', '出错了'], refused: ['failed', '已拒绝'], cancelled: ['failed', '已停止'],
+};
+// Mostly a plain answer; sometimes a tool first, an error, a refusal or a question.
+function pickOutcome() {
+  const r = Math.random();
+  return { outcome: r < .6 ? 'done' : r < .72 ? 'approval' : r < .86 ? 'refused' : 'error', tool: Math.random() < .35 };
+}
+
 $('chatForm').addEventListener('submit', async e => {
   e.preventDefault();
   const text = $('chatInput').value.trim();
@@ -2146,19 +2172,42 @@ $('chatForm').addEventListener('submit', async e => {
   placeActiveTalkFace(bot, replyEl);
   $('talkBody').scrollTop = $('talkBody').scrollHeight;
 
-  await activeTalkFace.play('affirm');
-  activeTalkFace.startWaiting({ variant: 'wrap' });
-  await new Promise(r => setTimeout(r, 750));
-
-  const reply = CHAT_REPLIES[Math.floor(Math.random() * CHAT_REPLIES.length)];
-  replyEl.bubble.textContent = reply.text;
-  replyEl.status.dataset.state = reply.status;
-  replyEl.status.lastChild.textContent = reply.label;
-  botRowEls[state.activeBotIndex].preview.textContent = reply.text;
-  $('talkBody').scrollTop = $('talkBody').scrollHeight;
-  activeTalkFace.play(reply.result);
+  const { outcome, tool } = pickOutcome();
+  const agent = connectAgent(activeTalkFace, {
+    actions: agentActions(),
+    onChange: next => {
+      const [key, label] = AGENT_STATUS[next] || [];
+      if (key) { replyEl.status.dataset.state = key; replyEl.status.lastChild.textContent = label; }
+    },
+  });
+  let started = false;
+  const steps = plan(state.agent.format, outcome, tool, AGENT_TEXT);
+  try {
+    const stream = pretendStream(steps, piece => {
+      if (!started) { replyEl.bubble.textContent = ''; started = true; }
+      replyEl.bubble.textContent += piece;
+      $('talkBody').scrollTop = $('talkBody').scrollHeight;
+    });
+    for await (const event of agent.track(stream)) logEvent('agent', labelOf(event));
+    if (outcome === 'approval' && state.agent.format === 'anthropic') agent.handle?.('approval');
+  } catch (error) { console.error(error); }
+  if (outcome === 'error' && !started) replyEl.bubble.textContent = '（连接中断，回复失败）';
+  botRowEls[state.activeBotIndex].preview.textContent = replyEl.bubble.textContent;
   chatBusy = false;
 });
+
+// The Connect AI settings in the behaviour tab.
+function syncAgentChips() {
+  document.querySelectorAll('[data-agent]').forEach(group => {
+    group.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(state.agent[group.dataset.agent] === b.dataset.value)));
+  });
+}
+document.querySelectorAll('[data-agent]').forEach(group => group.addEventListener('click', e => {
+  const b = e.target.closest('button[data-value]'); if (!b) return;
+  state.agent[group.dataset.agent] = b.dataset.value;
+  syncAgentChips(); updateDevCode();
+}));
+syncAgentChips();
 
 /* Live State HUD + Event Stream + Code Generator */
 function logEvent(name, detail) {
@@ -2204,6 +2253,8 @@ function updateDevCode() {
   } else if (state.devTab === 'js') {
     const skinLine = state.surface === 'skin' ? `avatar.setSkin('${state.skinId}');` : `avatar.setSkin(null);\navatar.setAttribute('color', '${state.flatHead}');`;
     devCode.textContent = `import 'boopface';\n\nconst avatar = document.querySelector('#avatar');\nawait customElements.whenDefined('boop-face');\n${skinLine}${roundLine}${followLine}\n${actionLine};`;
+  } else if (state.devTab === 'agent') {
+    devCode.textContent = agentCode(state.agent.format, agentActions());
   } else if (state.devTab === 'cdn') {
     const pkg = state.surface === 'skin' ? `boopface@${VERSION}/boopface.js` : `boopface@${VERSION}/boopface-lite.js`;
     devCode.textContent = `<script type="module" src="https://cdn.jsdelivr.net/npm/${pkg}"></script>\n<boop-face ${attrs}></boop-face>`;

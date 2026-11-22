@@ -570,6 +570,19 @@
 
       <!-- TAB 3: BEHAVIOR -->
       <div class="inspector-panel panel-scroll" data-panel="behavior" hidden>
+        <div class="insp-section" id="agentSection">
+          <div class="insp-head"><h3>接入 AI</h3><span class="insp-hint">对话场景和代码都按这里来</span></div>
+          <div class="agent-rows">
+            <div class="agent-row"><span>接口格式</span><div class="mini-seg" data-agent="format">
+              <button type="button" data-value="openai">OpenAI</button><button type="button" data-value="anthropic">Anthropic</button><button type="button" data-value="ai-sdk">AI SDK</button><button type="button" data-value="ag-ui">AG-UI</button></div></div>
+            <div class="agent-row"><span>思考时</span><div class="mini-seg" data-agent="thinking">
+              <button type="button" data-value="waiting-spin">旋转</button><button type="button" data-value="waiting-wrap">滚动</button><button type="button" data-value="waiting-wave">波动</button><button type="button" data-value="waiting-bloom">绽放</button><button type="button" data-value="waiting-cross">十字</button></div></div>
+            <div class="agent-row"><span>用工具时</span><div class="mini-seg" data-agent="tool">
+              <button type="button" data-value="waiting-wave">波动</button><button type="button" data-value="waiting-spin">旋转</button><button type="button" data-value="inspect">审视</button></div></div>
+            <div class="agent-row"><span>回复文字时</span><div class="mini-seg" data-agent="replying">
+              <button type="button" data-value="idle">正常</button><button type="button" data-value="keep">继续等待</button></div></div>
+          </div>
+        </div>
         <div class="insp-section">
           <div class="insp-head"><h3>内置物理交互</h3></div>
           <div class="switch-list">
@@ -642,6 +655,7 @@
           <button type="button" role="tab" aria-selected="true" data-dev-tab="html">HTML</button>
           <button type="button" role="tab" aria-selected="false" data-dev-tab="js">JS API</button>
           <button type="button" role="tab" aria-selected="false" data-dev-tab="cdn">CDN</button>
+          <button type="button" role="tab" aria-selected="false" data-dev-tab="agent">接入 AI</button>
           <button type="button" role="tab" aria-selected="false" data-dev-tab="events">Events <span class="event-badge" id="eventCount">0</span></button>
         </div>
 

@@ -2804,3 +2804,13 @@ body.has-chat-modal {
 /* Caption under the avatar during a spoken voice turn */
 .voice-caption{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);max-width:min(560px,88%);padding:8px 14px;border-radius:12px;background:rgba(20,20,22,.78);border:1px solid rgba(255,255,255,.08);color:#ededf0;font-size:13px;line-height:1.5;text-align:center;backdrop-filter:blur(8px);pointer-events:none}
 .voice-caption[hidden]{display:none}
+
+/* Connect AI settings in the behaviour tab */
+.insp-head .insp-hint{margin-left:auto;color:#8b8b91;font-size:12px;font-weight:400}
+.agent-rows{display:grid;gap:10px}
+.agent-row{display:grid;grid-template-columns:72px 1fr;align-items:center;gap:10px}
+.agent-row>span{color:#a3a3a8;font-size:12.5px}
+.mini-seg{display:flex;flex-wrap:wrap;gap:4px;background:#1f1f22;border-radius:10px;padding:3px}
+.mini-seg button{border:0;background:none;color:#a3a3a8;font:inherit;font-size:12.5px;padding:5px 9px;border-radius:8px;cursor:pointer}
+.mini-seg button:hover{color:#fff}
+.mini-seg button[aria-pressed="true"]{background:#3a3a3f;color:#fff}
