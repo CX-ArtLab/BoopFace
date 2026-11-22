@@ -270,18 +270,17 @@ code, kbd {
   min-height: 260px;
 }
 .stage-card[data-backdrop="dark"] .stage-canvas {
+  /* Even, no light pooled behind the avatar (no glow round avatars). */
   background:
-    radial-gradient(closest-side at 50% 45%, transparent 45%, #080808 118%),
     linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px) center / 32px 32px,
     linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px) center / 32px 32px,
-    radial-gradient(at 48% 34%, #222222 0%, #141414 48%, #090909 100%);
+    #141414;
 }
 .stage-card[data-backdrop="light"] .stage-canvas {
   background:
-    radial-gradient(closest-side at 50% 45%, transparent 45%, #b5b8be 124%),
     linear-gradient(rgba(0, 0, 0, 0.045) 1px, transparent 1px) center / 32px 32px,
     linear-gradient(90deg, rgba(0, 0, 0, 0.045) 1px, transparent 1px) center / 32px 32px,
-    radial-gradient(circle at 50% 40%, #ffffff 0%, #e1e3e7 52%, #b5b8be 100%);
+    #e6e8ec;
 }
 .stage-card[data-backdrop="skin"] .stage-canvas { background: var(--skin-stage-bg, #202024); }
 .stage-card[data-backdrop="custom"] .stage-canvas { background: var(--custom-stage-bg, #141416); }
@@ -303,6 +302,7 @@ code, kbd {
   place-items: center;
 }
 .stage-glow {
+  display: none; /* no glow round avatars */
   position: absolute;
   width: 260px;
   height: 260px;

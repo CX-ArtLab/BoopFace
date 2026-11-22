@@ -282,6 +282,7 @@ function syncFaceGeometry(face, customRound = state.roundness) {
   face.setPointerFollow(state.pointerFollow);
   face.setPressSqueeze(state.pressSqueeze);
   face.setAntennaDrag(state.antennaDrag);
+  face.setPetting(state.petting !== false);
   face.setAttribute('auto-sleep', state.autoSleep);
   face.setAttribute('wake-on', state.wakeOn);
   face.setAttribute('motion', state.motion);
@@ -1884,6 +1885,7 @@ $('antennaToggle').addEventListener('change', e => {
 $('pointerFollowToggle').addEventListener('change', e => { state.pointerFollow = e.target.checked; syncAllFaces(); });
 $('pressSqueezeToggle').addEventListener('change', e => { state.pressSqueeze = e.target.checked; syncAllFaces(); });
 $('antennaDragToggle').addEventListener('change', e => { state.antennaDrag = e.target.checked; syncAllFaces(); });
+$('pettingToggle').addEventListener('change', e => { state.petting = e.target.checked; syncAllFaces(); });
 document.querySelectorAll('[data-autosleep]').forEach(btn => {
   btn.addEventListener('click', () => {
     state.autoSleep = btn.dataset.autosleep;
@@ -2233,6 +2235,8 @@ function buildAttributes() {
   if (state.size !== 112) attrs.push(`size="${state.size}"`);
   if (state.surface === 'skin') attrs.push(`skin="${state.skinId}"`);
   else if (state.flatHead !== '#08090b') attrs.push(`color="${state.flatHead}"`);
+  if (state.surface !== 'skin' && state.eyeThrough) attrs.push('eye-color="transparent"');
+  if (state.dimension === '3d') attrs.push('view="3d"');
   if (state.autoSleep !== '0') attrs.push(`auto-sleep="${state.autoSleep}"`);
   if (state.wakeOn !== 'activity') attrs.push(`wake-on="${state.wakeOn}"`);
   if (state.motion !== 'auto') attrs.push(`motion="${state.motion}"`);
@@ -2246,7 +2250,7 @@ function updateDevCode() {
   const actionLine = formatApiCall(state.action);
   $('devQuickAction').textContent = `${actionLine};`;
   const roundLine = state.roundness !== 50 ? `\navatar.setHeadRoundness(${state.roundness});` : '';
-  const followLine = !state.pointerFollow ? `\navatar.setPointerFollow(false);` : '';
+  const followLine = (!state.pointerFollow ? `\navatar.setPointerFollow(false);` : '') + (state.petting === false ? `\navatar.setPetting(false);` : '');
 
   if (state.devTab === 'html') {
     devCode.textContent = `<boop-face ${attrs}></boop-face>\n\n<script type="module">\n  import 'boopface';\n  const avatar = document.querySelector('#avatar');${roundLine}${followLine}\n  ${actionLine};\n</script>`;
