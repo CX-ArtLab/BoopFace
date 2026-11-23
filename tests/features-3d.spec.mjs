@@ -84,3 +84,19 @@ test('view="3d" draws the layered head and view="2d" goes back to the flat drawi
   await expect.poll(() => page.evaluate(() => a.dataset.view || '')).toBe('');
   expect(await page.evaluate(() => getComputedStyle(a.shadowRoot.querySelector('svg')).visibility)).toBe('visible');
 });
+
+test('leaving the typing cursor slides the eyes apart instead of jumping', async ({ page }) => {
+  await page0(page, '<boop-face id="a" motion="full"></boop-face>');
+  await page.evaluate(() => a.play('input'));
+  await expect.poll(() => page.evaluate(() => a.shadowRoot.getElementById('leftEye').getAttribute('transform'))).toContain('translate(120.00');
+  const xs = await page.evaluate(() => new Promise(done => {
+    const out = [], x = () => Number(a.shadowRoot.getElementById('leftEye').getAttribute('transform').match(/translate\(([-\d.]+)/)[1]);
+    a.play('success');
+    const step = () => { out.push(x()); out.length < 40 && out.at(-1) > 87 ? requestAnimationFrame(step) : done(out); };
+    requestAnimationFrame(step);
+  }));
+  expect(xs.at(-1)).toBeLessThan(88);
+  const jumps = xs.slice(1).map((v, i) => xs[i] - v);
+  // A 34-unit move spread over several frames, never most of it in one.
+  expect(Math.max(...jumps)).toBeLessThan(20);
+});

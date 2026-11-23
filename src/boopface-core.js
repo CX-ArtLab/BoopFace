@@ -603,6 +603,10 @@ const BoopFace = (() => {
     _startMorph(target, duration, ease) {
       this._fromPose = clonePose(this._pose);
       this._toPose = clonePose(target);
+      // The input cursor sits in the middle: the eyes slide there and back
+      // with the morph instead of jumping.
+      this._centerFrom = this._center ?? 0;
+      this._centerTo = this._state === 'input' ? 1 : 0;
       this._morphStart = performance.now();
       this._morphDuration = Math.max(0, duration);
       this._morphEase = ease;
@@ -898,10 +902,12 @@ const BoopFace = (() => {
     _updateMorph(now) {
       if (!this._morphDuration) {
         this._pose = clonePose(this._toPose);
+        this._center = this._centerTo ?? 0;
         return;
       }
       const t = clamp((now - this._morphStart) / this._morphDuration, 0, 1);
       const k = this._morphEase(t);
+      this._center = lerp(this._centerFrom ?? 0, this._centerTo ?? 0, k);
       const p = {};
       for (const key of Object.keys(this._toPose)) p[key] = lerp(this._fromPose[key], this._toPose[key], k);
       this._pose = p;
@@ -1106,10 +1112,10 @@ const BoopFace = (() => {
         return `translate(${(cx + this._look.x + microX + jelly.x + (isInput ? 0 : inwardShift)).toFixed(2)} ${(126 + this._look.y + microY + jelly.y + nodY + angryDropY + emotionBobY).toFixed(2)})`;
       };
 
-      const inputCenter = this._state==='input';
+      const inputCenter = clamp(this._center ?? 0, 0, 1);
       const surpriseSpread = this._state==='surprise' ? 3.4 * EASE.outQuint(clamp((p.w - 34) / (POSES.surprise.w - 34), 0, 1)) : 0;
-      const leftCX = inputCenter ? 120 : 86 - surpriseSpread;
-      const rightCX = inputCenter ? 120 : 154 + surpriseSpread;
+      const leftCX = lerp(86 - surpriseSpread, 120, inputCenter);
+      const rightCX = lerp(154 + surpriseSpread, 120, inputCenter);
       this._leftEye.setAttribute('transform', setEye(this._leftBase,this._leftInputBase,this._leftTop,this._leftBottom,'L',leftCX,this._eyeMicro.lX,this._eyeMicro.lY,inputPulseL));
       this._rightEye.setAttribute('transform', setEye(this._rightBase,this._rightInputBase,this._rightTop,this._rightBottom,'R',rightCX,this._eyeMicro.rX,this._eyeMicro.rY,inputPulseR));
     }
