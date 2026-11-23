@@ -93,11 +93,14 @@ function attachPet({ views, faces, options, isFlat = () => false, onStart = () =
     petting = true; handInside = true; lean = 0; swayT = 0; petFaces = next; starting = true;
     for (const f of petFaces) {
       f.noteActivity?.();
+      // Ending the other action would snap the gaze to the middle; it eases there instead.
+      const look = { ...f._look };
       try { endOfficialAction(f); } finally { starting = false; }
+      Object.assign(f._look, look);
       f._expressionLock = true;
       if (f._eyeMicro) f._eyeMicro.lX = f._eyeMicro.lY = f._eyeMicro.rX = f._eyeMicro.rY = 0;
       if (f._wanderTarget) f._wanderTarget.x = f._wanderTarget.y = 0;
-      f._look.x = f._look.y = 0;
+      // The gaze is not zeroed here: with the lock on it eases back to the middle.
       f._eyeBob = f._eyeNod = null;
       f._startMorph(SLEEP_EYES, 420, EASE);
       // No blinking with closed eyes.

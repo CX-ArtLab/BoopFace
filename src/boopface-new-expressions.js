@@ -278,7 +278,9 @@ function squeezeEye(f, side, k) {
 }
 function shiftEye(f, side, dx, dy) {
   const g = f.shadowRoot.getElementById(side + 'Eye'), m = /translate\(([-\d.]+)[ ,]+([-\d.]+)\)/.exec(g?.getAttribute('transform') || ''); if (!m) return;
-  g.setAttribute('transform', `translate(${(+m[1] + dx).toFixed(2)} ${(+m[2] + dy).toFixed(2)})`);
+  if (!dx && !dy) return;
+  // Only the leading position moves; any tilt or size after it is kept.
+  g.setAttribute('transform', g.getAttribute('transform').replace(m[0], `translate(${(+m[1] + dx).toFixed(2)} ${(+m[2] + dy).toFixed(2)})`));
 }
 
 // End whatever official action a face is still running (heart, reels,
@@ -343,14 +345,20 @@ function createPlayer(face) {
     for (const f of faces()) {
       f.noteActivity?.();
       // Otherwise the old action's own drawing goes on over the new one.
+      // Ending the other action would snap the gaze to the middle; it eases there instead.
+      const look = { ...f._look };
       endOfficialAction(f);
+      Object.assign(f._look, look);
       f._eyeBob = f._eyeNod = f._angryEyeDrop = f._surpriseShake = null;
       if (f._eyeMicro) f._eyeMicro.lX = f._eyeMicro.lY = f._eyeMicro.rX = f._eyeMicro.rY = 0;
       if (f._wanderTarget) f._wanderTarget.x = f._wanderTarget.y = 0;
-      f._look.x = f._look.y = 0;
+      // The gaze is not zeroed here: with the lock on it eases back to the middle.
       // The flat face locks its gaze; the 3D brains must not, or the 3D turn
       // would be straightened (their gaze is centred by the page anyway).
-      f._expressionLock = !is3d(f); f._headCenteringUntil = 0;
+      // Gaze held still on every view, or the idle glances and the pointer
+      // would move the eyes in the middle of the expression (3D turns the head
+      // from the expression's own pose, with the lock lifted just for that).
+      f._expressionLock = true; f._headCenteringUntil = 0;
       // Eyes ease back to normal (like the official 140 ms), not a jump.
       if (f._state !== 'idle') f.setState('idle', { duration: 140, notify: false, keepGazeLock: true });
       else if (JSON.stringify(f._toPose) !== JSON.stringify(IDLE)) f._startMorph(IDLE, 140, outQuint);

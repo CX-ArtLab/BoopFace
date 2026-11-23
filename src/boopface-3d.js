@@ -105,17 +105,17 @@ registerAvatarExtension({
     const dt = Math.min(50, now - v.t); v.t = now;
     const look = this._look || { x: 0, y: 0 }, tx = look.x / 36, ty = look.y / 27, k = 1 - Math.exp(-dt / 200);
     v.pose.yaw += (tx * 18 - v.pose.yaw) * k; v.pose.pitch += (-ty * 18 * .65 - v.pose.pitch) * k;
-    let p = { yaw: v.pose.yaw, pitch: v.pose.pitch, gazeX: 0, gazeY: 0 };
-    p = newExpressionPose(this, p);
+    const base = { yaw: v.pose.yaw, pitch: v.pose.pitch, gazeX: 0, gazeY: 0 };
+    const p = newExpressionPose(this, base);
     v.avatar.syncEyes(this);
     v.avatar.setHeadMotion(headOf(this));
     const petted = petPose(this, p), body = bodyMotionPose(this, petted);
-    // The body motion and petting turn the head even while an expression
-    // holds the gaze still (that lock straightens the 3D turn otherwise).
-    if (body !== p) {
+    // New expressions, body motion and petting turn the head even while the
+    // gaze is held still (that lock straightens the 3D turn otherwise).
+    if (body !== base) {
       const lock = this._expressionLock, hc = this._headCenteringUntil;
       this._expressionLock = false; this._headCenteringUntil = 0;
       try { v.avatar.pose(body); } finally { this._expressionLock = lock; this._headCenteringUntil = hc; }
-    } else v.avatar.pose(p);
+    } else v.avatar.pose(base);
   },
 });
