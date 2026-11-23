@@ -117,7 +117,8 @@ test('custom actions, onChange and clear mistakes', async ({ page }) => {
     // Thinking and replying share one loop: it keeps going instead of restarting.
     const shared = window.boop.connectAgent(avatar, { actions: { replying: 'waiting-spin' } });
     shared.handle('thinking');
-    await new Promise(resolve => setTimeout(resolve, 300));
+    // Coming from the typing cursor, the eyes first slide apart (360 ms).
+    await new Promise(resolve => setTimeout(resolve, 600));
     const loopStart = avatar._waitingFx?.start;
     shared.handle('streaming');
     await new Promise(resolve => setTimeout(resolve, 300));

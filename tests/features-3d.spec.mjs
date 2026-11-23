@@ -86,17 +86,26 @@ test('view="3d" draws the layered head and view="2d" goes back to the flat drawi
 });
 
 test('leaving the typing cursor slides the eyes apart instead of jumping', async ({ page }) => {
-  await page0(page, '<boop-face id="a" motion="full"></boop-face>');
-  await page.evaluate(() => a.play('input'));
-  await expect.poll(() => page.evaluate(() => a.shadowRoot.getElementById('leftEye').getAttribute('transform'))).toContain('translate(120.00');
-  const xs = await page.evaluate(() => new Promise(done => {
-    const out = [], x = () => Number(a.shadowRoot.getElementById('leftEye').getAttribute('transform').match(/translate\(([-\d.]+)/)[1]);
-    a.play('success');
-    const step = () => { out.push(x()); out.length < 40 && out.at(-1) > 87 ? requestAnimationFrame(step) : done(out); };
-    requestAnimationFrame(step);
-  }));
-  expect(xs.at(-1)).toBeLessThan(88);
-  const jumps = xs.slice(1).map((v, i) => xs[i] - v);
-  // A 34-unit move spread over several frames, never most of it in one.
-  expect(Math.max(...jumps)).toBeLessThan(20);
+  for (const next of ['success', 'bow', 'waiting-spin']) {
+    await page0(page, '<boop-face id="a" motion="full"></boop-face>');
+    await page.evaluate(() => a.play('input'));
+    await expect.poll(() => page.evaluate(() => a.shadowRoot.getElementById('leftEye').getAttribute('transform'))).toContain('translate(120.00');
+    const run = await page.evaluate(next => new Promise(done => {
+      const xs = [], x = () => Number(a.shadowRoot.getElementById('leftEye').getAttribute('transform').match(/translate\(([-\d.]+)/)[1]);
+      const t0 = performance.now(); let left = 0;
+      a.play(next);
+      const step = () => {
+        xs.push(x());
+        if (!left && xs.at(-1) < 119) left = performance.now();
+        if (xs.length < 90 && xs.at(-1) > 87) requestAnimationFrame(step);
+        else done({ xs, ms: performance.now() - (left || t0) });
+      };
+      requestAnimationFrame(step);
+    }), next);
+    expect(run.xs.at(-1), next).toBeLessThan(88);
+    const jumps = run.xs.slice(1).map((v, i) => run.xs[i] - v);
+    // A 34-unit move spread over a third of a second, never most of it in one frame.
+    expect(Math.max(...jumps), next).toBeLessThan(20);
+    expect(run.ms, next).toBeGreaterThan(150); // the middle of the slide alone; it was ~60 ms when it jumped
+  }
 });

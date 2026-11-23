@@ -340,6 +340,9 @@ function createPlayer(face) {
   function play(name, opts = {}) {
     const def = NEW_FX[name]; if (!def) return;
     const now = performance.now();
+    // Leaving the typing cursor: the eyes need their slide back apart (360 ms,
+    // the core's CURSOR_MS) before the usual pause.
+    const fromCursor = faces().some(f => (f._center ?? 0) > 0.01);
     const wasBusy = !!cur || !!rel || busy() || faces().some(f => f._state !== 'idle' || f._voiceFx || f._voiceExit || f._headMotion.style.transform || f._boredRoutine || f._waitingFx || JSON.stringify(f._toPose) !== JSON.stringify(IDLE));
     if (cur) finish(true);
     for (const f of faces()) {
@@ -371,7 +374,7 @@ function createPlayer(face) {
     // circle as it is.
     if (opts.fromCenter) for (const f of faces()) { f._voiceExit = null; f._voiceShown = null; }
     let done; const finished = new Promise(r => { done = r; });
-    cur = { name, def, opts, start: now + (wasBusy && !opts.direct ? SETTLE_MS : 0), stage: 0, done };
+    cur = { name, def, opts, start: now + (wasBusy && !opts.direct ? (fromCursor ? 360 + 240 : SETTLE_MS) : 0), stage: 0, done };
     return finished;
   }
   function finish(quick) {

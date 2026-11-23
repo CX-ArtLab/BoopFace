@@ -5,6 +5,11 @@ const BoopFace = (() => {
     inOutCubic: t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3)/2,
   };
 
+  // The eyes travel between the typing cursor in the middle and their own
+  // places: never in fewer ms than this, eased at both ends, so it reads as a
+  // slide and not a jump.
+  const CURSOR_MS = 360;
+
   const POSES = {
     idle: {
       w: 54, h: 58, rx: 27,
@@ -607,6 +612,10 @@ const BoopFace = (() => {
       // with the morph instead of jumping.
       this._centerFrom = this._center ?? 0;
       this._centerTo = this._state === 'input' ? 1 : 0;
+      if (Math.abs(this._centerTo - this._centerFrom) > 0.01 && duration > 0) {
+        duration = Math.max(duration, CURSOR_MS);
+        ease = EASE.inOutCubic;
+      }
       this._morphStart = performance.now();
       this._morphDuration = Math.max(0, duration);
       this._morphEase = ease;
@@ -842,10 +851,12 @@ const BoopFace = (() => {
       this._eyeMicro.rX = this._eyeMicro.rY = 0;
       this._wanderTarget.x = this._wanderTarget.y = 0;
       this._headCenteringUntil = performance.now() + duration + pause;
+      // Leaving the typing cursor takes longer: the eyes slide back apart first.
+      const fromCursor = (this._center ?? 0) > 0.01;
       if (normalizePose && this._state !== 'idle') {
         this.setState('idle', {duration:Math.min(140, duration), keepGazeLock:true});
       }
-      await this._wait(duration);
+      await this._wait(fromCursor ? Math.max(duration, CURSOR_MS) : duration);
       if (token !== this._transitionToken) return false;
       if (pause > 0) await this._wait(pause);
       return token === this._transitionToken;
