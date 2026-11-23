@@ -132,9 +132,10 @@ test('in 3D the typing cursor splits from the middle, never thrown out to the ou
     }
     return { min, max };
   });
-  // The eyes end at about 86 and 154; the outline is near 40 and 200.
-  expect(spread.min).toBeGreaterThan(78);
-  expect(spread.max).toBeLessThan(162);
+  // The eyes end at about 86 and 154 (the 3D head's own sway adds a little);
+  // thrown out they reached about 62 and 178, the outline is near 40 and 200.
+  expect(spread.min).toBeGreaterThan(70);
+  expect(spread.max).toBeLessThan(170);
 });
 
 test('with a skin, shapes drawn as one (crossed ovals, the listening circle) are painted as one surface', async ({ page }) => {
@@ -195,4 +196,24 @@ test('the wink flattens the whole eye into a round-ended line, without lids cutt
   expect(thinnest).toBeLessThan(10);
   // And it is gone afterwards.
   expect(frames.at(-1).shape).toBeNull();
+});
+
+test('renamed actions (wary, affirm, refuse, waiting-spin) get their head motion too', async ({ page }) => {
+  await page0(page, '<boop-face id="a" motion="full"></boop-face>');
+  for (const action of ['wary', 'affirm', 'refuse', 'waiting-spin']) {
+    await page.evaluate(() => a.reset());
+    await page.waitForTimeout(300);
+    const moved = await page.evaluate(action => new Promise(done => {
+      a.play(action);
+      const svg = a.shadowRoot.querySelector('svg'), t0 = performance.now();
+      let seen = false;
+      const step = () => {
+        const t = svg.style.transform;
+        if (t && t !== 'none' && /translate\((?!0px, 0px)|rotate\((?!0deg)|scale\((?!1, 1\))/.test(t)) seen = true;
+        seen || performance.now() - t0 > 2500 ? done(seen) : requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }), action);
+    expect(moved, action).toBe(true);
+  }
 });

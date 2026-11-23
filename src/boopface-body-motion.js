@@ -258,9 +258,14 @@ const still = face => {
   return typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
 };
 
+// Renamed actions still run on their original implementations, which report
+// the old name (wary runs as "warning"); the body motion knows the new names.
+const RENAMED = { warning: 'wary', send: 'affirm', error: 'refuse', waiting: 'waiting-spin' };
+
 registerAvatarExtension({
   name: 'body-motion',
-  afterPlay(action) {
+  afterPlay(raw) {
+    const action = RENAMED[raw] || raw;
     if (REDONE.has(action) && !still(this)) playerOf(this).follow(action);
     else players.get(this)?.stop();
   },

@@ -533,7 +533,13 @@ ${pairStyles}
     for (let k = 0; k < 3; k++) { const q = project(x, c.y, c.z), d = want - sign * q.x, slope = Math.max(.3, Math.abs(project(x + sign, c.y, c.z).x - q.x)); x += sign * d / slope; }
     // Outward or inward: the official eye drifts a little further out as it
     // narrows, which in 3D can end past the outline, so it is pulled back too.
-    const w = Math.max(0, Math.min(1, (n - .15) / .45)); // fully on the outline once the eye is a sliver
+    // In the wrap the flat drawing slides the eye onto the rim the moment it
+    // starts to narrow there (and clips it), so it never floats inside the
+    // outline: the plate follows it out as soon as it narrows, fully there by
+    // a quarter. Other expressions narrow an eye a little (a head shake) and
+    // only go to the outline once it is a real sliver.
+    const wrap = brain?._waitingFx?.variant === 'wrap';
+    const w = Math.max(0, Math.min(1, wrap ? (n - .03) / .22 : (n - .15) / .45));
     const s = w * w * (3 - 2 * w);
     // Moved out to the outline, the plate faces the head's front (its own slope there would turn it edge-on).
     return { ...c, x: c.x + (x - c.x) * s, hx: c.hx * (1 - s), hy: c.hy * (1 - s) };
