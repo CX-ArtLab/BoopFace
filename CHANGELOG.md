@@ -25,7 +25,7 @@ This release brings the 3D head, a new demo, and everything planned for 0.8.1 (C
 
 ### Fixed
 
-- Leaving the typing cursor (`input`) no longer makes the eyes jump out to the sides; they slide apart while they reshape (about a third of a second), and slide together on the way in. The next expression starts once they are back in place.
+- Leaving the typing cursor (`input`) no longer makes the eyes jump out to the sides: the cursor splits in the middle and the two eyes grow as they slide apart (about a third of a second), and slide together on the way in. The next expression starts once they are back in place.
 
 ## [0.8.0] - 2026-11-05
 

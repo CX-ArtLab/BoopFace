@@ -3,6 +3,7 @@ const BoopFace = (() => {
   const EASE = {
     outQuint: t => 1 - Math.pow(1 - t, 5),
     inOutCubic: t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3)/2,
+    inOutSine: t => (1 - Math.cos(Math.PI * t)) / 2,
   };
 
   // The eyes travel between the typing cursor in the middle and their own
@@ -614,7 +615,7 @@ const BoopFace = (() => {
       this._centerTo = this._state === 'input' ? 1 : 0;
       if (Math.abs(this._centerTo - this._centerFrom) > 0.01 && duration > 0) {
         duration = Math.max(duration, CURSOR_MS);
-        ease = EASE.inOutCubic;
+        ease = EASE.inOutSine;
       }
       this._morphStart = performance.now();
       this._morphDuration = Math.max(0, duration);

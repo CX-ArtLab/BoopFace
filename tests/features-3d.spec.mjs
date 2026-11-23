@@ -109,3 +109,26 @@ test('leaving the typing cursor slides the eyes apart instead of jumping', async
     expect(run.ms, next).toBeGreaterThan(150); // the middle of the slide alone; it was ~60 ms when it jumped
   }
 });
+
+test('in 3D the typing cursor splits from the middle, never thrown out to the outline', async ({ page }) => {
+  await page0(page, '<boop-face id="a" view="3d" size="240" motion="full"></boop-face>');
+  await expect.poll(() => page.evaluate(() => a.dataset.view)).toBe('3d');
+  await page.evaluate(() => a.play('input'));
+  await expect.poll(() => page.evaluate(() => a._center)).toBe(1);
+  const spread = await page.evaluate(async () => {
+    const hr = a.shadowRoot.querySelector('.view-3d').shadowRoot, h = a.getBoundingClientRect();
+    const layers = [...hr.querySelectorAll('.layer.eyes')];
+    // Where the visible eye layers sit across the head (0..240).
+    const xs = () => layers.filter(n => n.style.display !== 'none').map(n => { const q = n.getBoundingClientRect(); return (q.x + q.width / 2 - h.x) / h.width * 240; });
+    let min = 240, max = 0;
+    a.play('success');
+    for (let i = 0; i < 40; i++) {
+      await new Promise(r => requestAnimationFrame(r));
+      for (const x of xs()) { min = Math.min(min, x); max = Math.max(max, x); }
+    }
+    return { min, max };
+  });
+  // The eyes end at about 86 and 154; the outline is near 40 and 200.
+  expect(spread.min).toBeGreaterThan(78);
+  expect(spread.max).toBeLessThan(162);
+});

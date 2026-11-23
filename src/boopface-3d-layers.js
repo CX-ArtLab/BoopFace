@@ -445,6 +445,10 @@ ${pairStyles}
       // Both must hold: narrower than a normal eye AND narrower than it is tall
       // (a heart's tall lobes are not narrow; a small round eye is not either).
       eye.narrowX = Math.max(0, Math.min(1, 1 - 2 * eye.rx / 54, 1 - (eye.rx / Math.max(ry, 1)) / (27 / 29)));
+      // The typing cursor is narrow because it is a cursor, not an eye seen
+      // edge-on: while it forms or splits back into eyes it stays where the
+      // official face draws it (never pushed out to the outline).
+      if ((brain._center ?? 0) > 0.001 || brain._state === 'input') eye.narrowX = 0;
       // The random reels flatten an eye top-to-bottom as it rolls over the
       // top or bottom edge; that counts as narrowing too (only then: blinks
       // also flatten the eye and must change nothing).
