@@ -959,6 +959,53 @@ code, kbd {
   z-index: 70;
 }
 .size-popover { width: 158px; }
+
+/* 平面/立体 info: an i in a circle; the comparison shows on hover or focus. */
+.view-info { position: relative; display: inline-flex; }
+.info-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: transparent;
+  color: var(--muted);
+  font: italic 600 11px/1 Georgia, 'Times New Roman', serif;
+  display: grid;
+  place-items: center;
+  transition: color 0.14s, border-color 0.14s, background-color 0.14s;
+}
+.info-dot:hover, .view-info:focus-within .info-dot { color: #fff; border-color: rgba(255, 255, 255, 0.6); background: rgba(255, 255, 255, 0.06); }
+.view-info-pop {
+  left: -8px;
+  right: auto;
+  width: min(400px, calc(100vw - 40px));
+  /* Never under the page header: scrolls inside when the window is short. */
+  max-height: calc(100dvh - 190px);
+  overflow-y: auto;
+  gap: 10px;
+  display: none;
+}
+.view-info:hover .view-info-pop, .view-info:focus-within .view-info-pop { display: grid; }
+.view-info-title { font-size: 13px; color: #fff; }
+.view-info-pop p { margin: 0; font-size: 12px; line-height: 1.65; color: var(--muted); }
+.view-info-pop code { font-family: var(--mono); font-size: 11px; color: #e5e5e5; padding: 1px 5px; border-radius: 5px; background: rgba(255, 255, 255, 0.08); }
+.view-info-pop small { font-size: 11px; line-height: 1.55; color: var(--faint); }
+.view-info-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 11.5px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.view-info-table th, .view-info-table td { padding: 7px 9px; text-align: left; vertical-align: top; line-height: 1.45; }
+.view-info-table thead th { font-size: 11px; font-weight: 600; color: #fff; background: rgba(255, 255, 255, 0.06); }
+.view-info-table tbody th { font-weight: 500; color: var(--faint); white-space: nowrap; }
+.view-info-table td { color: #d4d4d4; }
+.view-info-table tbody tr + tr > * { border-top: 1px solid rgba(255, 255, 255, 0.07); }
+.view-info-table tbody tr:nth-child(even) > * { background: rgba(255, 255, 255, 0.025); }
+.view-info-table td:last-child, .view-info-table thead th:last-child { border-left: 1px solid rgba(255, 255, 255, 0.07); }
 .export-popover {
   width: 228px;
   top: calc(100% + 8px);

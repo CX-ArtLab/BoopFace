@@ -160,6 +160,25 @@
                 <button type="button" data-dimension-btn="2d" aria-pressed="false" title="avatar.setView('2d')">平面</button>
                 <button type="button" data-dimension-btn="3d" aria-pressed="true" title="avatar.setView('3d')">立体</button>
               </div>
+              <div class="view-info">
+                <button type="button" class="info-dot" aria-label="平面和立体的区别" aria-describedby="viewInfoPop">i</button>
+                <div class="tool-popover view-info-pop" id="viewInfoPop" role="tooltip">
+                  <strong class="view-info-title">平面和立体</strong>
+                  <p>平面是原来的扁平画法，最轻、最省电。立体把同一个头像做成有厚度的 3D 头，会真的转向指针，看得到侧面和透视。表情、皮肤和颜色两种都能用，代码里只差一个属性 <code>view="3d"</code></p>
+                  <table class="view-info-table">
+                    <thead><tr><th></th><th>平面</th><th>立体</th></tr></thead>
+                    <tbody>
+                      <tr><th>画法</th><td>一张矢量图</td><td>多层叠成有厚度的头</td></tr>
+                      <tr><th>转向指针</th><td>画出转动的样子</td><td>真的转动，带侧面和透视</td></tr>
+                      <tr><th>下载</th><td>已包含在组件里</td><td>首次切换多下载约 19 KB</td></tr>
+                      <tr><th>页面元素</th><td>约 170 个</td><td>约 1050 个</td></tr>
+                      <tr><th>CPU 占用</th><td>基准</td><td>约 1.5 倍</td></tr>
+                      <tr><th>适合</th><td>小尺寸、一屏很多头像、手机</td><td>主角头像、大尺寸展示</td></tr>
+                    </tbody>
+                  </table>
+                  <small>CPU 是同一台电脑上的实测比值。页面切到后台或头像滚出屏幕时，两种都会暂停绘制。</small>
+                </div>
+              </div>
             </div>
 
             <div class="toolbar-center">
@@ -378,7 +397,7 @@
       <div class="inspector-tabs-track" role="tablist" aria-label="检查器分类">
         <button type="button" role="tab" aria-selected="true" data-inspector-tab="look">外观</button>
         <button type="button" role="tab" aria-selected="false" data-inspector-tab="skins">
-          <span>皮肤</span><span class="tab-count" id="skinTotalCount">188</span>
+          <span>皮肤</span>
         </button>
         <button type="button" role="tab" aria-selected="false" data-inspector-tab="behavior">行为</button>
         <button type="button" role="tab" aria-selected="false" data-inspector-tab="code">代码</button>
@@ -653,7 +672,7 @@
           <button type="button" role="tab" aria-selected="false" data-dev-tab="js">JS API</button>
           <button type="button" role="tab" aria-selected="false" data-dev-tab="cdn">CDN</button>
           <button type="button" role="tab" aria-selected="false" data-dev-tab="agent">接入 AI</button>
-          <button type="button" role="tab" aria-selected="false" data-dev-tab="events">Events <span class="event-badge" id="eventCount">0</span></button>
+          <button type="button" role="tab" aria-selected="false" data-dev-tab="events">Events</button>
         </div>
         <div class="insp-section agent-settings" id="agentSection" hidden>
           <div class="insp-head"><h3>接入 AI</h3><span class="insp-hint">改一项，下面的代码和对话场景都跟着变</span></div>

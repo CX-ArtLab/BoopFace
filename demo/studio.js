@@ -274,7 +274,6 @@ let chatBusy = false;
 let chatSideScaleRatio = 1;
 
 $('versionBadge').textContent = `v${VERSION}`;
-$('skinTotalCount').textContent = String(publicSkins.length);
 
 function copyText(text, targetBtn) {
   navigator.clipboard?.writeText(text).catch(() => {});
@@ -2346,7 +2345,6 @@ syncAgentChips();
 /* Live State HUD + Event Stream + Code Generator */
 function logEvent(name, detail) {
   state.eventTotal += 1;
-  $('eventCount').textContent = String(state.eventTotal);
   const row = document.createElement('div');
   row.className = 'event-line';
   const ts = new Date().toLocaleTimeString('en-GB', { hour12: false });
@@ -2430,7 +2428,6 @@ $('copyActionBtn').addEventListener('click', () => {
 
 $('clearEventsBtn').addEventListener('click', () => {
   state.eventTotal = 0;
-  $('eventCount').textContent = '0';
   devEvents.replaceChildren();
 });
 $('copyCodeBtn').addEventListener('click', () => {
