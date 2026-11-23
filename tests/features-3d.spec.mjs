@@ -171,3 +171,28 @@ test('skins whose eyes are part of their design keep them; plain-eyed skins take
   const info = await page.evaluate(async () => { const m = await import('/boopface.js'); return [m.SKINS['101'].eyeColor, m.SKINS['901'].eyeColor, Object.values(m.SKINS).filter(s => !s.eyeColor).length]; });
   expect(info).toEqual([false, true, 57]);
 });
+
+test('the wink flattens the whole eye into a round-ended line, without lids cutting in', async ({ page }) => {
+  await page0(page, '<boop-face id="a" motion="full"></boop-face>');
+  const frames = await page.evaluate(() => new Promise(done => {
+    const r = a.shadowRoot, out = [];
+    a.play('wink');
+    const step = () => {
+      const b = r.getElementById('rightBase'), top = r.getElementById('rightTop');
+      out.push({ shape: b.getAttribute('data-shape'), lidY: +top.getAttribute('y') + 90 });
+      out.length < 240 ? requestAnimationFrame(step) : done(out);
+    };
+    requestAnimationFrame(step);
+  }));
+  const shaped = frames.filter(f => f.shape);
+  expect(shaped.length).toBeGreaterThan(5);
+  // A rounded outline (arcs), never the lids coming down over the eye.
+  for (const f of shaped) expect(f.shape).toContain('A');
+  for (const f of frames) expect(f.lidY).toBeLessThan(-30);
+  // At its thinnest the line is about 9 units thick.
+  const thinnest = Math.min(...shaped.map(f => 2 * +/A[-\d.]+ ([-\d.]+)/.exec(f.shape)[1]));
+  expect(thinnest).toBeGreaterThan(8);
+  expect(thinnest).toBeLessThan(10);
+  // And it is gone afterwards.
+  expect(frames.at(-1).shape).toBeNull();
+});

@@ -1166,7 +1166,18 @@ code, kbd {
 }
 /* Every other group on a faint band, so the four rows read apart. */
 .action-row:nth-child(odd) { background: rgba(255, 255, 255, 0.028); }
-.row-label { font-size: 11px; font-weight: 600; color: var(--faint); }
+.row-label {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--faint);
+  /* A short line between the group name and its buttons, so the name does
+     not read as one more expression. */
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  margin-block: 4px;
+}
 .row-btns { display: flex; flex-wrap: wrap; gap: clamp(4px, calc(1dvh - 3px), 8px); }
 .row-btns button {
   position: relative;

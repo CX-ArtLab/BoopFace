@@ -210,7 +210,8 @@ const NEW_FX = {
   wink: { zh: '挤眼', ms: WINK_MS, eyes: [[0, IDLE, 200]],
     motion: t => { const k = winkTilt(t); return { roll: 13 * k, yaw: 6 * k, gy: -.25 * Math.max(0, k), gx: .15 * Math.max(0, k) }; },
     // The blink keeps its own pace (not the head's), see winkLid.
-    post: (f, t, ms, fade = 1) => { const k = winkLid(ms) * fade; if (k > 0) squintEye(f, 'right', k); } },
+    post: (f, t, ms, fade = 1) => pinchEye(f, 'right', winkLid(ms) * fade),
+    cleanup: f => pinchEye(f, 'right', 0) },
   // Starts from normal eyes and pose. While it looks up to the left, chin
   // rising, the eyes narrow into the smug shape; then up to the right with the
   // head turning right, back to the left, and home. Eyes as high as thinking.
@@ -264,6 +265,20 @@ function squintEye(f, side, k, gap = 3.2) {
   const tY = -36 + (cy - gap - -36) * k, bY = 36 + (cy + gap - 36) * k;
   top.setAttribute('y', (tY - 90).toFixed(2)); top.setAttribute('height', '90'); top.setAttribute('transform', `rotate(0 0 ${tY.toFixed(2)})`);
   bottom.setAttribute('y', bY.toFixed(2)); bottom.setAttribute('height', '90'); bottom.setAttribute('transform', `rotate(0 0 ${bY.toFixed(2)})`);
+}
+
+// The wink: the whole eye flattens into a line with round ends (no lid
+// cutting in). Its outline goes from the eye's own ellipse (k 0) to a capsule
+// WINK_LINE units thick (k 1): a rounded rectangle whose corners shrink with it.
+const WINK_LINE = 9;
+function pinchEye(f, side, k) {
+  const b = f.shadowRoot.getElementById(side + 'Base'); if (!b) return;
+  if (!(k > 0)) { if (b.dataset.pinch) { b.removeAttribute('data-shape'); delete b.dataset.pinch; } return; }
+  const cy = +b.getAttribute('cy') || 0, a = +b.getAttribute('rx') || 27, ry = +b.getAttribute('ry') || 29;
+  const h = ry + (WINK_LINE / 2 - ry) * k, cx = a + (h - a) * k; // half height; corner width
+  const n = v => v.toFixed(2), x0 = -a, x1 = a, y0 = cy - h, y1 = cy + h;
+  b.setAttribute('data-shape', `M${n(x0 + cx)} ${n(y0)}H${n(x1 - cx)}A${n(cx)} ${n(h)} 0 0 1 ${n(x1)} ${n(cy)}A${n(cx)} ${n(h)} 0 0 1 ${n(x1 - cx)} ${n(y1)}H${n(x0 + cx)}A${n(cx)} ${n(h)} 0 0 1 ${n(x0)} ${n(cy)}A${n(cx)} ${n(h)} 0 0 1 ${n(x0 + cx)} ${n(y0)}Z`);
+  b.dataset.pinch = '1';
 }
 
 // Per-eye helpers on an official face's live SVG (run right after its draw).
