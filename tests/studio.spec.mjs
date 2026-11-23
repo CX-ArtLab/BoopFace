@@ -165,3 +165,28 @@ test('every expression group fits on one line, and saved skins are a star filter
   await star.click();
   await expect(page.locator('#skinEmptyText')).toContainText('Nothing saved yet');
 });
+
+test('the size slider resizes the 3D avatar while dragging, centred, up to 300 px or 60% of the stage', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/demo/?lang=zh-CN');
+  await ready(page);
+  const face = page.locator('#stageFace');
+  await expect.poll(() => face.evaluate(f => f.dataset.view)).toBe('3d');
+  await page.locator('#sizeTrigger').click();
+  const result = await page.evaluate(async () => {
+    const s = document.getElementById('sizeSlider'), f = document.getElementById('stageFace'), off = [];
+    for (let v = 170; v <= 330; v += 10) {
+      s.value = v; s.dispatchEvent(new Event('input', { bubbles: true }));
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      const a = f.getBoundingClientRect(), b = f.shadowRoot.querySelector('.view-3d').getBoundingClientRect();
+      off.push(Math.abs(a.width - b.width) + Math.abs((a.left + a.width / 2) - (b.left + b.width / 2)));
+    }
+    const st = document.getElementById('stageCanvas').getBoundingClientRect();
+    return { max: +s.max, size: f.getBoundingClientRect().width, worst: Math.max(...off), limit: Math.min(300, Math.min(st.width, st.height) * 0.6) };
+  });
+  expect(result.max).toBeLessThanOrEqual(300);
+  expect(result.max).toBeLessThanOrEqual(result.limit + 2);
+  expect(result.size).toBe(result.max);
+  // The 3D head follows each step and stays centred (one step of lag at most).
+  expect(result.worst).toBeLessThan(12);
+});

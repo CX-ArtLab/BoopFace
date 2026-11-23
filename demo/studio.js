@@ -358,9 +358,27 @@ function appliedEyeColor() {
 }
 
 function syncStageMinHeight() {
-  const minH = state.scene === 'chat' ? 260 : Math.round(state.size / 0.6);
-  app.style.setProperty('--stage-min-h', `${minH}px`);
+  app.style.setProperty('--stage-min-h', `${state.scene === 'chat' ? 260 : 280}px`);
 }
+
+// The largest avatar: 300 px, or 60% of the stage when that is smaller.
+const SIZE_MIN = 32, SIZE_CAP = 300;
+function maxStageSize() {
+  const r = $('stageCanvas').getBoundingClientRect();
+  const fit = Math.floor(Math.min(r.width, r.height) * 0.6 / 2) * 2;
+  return Math.max(SIZE_MIN, Math.min(SIZE_CAP, fit || SIZE_CAP));
+}
+function syncSizeLimit() {
+  const max = maxStageSize();
+  $('sizeSlider').max = String(max);
+  if (state.size > max) {
+    state.size = max;
+    stageFace.setAttribute('size', String(max));
+    updateSizeReadouts();
+    updateDevCode();
+  }
+}
+new ResizeObserver(() => syncSizeLimit()).observe($('stageCanvas'));
 
 function syncLookPreviewFace() {
   if (!lookPreviewFace || !lookPreviewStage) return;
@@ -597,13 +615,17 @@ $('sizeTrigger').addEventListener('click', e => {
   $('sizeTrigger').setAttribute('aria-expanded', String(next));
 });
 $('sizePopover').addEventListener('click', e => e.stopPropagation());
+// Dragging only resizes the stage avatar (no repaint of every face), so the
+// avatar follows the slider as it moves.
 $('sizeSlider').addEventListener('input', e => {
-  state.size = Number(e.target.value);
-  syncAllFaces();
+  state.size = Math.min(Number(e.target.value), maxStageSize());
+  stageFace.setAttribute('size', String(state.size));
+  updateSizeReadouts();
+  updateDevCode();
 });
 document.querySelectorAll('[data-size-stop]').forEach(btn => {
   btn.addEventListener('click', () => {
-    state.size = Number(btn.dataset.sizeStop);
+    state.size = Math.min(Number(btn.dataset.sizeStop), maxStageSize());
     syncAllFaces();
   });
 });

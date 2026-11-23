@@ -67,6 +67,7 @@ async function build(face, v, key) {
   host.className = 'view-3d'; host.setAttribute('aria-hidden', 'true');
   v.host.replaceWith(host); v.host = host;
   v.avatar = createLayeredAvatar(host, captured, { size, sideColors: await wallColors(face), squash: 'settle' });
+  v.size = size;
   v.avatar.setSquashGain(SQUASH_GAIN);
   v.avatar.setRoundEyes(() => (String(face.getAttribute('eye-style') || '').toLowerCase() === 'sharp' ? 0 : 4));
   v.key = key;
@@ -105,6 +106,12 @@ registerAvatarExtension({
       v.timer = setTimeout(() => build(this, v, key).finally(() => { if (v.building === key) v.building = null; }), v.avatar ? 150 : 0);
     }
     if (!v.avatar) return;
+    // Resized (a size slider being dragged): the head built for the old size is
+    // scaled to the new one at once, so it follows the drag and stays centred;
+    // the sharp rebuild comes once the size rests.
+    const width = this.getBoundingClientRect().width, fit = v.size && width ? width / v.size : 1;
+    const scale = Math.abs(fit - 1) > .001 ? `scale(${fit.toFixed(4)})` : '';
+    if (v.host.style.transform !== scale) { v.host.style.transformOrigin = '0 0'; v.host.style.transform = scale; }
     // Head turn: follows where the eyes look (the avatar's own look, which
     // already follows the pointer, wanders, or keeps still for an expression).
     const dt = Math.min(50, now - v.t); v.t = now;
