@@ -126,7 +126,10 @@
                     <span class="talk-head-face" id="talkHeadFaceSlot"></span>
                     <span class="talk-head-title" id="talkTitle">当前角色</span>
                   </div>
-                  <span class="talk-head-badge" id="talkHeadBadge">皮肤 #101</span>
+                  <div class="talk-head-end">
+                    <span class="talk-head-badge" id="talkHeadBadge">皮肤 #101</span>
+                    <button type="button" class="talk-head-link" id="talkAgentSettings" title="接口格式和每个状态的表情，在「代码 › 接入 AI」里">接入设置</button>
+                  </div>
                 </div>
                 <div class="talk-body" id="talkBody">
                   <div class="talk-thread" id="talkThread" aria-live="polite"></div>
@@ -569,19 +572,6 @@
 
       <!-- TAB 3: BEHAVIOR -->
       <div class="inspector-panel panel-scroll" data-panel="behavior" hidden>
-        <div class="insp-section" id="agentSection">
-          <div class="insp-head"><h3>接入 AI</h3><span class="insp-hint">对话场景和代码都按这里来</span></div>
-          <div class="agent-rows">
-            <div class="agent-row"><span>接口格式</span><div class="mini-seg" data-agent="format">
-              <button type="button" data-value="openai">OpenAI</button><button type="button" data-value="anthropic">Anthropic</button><button type="button" data-value="ai-sdk">AI SDK</button><button type="button" data-value="ag-ui">AG-UI</button></div></div>
-            <div class="agent-row"><span>思考时</span><div class="mini-seg" data-agent="thinking">
-              <button type="button" data-value="waiting-spin">旋转</button><button type="button" data-value="waiting-wrap">环绕</button><button type="button" data-value="waiting-wave">波动</button><button type="button" data-value="waiting-bloom">绽放</button><button type="button" data-value="waiting-cross">十字</button></div></div>
-            <div class="agent-row"><span>用工具时</span><div class="mini-seg" data-agent="tool">
-              <button type="button" data-value="waiting-wave">波动</button><button type="button" data-value="waiting-spin">旋转</button><button type="button" data-value="inspect">审视</button></div></div>
-            <div class="agent-row"><span>回复文字时</span><div class="mini-seg" data-agent="replying">
-              <button type="button" data-value="idle">正常</button><button type="button" data-value="keep">继续等待</button></div></div>
-          </div>
-        </div>
         <div class="insp-section">
           <div class="insp-head"><h3>内置物理交互</h3></div>
           <div class="switch-list">
@@ -665,6 +655,19 @@
           <button type="button" role="tab" aria-selected="false" data-dev-tab="agent">接入 AI</button>
           <button type="button" role="tab" aria-selected="false" data-dev-tab="events">Events <span class="event-badge" id="eventCount">0</span></button>
         </div>
+        <div class="insp-section agent-settings" id="agentSection" hidden>
+          <div class="insp-head"><h3>接入 AI</h3><span class="insp-hint">改一项，下面的代码和对话场景都跟着变</span></div>
+          <div class="agent-rows">
+            <div class="agent-row"><span>接口格式</span><div class="mini-seg" data-agent="format">
+              <button type="button" data-value="openai">OpenAI</button><button type="button" data-value="anthropic">Anthropic</button><button type="button" data-value="ai-sdk">AI SDK</button><button type="button" data-value="ag-ui">AG-UI</button></div></div>
+            <div class="agent-row"><span>思考时</span><div class="mini-seg" data-agent="thinking">
+              <button type="button" data-value="waiting-spin">旋转</button><button type="button" data-value="waiting-wrap">环绕</button><button type="button" data-value="waiting-wave">波动</button><button type="button" data-value="waiting-bloom">绽放</button><button type="button" data-value="waiting-cross">十字</button></div></div>
+            <div class="agent-row"><span>用工具时</span><div class="mini-seg" data-agent="tool">
+              <button type="button" data-value="waiting-wave">波动</button><button type="button" data-value="waiting-spin">旋转</button><button type="button" data-value="inspect">审视</button></div></div>
+            <div class="agent-row"><span>回复文字时</span><div class="mini-seg" data-agent="replying">
+              <button type="button" data-value="idle">正常</button><button type="button" data-value="keep">继续等待</button></div></div>
+          </div>
+        </div>
 
         <div class="dev-quick-row" id="devQuickRow">
           <div class="dev-quick-left">
@@ -682,8 +685,8 @@
         </div>
 
         <div class="build-stats" id="codeBuildStats">
-          <div><strong>45 KB</strong><span>Lite 构建（纯色全动作）</span></div>
-          <div><strong>113 KB</strong><span>Full 构建（按需加载 188 皮肤）</span></div>
+          <div><strong>92 KB</strong><span>Lite 构建（纯色全动作）</span></div>
+          <div><strong>104 KB</strong><span>Full 构建（按需加载 188 皮肤）</span></div>
         </div>
 
         <div class="code-events-bar" id="codeEventsBar" hidden>

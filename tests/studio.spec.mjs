@@ -86,13 +86,21 @@ test('the chat scene runs a reply through connectAgent', async ({ page }) => {
   await expect(status).toHaveAttribute('data-state', /done|failed|asking/, { timeout: 15000 });
 });
 
-test('the code tab shows the Connect AI code for the chosen format', async ({ page }) => {
+test('Connect AI settings sit in Code › Connect AI above the code they change; the chat opens them', async ({ page }) => {
   await page.goto('/demo/?lang=zh-CN');
   await ready(page);
   await page.locator('[data-inspector-tab="behavior"]').click();
+  await expect(page.locator('#agentSection')).toBeHidden();
+  // The old Connect AI address opens the chat and these settings.
+  await page.goto('/demo/?lang=zh-CN#agent');
+  await ready(page);
+  await expect(page.locator('#agentSection')).toBeVisible();
+  // From the chat's own button too.
+  await page.locator('[data-inspector-tab="look"]').click();
+  await expect(page.locator('#agentSection')).toBeHidden();
+  await page.locator('#talkAgentSettings').click();
+  await expect(page.locator('#agentSection')).toBeVisible();
   await page.locator('[data-agent="format"] [data-value="anthropic"]').click();
-  await page.locator('[data-inspector-tab="code"]').click();
-  await page.locator('[data-dev-tab="agent"]').click();
   await expect(page.locator('#devCode')).toContainText("import Anthropic from '@anthropic-ai/sdk';");
   await expect(page.locator('#devCode')).toContainText('connectAgent(avatar)');
 });

@@ -1048,6 +1048,13 @@ $('voiceMuteBtn').addEventListener('click', () => {
 });
 
 /* Inspector Tabs & Skin Search */
+// Connect AI's settings live in Code › Connect AI, above the code they change.
+function openAgentSettings() {
+  setInspectorTab('code');
+  document.querySelector('[data-dev-tab="agent"]')?.click();
+}
+$('talkAgentSettings').addEventListener('click', openAgentSettings);
+
 function setInspectorTab(name) {
   state.inspectorTab = name;
   if (name !== 'code') lastNonCodeTab = name;
@@ -2398,7 +2405,9 @@ document.querySelectorAll('[data-dev-tab]').forEach(tab => {
     state.devTab = tab.dataset.devTab;
     document.querySelectorAll('[data-dev-tab]').forEach(el => el.setAttribute('aria-selected', String(el === tab)));
     const isEvents = state.devTab === 'events';
-    $('devQuickRow').hidden = isEvents;
+    // Connect AI: the settings sit above its code, in this tab only.
+    $('agentSection').hidden = state.devTab !== 'agent';
+    $('devQuickRow').hidden = isEvents || state.devTab === 'agent';
     $('devCodePre').hidden = isEvents;
     $('codeActionsRow').hidden = isEvents;
     $('codeBuildStats').hidden = isEvents;
@@ -2639,7 +2648,7 @@ scheduleStageHintsLayout();
 function openFromHash() {
   const hash = location.hash.slice(1);
   if (hash === 'skins') setInspectorTab('skins');
-  else if (hash === 'agent') { setScene('chat'); setInspectorTab('behavior'); }
+  else if (hash === 'agent') { setScene('chat'); openAgentSettings(); }
 }
 openFromHash();
 addEventListener('hashchange', openFromHash);

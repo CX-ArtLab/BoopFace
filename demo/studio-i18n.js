@@ -94,7 +94,6 @@ const EN = {
 "审视": "Inspect",
 "室内设计师": "Interior designer",
 "对话场景": "Chat scene",
-"对话场景和代码都按这里来": "Used by the chat scene and the code",
 "对话窗口主题": "Chat window theme",
 "对话窗口缩放": "Chat window zoom",
 "对话角色列表": "Chat characters",
@@ -349,6 +348,9 @@ const EN = {
 "材质与图案": "Materials",
 "还没有收藏。选一款皮肤，点上方的「收藏」，它就会出现在这里。": "Nothing saved yet. Pick a skin and click Save above; it will show up here.",
 "眼睛透出背后的舞台背景（有质感眼睛的皮肤不能用）": "The eyes show the stage behind them (not on skins whose eyes are part of their design)",
+"改一项，下面的代码和对话场景都跟着变": "Change one and the code below and the chat follow",
+"接入设置": "Connect settings",
+"接口格式和每个状态的表情，在「代码 › 接入 AI」里": "API format and the expression for each state, in Code › Connect AI",
 "再点可互换": "click again to swap",
 "点击复制": "click to copy"
 };

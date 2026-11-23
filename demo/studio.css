@@ -641,6 +641,20 @@ code, kbd {
 .talk-head-face { display: none; width: var(--talk-head-face); height: var(--talk-head-face); place-items: center; flex: none; }
 .talk[data-avatar-pos="header"] .talk-head-face { display: grid; }
 .talk-head-title { font-size: var(--talk-title-fs); font-weight: 600; color: var(--w-ink); }
+.talk-head-end { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.talk-head-link {
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--w-line);
+  background: transparent;
+  font-size: var(--talk-badge-fs);
+  color: var(--w-muted);
+  white-space: nowrap;
+  transition: background-color 0.14s, color 0.14s;
+}
+.talk-head-link:hover { background: var(--w-hover); color: var(--w-ink, inherit); }
+/* Inside the code panel the Connect AI settings drop their own card. */
+.code-panel .agent-settings { padding: 2px 2px 4px; border: 0; background: none; border-radius: 0; }
 .talk-head-badge {
   padding: 2px 9px;
   border-radius: 999px;
