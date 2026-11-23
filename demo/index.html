@@ -267,13 +267,15 @@
                   <button type="button" data-action="input" title="avatar.play('input')">输入</button>
                   <button type="button" data-action="sleep" title="avatar.play('sleep')">睡着</button>
                   <button type="button" data-action="wake" title="avatar.play('wake')">醒来</button>
-                  <button type="button" data-action="think" data-new="true" title="avatar.play('think')">思考</button>
-                  <button type="button" data-action="ponder" data-new="true" title="avatar.play('ponder')">沉思</button>
+                  <button type="button" data-action="observe" data-new="true" title="avatar.play('observe')">观察</button>
+                  <button type="button" data-action="random" title="avatar.play('random')">随机</button>
                 </div>
               </div>
               <div class="action-row">
                 <span class="row-label">等待</span>
                 <div class="row-btns">
+                  <button type="button" data-action="think" data-new="true" title="avatar.play('think')">思考</button>
+                  <button type="button" data-action="ponder" data-new="true" title="avatar.play('ponder')">沉思</button>
                   <button type="button" data-action="waiting-spin" title="avatar.startWaiting({ variant: 'spin' })">旋转</button>
                   <button type="button" data-action="waiting-wrap" title="avatar.startWaiting({ variant: 'wrap' })">滚动</button>
                   <button type="button" data-action="waiting-wave" title="avatar.startWaiting({ variant: 'wave' })">波动</button>
@@ -288,11 +290,11 @@
                   <button type="button" data-action="affirm" title="avatar.play('affirm')">肯定</button>
                   <button type="button" data-action="success" title="avatar.play('success')">成功</button>
                   <button type="button" data-action="failure" title="avatar.play('failure')">失败</button>
+                  <button type="button" data-action="refuse" title="avatar.play('refuse')">拒绝</button>
                   <button type="button" data-action="inspect" title="avatar.play('inspect')">审视</button>
                   <button type="button" data-action="wary" data-new="true" title="avatar.play('wary')">警惕</button>
                   <button type="button" data-action="bow" data-new="true" title="avatar.play('bow')">鞠躬</button>
                   <button type="button" data-action="shake" data-new="true" title="avatar.play('shake')">摇头</button>
-                  <button type="button" data-action="observe" data-new="true" title="avatar.play('observe')">观察</button>
                 </div>
               </div>
               <div class="action-row">
@@ -301,8 +303,6 @@
                   <button type="button" data-action="love" title="avatar.play('love')">喜欢</button>
                   <button type="button" data-action="surprise" title="avatar.play('surprise')">惊讶</button>
                   <button type="button" data-action="angry" title="avatar.play('angry')">生气</button>
-                  <button type="button" data-action="refuse" title="avatar.play('refuse')">拒绝</button>
-                  <button type="button" data-action="random" title="avatar.play('random')">随机</button>
                   <button type="button" data-action="smug" data-new="true" title="avatar.play('smug')">得意</button>
                   <button type="button" data-action="wink" data-new="true" title="avatar.play('wink')">挤眼</button>
                   <button type="button" data-action="dizzy" data-new="true" title="avatar.play('dizzy')">眩晕</button>
@@ -452,9 +452,9 @@
         <div class="insp-section">
           <div class="insp-head">
             <h3>色彩方案</h3>
-            <span class="scheme-name-hint" id="paletteCaption">悬停预览 · 18 套</span>
+            <span class="scheme-name-hint" id="paletteCaption">悬停预览 · 22 套</span>
           </div>
-          <div class="scheme-grid-9" id="paletteGrid"></div>
+          <div class="scheme-grid" id="paletteGrid"></div>
           <div class="saved-row" id="savedPaletteRow" hidden aria-label="已收藏配色"></div>
         </div>
 
@@ -474,7 +474,7 @@
             </button>
             <input type="number" id="roundnessInput" class="roundness-input" min="0" max="100" step="1" value="50" aria-label="头部圆度数值">
           </div>
-          <div class="switch-list">
+          <div class="switch-list has-divider">
             <label class="switch-row" title="控制顶部球形天线显隐">
               <span class="switch-row-lead">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5.5" r="2.5"/><path d="M12 8v5"/><rect x="6" y="13" width="12" height="7" rx="3"/></svg>
@@ -547,7 +547,7 @@
 
           <div class="skin-grid" id="skinGrid" role="listbox" aria-label="选择皮肤"></div>
           <div class="skin-empty" id="skinEmpty" hidden>
-            <p>未找到匹配的皮肤</p>
+            <p id="skinEmptyText">未找到匹配的皮肤</p>
             <button type="button" class="mini-btn" id="clearSkinSearch">查看全部</button>
           </div>
 

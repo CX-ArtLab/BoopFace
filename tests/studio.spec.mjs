@@ -136,15 +136,32 @@ test('the eye colour row paints the real eyes, turns see-through off, and is gre
   await expect(page.locator('#eyeThroughToggle')).toBeChecked();
   await page.locator('#eyeDotsRow [data-slot-idx="0"]').click();
   await expect(page.locator('#eyeThroughToggle')).not.toBeChecked();
-  await expect.poll(() => face.evaluate(f => f.getAttribute('eye-color'))).toBe('#2bd67b');
+  await expect.poll(() => face.evaluate(f => f.getAttribute('eye-color'))).toBe('#ff3b30');
   await page.locator('[data-inspector-tab="code"]').click();
   await page.locator('[data-dev-tab="html"]').click();
-  await expect(page.locator('#devCode')).toContainText('eye-color="#2bd67b"');
+  await expect(page.locator('#devCode')).toContainText('eye-color="#ff3b30"');
   // Swapping head and background leaves the eyes alone.
   await page.locator('[data-inspector-tab="look"]').click();
   await page.locator('#swapColorsBtn').click();
-  await expect.poll(() => face.evaluate(f => f.getAttribute('eye-color'))).toBe('#2bd67b');
+  await expect.poll(() => face.evaluate(f => f.getAttribute('eye-color'))).toBe('#ff3b30');
   // Auto gives the avatar its own eyes back.
   await page.locator('#eyeDotsRow [data-eye-auto]').click();
   await expect.poll(() => face.evaluate(f => f.getAttribute('eye-color'))).toBeNull();
+});
+
+test('every expression group fits on one line, and saved skins are a star filter with a placeholder', async ({ page }) => {
+  for (const [width, height] of [[1440, 900], [1025, 700]]) {
+    await page.setViewportSize({ width, height });
+    for (const lang of ['zh-CN', 'en']) {
+      await page.goto(`/demo/?lang=${lang}`);
+      await ready(page);
+      const lines = await page.evaluate(() => [...document.querySelectorAll('#actionGroups .row-btns')].map(r => new Set([...r.children].map(c => Math.round(c.getBoundingClientRect().top))).size));
+      expect(lines, `${lang} ${width}`).toEqual([1, 1, 1, 1]);
+    }
+  }
+  await page.locator('[data-inspector-tab="skins"]').click();
+  const star = page.locator('#skinFilters [data-filter="saved"]');
+  await expect(star).toHaveText('');
+  await star.click();
+  await expect(page.locator('#skinEmptyText')).toContainText('Nothing saved yet');
 });

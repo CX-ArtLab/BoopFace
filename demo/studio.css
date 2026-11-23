@@ -1155,13 +1155,17 @@ code, kbd {
   box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.16);
 }
 
-.action-groups { display: grid; gap: clamp(5px, calc(2.4dvh - 11px), 14px); }
+.action-groups { display: grid; gap: clamp(2px, calc(1.2dvh - 6px), 6px); container-type: inline-size; }
 .action-row {
   display: grid;
   grid-template-columns: 42px minmax(0, 1fr);
   align-items: center;
   gap: 8px;
+  padding: clamp(2px, calc(0.6dvh - 1px), 5px) 8px;
+  border-radius: 10px;
 }
+/* Every other group on a faint band, so the four rows read apart. */
+.action-row:nth-child(odd) { background: rgba(255, 255, 255, 0.028); }
 .row-label { font-size: 11px; font-weight: 600; color: var(--faint); }
 .row-btns { display: flex; flex-wrap: wrap; gap: clamp(4px, calc(1dvh - 3px), 8px); }
 .row-btns button {
@@ -1173,6 +1177,12 @@ code, kbd {
   font-size: 12px;
   color: #b4b4b4;
   transition: background-color 0.14s, border-color 0.14s, color 0.14s, box-shadow 0.14s;
+}
+/* A narrow dock keeps every group on one line: tighter buttons. */
+@container (max-width: 600px) {
+  .action-row { grid-template-columns: 34px minmax(0, 1fr); gap: 6px; padding-inline: 6px; }
+  .row-btns { gap: 3px; }
+  .row-btns button { padding-inline: 6px; font-size: 11.5px; }
 }
 .row-btns button[data-new="true"]::after {
   content: "";
@@ -1714,7 +1724,13 @@ code, kbd {
   stroke-linejoin: round;
 }
 
-.skin-filters { display: flex; flex-wrap: wrap; gap: 5px; padding: 12px 14px 0; }
+.skin-filters { display: flex; flex-wrap: nowrap; gap: 5px; padding: 12px 14px 0; overflow-x: auto; scrollbar-width: none; }
+.skin-filters::-webkit-scrollbar { display: none; }
+.skin-filters button { flex: none; white-space: nowrap; }
+.skin-filters .skin-filter-star { display: grid; place-items: center; padding: 5px 8px; }
+.skin-filters .skin-filter-star svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }
+.skin-filters .skin-filter-star[aria-pressed="true"] svg { fill: currentColor; }
+.skin-empty p { max-width: 220px; margin: 0 auto; line-height: 1.6; }
 .skin-filters button {
   padding: 5px 10px;
   border-radius: 7px;
@@ -1995,9 +2011,9 @@ code, kbd {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.scheme-grid-9 {
+.scheme-grid {
   display: grid;
-  grid-template-columns: repeat(9, 1fr);
+  grid-template-columns: repeat(11, 1fr);
   justify-items: center;
   align-items: center;
   gap: 10px 4px;
@@ -2518,6 +2534,9 @@ input:checked + .switch-track::after {
   border-bottom: 1px solid var(--line);
 }
 .switch-list .switch-row:first-child { padding-top: 2px; }
+/* A line above the switches, like the one above the see-through eyes. */
+.switch-list.has-divider { margin-top: 12px; border-top: 1px solid var(--line); }
+.switch-list.has-divider .switch-row:first-child { padding-top: 12px; }
 .switch-list .switch-row:last-child { border-bottom: 0; padding-bottom: 2px; }
 .switch-row-lead {
   display: flex;

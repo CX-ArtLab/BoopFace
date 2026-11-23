@@ -15,23 +15,28 @@ import {
 
 await customElements.whenDefined('boop-face');
 
+// Theme palettes, named by their colours only (no brands).
 const PALETTES = [
-  { id: 'claude', bg: '#faf9f5', head: '#d97757', name: 'Claude' },
-  { id: 'chatgpt', bg: '#ffffff', head: '#0fa578', name: 'ChatGPT' },
-  { id: 'comfyui', bg: '#211927', head: '#f2ff59', name: 'ComfyUI' },
-  { id: 'ubuntu', bg: '#e95420', head: '#ffffff', name: 'Ubuntu' },
-  { id: 'dribbble', bg: '#ea4c89', head: '#ffffff', name: 'Dribbble' },
-  { id: 'discord', bg: '#5865f2', head: '#ffffff', name: 'Discord' },
-  { id: 'telegram', bg: '#229ed9', head: '#ffffff', name: 'Telegram' },
-  { id: 'snapchat', bg: '#fffc00', head: '#000000', name: 'Snapchat' },
-  { id: 'youtube', bg: '#ffffff', head: '#ff0000', name: 'YouTube' },
-  { id: 'netflix', bg: '#141414', head: '#e50914', name: 'Netflix' },
-  { id: 'spotify', bg: '#121212', head: '#1ed760', name: 'Spotify' },
-  { id: 'lakers', bg: '#fdb927', head: '#552583', name: '湖人' },
-  { id: 'warriors', bg: '#1d428a', head: '#ffc72c', name: '勇士' },
-  { id: 'celtics', bg: '#007a33', head: '#ffffff', name: '凯尔特人' },
-  { id: 'barca', bg: '#a50044', head: '#edbb00', name: '巴萨' },
-  { id: 'mancity', bg: '#6cabdd', head: '#1c2c5b', name: '曼城' },
+  { id: 'terracotta', bg: '#faf9f5', head: '#d97757', name: '陶土' },
+  { id: 'mint', bg: '#ffffff', head: '#0fa578', name: '薄荷' },
+  { id: 'neon', bg: '#211927', head: '#f2ff59', name: '荧光' },
+  { id: 'tangerine', bg: '#e95420', head: '#ffffff', name: '暖橙' },
+  { id: 'blossom', bg: '#ea4c89', head: '#ffffff', name: '樱粉' },
+  { id: 'indigo', bg: '#5865f2', head: '#ffffff', name: '靛蓝' },
+  { id: 'sky', bg: '#229ed9', head: '#ffffff', name: '天蓝' },
+  { id: 'lemon', bg: '#fffc00', head: '#000000', name: '柠檬' },
+  { id: 'red', bg: '#ffffff', head: '#ff0000', name: '正红' },
+  { id: 'crimson-night', bg: '#141414', head: '#e50914', name: '夜红' },
+  { id: 'night-green', bg: '#121212', head: '#1ed760', name: '夜绿' },
+  { id: 'purple-gold', bg: '#fdb927', head: '#552583', name: '紫金' },
+  { id: 'blue-gold', bg: '#1d428a', head: '#ffc72c', name: '蓝金' },
+  { id: 'forest', bg: '#007a33', head: '#ffffff', name: '森绿' },
+  { id: 'garnet-gold', bg: '#a50044', head: '#edbb00', name: '酒红金' },
+  { id: 'sky-navy', bg: '#6cabdd', head: '#1c2c5b', name: '天空藏青' },
+  { id: 'latte', bg: '#f3e9dc', head: '#6f4e37', name: '拿铁' },
+  { id: 'lavender', bg: '#ece6ff', head: '#7c5cff', name: '薰衣草' },
+  { id: 'coral', bg: '#ff6f61', head: '#fff4e6', name: '珊瑚' },
+  { id: 'deep-sea', bg: '#0b2545', head: '#8ecae6', name: '深海' },
 ];
 
 const OFFICIAL_BOTS = [
@@ -144,7 +149,7 @@ const EYE_PARTS = ['leftBase', 'rightBase', 'leftInputBase', 'rightInputBase'];
 const DEFAULT_FLAT = { bg: '#141416', head: '#ededed', eyeThrough: true };
 const SAVED_PALETTES_KEY = 'boopface:studio:saved-palettes';
 const SAVED_SKINS_KEY = 'boopface:studio:saved-skins';
-const SLOTS_STORAGE_KEY = 'boopface:studio:color-slots';
+const SLOTS_STORAGE_KEY = 'boopface:studio:color-slots-v2'; // v2: the standard colour wheel
 const SEEN_NEW_ACTIONS_KEY = 'boopface:studio:seen-new-actions';
 const MAX_SAVED_PALETTES = 9;
 const DEFAULT_BW_PRESETS = [
@@ -157,11 +162,10 @@ const LOCKED_DOTS = {
   // The eye row starts with "auto" (the avatar's own eyes), then black.
   eye: ['#08090b'],
 };
-const DEFAULT_SLOTS = {
-  head: ['#d97757', '#f59e0b', '#10b981', '#06b6d4', '#38bdf8', '#a855f7', '#f43f5e'],
-  bg: ['#000000', '#0f172a', '#1e1b2e', '#14261c', '#2a1815', '#faf9f5', '#f5e6d3'],
-  eye: ['#2bd67b', '#22d3ee', '#38bdf8', '#a78bfa', '#f472b6', '#f59e0b', '#ef4444'],
-};
+// One standard colour wheel for head, background and eyes (the common system
+// palette: red, orange, yellow, green, cyan, blue, purple).
+const COLOR_WHEEL = ['#ff3b30', '#ff9500', '#ffcc00', '#34c759', '#32ade6', '#007aff', '#af52de'];
+const DEFAULT_SLOTS = { head: [...COLOR_WHEEL], bg: [...COLOR_WHEEL], eye: [...COLOR_WHEEL] };
 const CP_QUICK_COLORS = ['#3478f6', '#9b7bf7', '#ea6aa8', '#e65555', '#ea8b42', '#e5b93c', '#66aa58', '#16a085'];
 const CP_MODES = ['hex', 'rgb', 'hsl'];
 const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
@@ -1060,12 +1064,17 @@ const thumbObserver = new IntersectionObserver(entries => {
 
 function renderFilters() {
   const container = $('skinFilters');
-  if (state.skinCategory === 'saved' && !savedSkins.length) state.skinCategory = 'featured';
-  const items = savedSkins.length ? [['saved', '收藏'], ...filters] : filters;
+  // Saved is always there, as a star only; empty until something is saved.
+  const items = [...filters, ['saved', '收藏']];
   container.replaceChildren(...items.map(([id, label]) => {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.textContent = label;
+    if (id === 'saved') {
+      btn.className = 'skin-filter-star';
+      btn.title = '收藏';
+      btn.setAttribute('aria-label', '收藏');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 3.5 14.8 9.2 21 10.1 16.5 14.5 17.6 20.7 12 17.8 6.4 20.7 7.5 14.5 3 10.1 9.2 9.2 12 3.5"/></svg>';
+    } else btn.textContent = label;
     btn.dataset.filter = id;
     btn.setAttribute('aria-pressed', String(id === state.skinCategory));
     btn.addEventListener('click', () => {
@@ -1129,6 +1138,10 @@ function renderSkinGrid() {
   skinGrid.replaceChildren(frag);
   skinGrid.hidden = !matches.length;
   $('skinEmpty').hidden = Boolean(matches.length);
+  // Nothing saved yet: a placeholder instead of "no match".
+  const noSaved = !matches.length && cat === 'saved' && !q;
+  $('skinEmptyText').textContent = noSaved ? '还没有收藏。选一款皮肤，点上方的「收藏」，它就会出现在这里。' : '未找到匹配的皮肤';
+  $('clearSkinSearch').hidden = noSaved;
   $('skinResultLabel').textContent = q
     ? '搜索结果'
     : cat === 'saved'
@@ -1544,8 +1557,8 @@ function applyPalettePair(bg, head, currentlyActive) {
 
 function renderPalettes() {
   const grid = $('paletteGrid');
-  const defaultCaption = '悬停预览 · 18 套';
   const presets = [...DEFAULT_BW_PRESETS, ...PALETTES];
+  const defaultCaption = `悬停预览 · ${presets.length} 套`;
   grid.replaceChildren(...presets.map(p => {
     const btn = document.createElement('button');
     btn.type = 'button';
