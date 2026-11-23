@@ -1,5 +1,4 @@
 import BoopFace, { registerAvatarExtension } from './boopface-extension-host.js';
-import { captureSkin, createLayeredAvatar } from './boopface-3d-layers.js';
 import { newExpressionPose } from './boopface-new-expressions.js';
 import { bodyMotionPose } from './boopface-body-motion.js';
 import { petPose } from './boopface-petting.js';
@@ -51,8 +50,14 @@ function view3d(face) {
   return v;
 }
 
+// The 3D renderer is downloaded the first time a head turns 3D, so flat pages never load it.
+let layers = null;
+const loadLayers = () => (layers ||= import('./boopface-3d-layers.js'));
+
 async function build(face, v, key) {
   const token = (v.token || 0) + 1; v.token = token;
+  const { captureSkin, createLayeredAvatar } = await loadLayers();
+  if (token !== v.token || !face.isConnected) return;
   const size = Math.round(face.getBoundingClientRect().width) || 112;
   const captured = await captureSkin(face.getAttribute('skin'), face._headRoundness ?? 50, {
     color: face.getAttribute('color'), eyeColor: face.getAttribute('eye-color'), eyeStyle: face.getAttribute('eye-style'),
