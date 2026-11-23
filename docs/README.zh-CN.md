@@ -8,7 +8,7 @@
 
 [English](https://github.com/CX-ArtLab/boopface/blob/main/README.md) | [简体中文](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.zh-CN.md) | [Español](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.es.md) | [Русский](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.ru.md) | [Français](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.fr.md) | [Português](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.pt.md) | [Deutsch](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.de.md) | [日本語](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.ja.md) | [한국어](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.ko.md) | [繁體中文](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.zh-TW.md)
 
-![Version](https://img.shields.io/badge/version-v0.8.1-111111?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-0A7EA4?style=flat-square)](../LICENSE) [![CI](https://github.com/CX-ArtLab/boopface/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/CX-ArtLab/boopface/actions/workflows/validate.yml) [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-FF5E5B?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/P0E625WIOI)
+![Version](https://img.shields.io/badge/version-v0.9.0-111111?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-0A7EA4?style=flat-square)](../LICENSE) [![CI](https://github.com/CX-ArtLab/boopface/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/CX-ArtLab/boopface/actions/workflows/validate.yml) [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-FF5E5B?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/P0E625WIOI)
 
 ![Vanilla JavaScript](https://img.shields.io/badge/Vanilla-JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=000) ![Web Component](https://img.shields.io/badge/Web-Native%20Component-5A67D8?style=flat-square) ![SVG](https://img.shields.io/badge/Rendering-SVG-FFB13B?style=flat-square&logo=svg&logoColor=000) ![Zero Dependencies](https://img.shields.io/badge/Dependencies-0-2EA44F?style=flat-square) ![Embedded](https://img.shields.io/badge/Embedded-ESP32%20%7C%20STM32%20%7C%20Pico-E7352C?style=flat-square&logo=espressif&logoColor=white)
 
@@ -18,7 +18,7 @@ BoopFace 是一个轻量、富表现力的机器人头像组件，适用于 AI �
 
 也可用于桌面伙伴、虚拟宠物、数字吉祥物、聊天机器人头像等交互角色，或作为 AG-UI 风格 Agent 界面的视觉反馈层。
 
-使用 SVG 与原生 JavaScript 构建，是一个原生 Web Component，运行时零依赖，MIT 开源。另有 188 款[皮肤](#皮肤--07-新功能)可以随时换上。
+使用 SVG 与原生 JavaScript 构建，是一个原生 Web Component，运行时零依赖，MIT 开源。可以平面显示，也可以切换成会真正转动的[立体 3D 头像](#立体-3d-头像--09-新增)；另有 188 款[皮肤](#皮肤--07-新功能)可以随时换上。
 
 <p align="center">
   <img src="../assets/demo/boopface-demo.gif" alt="BoopFace 交互动画演示" width="560">
@@ -36,7 +36,9 @@ BoopFace 是一个轻量、富表现力的机器人头像组件，适用于 AI �
 
 ## 在线 Demo
 
-[打开交互 Demo](https://cx-artlab.github.io/BoopFace/?lang=zh-CN) · [逛逛皮肤美术馆](https://cx-artlab.github.io/BoopFace/skins.html?lang=zh-CN) · [AI 接入演示](https://cx-artlab.github.io/BoopFace/agent.html?lang=zh-CN)\
+0.9 起，演示、皮肤和接入 AI 合并成一个页面：Studio。舞台可以切换平面或立体，旁边能试所有表情和语音套件、换皮肤和颜色、调整行为设置、和接入了 AI 的头像聊天，并随时复制当前效果的代码。
+
+[打开 Studio](https://cx-artlab.github.io/BoopFace/?lang=zh-CN) · [挑选皮肤](https://cx-artlab.github.io/BoopFace/?lang=zh-CN#skins) · [试试接入 AI](https://cx-artlab.github.io/BoopFace/?lang=zh-CN#agent)\
 [打开嵌入式设备模拟器](https://cx-artlab.github.io/BoopFace/hardware/?lang=zh-CN)（可预览 32 种常用嵌入式设备屏幕）
 
 ## 特点
@@ -44,12 +46,15 @@ BoopFace 是一个轻量、富表现力的机器人头像组件，适用于 AI �
 - 原生 Web Component
 - SVG 渲染 + 原生 JavaScript
 - 运行时零依赖
+- 平面或立体 3D 两种显示，3D 头像会真正转向指针
 - 自动眨眼与轻微待机动作
-- 眼睛跟随指针与头部惯性运动
+- 眼睛跟随指针与头部惯性运动；每个表情都带着整个头一起动
+- 抚摸额头，头像会闭上眼睛蹭过来
 - 果冻式局部拖拽形变与弹性恢复
 - 按住挤压与可拖动的弹簧天线交互
 - 可通过程序控制 Agent 状态与表情
-- 支持 waiting、success、failure、affirm、wary、inspect、angry、refuse、love 等表情反馈
+- 30 多个表情：waiting、success、failure、affirm、wary、inspect、angry、refuse、love，以及 0.9 新增的鞠躬、观察、思考、眨眼、得意、眩晕、弹跳等
+- 圆角眼睛，可自选眼睛颜色，也可以让眼睛透出背景
 - 支持减少动态效果
 - 可配置自动睡眠行为
 - 可调头部圆角
@@ -109,9 +114,11 @@ import 'boopface/lite';
 
 | 版本 | 大小 |
 | --- | --- |
-| 精简版 `boopface/lite` | 约 45 KB |
-| 完整版，页面没用皮肤 | 约 56 KB，皮肤绘制代码不会下载 |
-| 完整版，用到皮肤 | 约 113 KB，多出的部分在第一次用到皮肤时才下载 |
+| 精简版 `boopface/lite` | 约 89 KB |
+| 完整版，页面没用皮肤 | 约 102 KB，皮肤绘制代码不会下载 |
+| 完整版，用到皮肤 | 约 158 KB，多出的部分在第一次用到皮肤时才下载 |
+
+两个版本切到 3D 时都会再下载约 19 KB 的立体渲染代码。
 
 ## 基础用法
 
@@ -135,6 +142,8 @@ avatar.reset();
 | `waiting-wrap` | 双眼从一侧转出、另一侧回来 | 等待回复 |
 | `waiting-wave` | 双眼轮流上下起伏 | 等待回复 |
 | `waiting-bloom` | 两个交叉的椭圆像花一样呼吸、转动 | 等待回复；专为语音对话设计 |
+| `waiting-cross` | 两个交叉的椭圆停在 × 上，每次转四分之一圈，胖瘦交替 | 等待回复；也适合语音对话 |
+| `shape-wait` | 双眼合成一个形状，在圆和圆角方之间转换 | 等待回复 |
 | `input` | 双眼变成闪烁的输入光标 | 用户正在输入 |
 | `listening` | 两只眼睛合成一个圆，随声音起伏 | 语音对话：用户在说话 |
 | `speaking` | 眼睛分回两只，跟着回答伸缩 | 语音对话：AI 在回答 |
@@ -143,15 +152,25 @@ avatar.reset();
 | `failure` | 低头、眼睛下垂 | 任务或连接失败 |
 | `wary` | 侧头、上下打量 | 操作需要用户确认 |
 | `inspect` | 眯眼上下扫视 | 检查、审核内容 |
+| `observe` | 睁大眼睛凑近，左右上下看一圈 | 仔细查看、读取内容 |
+| `think` | 抬眼往上方看，慢慢转向另一边 | 想一想再回答 |
+| `ponder` | 低头往下看，左右看看再抬头 | 认真考虑、权衡 |
+| `bow` | 深深点一下头，停一下再抬起 | 道谢、致歉、问候 |
 | `angry` | 压低眼睛瞪着 | 内容被拦截 |
 | `refuse` | 摇头 | 做不到或不愿做 |
+| `shake` | 眼睛先转向一边，头跟着转开 | 不认同、不想看 |
 | `surprise` | 睁大眼睛 | 出乎意料 |
 | `love` | 双眼合成跳动的爱心 | 感谢、喜欢 |
+| `wink` | 歪头，眨一只眼 | 打招呼、开玩笑 |
+| `smug` | 眯起眼睛，抬头左右看 | 得意、调皮 |
+| `bounce` | 像皮球一样连续弹跳 | 开心、庆祝 |
+| `smug-bounce` | 笑着弹两下，左右歪头 | 小小的得意 |
+| `dizzy` | 双眼反向绕圈，一大一小 | 晕了、信息太多 |
 | `random` | 双眼像老虎机一样滚动 | 随机抽取、逗趣 |
 | `sleep` | 闭眼睡觉 | 长时间无操作 |
 | `wake` | 睁眼醒来 | 重新有动静 |
 
-等待类动作用 `play()` 播放一轮；用 `startWaiting({ variant: 'spin' | 'wrap' | 'wave' | 'bloom' })` 会一直循环，直到播放其他动作或调用 `stopWaiting()`。
+等待类动作用 `play()` 播放一轮；用 `startWaiting({ variant: 'spin' | 'wrap' | 'wave' | 'bloom' | 'cross' })` 会一直循环，直到播放其他动作或调用 `stopWaiting()`。
 
 0.5 版的旧名字（`send`、`warning`、`error`、`blocked`、`slot` 等）在 1.0 之前仍可使用，但会在控制台提示改名，详见[升级对照表](../CHANGELOG.md#upgrading-from-05x)。
 
@@ -179,7 +198,9 @@ try {
 ```html
 <boop-face
   size="160"
+  view="3d"
   color="#08090b"
+  eye-color="#2bd67b"
   auto-sleep="30000"
   wake-on="activity"
   motion="auto">
@@ -189,7 +210,10 @@ try {
 | 属性 | 用途 |
 | --- | --- |
 | `size` | 头像像素尺寸 |
+| `view` | `2d`（默认，平面）或 `3d`（立体） |
 | `color` | 头像主色 |
+| `eye-color` | 眼睛颜色；`transparent` 让眼睛透出背景 |
+| `eye-style` | 默认圆角眼睛；设为 `sharp` 恢复直角切口 |
 | `auto-sleep` | 自动睡眠前的空闲时间；`0` 为关闭 |
 | `wake-on` | 自动唤醒策略：`activity`、`interaction` 或 `manual` |
 | `motion` | 动态效果策略：`auto`、`reduce` 或 `full` |
@@ -204,15 +228,34 @@ avatar.setPointerFollow(false);
 avatar.setHeadRoundness(75);
 avatar.setPressSqueeze(true);
 avatar.setAntennaDrag(true);
+avatar.setView('3d');
+avatar.setEyeColor('#2bd67b');
+avatar.setPetting(false); // 关闭抚摸
 ```
 
 按住头像中心会开始挤压；移动超过 4 个 CSS 像素后，同一次指针操作会切换为原有的头部拖动。拖动天线沿用头部拖动的距离限制，复原后接原有的愤怒反应。
+
+## 立体 3D 头像 · 0.9 新增
+
+```html
+<boop-face view="3d"></boop-face>
+```
+
+`view="3d"`（或 `avatar.setView('3d')`）把头像变成有厚度的立体头：会真正转向指针，脸面是弧形的，每次转完还会轻轻弹一下再停稳。所有表情、手势、皮肤和颜色在 3D 下照常使用；`view="2d"` 回到平面。立体渲染的代码在第一次切到 3D 时才下载，只用平面的页面不会加载。
+
+**每个表情都带着头动。** 头会跟着眼睛看的方向转，点头、侧身、跳起来；3D 下是真的转动，平面下画出转动的样子。`motion="reduce"` 时保持不动。
+
+**圆角眼睛。** 眼皮切过眼睛的地方现在是圆角，睡觉、眯眼、眨眼、输入光标这类细缝两头是半圆。想要以前的直角切口，用 `eye-style="sharp"`。
+
+**眼睛颜色。** `eye-color="#2bd67b"`（或 `setEyeColor()`）给眼睛上色，用了皮肤也有效。`eye-color="transparent"` 把眼睛从头上镂空，透出头像背后的内容。
+
+**抚摸。** 在额头上来回摸几下，头像会闭上眼睛蹭过来。默认开启，`setPetting(false)` 可关闭。
 
 ## 皮肤 · 0.7 新功能
 
 共 188 款皮肤，分 17 个系列，光线会跟随鼠标。每款皮肤都有固定编号：前面是系列号，后两位是系列内序号，例如 305 是第 3 个系列的第 5 款。名字以后可能调整，编号永远不变，也不会重复使用。
 
-所有皮肤仍然是纯 SVG 绘制，没有使用图片、Canvas 或 WebGL。它非常轻：全部皮肤加起来，网络传输只有约 70 KB（不压缩约 290 KB），而且大部分代码只在网页用到皮肤时才会加载。作为对比，头像本身（精简版，不含皮肤）大约 45 KB。
+所有皮肤仍然是纯 SVG 绘制，没有使用图片、Canvas 或 WebGL。它非常轻：全部皮肤加起来，网络传输只有约 70 KB（不压缩约 290 KB），而且大部分代码只在网页用到皮肤时才会加载。作为对比，头像本身（精简版，不含皮肤）大约 89 KB。
 
 <img src="../assets/readme/skin-gallery.jpg" alt="皮肤美术馆：精选皮肤、分类筛选和搜索" width="100%">
 
@@ -240,7 +283,7 @@ avatar.setSkin(null); // 回到纯色
 
 所有表情和手势都能配合皮肤使用。去掉皮肤后，`color` 属性会重新生效。
 
-## 接入 AI 数据流 · 0.8.1 新增
+## 接入 AI 数据流 · 0.9 新增
 
 `connectAgent()` 让 AI 的数据流直接驱动头像。把 AI SDK 本来就给你的事件交给它，头像会自己显示思考、调用工具、回复、完成、失败和拒绝。
 
@@ -282,9 +325,9 @@ connectAgent(avatar, {
 });
 ```
 
-在 [AI 接入演示](https://cx-artlab.github.io/BoopFace/agent.html?lang=zh-CN) 里可以试所有格式。
+在 [Studio](https://cx-artlab.github.io/BoopFace/?lang=zh-CN#agent) 里可以和接入了 AI 的头像聊天，在「行为」里给每个状态换表情，在「代码」里看每种格式的接法。
 
-## 语音交互表情套件 · 0.8.1 新增
+## 语音交互表情套件 · 0.9 新增
 
 聆听、思考、说话：所有语音助手每一轮都会走这三步。语音交互表情套件为头像准备了对应的一组三个表情，前后自然衔接。它适合任何能用声音交流的产品，不限语音服务：可以自己调用这三个方法，也可以让 `connectAgent()` 跟着你的语音接口自动切换。
 
@@ -297,7 +340,7 @@ avatar.setVoiceLevel(0.6);                 // 可选：音量，0 到 1
 
 聆听时两只眼睛合成一个圆，随用户的声音一鼓一鼓；思考时变成两个交叉的椭圆，像一朵慢慢转动的花；说话时分回两只眼睛，先停稳，再跟着回答伸缩：低音驱动左眼，高音驱动右眼。用 `setVoiceLevel(level)` 或 `setVoiceLevel([low, high])` 传入音量；不传时，说话会按自己的节奏动，聆听则保持不动。每一步都会循环到下一步开始，步骤之间眼睛会平滑变形，不会跳变。
 
-思考这一步其实是一种等待。绽放（`variant: 'bloom'`）可以直接从聆听的圆变形出来；换成其他任何一种等待样式也可以。
+思考这一步其实是一种等待。绽放（`variant: 'bloom'`）和十字（`variant: 'cross'`）可以直接从聆听的圆变形出来；换成其他任何一种等待样式也可以。
 
 `connectAgent()` 也能自动切换这三个表情。它已经认得常见语音接口的事件，例如 OpenAI Realtime，以及 ElevenLabs 这类 SDK 报告的 `mode`。思考时默认用「绽放」样式等待（也可以用 `actions.thinking` 换成别的样式），每次回答完都会回到聆听。以 OpenAI Realtime 为例：
 
@@ -420,7 +463,7 @@ void loop() {
 
 ## 项目状态
 
-**当前公开版本：v0.8.1**（网页版）\
+**当前公开版本：v0.9.0**（网页版）\
 BoopFace Embedded 嵌入式设备版：v0.1.0（实验版）
 
 公开 API 会在未来 `1.0.0` 稳定性承诺前继续保持精简并谨慎演进。
