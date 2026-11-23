@@ -1156,12 +1156,14 @@ code, kbd {
 }
 
 .action-groups { display: grid; gap: clamp(2px, calc(1.2dvh - 6px), 6px); container-type: inline-size; }
+/* Widths follow the dock's own width smoothly (cqi = 1% of it), so the
+   groups tighten little by little as the page narrows and never wrap. */
 .action-row {
   display: grid;
-  grid-template-columns: 42px minmax(0, 1fr);
+  grid-template-columns: clamp(34px, calc(4cqi + 13px), 42px) minmax(0, 1fr);
   align-items: center;
-  gap: 8px;
-  padding: clamp(2px, calc(0.6dvh - 1px), 5px) 8px;
+  gap: clamp(6px, calc(0.5cqi + 3.5px), 8px);
+  padding: clamp(2px, calc(0.6dvh - 1px), 5px) clamp(6px, calc(0.5cqi + 3.5px), 8px);
   border-radius: 10px;
 }
 /* Every other group on a faint band, so the four rows read apart. */
@@ -1178,28 +1180,23 @@ code, kbd {
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   margin-block: 4px;
 }
-.row-btns { display: flex; flex-wrap: wrap; gap: clamp(4px, calc(1dvh - 3px), 8px); }
+.row-btns { display: flex; flex-wrap: wrap; gap: clamp(3px, calc(0.9cqi - 1.5px), 8px); }
 .row-btns button {
   position: relative;
-  padding: clamp(5px, calc(0.6dvh + 0.5px), 7.5px) clamp(10px, calc(0.8dvh + 4.5px), 13px);
+  padding: clamp(5px, calc(0.6dvh + 0.5px), 7.5px) clamp(5px, calc(1.6cqi - 4px), 13px);
   border-radius: 8px;
   border: 1px solid transparent;
   background: transparent;
-  font-size: 12px;
+  font-size: clamp(11.5px, calc(0.5cqi + 9px), 12px);
   color: #b4b4b4;
   transition: background-color 0.14s, border-color 0.14s, color 0.14s, box-shadow 0.14s;
-}
-/* A narrow dock keeps every group on one line: tighter buttons. */
-@container (max-width: 600px) {
-  .action-row { grid-template-columns: 34px minmax(0, 1fr); gap: 6px; padding-inline: 6px; }
-  .row-btns { gap: 3px; }
-  .row-btns button { padding-inline: 6px; font-size: 11.5px; }
 }
 .row-btns button[data-new="true"]::after {
   content: "";
   position: absolute;
-  top: 4px;
-  right: 4px;
+  /* Moves into the corner as the button's padding shrinks, off the text. */
+  top: clamp(1px, calc(1.6cqi - 9px), 4px);
+  right: clamp(0px, calc(1.6cqi - 9px), 4px);
   width: 5px;
   height: 5px;
   border-radius: 50%;
