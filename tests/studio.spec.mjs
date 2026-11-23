@@ -123,3 +123,28 @@ test('old addresses land in the Studio', async ({ page }) => {
   await expect(page).toHaveURL(/#agent$/);
   await expect(page.locator('#chatSceneView')).toBeVisible();
 });
+
+test('the eye colour row paints the real eyes, turns see-through off, and is greyed out on skins that keep their eyes', async ({ page }) => {
+  await page.goto('/demo/?lang=zh-CN');
+  await ready(page);
+  const face = page.locator('#stageFace');
+  const row = page.locator('#eyeColorRow');
+  // The default skin (101) keeps its own eyes.
+  await expect(row).toHaveClass(/is-locked/);
+  await page.locator('[data-surface-btn="flat"]').click();
+  await expect(row).not.toHaveClass(/is-locked/);
+  await expect(page.locator('#eyeThroughToggle')).toBeChecked();
+  await page.locator('#eyeDotsRow [data-slot-idx="0"]').click();
+  await expect(page.locator('#eyeThroughToggle')).not.toBeChecked();
+  await expect.poll(() => face.evaluate(f => f.getAttribute('eye-color'))).toBe('#2bd67b');
+  await page.locator('[data-inspector-tab="code"]').click();
+  await page.locator('[data-dev-tab="html"]').click();
+  await expect(page.locator('#devCode')).toContainText('eye-color="#2bd67b"');
+  // Swapping head and background leaves the eyes alone.
+  await page.locator('[data-inspector-tab="look"]').click();
+  await page.locator('#swapColorsBtn').click();
+  await expect.poll(() => face.evaluate(f => f.getAttribute('eye-color'))).toBe('#2bd67b');
+  // Auto gives the avatar its own eyes back.
+  await page.locator('#eyeDotsRow [data-eye-auto]').click();
+  await expect.poll(() => face.evaluate(f => f.getAttribute('eye-color'))).toBeNull();
+});

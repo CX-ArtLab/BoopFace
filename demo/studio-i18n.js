@@ -325,6 +325,11 @@ const EN = {
 "点击直接切换": "click to switch",
 "自定义选色": "Custom colour",
 "调色盘 · 点此自定义颜色": "Palette · click to pick a colour",
+"眼睛": "Eyes",
+"眼睛颜色": "Eye colour",
+"自动：头像自己的眼睛颜色": "Auto: the avatar's own eye colour",
+"这款皮肤的眼睛有自己的质感，不能改色": "This skin's eyes are part of its design and keep their colour",
+"眼睛穿透开启中，选一个颜色会关闭穿透": "See-through eyes are on; picking a colour turns them off",
 "再点可互换": "click again to swap",
 "点击复制": "click to copy"
 };

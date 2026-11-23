@@ -154,10 +154,13 @@ const DEFAULT_BW_PRESETS = [
 const LOCKED_DOTS = {
   head: ['#ededed', '#141416'],
   bg: ['#141416', '#f4f5f7'],
+  // The eye row starts with "auto" (the avatar's own eyes), then black.
+  eye: ['#08090b'],
 };
 const DEFAULT_SLOTS = {
   head: ['#d97757', '#f59e0b', '#10b981', '#06b6d4', '#38bdf8', '#a855f7', '#f43f5e'],
   bg: ['#000000', '#0f172a', '#1e1b2e', '#14261c', '#2a1815', '#faf9f5', '#f5e6d3'],
+  eye: ['#2bd67b', '#22d3ee', '#38bdf8', '#a78bfa', '#f472b6', '#f59e0b', '#ef4444'],
 };
 const CP_QUICK_COLORS = ['#3478f6', '#9b7bf7', '#ea6aa8', '#e65555', '#ea8b42', '#e5b93c', '#66aa58', '#16a085'];
 const CP_MODES = ['hex', 'rgb', 'hsl'];
@@ -192,9 +195,12 @@ const state = {
   flatBg: DEFAULT_FLAT.bg,
   flatHead: DEFAULT_FLAT.head,
   eyeThrough: true,
+  // null = auto: the avatar's own eyes (a skin's, or the plain default).
+  eyeColor: null,
   headSlots: [...DEFAULT_SLOTS.head],
   bgSlots: [...DEFAULT_SLOTS.bg],
-  activeSlot: { head: null, bg: null },
+  eyeSlots: [...DEFAULT_SLOTS.eye],
+  activeSlot: { head: null, bg: null, eye: null },
   roundness: 50,
   antenna: true,
   pointerFollow: true,
@@ -324,13 +330,27 @@ function paintCustomFace(face, { isStage = false, bot = null } = {}) {
     // The component's own eye colour: see-through on the flat stage (the real
     // background shows in the eyes); the 3D head and the chat faces take the
     // background colour instead (the same look on a plain colour).
-    const eyeColor = !state.eyeThrough ? null : isStage ? (state.dimension === '3d' ? effectiveBgColor() : 'transparent') : (state.chatLook === 'dark' ? '#1f1f21' : '#e8e9ec');
+    const eyeColor = !state.eyeThrough ? state.eyeColor : isStage ? (state.dimension === '3d' ? effectiveBgColor() : 'transparent') : (state.chatLook === 'dark' ? '#1f1f21' : '#e8e9ec');
     face.setEyeColor(eyeColor);
   }
-  if (state.surface === 'skin' || bot) face.setEyeColor(null);
+  if (state.surface === 'skin') face.setEyeColor(skinEyeColor());
+  if (bot) face.setEyeColor(null);
   // Only the main stage shows the 3D head (the small previews stay flat).
   if (isStage) face.setView(state.dimension === '3d' ? '3d' : '2d');
   syncFaceGeometry(face, state.roundness);
+}
+
+// Skins whose eyes are part of their design keep them (the row is greyed out).
+function skinTakesEyeColor(id = state.skinId) {
+  return skinById.get(id)?.eyeColor !== false;
+}
+function skinEyeColor() {
+  return state.eyeColor && skinTakesEyeColor() ? state.eyeColor : null;
+}
+// The eye colour the avatar really gets, for the code panel (null = none).
+function appliedEyeColor() {
+  if (state.surface === 'skin') return skinEyeColor();
+  return state.eyeThrough ? 'transparent' : state.eyeColor;
 }
 
 function syncStageMinHeight() {
@@ -354,9 +374,9 @@ function syncLookPreviewFace() {
     lookPreviewFace.setSkin(null);
     lookPreviewFace.setAttribute('color', state.flatHead);
     lookPreviewStage.style.setProperty('--live-bg', state.flatBg);
-    lookPreviewFace.setEyeColor(state.eyeThrough ? state.flatBg : null);
+    lookPreviewFace.setEyeColor(state.eyeThrough ? state.flatBg : state.eyeColor);
   }
-  if (state.surface === 'skin') lookPreviewFace.setEyeColor(null);
+  if (state.surface === 'skin') lookPreviewFace.setEyeColor(skinEyeColor());
   syncFaceGeometry(lookPreviewFace, state.roundness);
 }
 
@@ -435,6 +455,7 @@ function updateUI() {
   syncRoundnessControl();
   $('customBgDot').style.setProperty('--cur-color', state.flatBg);
   $('customHeadDot').style.setProperty('--cur-color', state.flatHead);
+  syncEyeColorRow(isSkin);
   $('eyeThroughToggle').checked = state.eyeThrough;
   syncColorDotSelections();
   syncPaletteSelections();
@@ -714,8 +735,8 @@ $('stageResetBtn').addEventListener('click', () => {
     backdrop: 'dark', size: 168, surface: 'skin', dimension: '3d', skinId: '101',
     roundness: 50, antenna: true, pointerFollow: true,
     pressSqueeze: true, antennaDrag: true, autoSleep: '0', wakeOn: 'activity', motion: 'auto',
-    flatBg: DEFAULT_FLAT.bg, flatHead: DEFAULT_FLAT.head, eyeThrough: true,
-    activeSlot: { head: null, bg: null },
+    flatBg: DEFAULT_FLAT.bg, flatHead: DEFAULT_FLAT.head, eyeThrough: true, eyeColor: null,
+    activeSlot: { head: null, bg: null, eye: null },
   });
   $('antennaToggle').checked = true;
   $('pointerFollowToggle').checked = true;
@@ -1294,11 +1315,33 @@ function hslToHex(h, s, l) {
   return rgbToHex((r + m) * 255, (g + m) * 255, (b + m) * 255);
 }
 
-function slotsFor(target) { return target === 'bg' ? state.bgSlots : state.headSlots; }
-function colorVal(target) { return target === 'bg' ? state.flatBg : state.flatHead; }
+function slotsFor(target) { return target === 'bg' ? state.bgSlots : target === 'eye' ? state.eyeSlots : state.headSlots; }
+function colorVal(target) { return target === 'bg' ? state.flatBg : target === 'eye' ? (state.eyeColor || '#ffffff') : state.flatHead; }
 function setColorVal(target, hex) {
   if (target === 'bg') state.flatBg = hex;
+  else if (target === 'eye') state.eyeColor = hex;
   else state.flatHead = hex;
+}
+// Head and background colours switch to the plain look; an eye colour works on
+// a skin too, and turns the see-through eyes off so the colour shows.
+function startColorPick(target) {
+  if (target === 'eye') { state.eyeThrough = false; return; }
+  state.surface = 'flat';
+  state.backdrop = 'custom';
+}
+
+function syncEyeColorRow(isSkin) {
+  const row = $('eyeColorRow');
+  const locked = isSkin && !skinTakesEyeColor();
+  const dim = !isSkin && state.eyeThrough;
+  row.classList.toggle('is-locked', locked);
+  row.classList.toggle('is-dim', dim);
+  row.title = locked ? '这款皮肤的眼睛有自己的质感，不能改色' : dim ? '眼睛穿透开启中，选一个颜色会关闭穿透' : '';
+  row.querySelectorAll('button').forEach(btn => { btn.disabled = locked; });
+  const dot = $('customEyeDot');
+  const shown = locked || dim ? null : state.eyeColor;
+  dot.classList.toggle('is-auto', !shown);
+  if (shown) dot.style.setProperty('--cur-color', shown); else dot.style.removeProperty('--cur-color');
 }
 
 function loadColorSlots() {
@@ -1310,20 +1353,37 @@ function loadColorSlots() {
     if (raw) {
       state.headSlots = clean(raw.head, DEFAULT_SLOTS.head);
       state.bgSlots = clean(raw.bg, DEFAULT_SLOTS.bg);
+      state.eyeSlots = clean(raw.eye, DEFAULT_SLOTS.eye);
     }
   } catch {}
 }
 
 function persistColorSlots() {
   try {
-    localStorage.setItem(SLOTS_STORAGE_KEY, JSON.stringify({ head: state.headSlots, bg: state.bgSlots }));
+    localStorage.setItem(SLOTS_STORAGE_KEY, JSON.stringify({ head: state.headSlots, bg: state.bgSlots, eye: state.eyeSlots }));
   } catch {}
 }
 
 function buildColorDotRows() {
-  [['head', $('headDotsRow')], ['bg', $('bgDotsRow')]].forEach(([target, row]) => {
-    const label = target === 'head' ? '头部' : '背景';
+  [['head', $('headDotsRow')], ['bg', $('bgDotsRow')], ['eye', $('eyeDotsRow')]].forEach(([target, row]) => {
+    const label = target === 'head' ? '头部' : target === 'eye' ? '眼睛' : '背景';
     const nodes = [];
+
+    if (target === 'eye') {
+      const auto = document.createElement('button');
+      auto.type = 'button';
+      auto.className = 'aw-dot is-auto';
+      auto.dataset.eyeAuto = 'true';
+      auto.title = '自动：头像自己的眼睛颜色';
+      auto.setAttribute('aria-label', auto.title);
+      auto.addEventListener('click', () => {
+        state.eyeColor = null;
+        state.activeSlot.eye = null;
+        closeColorPopover();
+        syncAllFaces();
+      });
+      nodes.push(auto);
+    }
 
     LOCKED_DOTS[target].forEach(hex => {
       const btn = document.createElement('button');
@@ -1336,8 +1396,7 @@ function buildColorDotRows() {
       btn.title = `${label}固定黑白 ${hex.toUpperCase()}（点击直接切换）`;
       btn.setAttribute('aria-label', btn.title);
       btn.addEventListener('click', () => {
-        state.surface = 'flat';
-        state.backdrop = 'custom';
+        startColorPick(target);
         setColorVal(target, hex);
         state.activeSlot[target] = null;
         closeColorPopover();
@@ -1361,8 +1420,7 @@ function buildColorDotRows() {
       btn.title = `${label}预设彩点 ${idx + 1} (${hex.toUpperCase()}) · 点击应用`;
       btn.setAttribute('aria-label', btn.title);
       btn.addEventListener('click', () => {
-        state.surface = 'flat';
-        state.backdrop = 'custom';
+        startColorPick(target);
         setColorVal(target, slotsFor(target)[idx]);
         state.activeSlot[target] = idx;
         closeColorPopover();
@@ -1396,6 +1454,7 @@ function syncColorDotSelections() {
     bg: state.flatBg.toLowerCase(),
   };
 
+  syncEyeDotSelections();
   ['head', 'bg'].forEach(target => {
     const active = state.activeSlot[target];
     const slots = slotsFor(target);
@@ -1426,6 +1485,24 @@ function syncColorDotSelections() {
       btn.setAttribute('aria-pressed', String(rainbowActive));
     });
   });
+}
+
+function syncEyeDotSelections() {
+  const cur = state.eyeColor?.toLowerCase() || null;
+  const active = state.activeSlot.eye;
+  const slots = state.eyeSlots;
+  const isSlot = cur && typeof active === 'number' && slots[active]?.toLowerCase() === cur;
+  const locked = cur && !isSlot && LOCKED_DOTS.eye.includes(cur);
+  const fallback = cur && !isSlot && !locked ? slots.findIndex(h => h.toLowerCase() === cur) : -1;
+  document.querySelector('.aw-dot[data-eye-auto]')?.setAttribute('aria-pressed', String(!cur));
+  document.querySelectorAll('.aw-dot[data-locked][data-dot-target="eye"]').forEach(btn => btn.setAttribute('aria-pressed', String(!!locked && btn.dataset.dotHex === cur)));
+  document.querySelectorAll('.aw-dot[data-slot-target="eye"]').forEach(btn => {
+    const idx = Number(btn.dataset.slotIdx);
+    btn.style.setProperty('--dot', slots[idx]);
+    btn.title = `眼睛预设彩点 ${idx + 1} (${slots[idx].toUpperCase()}) · 点击应用`;
+    btn.setAttribute('aria-pressed', String(isSlot ? idx === active : idx === fallback));
+  });
+  document.querySelector('.aw-dot.is-rainbow[data-rainbow-target="eye"]')?.setAttribute('aria-pressed', String(!!cur && !isSlot && !locked && fallback === -1));
 }
 
 function paletteMatchesCurrent(bg, head) {
@@ -1596,9 +1673,11 @@ function resetLookColors() {
   state.flatBg = DEFAULT_FLAT.bg;
   state.flatHead = DEFAULT_FLAT.head;
   state.eyeThrough = true;
+  state.eyeColor = null;
   state.headSlots = [...DEFAULT_SLOTS.head];
   state.bgSlots = [...DEFAULT_SLOTS.bg];
-  state.activeSlot = { head: null, bg: null };
+  state.eyeSlots = [...DEFAULT_SLOTS.eye];
+  state.activeSlot = { head: null, bg: null, eye: null };
   try { localStorage.removeItem(SLOTS_STORAGE_KEY); } catch {}
   closeColorPopover();
   syncAllFaces();
@@ -1646,8 +1725,7 @@ function renderColorPopoverState() {
 
 function applyPickedColor(hex, { preserveHue = false } = {}) {
   if (!cpTarget) return;
-  state.surface = 'flat';
-  state.backdrop = 'custom';
+  startColorPick(cpTarget);
   setColorVal(cpTarget, hex);
   if (cpSlotIdx !== null) {
     slotsFor(cpTarget)[cpSlotIdx] = hex;
@@ -1688,7 +1766,7 @@ function openColorPopover(target, triggerEl) {
 
   cpTarget = target;
   cpSlotIdx = slotIdx;
-  $('cpTitle').textContent = target === 'bg' ? '舞台背景' : '头部颜色';
+  $('cpTitle').textContent = target === 'bg' ? '舞台背景' : target === 'eye' ? '眼睛颜色' : '头部颜色';
   cpHsv = hexToHsv(curHex, cpHsv.h);
   $('colorPopover').hidden = false;
   triggerEl.setAttribute('aria-expanded', 'true');
@@ -2235,7 +2313,8 @@ function buildAttributes() {
   if (state.size !== 112) attrs.push(`size="${state.size}"`);
   if (state.surface === 'skin') attrs.push(`skin="${state.skinId}"`);
   else if (state.flatHead !== '#08090b') attrs.push(`color="${state.flatHead}"`);
-  if (state.surface !== 'skin' && state.eyeThrough) attrs.push('eye-color="transparent"');
+  const eyeColor = appliedEyeColor();
+  if (eyeColor) attrs.push(`eye-color="${eyeColor}"`);
   if (state.dimension === '3d') attrs.push('view="3d"');
   if (state.autoSleep !== '0') attrs.push(`auto-sleep="${state.autoSleep}"`);
   if (state.wakeOn !== 'activity') attrs.push(`wake-on="${state.wakeOn}"`);
@@ -2255,7 +2334,9 @@ function updateDevCode() {
   if (state.devTab === 'html') {
     devCode.textContent = `<boop-face ${attrs}></boop-face>\n\n<script type="module">\n  import 'boopface';\n  const avatar = document.querySelector('#avatar');${roundLine}${followLine}\n  ${actionLine};\n</script>`;
   } else if (state.devTab === 'js') {
-    const skinLine = state.surface === 'skin' ? `avatar.setSkin('${state.skinId}');` : `avatar.setSkin(null);\navatar.setAttribute('color', '${state.flatHead}');`;
+    const eyeColor = appliedEyeColor();
+    const skinLine = (state.surface === 'skin' ? `avatar.setSkin('${state.skinId}');` : `avatar.setSkin(null);\navatar.setAttribute('color', '${state.flatHead}');`)
+      + (eyeColor ? `\navatar.setEyeColor('${eyeColor}');` : '');
     devCode.textContent = `import 'boopface';\n\nconst avatar = document.querySelector('#avatar');\nawait customElements.whenDefined('boop-face');\n${skinLine}${roundLine}${followLine}\n${actionLine};`;
   } else if (state.devTab === 'agent') {
     devCode.textContent = agentCode(state.agent.format, agentActions());

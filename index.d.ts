@@ -88,6 +88,11 @@ export interface BoopFaceSkinInfo {
   readonly titleEn: string;
   /** Representative colors, light to dark. */
   readonly base: readonly string[];
+  /**
+   * Whether `eye-color` can repaint this skin's eyes. Skins whose eyes are part
+   * of their design (raised, glassy or patterned) keep them as they are.
+   */
+  readonly eyeColor: boolean;
 }
 
 /** A group of related skins, in gallery order. */

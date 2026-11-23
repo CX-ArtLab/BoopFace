@@ -31,7 +31,7 @@ const baseApplyColor = proto._applyColor;
 // them in display order, series by series.
 const SKIN_NAMES = Object.freeze(SKIN_SERIES.flatMap(series => series.skins));
 const SKINS = Object.freeze(Object.fromEntries(Object.entries(SKIN_CATALOG).map(([id, skin]) => [id,
-  Object.freeze({ series: skin.series, title: skin.zh, titleEn: skin.en, base: Object.freeze([...skin.base]) })])));
+  Object.freeze({ series: skin.series, title: skin.zh, titleEn: skin.en, base: Object.freeze([...skin.base]), eyeColor: skin.eyeColor !== false })])));
 const SERIES = Object.freeze(SKIN_SERIES.map(series => Object.freeze({
   id: series.id, number: series.number, title: series.zh, titleEn: series.en, skins: Object.freeze([...series.skins]),
 })));
@@ -230,6 +230,12 @@ proto.setSkin = function(value = null) {
   render(this);
   this._resumeFrames?.();
   return this;
+};
+
+// Skins whose eyes are part of their design keep them: eye-color is ignored.
+proto._skinKeepsEyes = function() {
+  const name = this._skinName ?? normalizeSkin(this.getAttribute('skin'));
+  return !!(name && SKIN_CATALOG[name]?.eyeColor === false);
 };
 
 proto.getSkin = function() {

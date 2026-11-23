@@ -31,9 +31,19 @@ function parts(instance) {
   return instance._eyeColorParts;
 }
 
+// What is actually applied: nothing on a skin whose eyes are part of its design.
+function wanted(instance) {
+  const raw = String(instance.getAttribute('eye-color') || '').trim();
+  return raw && instance._skinKeepsEyes?.() ? '' : raw;
+}
+
 function apply(instance) {
   const p = parts(instance); if (!p) return;
-  const raw = String(instance.getAttribute('eye-color') || '').trim();
+  const asked = String(instance.getAttribute('eye-color') || '').trim(), raw = wanted(instance);
+  if (asked && !raw && !instance._eyeColorWarned) {
+    instance._eyeColorWarned = true;
+    console.warn(`boopface: skin ${instance.getSkin?.()} keeps its own eyes; eye-color is ignored while it is on.`);
+  }
   const through = /^(transparent|none|through)$/i.test(raw);
   if (through) {
     p.head.setAttribute('mask', 'url(#eye-through)');
@@ -48,6 +58,7 @@ function apply(instance) {
       ? `svg{--material-eye:${raw}!important;--material-eye-right:${raw}!important}${EYES}{fill:${raw}!important}` : '';
   }
   instance._eyeColorApplied = raw;
+  instance._eyeColorAsked = asked;
   instance._resumeFrames?.();
 }
 
@@ -60,6 +71,6 @@ BoopFace.prototype.setEyeColor = function(value) {
 registerAvatarExtension({
   name: 'eye-color',
   draw() {
-    if (this._eyeColorApplied !== String(this.getAttribute('eye-color') || '').trim()) apply(this);
+    if (this._eyeColorApplied !== wanted(this) || this._eyeColorAsked !== String(this.getAttribute('eye-color') || '').trim()) apply(this);
   },
 });

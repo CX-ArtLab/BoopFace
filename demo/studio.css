@@ -1936,6 +1936,19 @@ code, kbd {
   transform: none;
   box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.88);
 }
+.aw-dot.is-auto {
+  background: linear-gradient(135deg, transparent 46%, rgba(255, 255, 255, 0.62) 46%, rgba(255, 255, 255, 0.62) 54%, transparent 54%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+.cur-dot-swatch.is-auto {
+  background: linear-gradient(135deg, transparent 44%, rgba(255, 255, 255, 0.62) 44%, rgba(255, 255, 255, 0.62) 56%, transparent 56%);
+}
+/* Eye colour: dimmed while the eyes are see-through (a pick turns that off),
+   greyed out on a skin whose eyes are part of its design. */
+.eye-color-row.is-dim .aw-row { opacity: 0.5; }
+.eye-color-row.is-locked .aw-row,
+.eye-color-row.is-locked .cur-dot-swatch { opacity: 0.3; pointer-events: none; }
+.eye-color-row.is-locked strong { color: var(--muted); }
 .color-pair-wrap {
   position: relative;
   display: grid;

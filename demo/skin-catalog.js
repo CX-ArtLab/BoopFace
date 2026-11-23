@@ -19,7 +19,7 @@ export const catalog = [
   { id: 'classic', label: '经典黑', english: 'ORIGINAL', description: '', group: 'pattern' },
   ...SKIN_NAMES.map(id => ({
     id, label: SKINS[id].title, english: SKINS[id].titleEn, description: '', base: SKINS[id].base,
-    group: demoSkins[id].group, stage: demoSkins[id].stage,
+    group: demoSkins[id].group, stage: demoSkins[id].stage, eyeColor: SKINS[id].eyeColor,
   })),
 ];
 export const publicSkins = catalog.filter(skin => skin.id !== 'classic');

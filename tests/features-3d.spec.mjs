@@ -156,3 +156,18 @@ test('with a skin, shapes drawn as one (crossed ovals, the listening circle) are
   // Speaking splits them back into two eyes, each with its own shading.
   await expect.poll(joined, { timeout: 15000 }).toEqual([false, false, false]);
 });
+
+test('skins whose eyes are part of their design keep them; plain-eyed skins take eye-color', async ({ page }) => {
+  const warnings = [];
+  page.on('console', m => { if (m.type() === 'warning') warnings.push(m.text()); });
+  await page0(page, '<boop-face id="a" skin="101" eye-color="#2bd67b"></boop-face><boop-face id="b" skin="901" eye-color="#2bd67b"></boop-face>');
+  const fill = id => page.evaluate(id => getComputedStyle(document.getElementById(id).shadowRoot.getElementById('leftBase')).fill, id);
+  await expect.poll(() => fill('b')).toBe('rgb(43, 214, 123)');
+  await expect.poll(() => fill('a')).toContain('url(');
+  expect(warnings.some(w => w.includes('101') && w.includes('eye-color'))).toBe(true);
+  // Following the skin as it changes.
+  await page.evaluate(() => a.setSkin(901));
+  await expect.poll(() => fill('a')).toBe('rgb(43, 214, 123)');
+  const info = await page.evaluate(async () => { const m = await import('/boopface.js'); return [m.SKINS['101'].eyeColor, m.SKINS['901'].eyeColor, Object.values(m.SKINS).filter(s => !s.eyeColor).length]; });
+  expect(info).toEqual([false, true, 57]);
+});
