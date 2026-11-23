@@ -85,28 +85,32 @@ test('view="3d" draws the layered head and view="2d" goes back to the flat drawi
   expect(await page.evaluate(() => getComputedStyle(a.shadowRoot.querySelector('svg')).visibility)).toBe('visible');
 });
 
-test('leaving the typing cursor slides the eyes apart instead of jumping', async ({ page }) => {
+test('leaving the typing cursor splits it quickly into two eyes, rounded all the way', async ({ page }) => {
   for (const next of ['success', 'bow', 'waiting-spin']) {
     await page0(page, '<boop-face id="a" motion="full"></boop-face>');
     await page.evaluate(() => a.play('input'));
-    await expect.poll(() => page.evaluate(() => a.shadowRoot.getElementById('leftEye').getAttribute('transform'))).toContain('translate(120.00');
+    await expect.poll(() => page.evaluate(() => a._center)).toBe(1);
     const run = await page.evaluate(next => new Promise(done => {
-      const xs = [], x = () => Number(a.shadowRoot.getElementById('leftEye').getAttribute('transform').match(/translate\(([-\d.]+)/)[1]);
-      const t0 = performance.now(); let left = 0;
+      const r = a.shadowRoot, rows = [];
       a.play(next);
       const step = () => {
-        xs.push(x());
-        if (!left && xs.at(-1) < 119) left = performance.now();
-        if (xs.length < 90 && xs.at(-1) > 87) requestAnimationFrame(step);
-        else done({ xs, ms: performance.now() - (left || t0) });
+        const x = Number(r.getElementById('leftEye').getAttribute('transform').match(/translate\(([-\d.]+)/)[1]);
+        const base = r.getElementById('leftBase'), input = r.getElementById('leftInputBase');
+        rows.push({ x, baseOn: +base.getAttribute('opacity') > 0, baseRx: +base.getAttribute('rx'),
+          inputRx: +input.getAttribute('rx'), inputRy: +(input.getAttribute('ry') ?? input.getAttribute('rx')), w: +input.getAttribute('width') });
+        if (rows.length < 90 && x > 87) requestAnimationFrame(step); else done(rows);
       };
       requestAnimationFrame(step);
     }), next);
-    expect(run.xs.at(-1), next).toBeLessThan(88);
-    const jumps = run.xs.slice(1).map((v, i) => run.xs[i] - v);
-    // A 34-unit move spread over a third of a second, never most of it in one frame.
-    expect(Math.max(...jumps), next).toBeLessThan(20);
-    expect(run.ms, next).toBeGreaterThan(150); // the middle of the slide alone; it was ~60 ms when it jumped
+    expect(run.at(-1).x, next).toBeLessThan(88);
+    // Not one jump: at least one frame on the way.
+    expect(run.some(f => f.x > 88 && f.x < 118), next).toBe(true);
+    // No pointed narrow ellipse on the way: while it is still narrow it is the
+    // rounded rectangle with half-round ends (corner = half its width).
+    for (const f of run) {
+      if (f.baseOn) expect(f.baseRx, next).toBeGreaterThan(20);
+      else expect(Math.abs(f.inputRx - f.w / 2), next).toBeLessThan(0.05);
+    }
   }
 });
 
@@ -131,4 +135,24 @@ test('in 3D the typing cursor splits from the middle, never thrown out to the ou
   // The eyes end at about 86 and 154; the outline is near 40 and 200.
   expect(spread.min).toBeGreaterThan(78);
   expect(spread.max).toBeLessThan(162);
+});
+
+test('with a skin, shapes drawn as one (crossed ovals, the listening circle) are painted as one surface', async ({ page }) => {
+  test.setTimeout(90000);
+  await page0(page, '<boop-face id="m" skin="101"></boop-face><boop-face id="n" skin="301"></boop-face><boop-face id="t" skin="101" view="3d"></boop-face>');
+  await page.evaluate(() => window.loadSkins?.());
+  const joined = () => page.evaluate(() => [
+    m.shadowRoot.getElementById('leftEye').parentElement.style.opacity === '0',
+    n.shadowRoot.getElementById('leftEye').parentElement.style.opacity === '0',
+    // 3D: the pair layer is shown and its one-surface sheet is on.
+    (() => { const eyes = t.shadowRoot.querySelector('.view-3d')?.shadowRoot?.querySelector('#pair-leftEye')?.parentElement; const layer = eyes?.closest('.layer');
+      return !!eyes && layer.style.display !== 'none' && eyes.nextElementSibling.style.display !== 'none'; })(),
+  ]);
+  await expect.poll(() => page.evaluate(() => !!t.shadowRoot.querySelector('.view-3d')?.shadowRoot?.querySelector('#pair-leftEye')), { timeout: 15000 }).toBe(true);
+  expect(await joined()).toEqual([false, false, false]);
+  await page.evaluate(() => [m, n, t].forEach(f => f.startWaiting({ variant: 'cross' })));
+  await expect.poll(joined, { timeout: 15000 }).toEqual([true, true, true]);
+  await page.evaluate(() => [m, n, t].forEach(f => f.startSpeaking()));
+  // Speaking splits them back into two eyes, each with its own shading.
+  await expect.poll(joined, { timeout: 15000 }).toEqual([false, false, false]);
 });

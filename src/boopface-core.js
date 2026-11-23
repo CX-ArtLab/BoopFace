@@ -3,13 +3,12 @@ const BoopFace = (() => {
   const EASE = {
     outQuint: t => 1 - Math.pow(1 - t, 5),
     inOutCubic: t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3)/2,
-    inOutSine: t => (1 - Math.cos(Math.PI * t)) / 2,
+    outCubic: t => 1 - Math.pow(1 - t, 3),
   };
 
   // The eyes travel between the typing cursor in the middle and their own
-  // places: never in fewer ms than this, eased at both ends, so it reads as a
-  // slide and not a jump.
-  const CURSOR_MS = 360;
+  // places in this many ms: almost at once, with just a hint of the motion.
+  const CURSOR_MS = 160;
 
   const POSES = {
     idle: {
@@ -614,8 +613,8 @@ const BoopFace = (() => {
       this._centerFrom = this._center ?? 0;
       this._centerTo = this._state === 'input' ? 1 : 0;
       if (Math.abs(this._centerTo - this._centerFrom) > 0.01 && duration > 0) {
-        duration = Math.max(duration, CURSOR_MS);
-        ease = EASE.inOutSine;
+        duration = CURSOR_MS;
+        ease = EASE.outCubic;
       }
       this._morphStart = performance.now();
       this._morphDuration = Math.max(0, duration);
@@ -1083,8 +1082,15 @@ const BoopFace = (() => {
         return {x: j.pullX * w, y: j.pullY * w};
       };
 
+      // 1 = the cursor, 0 = a normal eye; in between it is changing.
+      const cursor = clamp(this._center ?? 0, 0, 1);
+      // The cursor's corner: the original 3, or half-round ends (rounded eyes).
+      const cursorCorner = String(this.getAttribute('eye-style') || '').trim().toLowerCase() === 'sharp' ? 3 : p.w / 2;
       const setEye = (base, inputBase, top, bottom, side, cx, microX, microY, opacity) => {
-        const isInput = this._state === 'input';
+        // While it changes to or from an eye, the cursor stays a rounded
+        // rectangle whose corners grow into the eye's ellipse (no pointed
+        // narrow ellipse on the way).
+        const isInput = this._state === 'input' || cursor > 0.001;
         const projectedX = cx + this._look.x + microX;
         const edgeDistance = side==='L' ? (projectedX - 32) : (208 - projectedX);
         const edgeFactor = clamp(1 - edgeDistance / 58, 0, 1);
@@ -1100,7 +1106,8 @@ const BoopFace = (() => {
           inputBase.setAttribute('y', (-p.h/2 + yAdjust).toFixed(2));
           inputBase.setAttribute('width', p.w.toFixed(2));
           inputBase.setAttribute('height', p.h.toFixed(2));
-          inputBase.setAttribute('rx', '3');
+          inputBase.setAttribute('rx', lerp(p.w / 2, cursorCorner, cursor).toFixed(2));
+          inputBase.setAttribute('ry', lerp(p.h / 2, cursorCorner, cursor).toFixed(2));
           inputBase.setAttribute('opacity', opacity.toFixed(3));
         } else {
           inputBase.setAttribute('opacity', '0');
@@ -1138,6 +1145,25 @@ const BoopFace = (() => {
       this._framePaused = false;
       this._lastFrame = performance.now();
       this._raf = requestAnimationFrame(this._loop);
+    }
+
+    // Shapes designed as one, drawn by both eyes on top of each other: the
+    // heart, the voice kit's circle and crossed ovals (and the morphs between
+    // them), and the shape wait. While the two eyes overlap there, a skin
+    // paints them as one surface; otherwise each eye's own shading shows a
+    // seam. Eyes that only pass each other (spin, dizzy) stay two eyes.
+    _eyesAsOne() {
+      if (!(this._loveFx || this._voiceFx || this._voiceExit || this._leftBase?.hasAttribute('data-shape'))) return false;
+      const parent = this._leftEye?.parentElement;
+      if (!parent?.getCTM?.()) return false;
+      const box = eye => {
+        const b = eye.getBBox(), m = parent.getCTM().inverse().multiply(eye.getCTM());
+        const xs = [], ys = [];
+        for (const [x, y] of [[b.x, b.y], [b.x + b.width, b.y], [b.x, b.y + b.height], [b.x + b.width, b.y + b.height]]) { xs.push(m.a * x + m.c * y + m.e); ys.push(m.b * x + m.d * y + m.f); }
+        return { x0: Math.min(...xs), y0: Math.min(...ys), x1: Math.max(...xs), y1: Math.max(...ys) };
+      };
+      const a = box(this._leftEye), c = box(this._rightEye);
+      return a.x1 > c.x0 && c.x1 > a.x0 && a.y1 > c.y0 && c.y1 > a.y0;
     }
 
     _canPauseFrames(now) {

@@ -200,6 +200,7 @@ function updateLight(instance) {
     painters.native.joinNativeEyes(instance);
     painters.native.lightNative(instance, light.x, light.y);
   } else if (instance._material) {
+    instance._material.syncJoin?.();
     const last = instance._materialLight;
     if (last && Math.abs(last.x - light.x) < .0005 && Math.abs(last.y - light.y) < .0005) return;
     instance._materialLight = { x: light.x, y: light.y };

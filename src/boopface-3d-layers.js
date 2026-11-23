@@ -366,8 +366,10 @@ ${pairStyles}
     for (const { parts } of pair.sides) { parts.filterAttr = parts.group?.getAttribute('filter'); parts.group?.removeAttribute('filter'); }
   }
   // Two ways to draw the overlapping eyes, as the original does: joined into
-  // one surface only for the heart; otherwise two separate eyes, one over the
-  // other with their own shading (crossing orbits keep both visible).
+  // one surface for shapes designed as one (the heart, the voice kit's circle
+  // and crossed ovals, the shape wait: the avatar's _eyesAsOne); otherwise two
+  // separate eyes, one over the other with their own shading (crossing orbits
+  // keep both visible).
   let joinedNow = null;
   const setJoined = on => {
     if (!pairModes || joinedNow === on) return; joinedNow = on;
@@ -552,7 +554,7 @@ ${pairStyles}
       const mo = [(eyes[0].off[0] + eyes[1].off[0]) / 2, (eyes[0].off[1] + eyes[1].off[1]) / 2];
       const pm = eyeMatrix({ ex: 120, ey: 126, lin: [1, 0, 0, 1] }, anchor, -mo[0], -mo[1]);
       pair.node.style.transform = `matrix3d(${pm.map(v => +v.toFixed(5)).join(',')})`;
-      setJoined(!!brain?._loveFx);
+      setJoined(!!(brain?._eyesAsOne ? brain._eyesAsOne() : brain?._loveFx));
       fitUnionPaint();
       return;
     }

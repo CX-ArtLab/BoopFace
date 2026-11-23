@@ -208,6 +208,7 @@ export function applyMaterial(avatar, name) {
     svgElement('rect', { x: 0, y: 0, width: 240, height: 240,
       fill: 'var(--material-eye,#fff)', mask: `url(#${id}-joined-eyes)` }, reliefSurface);
   }
+  let joinedNow = null;
   function mergeEyes(merged) {
     if (!mergedSurface) return;
     // Opacity on the parent hides the original paint without hiding the eye
@@ -217,9 +218,9 @@ export function applyMaterial(avatar, name) {
     if (merged) avatar.style.setProperty('--material-separate-eye-relief', 'none');
     else avatar.style.removeProperty('--material-separate-eye-relief');
   }
-  const onFaceState = event => mergeEyes(event.detail?.state === 'love');
+  const onFaceState = event => { joinedNow = event.detail?.state === 'love'; mergeEyes(joinedNow); };
   const onActionState = event => {
-    if (event.detail?.action === 'love' && event.detail.phase !== 'start') mergeEyes(false);
+    if (event.detail?.action === 'love' && event.detail.phase !== 'start') { joinedNow = false; mergeEyes(false); }
   };
   if (mergedSurface) {
     avatar.addEventListener('face-state', onFaceState);
@@ -257,6 +258,12 @@ export function applyMaterial(avatar, name) {
         if (value) avatar.style.setProperty(key, value);
         else avatar.style.removeProperty(key);
       }
+    },
+    // Called every frame: one surface while the eyes draw one shape.
+    syncJoin() {
+      if (!mergedSurface || !avatar._eyesAsOne) return;
+      const on = avatar._eyesAsOne();
+      if (on !== joinedNow) { joinedNow = on; mergeEyes(on); }
     },
     // Only these coordinates are driven by light(), not the saved material.
     lightKeys: [
