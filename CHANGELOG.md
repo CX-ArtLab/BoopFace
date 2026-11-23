@@ -23,6 +23,10 @@ This release brings the 3D head, a new demo, and everything planned for 0.8.1 (C
 - Connect AI in the Studio: the chat scene plays a reply in any of the four formats through `connectAgent()`, the Behaviour tab picks the expression for each state, and the Code tab shows the code for each format.
 - React and Vue examples, `examples/react.html` and `examples/vue.html`, and a README section on using the component in both.
 
+### Fixed
+
+- Leaving the typing cursor (`input`) no longer makes the eyes jump out to the sides in one frame; they slide apart while they reshape, and slide together on the way in.
+
 ## [0.8.0] - 2026-11-05
 
 ### Changed
