@@ -63,13 +63,25 @@ async function build(face, v, key) {
     color: face.getAttribute('color'), eyeColor: face.getAttribute('eye-color'), eyeStyle: face.getAttribute('eye-style'),
   });
   if (token !== v.token || !face.isConnected) return;
+  const sideColors = await wallColors(face);
+  if (token !== v.token || !face.isConnected) return;
+  // The new head is built hidden next to the old one, takes over its state and
+  // draws one frame (eyes, turn) before the swap, so nothing jumps or blinks.
   const host = document.createElement('div');
   host.className = 'view-3d'; host.setAttribute('aria-hidden', 'true');
-  v.host.replaceWith(host); v.host = host;
-  v.avatar = createLayeredAvatar(host, captured, { size, sideColors: await wallColors(face), squash: 'settle' });
-  v.size = size;
-  v.avatar.setSquashGain(SQUASH_GAIN);
-  v.avatar.setRoundEyes(() => (String(face.getAttribute('eye-style') || '').toLowerCase() === 'sharp' ? 0 : 4));
+  host.style.visibility = 'hidden';
+  v.host.after(host);
+  const avatar = createLayeredAvatar(host, captured, { size, sideColors, squash: 'settle' });
+  avatar.setSquashGain(SQUASH_GAIN);
+  avatar.setRoundEyes(() => (String(face.getAttribute('eye-style') || '').toLowerCase() === 'sharp' ? 0 : 4));
+  avatar.restore(v.avatar?.snapshot());
+  avatar.syncEyes(face);
+  avatar.setHeadMotion(headOf(face));
+  avatar.pose(v.lastPose || { yaw: v.pose.yaw, pitch: v.pose.pitch, gazeX: 0, gazeY: 0 });
+  const old = v.host;
+  v.host = host; v.avatar = avatar; v.size = size;
+  host.style.visibility = '';
+  old.remove();
   v.key = key;
   face._motionHost = host;
   face.dataset.view = '3d';
@@ -129,5 +141,6 @@ registerAvatarExtension({
       this._expressionLock = false; this._headCenteringUntil = 0;
       try { v.avatar.pose(body); } finally { this._expressionLock = lock; this._headCenteringUntil = hc; }
     } else v.avatar.pose(base);
+    v.lastPose = body;
   },
 });

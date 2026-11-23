@@ -23,6 +23,12 @@ This release brings the 3D head, a new demo, and everything planned for 0.8.1 (C
 - Connect AI in the Studio: the chat scene plays a reply in any of the four formats through `connectAgent()`, the Behaviour tab picks the expression for each state, and the Code tab shows the code for each format.
 - React and Vue examples, `examples/react.html` and `examples/vue.html`, and a README section on using the component in both.
 
+### Changed
+
+- Tugging the antenna now leaves the avatar dizzy (it used to turn angry).
+- Dragging the head pulls it up to 20 units instead of 25, stiffening as it nears the limit.
+- The typing cursor is a little thicker and blinks at a text caret's pace (530 ms on, 530 ms off).
+
 ### Fixed
 
 - Leaving the typing cursor (`input`) no longer makes the eyes jump out to the sides: the cursor splits in the middle into two eyes almost at once, staying rounded the whole way (no pointed sliver).

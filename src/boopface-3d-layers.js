@@ -439,11 +439,12 @@ ${pairStyles}
         for (const part of eye.copies.map(c => c.parts.base)) { if (part?.getAttribute('cx') !== '0') part?.setAttribute('cx', '0'); if (part?.getAttribute('cy') !== '0') part?.setAttribute('cy', '0'); }
       }
       // How narrow the official eye is (1 = a sliver seen edge-on, as in the wrap waiting).
-      eye.rx = +r.getElementById(eye.side + 'Base')?.getAttribute('rx') || 27;
+      // (An eye squeezed to rx 0 is 0, not the default: the wrap's departed eye.)
+      const rxA = r.getElementById(eye.side + 'Base')?.getAttribute('rx'); eye.rx = rxA == null ? 27 : +rxA;
       // Measured against the eye's own height: a small round eye (the moment
       // before surprise, a shrinking dizzy eye) is not narrow and must not be
       // pushed out to the outline; only an eye squeezed sideways is.
-      const ry = +r.getElementById(eye.side + 'Base')?.getAttribute('ry') || 29;
+      const ryA = r.getElementById(eye.side + 'Base')?.getAttribute('ry'), ry = ryA == null ? 29 : +ryA;
       // Both must hold: narrower than a normal eye AND narrower than it is tall
       // (a heart's tall lobes are not narrow; a small round eye is not either).
       eye.narrowX = Math.max(0, Math.min(1, 1 - 2 * eye.rx / 54, 1 - (eye.rx / Math.max(ry, 1)) / (27 / 29)));
@@ -528,7 +529,7 @@ ${pairStyles}
       if ((ay - eyeScr.y) * (by - eyeScr.y) <= 0 && ay !== by) edge = Math.max(edge, sign * (ax + (bx - ax) * (eyeScr.y - ay) / (by - ay)));
     }
     if (!isFinite(edge)) return c;
-    const want = edge - eye.rx * (eye.lin[0] || 1) - 1; // the eye's outer side just inside the outline (1 unit of edge left)
+    const want = edge - eye.rx * (eye.lin[0] || 1) + .3; // the eye's outer side on the outline (as the flat drawing clips it there)
     let x = c.x;
     for (let k = 0; k < 3; k++) { const q = project(x, c.y, c.z), d = want - sign * q.x, slope = Math.max(.3, Math.abs(project(x + sign, c.y, c.z).x - q.x)); x += sign * d / slope; }
     // Outward or inward: the official eye drifts a little further out as it
@@ -550,7 +551,11 @@ ${pairStyles}
     // their size (heart, crossing orbits). Two eyes side by side where one is
     // a narrow sliver (the wrap waiting) do not overlap and stay separate.
     const size = ((1 - (eyes[0].narrow || 0)) + (1 - (eyes[1].narrow || 0))) / 2;
-    const gap = Math.hypot(t[0][0] - t[1][0], t[0][1] - t[1][1]), rigid = Math.max(0, Math.min(1, (56 * size - gap) / 20));
+    // An eye squeezed to nothing (the wrap's first eye, gone past the rim)
+    // does not pair up with the one coming after it, or it would pull that
+    // one off the outline.
+    const gone = eyes.some(e => (e.rx ?? 27) < 1);
+    const gap = Math.hypot(t[0][0] - t[1][0], t[0][1] - t[1][1]), rigid = gone ? 0 : Math.max(0, Math.min(1, (56 * size - gap) / 20));
     const mid = [(t[0][0] + t[1][0]) / 2, (t[0][1] + t[1][1]) / 2], anchor = rigid > 0 ? surface(...mid, .7) : null;
     const together = rigid >= .5;
     // display, not visibility: the eye clones force their eye visible inside.
@@ -749,6 +754,14 @@ ${pairStyles}
       const hs = m || hm;
       shown = { Y, P, hm: hs, ax, ay };
       if (antennaNode) antennaNode.style.transform = `translate3d(${ax * u}px,${ay * u}px,0) rotateY(${-Y}deg) rotateX(${-P}deg) scale(${1 / Math.hypot(hs[0], hs[1])},${1 / Math.hypot(hs[2], hs[3])})`;
+    },
+    // A rebuilt head (new colour, skin or size) takes over the old one's turn,
+    // springs and squash, so the swap shows no jump or settle bounce.
+    snapshot() { return { touch, center, sq: { ...sq }, shown: { ...shown }, headAnim, tugAngle, lastTime }; },
+    restore(s) {
+      if (!s) return;
+      touch = s.touch; center = s.center; Object.assign(sq, s.sq); shown = { ...s.shown };
+      headAnim = s.headAnim; tugAngle = s.tugAngle; lastTime = s.lastTime;
     },
     // Squash can be switched on and off live.
     setSquashGain(g) { squashGain.value = Math.max(0, +g || 0); },

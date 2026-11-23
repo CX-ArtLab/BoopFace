@@ -361,9 +361,11 @@ function programActionOwnsExpression(instance) {
 
 function startDragReaction(instance, reaction) {
   if (!reaction || programActionOwnsExpression(instance)) return;
-  const result = reaction === 'angry'
-    ? instance.angry({ fromDrag: true })
-    : instance.success({ fromDrag: true });
+  const result = reaction === 'dizzy'
+    ? instance.play('dizzy')
+    : reaction === 'angry'
+      ? instance.angry({ fromDrag: true })
+      : instance.success({ fromDrag: true });
   const record = beginAction(instance, 'reaction', 'interaction', false);
   trackFiniteAction(instance, record, result);
 }
@@ -714,7 +716,8 @@ proto._endGestureAction = function(phase, react = false, silent = false) {
     if (silent) cancelActiveAction(this, { silent: true });
     else finishAction(this, record, phase);
   }
-  if (react) startDragReaction(this, 'angry');
+  // Tugging the antenna leaves the avatar dizzy.
+  if (react) startDragReaction(this, 'dizzy');
 };
 
 proto._onDragEnd = function(event) {

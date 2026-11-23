@@ -1973,6 +1973,7 @@ code, kbd {
 .eye-color-row.is-locked .aw-row,
 .eye-color-row.is-locked .cur-dot-swatch { opacity: 0.3; pointer-events: none; }
 .eye-color-row.is-locked strong { color: var(--muted); }
+.switch-row.is-locked { opacity: 0.4; pointer-events: none; }
 .color-pair-wrap {
   position: relative;
   display: grid;

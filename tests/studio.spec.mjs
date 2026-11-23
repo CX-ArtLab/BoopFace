@@ -190,3 +190,26 @@ test('the size slider resizes the 3D avatar while dragging, centred, up to 300 p
   // The 3D head follows each step and stays centred (one step of lag at most).
   expect(result.worst).toBeLessThan(12);
 });
+
+test('Wake does not put an awake avatar to sleep first, and see-through on a skin keeps the skin', async ({ page }) => {
+  await page.goto('/demo/?lang=zh-CN');
+  await ready(page);
+  const face = page.locator('#stageFace');
+  await face.evaluate(f => { window.played = []; const play = f.play.bind(f); f.play = a => { window.played.push(a); return play(a); }; });
+  await page.locator('#actionGroups button[data-action="wake"]').click();
+  await page.waitForTimeout(500);
+  expect(await page.evaluate(() => window.played)).not.toContain('sleep');
+  // A skin with plain eyes: see-through stays on the skin.
+  await page.locator('[data-inspector-tab="skins"]').click();
+  await page.locator('[data-filter="all"]').click();
+  await page.locator('button.skin-card[data-skin="901"]').click();
+  await page.locator('[data-inspector-tab="look"]').click();
+  await page.locator('label:has(#eyeThroughToggle)').click();
+  await expect.poll(() => face.evaluate(f => f.getAttribute('skin'))).toBe('901');
+  await expect.poll(() => face.evaluate(f => f.getAttribute('eye-color'))).not.toBeNull();
+  // A skin whose eyes are part of its design: the switch is disabled.
+  await page.locator('[data-inspector-tab="skins"]').click();
+  await page.locator('button.skin-card[data-skin="101"]').click();
+  await page.locator('[data-inspector-tab="look"]').click();
+  await expect(page.locator('#eyeThroughToggle')).toBeDisabled();
+});

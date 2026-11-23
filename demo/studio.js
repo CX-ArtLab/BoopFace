@@ -175,7 +175,7 @@ const THINK_STYLES = {
   bloom: { label: '绽放' },
   cross: { label: '十字' },
   spin: { label: '旋转' },
-  wrap: { label: '滚动' },
+  wrap: { label: '环绕' },
   wave: { label: '波动' },
 };
 
@@ -199,6 +199,8 @@ const state = {
   flatBg: DEFAULT_FLAT.bg,
   flatHead: DEFAULT_FLAT.head,
   eyeThrough: true,
+  // See-through eyes on a skin (only skins with plain eyes); off by default.
+  skinEyeThrough: false,
   // null = auto: the avatar's own eyes (a skin's, or the plain default).
   eyeColor: null,
   headSlots: [...DEFAULT_SLOTS.head],
@@ -337,7 +339,7 @@ function paintCustomFace(face, { isStage = false, bot = null } = {}) {
     const eyeColor = !state.eyeThrough ? state.eyeColor : isStage ? (state.dimension === '3d' ? effectiveBgColor() : 'transparent') : (state.chatLook === 'dark' ? '#1f1f21' : '#e8e9ec');
     face.setEyeColor(eyeColor);
   }
-  if (state.surface === 'skin') face.setEyeColor(skinEyeColor());
+  if (state.surface === 'skin') face.setEyeColor(skinEyeColor(isStage));
   if (bot) face.setEyeColor(null);
   // Only the main stage shows the 3D head (the small previews stay flat).
   if (isStage) face.setView(state.dimension === '3d' ? '3d' : '2d');
@@ -348,12 +350,18 @@ function paintCustomFace(face, { isStage = false, bot = null } = {}) {
 function skinTakesEyeColor(id = state.skinId) {
   return skinById.get(id)?.eyeColor !== false;
 }
-function skinEyeColor() {
-  return state.eyeColor && skinTakesEyeColor() ? state.eyeColor : null;
+// The see-through switch belongs to the current look: plain or skin.
+function throughOn() { return state.surface === 'skin' ? state.skinEyeThrough : state.eyeThrough; }
+function setThrough(on) { if (state.surface === 'skin') state.skinEyeThrough = on; else state.eyeThrough = on; }
+function skinEyeColor(isStage = false) {
+  if (!skinTakesEyeColor()) return null;
+  // The 3D stage head takes the background colour (the same look on a plain stage).
+  if (state.skinEyeThrough) return isStage && state.dimension === '3d' ? effectiveBgColor() : 'transparent';
+  return state.eyeColor;
 }
 // The eye colour the avatar really gets, for the code panel (null = none).
 function appliedEyeColor() {
-  if (state.surface === 'skin') return skinEyeColor();
+  if (state.surface === 'skin') return skinTakesEyeColor() ? (state.skinEyeThrough ? 'transparent' : state.eyeColor) : null;
   return state.eyeThrough ? 'transparent' : state.eyeColor;
 }
 
@@ -478,7 +486,11 @@ function updateUI() {
   $('customBgDot').style.setProperty('--cur-color', state.flatBg);
   $('customHeadDot').style.setProperty('--cur-color', state.flatHead);
   syncEyeColorRow(isSkin);
-  $('eyeThroughToggle').checked = state.eyeThrough;
+  $('eyeThroughToggle').checked = throughOn();
+  // A skin whose eyes are part of its design cannot be seen through either.
+  const throughLocked = isSkin && !skinTakesEyeColor();
+  $('eyeThroughToggle').disabled = throughLocked;
+  $('eyeThroughToggle').closest('label').classList.toggle('is-locked', throughLocked);
   syncColorDotSelections();
   syncPaletteSelections();
   syncSavePaletteBtn();
@@ -838,12 +850,14 @@ async function playAction(action) {
     await targetFace.startWaiting({ variant: runtimeAction.replace('waiting-', '') });
     return;
   }
+  // Wake only wakes a sleeping avatar (as the original demo); awake, it does
+  // nothing. A press already wakes it by itself (wake-on activity).
+  if (runtimeAction === 'wake') {
+    if (targetFace._sleeping || targetFace._state === 'sleep') await targetFace.play('wake');
+    return;
+  }
   do {
     if (token !== loopToken) return;
-    if (runtimeAction === 'wake' && !targetFace._sleeping) {
-      await targetFace.play('sleep');
-      if (token !== loopToken) return;
-    }
     await targetFace.play(runtimeAction);
     if (!state.loop || token !== loopToken) return;
     await new Promise(r => setTimeout(r, 420));
@@ -1360,7 +1374,7 @@ function setColorVal(target, hex) {
 // Head and background colours switch to the plain look; an eye colour works on
 // a skin too, and turns the see-through eyes off so the colour shows.
 function startColorPick(target) {
-  if (target === 'eye') { state.eyeThrough = false; return; }
+  if (target === 'eye') { setThrough(false); return; }
   state.surface = 'flat';
   state.backdrop = 'custom';
 }
@@ -1368,7 +1382,7 @@ function startColorPick(target) {
 function syncEyeColorRow(isSkin) {
   const row = $('eyeColorRow');
   const locked = isSkin && !skinTakesEyeColor();
-  const dim = !isSkin && state.eyeThrough;
+  const dim = !locked && throughOn();
   row.classList.toggle('is-locked', locked);
   row.classList.toggle('is-dim', dim);
   row.title = locked ? '这款皮肤的眼睛有自己的质感，不能改色' : dim ? '眼睛穿透开启中，选一个颜色会关闭穿透' : '';
@@ -1937,9 +1951,7 @@ $('swapColorsBtn').addEventListener('click', () => {
   syncAllFaces();
 });
 $('eyeThroughToggle').addEventListener('change', e => {
-  state.surface = 'flat';
-  state.backdrop = 'custom';
-  state.eyeThrough = e.target.checked;
+  setThrough(e.target.checked);
   syncAllFaces();
 });
 

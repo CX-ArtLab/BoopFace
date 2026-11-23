@@ -217,3 +217,16 @@ test('renamed actions (wary, affirm, refuse, waiting-spin) get their head motion
     expect(moved, action).toBe(true);
   }
 });
+
+test('tugging the antenna leaves the avatar dizzy', async ({ page }) => {
+  await page0(page, '<boop-face id="a" size="200" motion="full"></boop-face>');
+  await expect.poll(() => page.evaluate(() => Boolean(a.shadowRoot.querySelector('#antennaDot')))).toBe(true);
+  await page.evaluate(() => { window.states = []; a.addEventListener('action-state', e => window.states.push(e.detail.action)); });
+  const dot = await page.evaluate(() => { const b = a.shadowRoot.querySelector('#antennaDot').getBoundingClientRect(); return { x: b.left + b.width / 2, y: b.top + b.height / 2 }; });
+  await page.mouse.move(dot.x, dot.y);
+  await page.mouse.down();
+  await page.mouse.move(dot.x + 120, dot.y + 40, { steps: 10 });
+  await page.mouse.up();
+  await expect.poll(() => page.evaluate(() => window.states), { timeout: 5000 }).toContain('dizzy');
+  expect(await page.evaluate(() => window.states)).not.toContain('angry');
+});

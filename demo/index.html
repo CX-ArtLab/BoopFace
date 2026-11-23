@@ -277,7 +277,7 @@
                   <button type="button" data-action="think" data-new="true" title="avatar.play('think')">思考</button>
                   <button type="button" data-action="ponder" data-new="true" title="avatar.play('ponder')">沉思</button>
                   <button type="button" data-action="waiting-spin" title="avatar.startWaiting({ variant: 'spin' })">旋转</button>
-                  <button type="button" data-action="waiting-wrap" title="avatar.startWaiting({ variant: 'wrap' })">滚动</button>
+                  <button type="button" data-action="waiting-wrap" title="avatar.startWaiting({ variant: 'wrap' })">环绕</button>
                   <button type="button" data-action="waiting-wave" title="avatar.startWaiting({ variant: 'wave' })">波动</button>
                   <button type="button" data-action="waiting-bloom" title="avatar.startWaiting({ variant: 'bloom' })">绽放</button>
                   <button type="button" data-action="waiting-cross" data-new="true" title="avatar.startWaiting({ variant: 'cross' })">十字</button>
@@ -339,7 +339,7 @@
                           <svg class="voice-check" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5 5.5 10.5 11.5 3.8"/></svg>
                         </button>
                         <button type="button" role="menuitemradio" aria-checked="false" data-think-style="wrap">
-                          <span>滚动</span>
+                          <span>环绕</span>
                           <svg class="voice-check" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5 5.5 10.5 11.5 3.8"/></svg>
                         </button>
                         <button type="button" role="menuitemradio" aria-checked="false" data-think-style="wave">
@@ -438,7 +438,7 @@
               <div class="aw-row" id="eyeDotsRow"></div>
             </div>
 
-            <label class="prop-row is-tail switch-row" title="纯色模式下眼眶自动透出当前舞台背景色">
+            <label class="prop-row is-tail switch-row" title="眼睛透出背后的舞台背景（有质感眼睛的皮肤不能用）">
               <span class="prop-lead">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.8-6 10-6 10 6 10 6-3.8 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="2.8"/></svg>
                 <strong>眼睛穿透</strong>
@@ -575,7 +575,7 @@
             <div class="agent-row"><span>接口格式</span><div class="mini-seg" data-agent="format">
               <button type="button" data-value="openai">OpenAI</button><button type="button" data-value="anthropic">Anthropic</button><button type="button" data-value="ai-sdk">AI SDK</button><button type="button" data-value="ag-ui">AG-UI</button></div></div>
             <div class="agent-row"><span>思考时</span><div class="mini-seg" data-agent="thinking">
-              <button type="button" data-value="waiting-spin">旋转</button><button type="button" data-value="waiting-wrap">滚动</button><button type="button" data-value="waiting-wave">波动</button><button type="button" data-value="waiting-bloom">绽放</button><button type="button" data-value="waiting-cross">十字</button></div></div>
+              <button type="button" data-value="waiting-spin">旋转</button><button type="button" data-value="waiting-wrap">环绕</button><button type="button" data-value="waiting-wave">波动</button><button type="button" data-value="waiting-bloom">绽放</button><button type="button" data-value="waiting-cross">十字</button></div></div>
             <div class="agent-row"><span>用工具时</span><div class="mini-seg" data-agent="tool">
               <button type="button" data-value="waiting-wave">波动</button><button type="button" data-value="waiting-spin">旋转</button><button type="button" data-value="inspect">审视</button></div></div>
             <div class="agent-row"><span>回复文字时</span><div class="mini-seg" data-agent="replying">

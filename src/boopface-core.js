@@ -42,7 +42,7 @@ const BoopFace = (() => {
       scale: 1,
     },
     input: {
-      w: 12, h: 78, rx: 2,
+      w: 15, h: 78, rx: 2,
       topY: -44, bottomY: 44,
       topAL: 0, topAR: 0, bottomAL: 0, bottomAR: 0,
       scale: 1,
@@ -63,6 +63,9 @@ const BoopFace = (() => {
   };
 
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  // How far a drag pulls the head: up to 20 (not 25), stiffening on the way so
+  // it eases into the limit: f(m) = m - m^5 / (5 * 25^4), which is 20 at 25.
+  const stiffPull = p => { const m = Math.min(Math.abs(p), 25); return Math.sign(p) * (m - m ** 5 / (5 * 25 ** 4)); };
   const lerp = (a, b, t) => a + (b - a) * t;
   const clonePose = p => ({...p});
   const DEFAULT_SIZE = 112;
@@ -453,8 +456,8 @@ const BoopFace = (() => {
       j.angle = Math.atan2(j.uy, j.ux);
       j.intent = radial < -6 ? 'success' : 'angry';
       const gain = dist > j.threshold * .60 ? 0.24 : 0.19;
-      j.targetPullX = clamp(pdx * gain, -25, 25);
-      j.targetPullY = clamp(pdy * gain, -25, 25);
+      j.targetPullX = stiffPull(pdx * gain);
+      j.targetPullY = stiffPull(pdy * gain);
       j.targetX = clamp(dx * 0.065, -5.2, 5.2);
       j.targetY = clamp(dy * 0.065, -5.2, 5.2);
       j.targetStretch = clamp((radial / 240) * .08, -.028, .052);
@@ -1066,7 +1069,7 @@ const BoopFace = (() => {
 
       const blinkH = Math.max(2.6, p.h * this._blink * nodScaleY * surpriseScale);
       const yAdjust = (p.h - blinkH) * 0.02;
-      const cursorPeriod = 530;
+      const cursorPeriod = 1060; // a text caret's pace: 530 ms on, 530 ms off
       const inputBlinkOn = this._state==='input' ? ((Math.floor(now / (cursorPeriod/2)) % 2) === 0) : true;
       const inputPulseL = this._state==='input' ? (inputBlinkOn ? 1 : 0) : 1;
       const inputPulseR = inputPulseL;

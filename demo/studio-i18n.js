@@ -216,7 +216,7 @@ const EN = {
 "深色背景": "Dark background",
 "清空日志": "Clear log",
 "渲染维度模式": "View",
-"滚动": "Wrap",
+"环绕": "Wrap",
 "点击复制 HEX 色号": "Click to copy the HEX code",
 "点击复制头部色号": "Click to copy the head colour",
 "点击复制当前外观属性": "Click to copy the look attributes",
@@ -241,7 +241,6 @@ const EN = {
 "繁體中文": "繁體中文",
 "红色 R": "Red R",
 "纯色": "Color",
-"纯色模式下眼眶自动透出当前舞台背景色": "In colour mode the eyes show the stage background",
 "经典纯色": "Classic colour",
 "经典黑白": "Classic black and white",
 "继续等待": "Keep waiting",
@@ -349,6 +348,7 @@ const EN = {
 "玻璃与透明": "Glass",
 "材质与图案": "Materials",
 "还没有收藏。选一款皮肤，点上方的「收藏」，它就会出现在这里。": "Nothing saved yet. Pick a skin and click Save above; it will show up here.",
+"眼睛透出背后的舞台背景（有质感眼睛的皮肤不能用）": "The eyes show the stage behind them (not on skins whose eyes are part of their design)",
 "再点可互换": "click again to swap",
 "点击复制": "click to copy"
 };
