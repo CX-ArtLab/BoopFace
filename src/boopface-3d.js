@@ -90,10 +90,6 @@ Object.defineProperty(BoopFace.prototype, 'view', { get() { return wantedView(th
 registerAvatarExtension({
   name: 'view-3d',
   draw(now) {
-    if (!this._viewObserver && typeof MutationObserver !== 'undefined') {
-      this._viewObserver = new MutationObserver(() => this._resumeFrames?.());
-      this._viewObserver.observe(this, { attributes: true, attributeFilter: ['view', 'skin', 'color', 'eye-color', 'eye-style', 'size'] });
-    }
     if (wantedView(this) !== '3d') { if (this._view3d || this._view3dState?.avatar) leave3d(this); return; }
     this._view3d = true;
     const v = view3d(this), key = paintKey(this);

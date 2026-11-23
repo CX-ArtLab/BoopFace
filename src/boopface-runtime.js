@@ -462,13 +462,15 @@ function ensureRuntime(instance) {
         if (record.attributeName === 'motion') motionChanged = true;
         if (record.attributeName === 'auto-sleep') autoSleepChanged = true;
         if (record.attributeName === 'skin') instance._applySkinAttribute?.();
+        // Read on the next frame by their own modules (3D view, eye colour, rounded eyes).
+        if (['view', 'eye-color', 'eye-style', 'color'].includes(record.attributeName)) instance._resumeFrames?.();
       }
       if (motionChanged) handleMotionChange(instance);
       if (autoSleepChanged) scheduleAutoSleep(instance);
     });
     instance._runtimeAttributeObserver.observe(instance, {
       attributes: true,
-      attributeFilter: ['size', 'motion', 'wake-on', 'auto-sleep', 'skin'],
+      attributeFilter: ['size', 'motion', 'wake-on', 'auto-sleep', 'skin', 'view', 'eye-color', 'eye-style', 'color'],
     });
   }
   // A skin set with setSkin() survives a reconnect: markup applies only when it

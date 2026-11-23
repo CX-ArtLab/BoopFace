@@ -15,11 +15,6 @@ function targets(instance) {
     base: root.getElementById(`${side}Base`), input: root.getElementById(`${side}InputBase`),
     top: root.getElementById(`${side}Top`), bottom: root.getElementById(`${side}Bottom`),
   }));
-  // A changed eye-style must show even while the avatar rests.
-  if (typeof MutationObserver !== 'undefined') {
-    new MutationObserver(() => { instance._roundEyeSig = ''; instance._resumeFrames?.(); })
-      .observe(instance, { attributes: true, attributeFilter: ['eye-style', 'eye-color'] });
-  }
   return instance._roundEyeTargets;
 }
 

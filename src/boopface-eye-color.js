@@ -60,10 +60,6 @@ BoopFace.prototype.setEyeColor = function(value) {
 registerAvatarExtension({
   name: 'eye-color',
   draw() {
-    if (!this._eyeColorObserver && typeof MutationObserver !== 'undefined') {
-      this._eyeColorObserver = new MutationObserver(() => apply(this));
-      this._eyeColorObserver.observe(this, { attributes: true, attributeFilter: ['eye-color'] });
-    }
     if (this._eyeColorApplied !== String(this.getAttribute('eye-color') || '').trim()) apply(this);
   },
 });

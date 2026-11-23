@@ -44,9 +44,8 @@ function attachPet({ views, faces, options, isFlat = () => false, onStart = () =
   // Is the pointer still on the upper half of the petted head?
   const onUpperHead = e => { if (!strokeView) return false; const r = strokeView.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height; return x > .1 && x < .9 && y > 0 && y < .5; };
   let handInside = false;
-  document.addEventListener('pointerleave', () => { handInside = false; });
-  addEventListener('blur', () => { handInside = false; });
-  addEventListener('pointermove', e => {
+  const onLeave = () => { handInside = false; };
+  const onMove = e => {
     if (petting) handInside = onUpperHead(e);
     if (e.buttons || !enabled()) { lastX = null; return; }
     const v = views().find(v => inForehead(e, v)); const hit = v && inForehead(e, v);
@@ -62,7 +61,7 @@ function attachPet({ views, faces, options, isFlat = () => false, onStart = () =
       if (petting && Math.abs(dx) > .004) lastStroke = performance.now();
     }
     lastX = x;
-  });
+  };
   function countStroke() {
     const now = performance.now();
     strokes = strokes.filter(t => now - t < WINDOW); strokes.push(now); lastStroke = now;
@@ -171,6 +170,7 @@ function attachPet({ views, faces, options, isFlat = () => false, onStart = () =
     for (const f of petFaces) if (f._nextBlinkAt === Infinity) f._nextBlinkAt = performance.now() + 900 + Math.random() * 1200;
   }
   return {
+    onMove, onLeave,
     afterDraw,
     get petting() { return petting; }, start, stop, cancel,
     // Is this face being petted (or easing out of it)?
@@ -180,8 +180,19 @@ function attachPet({ views, faces, options, isFlat = () => false, onStart = () =
   };
 }
 
-// One per avatar, wired once it is first drawn.
+// One per avatar, wired once it is first drawn. Pointer moves arrive through
+// the avatar's own shared pointer handling; leaving the window is one shared
+// listener for all of them.
 const pets = new WeakMap();
+const live = new Set();
+let listening = false;
+function listen() {
+  if (listening || typeof window === 'undefined') return;
+  listening = true;
+  const leave = () => { for (const p of live) p.onLeave(); };
+  document.addEventListener('pointerleave', leave);
+  window.addEventListener('blur', leave);
+}
 function petOf(face) {
   let p = pets.get(face);
   if (!p) {
@@ -193,8 +204,15 @@ function petOf(face) {
     });
     pets.set(face, p);
   }
+  if (face.isConnected) { live.add(p); listen(); }
   return p;
 }
+
+const baseOnPointerMove = BoopFace.prototype._onPointerMove;
+BoopFace.prototype._onPointerMove = function(event) {
+  baseOnPointerMove.call(this, event);
+  pets.get(this)?.onMove(event);
+};
 
 BoopFace.prototype.setPetting = function(enabled = true) {
   this._pettingEnabled = enabled !== false;
@@ -206,7 +224,8 @@ registerAvatarExtension({
   name: 'petting',
   // Any action ends the petting (eased back, never a jump).
   beforePlay() { pets.get(this)?.cancel(); },
-  reset() { pets.get(this)?.cancel(); },
+  // Reset also runs on disconnect: a removed avatar stops listening.
+  reset() { const p = pets.get(this); p?.cancel(); if (p && !this.isConnected) live.delete(p); },
   draw() { petOf(this).afterDraw(this); },
 });
 
