@@ -142,9 +142,10 @@ ${pairStyles}
   // drawing's mask, which would punch its holes at the flat eye positions.
   for (const n of captured.svg.querySelectorAll('[mask]')) if (/eye-through/.test(n.getAttribute('mask'))) n.removeAttribute('mask');
   const head = root.querySelector('.head');
-  const headD = captured.svg.querySelector('#headShape').getAttribute('d');
-  const outline = (headD.match(/-?\d*\.?\d+/g) || []).map(Number).reduce((a, v, i, all) => (i % 2 ? a : a.concat([[(v - 120) * .94, (all[i + 1] - 120) * .94]])), []);
-  const radii = radiusTable(outline);
+  let headD = captured.svg.querySelector('#headShape').getAttribute('d');
+  const parseOutline = d => (d.match(/-?\d*\.?\d+/g) || []).map(Number).reduce((a, v, i, all) => (i % 2 ? a : a.concat([[(v - 120) * .94, (all[i + 1] - 120) * .94]])), []);
+  let outline = parseOutline(headD);
+  let radii = radiusTable(outline);
   const radiusAt = (x, y) => { const a = ((Math.atan2(y, x) * 360 / Math.PI) % 720 + 720) % 720, i = Math.floor(a), f = a - i; return radii[i] * (1 - f) + radii[(i + 1) % 720] * f; };
   const height = (x, y) => { const r = radiusAt(x, y); return depth * Math.sqrt(Math.max(0, 1 - (x * x + y * y) / (r * r))); };
   const SKIP = '';
@@ -231,7 +232,7 @@ ${pairStyles}
   };
   // Every copy of the outline that a drag may bend (skins keep their own copy).
   const outlinePaths = [...face.querySelectorAll('path[id$="headShape"]'), ...decalShapes];
-  const basePoints = outline.map(([x, y]) => [x / .94 + 120, y / .94 + 120]);
+  let basePoints = outline.map(([x, y]) => [x / .94 + 120, y / .94 + 120]);
   let bent = false;
   // Centre of a highlight stroke in headShape coordinates (pattern space).
   const glossCenter = h => {
@@ -319,7 +320,7 @@ ${pairStyles}
   // the original's way: with a skin the eyes themselves stay invisible and
   // the joined eye surface, cut to both eyes together, is what shows.
   const pairSvg = uniqueAllIds(captured.svg.cloneNode(true), 'pair-');
-  let pairModes = null;
+  let pairModes = null, paintsLikeFlat = false;
   {
     const eyesGroup = pairSvg.querySelector('#pair-leftEye').parentElement, joined = pairSvg.querySelector('[id$="joined-eye-surface"]');
     const motion = pairSvg.querySelector('#pair-headMotion');
@@ -328,6 +329,10 @@ ${pairStyles}
     // Paint both eyes as one surface, the original's way: the eyes only shape
     // a mask, and a single eye-coloured sheet with the raised-eye relief shows
     // through it. Where they overlap there is one outline and no seam.
+    // Skins with a joined eye surface of their own (the raised-eye
+    // materials) paint it over the whole 240 box, so its shading never moves
+    // as the shape turns (the bloom spins); the sheet does the same.
+    paintsLikeFlat = !!joined;
     joined?.remove();
     eyesGroup.removeAttribute('clip-path'); eyesGroup.style.opacity = '0';
     // The eyes only cut the shape: without their own relief blur, or the
@@ -373,8 +378,9 @@ ${pairStyles}
     // Eyes painted with a plain colour (set by a rule rather than the eye
     // colour variable) give the joined sheet that same colour.
     const plain = base && getComputedStyle(base).fill;
-    if (sheetRect && plain && !/url\(/.test(plain) && plain !== 'none') sheetRect.setAttribute('fill', plain);
-    if (sheetRect && /Gradient$/.test(grad?.tagName || '')) {
+    if (sheetRect && paintsLikeFlat) for (const [k, v] of [['x', 0], ['y', 0], ['width', 240], ['height', 240]]) sheetRect.setAttribute(k, v);
+    else if (sheetRect && plain && !/url\(/.test(plain) && plain !== 'none') sheetRect.setAttribute('fill', plain);
+    if (sheetRect && !paintsLikeFlat && /Gradient$/.test(grad?.tagName || '')) {
       unionPaint = grad.cloneNode(true); unionPaint.id = 'pair-union-paint'; unionPaint.setAttribute('gradientUnits', 'userSpaceOnUse'); unionPaint.removeAttribute('gradientTransform');
       pairSvg.querySelector('defs').append(unionPaint); sheetRect.setAttribute('fill', 'url(#pair-union-paint)');
     }
@@ -782,6 +788,16 @@ ${pairStyles}
   return {
     // Call each frame with the running official avatar.
     syncEyes(b) { attachBrain(b); syncEyes(b); syncLight(b); },
+    // A new head outline (the roundness slider being dragged): the face, the
+    // side wall and the eye surface follow at once; the full rebuild (skin
+    // highlights traced again) comes once the slider rests.
+    setHeadPath(d) {
+      if (!d || d === headD) return;
+      headD = d; outline = parseOutline(d); radii = radiusTable(outline);
+      basePoints = outline.map(([x, y]) => [x / .94 + 120, y / .94 + 120]);
+      if (!bent) { for (const n of outlinePaths) n.setAttribute('d', d); wallOutline = outline; }
+      wallCache = null; wallMemo.clear(); last = '';
+    },
     // The official expression motion (bounce, droop, surprise pop, squeeze
     // shake) as a CSS transform string, applied around the head centre.
     setHeadMotion(t) { headAnim = t && t !== 'none' ? (t.startsWith('matrix(') ? t : new DOMMatrix(t).toString()) : ''; },

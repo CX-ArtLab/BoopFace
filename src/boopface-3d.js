@@ -108,7 +108,7 @@ Object.defineProperty(BoopFace.prototype, 'view', { get() { return wantedView(th
 // First paint: an avatar asked for a skin or the 3D view is first drawn as the
 // plain black flat face while the skin painter and the 3D renderer load.
 // Instead it stays invisible until it looks the way it was asked to (at most
-// 1.5 s), then fades in.
+// 4 s, for slow networks), then fades in.
 const SKIN_MODULE = () => typeof BoopFace.prototype._skinKeepsEyes === 'function';
 function firstPaint(face, now) {
   if (face._firstShown) return;
@@ -116,18 +116,27 @@ function firstPaint(face, now) {
   const skinOk = !wantSkin || (face._skinName !== undefined && (face._skinShown ?? null) === (face._skinName ?? null));
   const viewOk = wantedView(face) !== '3d' || face.dataset.view === '3d';
   face._firstAt ??= now;
-  if ((skinOk && viewOk) || now - face._firstAt > 1500) {
+  if ((skinOk && viewOk) || now - face._firstAt > 4000) {
     face._firstShown = true;
     if (face.hasAttribute('data-preparing')) face.removeAttribute('data-preparing');
     return;
   }
   if (!face._firstStyle) {
     face._firstStyle = document.createElement('style');
-    face._firstStyle.textContent = ':host([data-preparing]) svg,:host([data-preparing]) .view-3d{opacity:0}svg,.view-3d{transition:opacity .22s ease-out}';
+    // Hidden at once (no fade out), shown with a short fade in.
+    face._firstStyle.textContent = 'svg,.view-3d{transition:opacity .25s ease-out}:host([data-preparing]) svg,:host([data-preparing]) .view-3d{opacity:0;transition:none}';
     face.shadowRoot?.append(face._firstStyle);
   }
   if (!face.hasAttribute('data-preparing')) face.setAttribute('data-preparing', '');
 }
+
+// Checked as soon as the avatar joins the page, before its first paint, so the
+// plain face is never shown even for one frame.
+const baseConnected = BoopFace.prototype.connectedCallback;
+BoopFace.prototype.connectedCallback = function() {
+  baseConnected?.call(this);
+  if (this.shadowRoot) firstPaint(this, performance.now());
+};
 
 registerAvatarExtension({
   name: 'view-3d',
@@ -136,13 +145,25 @@ registerAvatarExtension({
     if (wantedView(this) !== '3d') { if (this._view3d || this._view3dState?.avatar) leave3d(this); return; }
     this._view3d = true;
     const v = view3d(this), key = paintKey(this);
-    if (key !== v.key && v.building !== key) {
+    // Only the roundness changed (its slider being dragged): rebuild again and
+    // again while it moves, one after the other, so the skin's highlights
+    // follow the new shape too. Anything else (the size slider) rebuilds once
+    // it rests.
+    const onlyRound = !!v.key && key.split('|').every((part, i) => i === 4 || part === v.key.split('|')[i]);
+    if (key !== v.key && onlyRound && v.avatar) {
+      if (!v.inflight && !v.timer) v.timer = setTimeout(() => {
+        v.timer = 0; v.inflight = true; v.building = null;
+        build(this, v, paintKey(this)).finally(() => { v.inflight = false; this._resumeFrames?.(); });
+      }, 40);
+    } else if (key !== v.key && v.building !== key && !v.inflight) {
       v.building = key;
-      clearTimeout(v.timer);
-      // Debounced: a slider dragging the roundness or the size rebuilds once it rests.
-      v.timer = setTimeout(() => build(this, v, key).finally(() => { if (v.building === key) v.building = null; }), v.avatar ? 150 : 0);
+      clearTimeout(v.timer); v.timer = 0;
+      // Debounced: the size slider rebuilds once it rests.
+      v.timer = setTimeout(() => { v.timer = 0; v.inflight = true; build(this, v, key).finally(() => { v.inflight = false; if (v.building === key) v.building = null; this._resumeFrames?.(); }); }, v.avatar ? 150 : 0);
     }
     if (!v.avatar) return;
+    // The outline follows the roundness slider while it moves (the rebuild waits for it to rest).
+    if (this._baseHeadPathD) v.avatar.setHeadPath?.(this._baseHeadPathD);
     // Resized (a size slider being dragged): the head built for the old size is
     // scaled to the new one at once, so it follows the drag and stays centred;
     // the sharp rebuild comes once the size rests.
