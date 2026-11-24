@@ -1027,7 +1027,7 @@ code, kbd {
   gap: 16px;
   display: none;
 }
-.view-info:hover .view-info-pop, .view-info:focus-within .view-info-pop { display: grid; }
+.view-info.is-open .view-info-pop { display: grid; }
 .vi-head { display: grid; gap: 5px; }
 .view-info-title { font-size: 16px; color: #fff; }
 .vi-head span { font-size: 13px; color: var(--muted); line-height: 1.55; }
@@ -1565,6 +1565,27 @@ code, kbd {
   color: #fff;
   border-color: rgba(255, 255, 255, 0.16);
 }
+/* The volume slider floats above the speaker button. */
+.voice-vol { position: relative; display: inline-flex; }
+.voice-vol-pop {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%) translateY(4px);
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(14, 14, 14, 0.98);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.14s, transform 0.14s, visibility 0s linear 0.14s;
+  z-index: 30;
+}
+/* A bridge so the pointer can move from the button up to the slider. */
+.voice-vol-pop::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 10px; }
+.voice-vol.is-open .voice-vol-pop { opacity: 1; visibility: visible; transform: translateX(-50%); transition: opacity 0.14s, transform 0.14s; }
+.voice-vol-pop input[type="range"] { width: 110px; accent-color: #e5e5e5; display: block; }
 .voice-mute-btn svg {
   width: 15px;
   height: 15px;

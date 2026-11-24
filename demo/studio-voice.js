@@ -96,7 +96,7 @@ export function createVoiceEngine(opts) {
       output = context.createGain();
       output.connect(context.destination);
     }
-    output.gain.value = opts.sound() ? 1 : 0;
+    const level = opts.sound(); output.gain.value = typeof level === 'number' ? level : (level ? 1 : 0);
   }
 
   // The same soft cue marks the start of listening and of thinking.
@@ -204,6 +204,7 @@ export function createVoiceEngine(opts) {
   return {
     startTurn, stopTurn, playCue, pretendVoice,
     get playing() { return !!turn; },
-    setSound(on) { if (output) output.gain.value = on ? 1 : 0; },
+    // true / false, or a level from 0 to 1.
+    setSound(on) { if (output) output.gain.value = typeof on === 'number' ? on : (on ? 1 : 0); },
   };
 }

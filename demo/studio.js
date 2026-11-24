@@ -222,6 +222,7 @@ const state = {
   voiceStage: null,
   voiceThinkStyle: 'bloom',
   voiceMuted: false,
+  voiceVolume: 0.8,
   voiceDemoPlaying: false,
   skinCategory: 'featured',
   skinQuery: '',
@@ -998,8 +999,8 @@ function setThinkStyle(style) {
 function syncVoiceDemoButton() {
   const btn = $('voiceDemoBtn');
   btn.classList.toggle('is-playing', state.voiceDemoPlaying);
-  btn.querySelector('.play-icon').hidden = state.voiceDemoPlaying;
-  btn.querySelector('.stop-icon').hidden = !state.voiceDemoPlaying;
+  btn.querySelector('.play-icon').toggleAttribute('hidden', state.voiceDemoPlaying);
+  btn.querySelector('.stop-icon').toggleAttribute('hidden', !state.voiceDemoPlaying);
   $('voiceDemoLabel').textContent = state.voiceDemoPlaying ? '停止演示' : '播放演示对话';
 }
 
@@ -1010,7 +1011,7 @@ voiceCaption.setAttribute('aria-live', 'polite');
 voiceCaption.hidden = true;
 const voice = createVoiceEngine({
   face: () => activeAvatarFace(),
-  sound: () => !state.voiceMuted,
+  sound: () => (state.voiceMuted ? 0 : state.voiceVolume),
   style: () => state.voiceThinkStyle,
   onStep: step => {
     if (!step && state.voiceDemoPlaying) { state.voiceDemoPlaying = false; syncVoiceDemoButton(); }
@@ -1065,14 +1066,34 @@ $('voiceThinkPopover').addEventListener('click', e => {
   if (item) setThinkStyle(item.dataset.thinkStyle);
 });
 $('voiceDemoBtn').addEventListener('click', playVoiceDemo);
+// Volume: hovering the speaker shows the slider; a click mutes (the slider
+// opens so the level can be set right away). Silent shows the muted speaker.
+function syncVoiceVolume() {
+  const silent = state.voiceMuted || state.voiceVolume === 0, btn = $('voiceMuteBtn');
+  btn.setAttribute('aria-pressed', String(silent));
+  // SVG icons have no .hidden property: set the attribute itself.
+  btn.querySelector('.vol-on').toggleAttribute('hidden', silent);
+  btn.querySelector('.vol-off').toggleAttribute('hidden', !silent);
+  btn.title = silent ? '取消静音' : '静音'; btn.setAttribute('aria-label', btn.title);
+  $('voiceVolSlider').value = String(Math.round((state.voiceMuted ? 0 : state.voiceVolume) * 100));
+  voice.setSound(state.voiceMuted ? 0 : state.voiceVolume);
+}
+let volCloseTimer = 0;
+const openVolume = open => { clearTimeout(volCloseTimer); $('voiceVol').classList.toggle('is-open', open); };
+$('voiceVol').addEventListener('pointerenter', () => openVolume(true));
+$('voiceVol').addEventListener('pointerleave', () => { volCloseTimer = setTimeout(() => openVolume(false), 250); });
 $('voiceMuteBtn').addEventListener('click', () => {
-  state.voiceMuted = !state.voiceMuted;
-  const btn = $('voiceMuteBtn');
-  btn.setAttribute('aria-pressed', String(state.voiceMuted));
-  btn.querySelector('.vol-on').hidden = state.voiceMuted;
-  btn.querySelector('.vol-off').hidden = !state.voiceMuted;
-  voice.setSound(!state.voiceMuted);
+  if (state.voiceMuted || state.voiceVolume === 0) { state.voiceMuted = false; if (state.voiceVolume === 0) state.voiceVolume = 0.8; }
+  else state.voiceMuted = true;
+  openVolume(true);
+  syncVoiceVolume();
 });
+$('voiceVolSlider').addEventListener('input', e => {
+  state.voiceVolume = +e.target.value / 100;
+  state.voiceMuted = false;
+  syncVoiceVolume();
+});
+syncVoiceVolume();
 
 /* Inspector Tabs & Skin Search */
 // Connect AI's settings live in Code › Connect AI, above the code they change.
@@ -2788,5 +2809,14 @@ function replayViewCurve(plot) {
   const svg = plot.querySelector('svg');
   svg.classList.remove('is-drawing'); void svg.getBoundingClientRect(); svg.classList.add('is-drawing');
 }
-document.querySelector('.view-info')?.addEventListener('pointerenter', renderViewInfo);
-document.querySelector('.view-info')?.addEventListener('focusin', renderViewInfo);
+// Opens after the pointer rests on the i for a moment (a pointer passing over
+// it does not pop the card up); keyboard focus opens it at once.
+{
+  const info = document.querySelector('.view-info'); let openTimer = 0, closeTimer = 0;
+  const open = () => { clearTimeout(closeTimer); if (!info.classList.contains('is-open')) { info.classList.add('is-open'); renderViewInfo(); } };
+  const close = () => { clearTimeout(openTimer); info.classList.remove('is-open'); };
+  info?.addEventListener('pointerenter', () => { clearTimeout(closeTimer); if (!info.classList.contains('is-open')) openTimer = setTimeout(open, 450); });
+  info?.addEventListener('pointerleave', () => { clearTimeout(openTimer); closeTimer = setTimeout(close, 150); });
+  info?.addEventListener('focusin', open);
+  info?.addEventListener('focusout', close);
+}

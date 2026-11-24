@@ -462,10 +462,15 @@
                       <svg class="stop-icon" viewBox="0 0 14 14" aria-hidden="true" hidden><rect x="3" y="3" width="8" height="8" rx="1.5"/></svg>
                       <span id="voiceDemoLabel">播放演示对话</span>
                     </button>
-                    <button type="button" class="voice-mute-btn" id="voiceMuteBtn" aria-pressed="false" aria-label="静音切换" title="静音切换">
-                      <svg class="vol-on" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 6h2.8L9 3v10L5.3 10H2.5z"/><path d="M11.3 5.5a3.5 3.5 0 0 1 0 5M13 3.7a6 6 0 0 1 0 8.6"/></svg>
-                      <svg class="vol-off" viewBox="0 0 16 16" aria-hidden="true" hidden><path d="M2.5 6h2.8L9 3v10L5.3 10H2.5z"/><path d="m11.5 6 3 4M14.5 6l-3 4"/></svg>
-                    </button>
+                    <div class="voice-vol" id="voiceVol">
+                      <button type="button" class="voice-mute-btn" id="voiceMuteBtn" aria-pressed="false" aria-label="静音" title="静音">
+                        <svg class="vol-on" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 6h2.8L9 3v10L5.3 10H2.5z"/><path d="M11.3 5.5a3.5 3.5 0 0 1 0 5M13 3.7a6 6 0 0 1 0 8.6"/></svg>
+                        <svg class="vol-off" viewBox="0 0 16 16" aria-hidden="true" hidden><path d="M2.5 6h2.8L9 3v10L5.3 10H2.5z"/><path d="m11.5 6 3 4M14.5 6l-3 4"/></svg>
+                      </button>
+                      <div class="voice-vol-pop" role="group" aria-label="音量">
+                        <input type="range" id="voiceVolSlider" min="0" max="100" step="1" value="80" aria-label="音量">
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
