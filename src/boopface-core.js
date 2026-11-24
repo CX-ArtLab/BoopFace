@@ -63,6 +63,9 @@ const BoopFace = (() => {
   };
 
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  // Per-frame writes go through this: an attribute set to the value it already
+  // has still makes the browser redo style, layout and paint for that element.
+  const setA = (el, name, value) => { if (el.getAttribute(name) !== value) el.setAttribute(name, value); };
   // How far a drag pulls the head: up to 20 (not 25), stiffening on the way so
   // it eases into the limit: f(m) = m - m^5 / (5 * 25^4), which is 20 at 25.
   const stiffPull = p => { const m = Math.min(Math.abs(p), 25); return Math.sign(p) * (m - m ** 5 / (5 * 25 ** 4)); };
@@ -344,7 +347,7 @@ const BoopFace = (() => {
       if (!this._headShape || !this._baseHeadPoints?.length) return;
       const amount = Math.hypot(j.pullX, j.pullY);
       if (amount < 0.015) {
-        this._headShape.setAttribute('d', this._baseHeadPathD);
+        setA(this._headShape, 'd', this._baseHeadPathD);
         return;
       }
       const radius = (50 + amount * 0.8) * 0.92;
@@ -354,7 +357,7 @@ const BoopFace = (() => {
         const w = Math.exp(-(dx*dx + dy*dy) / (2 * radius * radius));
         return {x:p.x + j.pullX * w, y:p.y + j.pullY * w};
       });
-      this._headShape.setAttribute('d', this._pointsToPath(pts));
+      setA(this._headShape, 'd', this._pointsToPath(pts));
     }
 
     _onVisibility() {
@@ -492,7 +495,7 @@ const BoopFace = (() => {
       j.shear = j.shearVel = 0;
       j.pullX = j.pullY = j.pullVX = j.pullVY = 0;
       if (this._dragMotion) this._dragMotion.style.transform = '';
-      if (this._headShape) this._headShape.setAttribute('d', this._baseHeadPathD);
+      if (this._headShape) setA(this._headShape, 'd', this._baseHeadPathD);
       if (reaction === 'angry') this.angry({fromDrag:true});
       else if (reaction === 'success') this.success({fromDrag:true});
     }
@@ -544,6 +547,10 @@ const BoopFace = (() => {
       j.shear = clamp(j.shear, -0.026, 0.026);
       j.pullX = clamp(j.pullX, -26, 26);
       j.pullY = clamp(j.pullY, -26, 26);
+      // At rest there is nothing to draw: skip the writes (the runtime keeps
+      // the resting look; writing the identity transform each frame and
+      // clearing it again made the browser redo the head every frame).
+      if (!j.active && !j.returning && !j.pendingReaction && !j.x && !j.y && !j.stretch && !j.shear && !j.pullX && !j.pullY) return;
       this._applyHeadDeform();
       if (this._dragMotion) {
         const sx = 1 + j.stretch;
@@ -1023,7 +1030,7 @@ const BoopFace = (() => {
         const a = this._headFollowPose.rot.toFixed(2);
         const tx = this._headFollowPose.x.toFixed(2);
         const ty = this._headFollowPose.y.toFixed(2);
-        this._headFollow.setAttribute('transform', `translate(${tx} ${ty}) translate(120 120) rotate(${a}) translate(-120 -120)`);
+        setA(this._headFollow, 'transform', `translate(${tx} ${ty}) translate(120 120) rotate(${a}) translate(-120 -120)`);
       }
     }
 
@@ -1104,32 +1111,32 @@ const BoopFace = (() => {
         const inwardShift = ((baseW - w) * 0.58) * (side==='L' ? 1 : -1);
 
         if (isInput) {
-          base.setAttribute('opacity', '0');
-          inputBase.setAttribute('x', (-p.w/2).toFixed(2));
-          inputBase.setAttribute('y', (-p.h/2 + yAdjust).toFixed(2));
-          inputBase.setAttribute('width', p.w.toFixed(2));
-          inputBase.setAttribute('height', p.h.toFixed(2));
-          inputBase.setAttribute('rx', lerp(p.w / 2, cursorCorner, cursor).toFixed(2));
-          inputBase.setAttribute('ry', lerp(p.h / 2, cursorCorner, cursor).toFixed(2));
-          inputBase.setAttribute('opacity', opacity.toFixed(3));
+          setA(base, 'opacity', '0');
+          setA(inputBase, 'x', (-p.w/2).toFixed(2));
+          setA(inputBase, 'y', (-p.h/2 + yAdjust).toFixed(2));
+          setA(inputBase, 'width', p.w.toFixed(2));
+          setA(inputBase, 'height', p.h.toFixed(2));
+          setA(inputBase, 'rx', lerp(p.w / 2, cursorCorner, cursor).toFixed(2));
+          setA(inputBase, 'ry', lerp(p.h / 2, cursorCorner, cursor).toFixed(2));
+          setA(inputBase, 'opacity', opacity.toFixed(3));
         } else {
-          inputBase.setAttribute('opacity', '0');
-          base.setAttribute('cx', '0');
-          base.setAttribute('cy', yAdjust.toFixed(2));
-          base.setAttribute('rx', (w/2).toFixed(2));
-          base.setAttribute('ry', (h/2).toFixed(2));
-          base.setAttribute('opacity', opacity.toFixed(3));
+          setA(inputBase, 'opacity', '0');
+          setA(base, 'cx', '0');
+          setA(base, 'cy', yAdjust.toFixed(2));
+          setA(base, 'rx', (w/2).toFixed(2));
+          setA(base, 'ry', (h/2).toFixed(2));
+          setA(base, 'opacity', opacity.toFixed(3));
         }
         const topY = p.topY;
         const bottomY = p.bottomY;
         const ta = side==='L' ? p.topAL : p.topAR;
         const ba = side==='L' ? p.bottomAL : p.bottomAR;
-        top.setAttribute('y', (topY-90).toFixed(2));
-        top.setAttribute('height', '90');
-        top.setAttribute('transform', `rotate(${ta.toFixed(2)} 0 ${topY.toFixed(2)})`);
-        bottom.setAttribute('y', bottomY.toFixed(2));
-        bottom.setAttribute('height', '90');
-        bottom.setAttribute('transform', `rotate(${ba.toFixed(2)} 0 ${bottomY.toFixed(2)})`);
+        setA(top, 'y', (topY-90).toFixed(2));
+        setA(top, 'height', '90');
+        setA(top, 'transform', `rotate(${ta.toFixed(2)} 0 ${topY.toFixed(2)})`);
+        setA(bottom, 'y', bottomY.toFixed(2));
+        setA(bottom, 'height', '90');
+        setA(bottom, 'transform', `rotate(${ba.toFixed(2)} 0 ${bottomY.toFixed(2)})`);
         const jelly = jellyEyeOffset(cx, 126);
         return `translate(${(cx + this._look.x + microX + jelly.x + (isInput ? 0 : inwardShift)).toFixed(2)} ${(126 + this._look.y + microY + jelly.y + nodY + angryDropY + emotionBobY).toFixed(2)})`;
       };
@@ -1138,8 +1145,8 @@ const BoopFace = (() => {
       const surpriseSpread = this._state==='surprise' ? 3.4 * EASE.outQuint(clamp((p.w - 34) / (POSES.surprise.w - 34), 0, 1)) : 0;
       const leftCX = lerp(86 - surpriseSpread, 120, inputCenter);
       const rightCX = lerp(154 + surpriseSpread, 120, inputCenter);
-      this._leftEye.setAttribute('transform', setEye(this._leftBase,this._leftInputBase,this._leftTop,this._leftBottom,'L',leftCX,this._eyeMicro.lX,this._eyeMicro.lY,inputPulseL));
-      this._rightEye.setAttribute('transform', setEye(this._rightBase,this._rightInputBase,this._rightTop,this._rightBottom,'R',rightCX,this._eyeMicro.rX,this._eyeMicro.rY,inputPulseR));
+      setA(this._leftEye, 'transform', setEye(this._leftBase,this._leftInputBase,this._leftTop,this._leftBottom,'L',leftCX,this._eyeMicro.lX,this._eyeMicro.lY,inputPulseL));
+      setA(this._rightEye, 'transform', setEye(this._rightBase,this._rightInputBase,this._rightTop,this._rightBottom,'R',rightCX,this._eyeMicro.rX,this._eyeMicro.rY,inputPulseR));
     }
 
     _resumeFrames() {

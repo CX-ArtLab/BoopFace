@@ -13,9 +13,18 @@ const EYES = [['leftEye', 86, 126], ['rightEye', 154, 126]];
 // from the drawing down to that part. (Hiding the whole drawing and making
 // the part visible again works in Chrome and Firefox, but Safari then
 // paints nothing at all on a 3D-placed layer.)
+// The hidden parts are then deleted (they cost memory in every copy), except
+// anything the drawing still points at by id (a clip or mask using the head
+// outline, say): those stay, hidden.
 function showOnly(svg, keep) {
+  const hidden = [];
   for (let n = keep; n && n !== svg && n.parentElement; n = n.parentElement)
-    for (const s of n.parentElement.children) if (s !== n && !/^(defs|style)$/i.test(s.tagName)) s.style.visibility = 'hidden';
+    for (const s of n.parentElement.children) if (s !== n && !/^(defs|style)$/i.test(s.tagName)) { s.style.visibility = 'hidden'; hidden.push(s); }
+  const used = new Set();
+  for (const el of [svg, ...svg.querySelectorAll('*')]) for (const a of el.attributes) for (const m of a.value.matchAll(/url\(\s*['"]?#([^'")\s]+)|^#(.+)$/g)) used.add(m[1] || m[2]);
+  const needed = el => (el.id && used.has(el.id)) || [...el.querySelectorAll('[id]')].some(n => used.has(n.id));
+  const prune = el => { if (el.id && used.has(el.id)) return; if (!needed(el)) { el.remove(); return; } for (const c of [...el.children]) prune(c); };
+  for (const s of hidden) prune(s);
 }
 
 export async function captureSkin(skin, roundness = 50, { color = null, eyeColor = null, eyeStyle = null } = {}) {

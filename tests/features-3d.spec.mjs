@@ -241,3 +241,20 @@ test('3D copies of the drawing ask for no GPU layers of their own (memory)', asy
   expect(hints.length).toBeGreaterThan(0);
   expect(hints.every(h => h === 'auto')).toBe(true);
 });
+
+test('an idle avatar never rewrites a value that is already there (CPU)', async ({ page }) => {
+  await page0(page, '<boop-face id="a" auto-sleep="0"></boop-face><boop-face id="b" auto-sleep="0" view="3d" skin="101"></boop-face>');
+  await page.waitForFunction(() => !!b.shadowRoot.querySelector('.view-3d')?.shadowRoot?.querySelector('.layer.eyes'));
+  await page.waitForTimeout(800);
+  const same = await page.evaluate(() => new Promise(done => {
+    let count = 0, frames = 0;
+    const seen = [];
+    for (const f of [a, b]) {
+      const o = new MutationObserver(records => { for (const r of records) if (r.type === 'attributes' && r.target.getAttribute(r.attributeName) === r.oldValue) { count++; seen.push(`${r.target.id}.${r.attributeName}`); } });
+      o.observe(f.shadowRoot, { subtree: true, attributes: true, attributeOldValue: true });
+    }
+    const tick = () => (++frames < 40 ? requestAnimationFrame(tick) : done({ count, seen: [...new Set(seen)] }));
+    requestAnimationFrame(tick);
+  }));
+  expect(same.seen).toEqual([]);
+});

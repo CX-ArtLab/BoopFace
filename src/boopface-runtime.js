@@ -1,5 +1,9 @@
 import BoopFace, { registerAvatarExtension } from './boopface-extension-host.js';
 
+// Per-frame writes skip values that are already there (a same-value write
+// still costs the browser a style, layout and paint pass).
+const setA = (el, name, value) => { if (el.getAttribute(name) !== value) el.setAttribute(name, value); };
+
 const proto = BoopFace.prototype;
 const basePlay = proto.play;
 const baseNoteActivity = proto.noteActivity;
@@ -236,12 +240,13 @@ function dragAtRest(drag) {
 
 function clearIdleDragVisuals(instance) {
   if (!dragAtRest(instance._dragJelly)) return;
-  if (instance._dragMotion) {
-    instance._dragMotion.style.transform = '';
-    instance._dragMotion.style.transformOrigin = '';
+  const motion = instance._dragMotion;
+  if (motion && (motion.style.transform || motion.style.transformOrigin)) {
+    motion.style.transform = '';
+    motion.style.transformOrigin = '';
   }
   if (instance._headShape && instance._baseHeadPathD) {
-    instance._headShape.setAttribute('d', instance._baseHeadPathD);
+    setA(instance._headShape, 'd', instance._baseHeadPathD);
   }
 }
 
@@ -633,7 +638,7 @@ proto._updateHeadFollow = function(now, dt) {
   if (!reducedMotion(this)) return baseUpdateHeadFollow.call(this, now, dt);
   this._headFollowPose.x = this._headFollowPose.y = this._headFollowPose.rot = 0;
   this._headFollowVel.x = this._headFollowVel.y = this._headFollowVel.rot = 0;
-  if (this._headFollow) this._headFollow.setAttribute('transform', '');
+  if (this._headFollow) setA(this._headFollow, 'transform', '');
 };
 
 proto._updateDragJelly = function(dt) {
@@ -905,26 +910,26 @@ proto._teardownRuntime = function() {
 
 function setMask(top, bottom, topY, bottomY, topAngle = 0, bottomAngle = 0) {
   if (top) {
-    top.setAttribute('y', (topY - 90).toFixed(2));
-    top.setAttribute('height', '90');
-    top.setAttribute('transform', `rotate(${topAngle.toFixed(2)} 0 ${topY.toFixed(2)})`);
+    setA(top, 'y', (topY - 90).toFixed(2));
+    setA(top, 'height', '90');
+    setA(top, 'transform', `rotate(${topAngle.toFixed(2)} 0 ${topY.toFixed(2)})`);
   }
   if (bottom) {
-    bottom.setAttribute('y', bottomY.toFixed(2));
-    bottom.setAttribute('height', '90');
-    bottom.setAttribute('transform', `rotate(${bottomAngle.toFixed(2)} 0 ${bottomY.toFixed(2)})`);
+    setA(bottom, 'y', bottomY.toFixed(2));
+    setA(bottom, 'height', '90');
+    setA(bottom, 'transform', `rotate(${bottomAngle.toFixed(2)} 0 ${bottomY.toFixed(2)})`);
   }
 }
 
 function setEye(eye, x, y = 126, sx = 1, sy = 1) {
-  if (eye) eye.setAttribute('transform', `translate(${x.toFixed(2)} ${y.toFixed(2)}) scale(${sx.toFixed(3)} ${sy.toFixed(3)})`);
+  if (eye) setA(eye, 'transform', `translate(${x.toFixed(2)} ${y.toFixed(2)}) scale(${sx.toFixed(3)} ${sy.toFixed(3)})`);
 }
 
 function drawReducedState(instance) {
   if (!reducedMotion(instance)) return;
   if (instance._state === 'input') {
-    instance._leftInputBase?.setAttribute('opacity', '1');
-    instance._rightInputBase?.setAttribute('opacity', '1');
+    if (instance._leftInputBase) setA(instance._leftInputBase, 'opacity', '1');
+    if (instance._rightInputBase) setA(instance._rightInputBase, 'opacity', '1');
   }
   if (instance._antennaDot) instance._antennaDot.style.opacity = '1';
 
