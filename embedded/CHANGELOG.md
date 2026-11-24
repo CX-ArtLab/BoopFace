@@ -12,6 +12,7 @@ Ships together with the Web avatar 0.9.0.
 
 ### Added
 
+- The 13 expressions of the Web avatar 0.9: `observe`, `ponder`, `think`, `waiting-bloom`, `waiting-cross`, `shape-wait`, `bow`, `shake`, `smug`, `wink`, `dizzy`, `bounce`, `smug-bounce` (31 in all). The bloom and cross waits are computed by the core (no motion data); the rest are sampled from the Web avatar in a browser (`embedded/tools/sample-web-expressions-browser.mjs`, about 85 KB of geometry). On a screen the head motions of bow, shake and bounce become eye motion.
 - `embedded/tools/build-core-data.mjs` builds the WebAssembly core for the Embedded Studio page.
 
 ## [0.1.0] - 2026-11-05

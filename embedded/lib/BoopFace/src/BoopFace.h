@@ -9,7 +9,11 @@ namespace boopface {
 enum class Action : uint8_t {
   Idle, Bored, WaitingSpin, WaitingWrap, Input, Affirm, Success, Failure,
   Wary, Inspect, Angry, Refuse, Surprise, Love, Random, Sleep, Wake,
-  WaitingWave, Count // Append new actions to preserve existing numeric IDs.
+  WaitingWave,
+  // 0.2: the Web avatar 0.9 expressions.
+  Observe, Ponder, Think, WaitingBloom, WaitingCross, ShapeWait, Bow, Shake,
+  Smug, Wink, Dizzy, Bounce, SmugBounce,
+  Count // Append new actions to preserve existing numeric IDs.
 };
 
 // How far idle gaze moves the eyes in the 160 x 100 face area. Small is the
@@ -66,7 +70,8 @@ class Eyes {
   bool update(uint32_t now);
 
   Action action() const { return action_; }
-  bool isWaiting() const { return action_ == Action::WaitingSpin || action_ == Action::WaitingWrap || action_ == Action::WaitingWave; }
+  bool isWaiting() const { return action_ == Action::WaitingSpin || action_ == Action::WaitingWrap || action_ == Action::WaitingWave
+      || action_ == Action::WaitingBloom || action_ == Action::WaitingCross; }
   bool isSleeping() const { return action_ == Action::Sleep; }
   const uint8_t* data() const { return buffer_; }
   uint16_t width() const { return config_.width; }

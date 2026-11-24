@@ -1,5 +1,6 @@
 #include "BoopFace.h"
 #include "BoopFaceWebMotion.h"
+#include "BoopFaceWebMotionNew.h"
 
 #include <math.h>
 #include <string.h>
@@ -18,8 +19,11 @@ const float GAZE_REACH[][2] = {{8, 6}, {20, 18}, {30, 21}};
 float edgeFactor(float distance) { return clamp(1 - distance / 58, 0, 1); }
 const char* const NAMES[] = {
   "idle", "bored", "waiting-spin", "waiting-wrap", "input", "affirm", "success", "failure",
-  "wary", "inspect", "angry", "refuse", "surprise", "love", "random", "sleep", "wake", "waiting-wave"
+  "wary", "inspect", "angry", "refuse", "surprise", "love", "random", "sleep", "wake", "waiting-wave",
+  "observe", "ponder", "think", "waiting-bloom", "waiting-cross", "shape-wait", "bow", "shake",
+  "smug", "wink", "dizzy", "bounce", "smug-bounce"
 };
+const unsigned FIRST_NEW = static_cast<unsigned>(Action::Observe);
 
 // Names that still parse, matching the Web avatar: "waiting" is the generic name
 // for the default spin, the others are deprecated and removed in 1.0.
@@ -40,7 +44,9 @@ size_t Eyes::requiredBytes(uint16_t width, uint16_t height) {
 }
 
 Eyes::Pose Eyes::webPose(Action action, uint32_t elapsed) {
-  const auto& clip = web_reference::CLIPS[static_cast<unsigned>(action)];
+  const unsigned id = static_cast<unsigned>(action);
+  const auto& clip = id >= FIRST_NEW ? web_reference::NEW_CLIPS[id - FIRST_NEW] : web_reference::CLIPS[id];
+  if (!clip.count) return webPose(Action::Idle, 0);
   const uint32_t index = elapsed / 20;
   const unsigned a = index < clip.count ? index : clip.count - 1;
   const unsigned b = a + 1 < clip.count ? a + 1 : a;
@@ -112,7 +118,13 @@ uint32_t Eyes::duration(Action action) {
     case Action::Love: return 3190;
     case Action::Random: return 2260;
     case Action::Wake: return 750;
-    default: return 0;
+    case Action::WaitingBloom: case Action::WaitingCross: return 0; // until stopped
+    default: {
+      const unsigned index = static_cast<unsigned>(action);
+      if (index >= FIRST_NEW && index < static_cast<unsigned>(Action::Count))
+        return web_reference::NEW_CLIPS[index - FIRST_NEW].count * 20u;
+      return 0;
+    }
   }
 }
 
@@ -123,7 +135,8 @@ bool Eyes::play(Action action, uint32_t now) {
   from_ = poseAt(now);
   current_ = from_;
   const bool cursorShape = from_.left.corner >= 0 || from_.right.corner >= 0;
-  crossfade_ = (action_ != Action::Idle || action == Action::WaitingWave || cursorShape)
+  crossfade_ = (action_ != Action::Idle || action == Action::WaitingWave || action == Action::WaitingBloom
+      || action == Action::WaitingCross || cursorShape)
       && (action != Action::Wake || cursorShape);
   action_ = action;
   started_ = now;
@@ -209,7 +222,32 @@ Eyes::Pose Eyes::poseAt(uint32_t now) const {
   if (selected == Action::WaitingSpin && elapsed >= 120) elapsed = 120 + (elapsed - 120) % 3200;
   if (selected == Action::WaitingWrap && elapsed >= 120) elapsed = 120 + (elapsed - 120) % 2400;
   Pose p;
-  if (selected == Action::WaitingWave) {
+  if (selected == Action::WaitingBloom || selected == Action::WaitingCross) {
+    // The voice kit's thinking shapes (src/boopface-voice.js), computed: two
+    // ovals crossing in the middle of the face. Bloom breathes and turns;
+    // cross rests on the x and turns a quarter at a time, swapping full and slim.
+    const float t = elapsed / 1000.f;
+    float rx[2], ry[2], angle;
+    if (selected == Action::WaitingBloom) {
+      const float phase = t * 2 * PI / 4, longR = 55.5f;
+      angle = fmodf(t * 57, 360);
+      for (int i = 0; i < 2; ++i) {
+        const float breath = (1 - cosf(phase + i * 38 * PI / 180)) / 2;
+        const float shortR = longR * fmaxf(.1f, fminf(1, (54.8f + (75.4f - 54.8f) * breath) / 100));
+        rx[i] = i ? shortR : longR; ry[i] = i ? longR : shortR;
+      }
+    } else {
+      const float step = 850, ms = static_cast<float>(elapsed);
+      const int n = static_cast<int>(ms / step);
+      const float f = fmodf(ms, step) / step, u = f < .5f ? 4 * f * f * f : 1 - powf(-2 * f + 2, 3) / 2;
+      angle = 45 + 90 * n + 90 * u;
+      const float slim = (n % 2) ? 1 - u : u, longR = 55.5f, shortR = longR * (.754f + (.548f - .754f) * slim);
+      for (int i = 0; i < 2; ++i) { rx[i] = i ? shortR : longR; ry[i] = i ? longR : shortR; }
+    }
+    angle = fmodf(angle + 180, 360); if (angle < 0) angle += 360; angle -= 180;
+    p = {{80, 45, rx[0], ry[0], angle, -100, 100, 0, 0, -1, -1},
+         {80, 45, rx[1], ry[1], angle, -100, 100, 0, 0, -1, -1}};
+  } else if (selected == Action::WaitingWave) {
     // Restore the experimental v0.1 waiting motion verbatim as a NEW variant.
     // Source: e600f7e3b22dd792c3fc7b26994fa6bae39f1e66, poseAt/Waiting.
     // Legacy neutral geometry is intentional; original Web actions stay intact.
