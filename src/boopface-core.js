@@ -955,7 +955,11 @@ const BoopFace = (() => {
       const pointerFresh = (now - this._pointer.lastMove) < 900;
       const antennaGaze = this._gestureFx?.kind === 'antenna-drag' && this._gestureFx.held;
       const gazeLocked = this._expressionLock && !antennaGaze;
-      if (!this._expressionLock && !this._boredRoutine && !this._sleeping && this._state!=='input' && now >= this._nextWanderAt) {
+      // Idle gaze: the eyes wander now and then. idle-gaze="false" (or
+      // setIdleGaze(false)) keeps them looking straight ahead instead.
+      const idleGaze = this._idleGaze ?? String(this.getAttribute('idle-gaze') ?? '').trim().toLowerCase() !== 'false';
+      if (!idleGaze && !this._boredRoutine) this._wanderTarget.x = this._wanderTarget.y = 0;
+      if (idleGaze && !this._expressionLock && !this._boredRoutine && !this._sleeping && this._state!=='input' && now >= this._nextWanderAt) {
         const ampX = 12 + Math.random()*13;
         const ampY = 5 + Math.random()*9;
         this._wanderTarget.x = (Math.random()*2-1)*ampX;

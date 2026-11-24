@@ -896,6 +896,12 @@ $('actionGroups').addEventListener('click', e => {
   const btn = e.target.closest('button[data-action]');
   if (btn) playAction(btn.dataset.action);
 });
+// Idle gaze: off keeps the eyes on the viewer while nothing happens.
+$('idleGazeToggle').addEventListener('change', e => {
+  state.idleGaze = e.target.checked;
+  for (const f of document.querySelectorAll('boop-face')) f.setIdleGaze?.(state.idleGaze);
+  updateDevCode();
+});
 $('loopToggle').addEventListener('change', e => {
   state.loop = e.target.checked;
   if (!state.loop) {
@@ -2433,7 +2439,7 @@ function updateDevCode() {
   const actionLine = formatApiCall(state.action);
   $('devQuickAction').textContent = `${actionLine};`;
   const roundLine = state.roundness !== 50 ? `\navatar.setHeadRoundness(${state.roundness});` : '';
-  const followLine = (!state.pointerFollow ? `\navatar.setPointerFollow(false);` : '') + (state.petting === false ? `\navatar.setPetting(false);` : '');
+  const followLine = (!state.pointerFollow ? `\navatar.setPointerFollow(false);` : '') + (state.petting === false ? `\navatar.setPetting(false);` : '') + (state.idleGaze === false ? `\navatar.setIdleGaze(false);` : '');
 
   if (state.devTab === 'html') {
     devCode.textContent = `<boop-face ${attrs}></boop-face>\n\n<script type="module">\n  import 'boopface';\n  const avatar = document.querySelector('#avatar');${roundLine}${followLine}\n  ${actionLine};\n</script>`;

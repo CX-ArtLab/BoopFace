@@ -201,6 +201,8 @@ export declare class BoopFace extends HTMLElement {
    */
   setVoiceLevel(level: number | readonly [number, number]): this;
   setPointerFollow(enabled?: boolean): this;
+  /** Idle eyes look around now and then (default); false keeps them looking straight ahead. Also the `idle-gaze` attribute. */
+  setIdleGaze(enabled?: boolean): this;
   /** @deprecated Removed in 0.6; does nothing and logs a one-time notice. Deleted in 1.0. */
   setAntennaFlash(enabled?: boolean): this;
   setPressSqueeze(enabled?: boolean): this;

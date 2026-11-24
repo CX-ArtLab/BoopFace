@@ -368,6 +368,8 @@ const EN = {
 "资源占用略高，适合少量重点展示": "A little heavier, best for a few",
 "动作幅度更大，大尺寸下更出彩": "Bigger motion, best when large",
 "体积": "Size",
+"四处张望": "Look around",
+"闲置时眼睛会不时四处看看；关掉后始终看着前方": "While idle the eyes glance around now and then; off keeps them looking ahead",
 "音量": "Volume",
 "取消静音": "Unmute",
 "静音": "Mute",

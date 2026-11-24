@@ -9,6 +9,7 @@ The project follows Semantic Versioning for public releases. Internal developmen
 This release brings the 3D head, a new demo, and everything planned for 0.8.1 (Connect AI and the Voice Interaction Kit), which was never published on its own.
 
 ### Added
+- `idle-gaze="false"` / `setIdleGaze(false)`: idle eyes keep looking straight ahead instead of glancing around.
 
 - **3D view.** `view="3d"` (or `setView('3d')`) turns the avatar into a layered 3D head that really turns toward the pointer, with depth, a curved face and a springy settle after each turn. All expressions, gestures, skins and colours work the same. `view="2d"` (the default) keeps the flat drawing.
 - **Rounded eyes.** Wherever a lid cuts an eye, the corner is now rounded, and a thin slit (sleep, a squint, a wink, the typing cursor) has half-round ends. `eye-style="sharp"` keeps the old straight cut.

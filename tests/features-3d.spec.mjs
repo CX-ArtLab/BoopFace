@@ -300,3 +300,14 @@ test('in 3D, see-through eyes are real holes: the page behind shows through them
   expect(green(px[1])).toBe(true);
   expect(green(px[2])).toBe(false);
 });
+
+test('idle-gaze="false" keeps the idle eyes looking straight ahead', async ({ page }) => {
+  await page0(page, '<boop-face id="a" auto-sleep="0"></boop-face><boop-face id="b" auto-sleep="0" idle-gaze="false"></boop-face>');
+  const seen = await page.evaluate(() => new Promise(done => {
+    const m = { a: 0, b: 0 }, t0 = performance.now();
+    const tick = () => { m.a = Math.max(m.a, Math.abs(a._look.x)); m.b = Math.max(m.b, Math.abs(b._look.x)); performance.now() - t0 < 5000 ? requestAnimationFrame(tick) : done(m); };
+    requestAnimationFrame(tick);
+  }));
+  expect(seen.a).toBeGreaterThan(3);
+  expect(seen.b).toBeLessThan(0.5);
+});
