@@ -804,6 +804,8 @@ ${pairStyles}
     // yaw/pitch in degrees, gaze in -1..1. Turning only changes CSS transforms.
     pose({ yaw = 0, pitch = 0, gazeX = 0, gazeY = 0 }) {
       const now = performance.now(), dt = Math.min(.034, (now - lastTime) / 1000); lastTime = now;
+      // The ball is hidden when the official one is (antenna="false").
+      if (antennaNode) { const want = brain?._antennaDot?.style.display === 'none' ? 'none' : ''; if (antennaNode.style.display !== want) antennaNode.style.display = want; }
       gazeX += lookAdd[0]; gazeY += lookAdd[1];
       // While touched, ease the 3D turn back to face the viewer, the way the
       // original faces you during a gesture; ease back out afterwards.

@@ -218,6 +218,7 @@ try {
 | `wake-on` | 自动唤醒策略：`activity`、`interaction` 或 `manual` |
 | `motion` | 动态效果策略：`auto`、`reduce` 或 `full` |
 | `press-squeeze` | 按住头像中心进行挤压；设为 `false` 可关闭 |
+| `antenna` | 设为 `false` 隐藏头顶的天线球 |
 | `antenna-drag` | 拖动天线、弹簧复原并接眩晕表情；设为 `false` 可关闭 |
 | `idle-gaze` | 闲置时眼睛不时四处张望；设为 `false` 则始终看着前方 |
 | `skin` | 皮肤编号，例如 `301`；不写则为纯色 |

@@ -286,17 +286,19 @@ function copyText(text, targetBtn) {
   targetBtn._copyTimer = setTimeout(() => delete targetBtn.dataset.copied, 1300);
 }
 
+// Whether the pointer is over the stage (the stage avatar follows it only then).
+let pointerOverStage = false;
 function syncFaceGeometry(face, customRound = state.roundness) {
   face.setHeadRoundness(customRound);
-  face.setPointerFollow(state.pointerFollow);
+  // The stage avatar follows the pointer only while it is over the stage.
+  face.setPointerFollow(state.pointerFollow && (face !== stageFace || pointerOverStage));
   face.setPressSqueeze(state.pressSqueeze);
   face.setAntennaDrag(state.antennaDrag);
   face.setPetting(state.petting !== false);
   face.setAttribute('auto-sleep', state.autoSleep);
   face.setAttribute('wake-on', state.wakeOn);
   face.setAttribute('motion', state.motion);
-  const dot = face.shadowRoot?.getElementById('antennaDot');
-  if (dot) dot.style.display = state.antenna ? '' : 'none';
+  if (state.antenna) face.removeAttribute('antenna'); else face.setAttribute('antenna', 'false');
 }
 
 function paintCustomFace(face, { isStage = false, bot = null } = {}) {
@@ -388,6 +390,10 @@ function syncSizeLimit() {
   }
 }
 new ResizeObserver(() => syncSizeLimit()).observe($('stageCanvas'));
+
+// Pointer following stays inside the stage: leaving it, the avatar looks ahead again.
+$('stageCanvas').addEventListener('pointerenter', () => { pointerOverStage = true; stageFace.setPointerFollow(state.pointerFollow); });
+$('stageCanvas').addEventListener('pointerleave', () => { pointerOverStage = false; stageFace.setPointerFollow(false); });
 
 // Expression buttons: one column width for every row, the longest word plus
 // the button's own padding (both change with the language and the width).
@@ -2450,6 +2456,7 @@ function buildAttributes() {
   if (state.wakeOn !== 'activity') attrs.push(`wake-on="${state.wakeOn}"`);
   if (state.motion !== 'auto') attrs.push(`motion="${state.motion}"`);
   if (!state.pressSqueeze) attrs.push(`press-squeeze="false"`);
+  if (!state.antenna) attrs.push(`antenna="false"`);
   if (!state.antennaDrag) attrs.push(`antenna-drag="false"`);
   return attrs.join(' ');
 }

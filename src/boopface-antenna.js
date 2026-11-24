@@ -107,6 +107,9 @@ function updateAntenna(instance, now) {
 
   const spring = instance._antennaSpring;
   const dot = instance._antennaDot;
+  // antenna="false" hides the ball (and with it the antenna tug).
+  const shown = String(instance.getAttribute('antenna') ?? '').trim().toLowerCase() !== 'false' ? '' : 'none';
+  if (dot.style.display !== shown) dot.style.display = shown;
   const target = antennaTarget(instance);
 
   if (instance._isReducedMotion?.()) {
