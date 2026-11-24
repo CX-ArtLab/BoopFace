@@ -6,8 +6,6 @@ export const publicDemoFiles = [
   'favicon-white.svg', 'fonts/geist.css', 'fonts/OFL.txt',
   'fonts/geist-wordmark-0.ttf', 'fonts/geist-wordmark-1.ttf', 'fonts/geist-wordmark-2.ttf', 'fonts/geist-wordmark-3.ttf', 'fonts/geist-wordmark-4.ttf',
   'skin-catalog.js', 'skin-catalog-data.js', 'voice/voice-audio-data.js',
-  // Old addresses, now short redirects into the Studio.
-  'skins.html', 'agent.html',
-  // The full skin gallery.
-  'materials/index.html', 'materials/gallery.js', 'materials/gallery.css', 'skins-i18n.js', 'demo-shell.css',
+  // Old addresses, now short redirects into the Studio (the full skin gallery too).
+  'skins.html', 'agent.html', 'materials/index.html',
 ];

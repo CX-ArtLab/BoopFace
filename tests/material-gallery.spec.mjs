@@ -15,10 +15,11 @@ test('ice skin previews and catalog thumbnails preserve the original eye colors'
     await expect(page.locator(`#stageFace #material-${key}-eye-porcelain stop`).first()).toHaveAttribute('stop-color', color);
   }
 
-  await page.goto('/demo/materials/index.html?view=ice&lang=zh-CN');
-  await expect(page.locator('.skin-card')).toHaveCount(6);
+  // The Studio's skin tab, "All": every ice card's thumbnail keeps its eye colour.
+  await page.goto('/demo/?lang=zh-CN#skins');
+  await page.locator('#skinFilters [data-filter="all"]').click();
   for (const [skin, [key, color]] of Object.entries(iceEyes)) {
-    const image = page.locator(`.skin-card[data-skin="${skin}"] img`);
+    const image = page.locator(`#skinGrid .skin-card[data-skin="${skin}"] img`);
     await image.scrollIntoViewIfNeeded();
     await expect(image).toHaveAttribute('src', /^blob:/);
     const exportedEye = await image.evaluate(async (img, id) => {

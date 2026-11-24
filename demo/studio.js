@@ -11,6 +11,7 @@ import {
   skinById,
   applySkin,
   skinThumbnail,
+  catalogCategories,
 } from './skin-catalog.js';
 
 await customElements.whenDefined('boop-face');
@@ -1223,7 +1224,20 @@ function renderSkinGrid() {
     : source;
 
   const frag = document.createDocumentFragment();
-  for (const skin of matches) {
+  // "All" without a search reads by series, each with a small heading.
+  const bySeries = cat === 'all' && !q;
+  const zh = document.documentElement.lang.startsWith('zh');
+  const ordered = bySeries ? catalogCategories.flatMap(group => group.names.map(id => skinById.get(id)).filter(skin => skin && matches.includes(skin)).map((skin, i, list) => ({ skin, head: i === 0 ? group : null, size: list.length }))) : matches.map(skin => ({ skin }));
+  for (const { skin, head, size } of ordered) {
+    if (head) {
+      const h = document.createElement('div');
+      h.className = 'skin-series-head';
+      h.textContent = zh ? head.label : (head.labelEn || head.label);
+      const n = document.createElement('span');
+      n.textContent = zh ? `${size} 款` : String(size);
+      h.append(n);
+      frag.appendChild(h);
+    }
     const card = document.createElement('button');
     card.type = 'button';
     card.className = 'skin-card';
@@ -2772,6 +2786,7 @@ addEventListener('hashchange', openFromHash);
 // Languages: start in the linked, last chosen or browser language.
 function setLanguage(next) {
   const lang = applyLanguage(next);
+  renderSkinGrid(); // series headings follow the language
   $('langPopover').querySelectorAll('[data-lang]').forEach(el => el.setAttribute('aria-checked', String(el.dataset.lang === lang)));
 }
 setLanguage(initialLanguage());
