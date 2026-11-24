@@ -2672,14 +2672,14 @@ function setLanguage(next) {
 setLanguage(initialLanguage());
 syncWakeButton();
 
-// 平面/立体 cost, measured 2026-11-24 with Chrome on a Windows PC with an
-// RTX 4080 (real GPU), one 168 px avatar, median of 3 runs. timeline: main
-// thread busy, in % of one core, every 0.5 s: idle 4 s, pointer moving 4 s,
-// expressions 4 s.
+// 平面/立体 cost, measured 2026-11-24 (after the frame-write optimisations)
+// with Chrome on a Windows PC with an RTX 4080 (real GPU), one 168 px avatar,
+// median of 3 runs. timeline: main thread busy, in % of one core, every
+// 0.5 s: idle 4 s, pointer moving 4 s, expressions 4 s.
 const VIEW_COST = {
   timeline: {
-    '2d': [4.46, 4.66, 4.95, 4.29, 4.53, 4.94, 5.55, 5.19, 7.31, 6.68, 6.22, 5.39, 6.33, 6.17, 5.29, 5.63, 7.16, 9.05, 7.32, 7.75, 6.71, 8.32, 8.24, 9.22],
-    '3d': [7.34, 8, 8.56, 6.05, 6.81, 5.83, 6.55, 7.45, 9.39, 7.91, 8.23, 7.55, 8.07, 8.23, 7.69, 7.34, 9.41, 12.78, 11.73, 11.94, 11.01, 12.28, 8.92, 12.44],
+    '2d': [4.21, 3.51, 3.49, 3.31, 4.65, 3.36, 3.22, 3.39, 4.6, 3.48, 4.48, 3.43, 5.69, 4.5, 4.14, 3.32, 7.42, 8.28, 7, 7.93, 7.03, 9.06, 6.99, 8.01],
+    '3d': [5.67, 7.55, 6.81, 5.62, 4.95, 4.91, 6.49, 5.89, 8.33, 6.28, 7.8, 7.01, 6.77, 6.48, 6.23, 7.38, 9.41, 12.9, 9.26, 11.96, 8.83, 12.75, 9.03, 11.75],
   },
 };
 
