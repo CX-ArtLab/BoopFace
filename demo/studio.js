@@ -2691,9 +2691,9 @@ function renderViewInfo() {
   if (!plot) return;
   if (plot.childElementCount) { replayViewCurve(plot); return; }
   // The curve: one shared y axis (% of a core), three phases along x.
-  // Plotted as time per frame (ms) against one whole frame at 60 fps (16.7 ms):
-  // the samples are main-thread busy time in % of a core, i.e. % / 6 ms a frame.
-  const W = 416, H = 124, L = 30, R = 6, T = 10, B = 22, MAX = 1000 / 60;
+  // Plotted as time per frame (ms): the samples are main-thread busy time in %
+  // of a core, i.e. % / 6 ms a frame (60 frames a second).
+  const W = 416, H = 124, L = 30, R = 6, T = 10, B = 22, MAX = 2.5;
   // A light rolling average (¼ ½ ¼) so the line reads as a trend, not sample noise.
   const soft = list => list.map((v, i) => (list[Math.max(0, i - 1)] + 2 * v + list[Math.min(list.length - 1, i + 1)]) / 4);
   const perFrame = list => list.map(v => v * 10 / 60);
@@ -2711,12 +2711,10 @@ function renderViewInfo() {
   };
   // Sample i is at (i + 1) × 0.5 s.
   const phaseX = s => x(Math.max(0, s / 0.5 - 1));
-  const grid = [0, 5, 10].map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(255,255,255,${v ? 0.06 : 0.14})"/><text x="${L - 5}" y="${y(v) + 3}" text-anchor="end">${v}</text>`).join('')
-    // The top line is one whole frame.
-    + `<line x1="${L}" x2="${W - R}" y1="${y(MAX)}" y2="${y(MAX)}" stroke="rgba(255,255,255,0.3)" stroke-dasharray="3 3"/><text x="${L - 5}" y="${y(MAX) + 3}" text-anchor="end">16.7</text><text class="vi-budget" x="${W - R}" y="${y(MAX) + 12}" text-anchor="end">一帧 16.7 ms（每秒 60 帧）</text>`;
+  const grid = [0, 0.5, 1, 1.5, 2, 2.5].map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(255,255,255,${v ? 0.06 : 0.14})"/>${v % 1 === 0 || v === 2.5 ? `<text x="${L - 5}" y="${y(v) + 3}" text-anchor="end">${v}</text>` : ''}`).join('');
   const phases = [[0.5, 4, '空闲'], [4, 8, '跟随指针'], [8, 12, '播放表情']].map(([s0, s1, label], k) =>
     `${k ? `<line x1="${phaseX(s0)}" x2="${phaseX(s0)}" y1="${T}" y2="${H - B}" stroke="rgba(255,255,255,0.08)"/>` : ''}<text x="${(phaseX(s0) + phaseX(s1)) / 2}" y="${H - 6}" text-anchor="middle">${label}</text>`).join('');
-  plot.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="12 秒实测：每帧平均立体约 1.5 ms，平面约 1.1 ms，一帧共 16.7 ms">
+  plot.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="12 秒实测：每帧平均立体约 1.5 毫秒，平面约 1.1 毫秒">
     <defs><linearGradient id="viFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#f2f2f2" stop-opacity=".16"/><stop offset="1" stop-color="#f2f2f2" stop-opacity="0"/></linearGradient></defs>
     ${grid}${phases}
     <path class="vi-area" d="${path(b)}L${x(n - 1)} ${y(0)}L${x(0)} ${y(0)}Z" fill="url(#viFill)"/>
@@ -2736,7 +2734,7 @@ function renderViewInfo() {
     cross.setAttribute('x1', x(i)); cross.setAttribute('x2', x(i));
     d3.setAttribute('cx', x(i)); d3.setAttribute('cy', y(b[i])); d2.setAttribute('cx', x(i)); d2.setAttribute('cy', y(a[i]));
     tip.hidden = false;
-    tip.innerHTML = `<span>${((i + 1) * 0.5).toFixed(1)} s</span><span>立体 <b>${b[i].toFixed(1)} ms</b></span><span>平面 <b>${a[i].toFixed(1)} ms</b></span>`;
+    tip.innerHTML = `<span>${((i + 1) * 0.5).toFixed(1)} s</span><span>立体 <b>${b[i].toFixed(2)} 毫秒</b></span><span>平面 <b>${a[i].toFixed(2)} 毫秒</b></span>`;
     const px = x(i) / W * r.width;
     tip.style.left = `${px > r.width * 0.6 ? px - tip.offsetWidth - 10 : px + 10}px`;
   });
