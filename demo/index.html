@@ -9,6 +9,59 @@
 <link rel="stylesheet" href="./fonts/geist.css">
 <link rel="stylesheet" href="./studio.css">
 <link rel="modulepreload" href="../boopface.js">
+<!-- Everything the first screen needs, fetched at once instead of one level
+     of imports after another (the skin painters and the 3D view included), so
+     the avatar can appear as soon as possible. -->
+<link rel="modulepreload" href="../src/boopface-extension-host.js">
+<link rel="modulepreload" href="../src/boopface-core.js">
+<link rel="modulepreload" href="../src/boopface-actions.js">
+<link rel="modulepreload" href="../src/boopface-antenna.js">
+<link rel="modulepreload" href="../src/boopface-waiting.js">
+<link rel="modulepreload" href="../src/boopface-voice.js">
+<link rel="modulepreload" href="../src/boopface-inspect.js">
+<link rel="modulepreload" href="../src/boopface-failure.js">
+<link rel="modulepreload" href="../src/boopface-love.js">
+<link rel="modulepreload" href="../src/boopface-random.js">
+<link rel="modulepreload" href="../src/boopface-head-roundness.js">
+<link rel="modulepreload" href="../src/boopface-gestures.js">
+<link rel="modulepreload" href="../src/boopface-skins.js">
+<link rel="modulepreload" href="../src/boopface-new-expressions.js">
+<link rel="modulepreload" href="../src/boopface-body-motion.js">
+<link rel="modulepreload" href="../src/boopface-petting.js">
+<link rel="modulepreload" href="../src/boopface-3d.js">
+<link rel="modulepreload" href="../src/boopface-runtime.js">
+<link rel="modulepreload" href="../src/boopface-eye-color.js">
+<link rel="modulepreload" href="../src/boopface-round-eyes.js">
+<link rel="modulepreload" href="../src/boopface-version.js">
+<link rel="modulepreload" href="../src/boopface-agent.js">
+<link rel="modulepreload" href="../src/boopface-wrap.js">
+<link rel="modulepreload" href="../src/boopface-geometry.js">
+<link rel="modulepreload" href="../src/boopface-eye-shape.js">
+<link rel="modulepreload" href="../src/skins/catalog.js">
+<link rel="modulepreload" href="../src/skins/paints.js">
+<link rel="modulepreload" href="../src/skins/material-library.js">
+<link rel="modulepreload" href="../src/skins/eyelids.js">
+<link rel="modulepreload" href="../src/skins/native.js">
+<link rel="modulepreload" href="../src/boopface-3d-layers.js">
+<link rel="modulepreload" href="../src/skins/material-data.js">
+<link rel="modulepreload" href="../src/skins/more-materials.js">
+<link rel="modulepreload" href="../src/skins/collection-materials.js">
+<link rel="modulepreload" href="../src/skins/revised-materials.js">
+<link rel="modulepreload" href="../src/skins/second-pass-materials.js">
+<link rel="modulepreload" href="../src/skins/sports-materials.js">
+<link rel="modulepreload" href="../src/skins/soft-materials.js">
+<link rel="modulepreload" href="../src/skins/layered-texture.js">
+<link rel="modulepreload" href="../src/boopface-skin-patterns.js">
+<link rel="modulepreload" href="../src/skins/metal-tint.js">
+<link rel="modulepreload" href="../src/skins/wood-materials.js">
+<link rel="modulepreload" href="../src/skins/glaze-variants.js">
+<link rel="modulepreload" href="./studio.js">
+<link rel="modulepreload" href="./roundness-feedback.js">
+<link rel="modulepreload" href="./studio-voice.js">
+<link rel="modulepreload" href="./studio-i18n.js">
+<link rel="modulepreload" href="./studio-agent.js">
+<link rel="modulepreload" href="./skin-catalog.js">
+<link rel="modulepreload" href="./skin-catalog-data.js">
 </head>
 <body data-theme="dark">
 
@@ -105,9 +158,14 @@
                     <path class="hint-shaft" id="hintBodyShaft" />
                     <path class="hint-head" id="hintBodyHead" />
                   </g>
+                  <g class="hint-arrow hint-arrow-pet">
+                    <path class="hint-shaft" id="hintPetShaft" />
+                    <path class="hint-head" id="hintPetHead" />
+                  </g>
                 </svg>
                 <p class="stage-hint-label is-antenna" id="hintAntennaLabel">拉一下天线</p>
                 <p class="stage-hint-label is-body" id="hintBodyLabel">拖拽头像<br>或长按挤压</p>
+                <p class="stage-hint-label is-pet" id="hintPetLabel">来回摸摸额头</p>
               </div>
             </div>
           </div>

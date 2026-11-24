@@ -368,6 +368,8 @@ const EN = {
 "资源占用略高，适合少量重点展示": "A little heavier, best for a few",
 "动作幅度更大，大尺寸下更出彩": "Bigger motion, best when large",
 "体积": "Size",
+"随皮肤背景（选了皮肤才能用）": "Skin background (needs a skin)",
+"来回摸摸额头": "Stroke the forehead",
 "头部转动": "Head turn",
 "固定正面": "Always facing you",
 "左右 22°、上下 15°": "Up to 22°",

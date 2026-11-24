@@ -264,7 +264,8 @@ code, kbd {
   display: flex;
   flex-direction: column;
   border-radius: calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0;
-  transition: background 0.25s ease;
+  /* No fade between backgrounds: a gradient and a plain colour cannot blend,
+     and the half-way frame showed the dark card underneath (a black flash). */
 }
 .stage-card[data-scene="chat"] .stage-canvas {
   min-height: 260px;
@@ -284,8 +285,28 @@ code, kbd {
     linear-gradient(90deg, rgba(0, 0, 0, 0.045) 1px, transparent 1px) center / 32px 32px,
     radial-gradient(circle at 50% 40%, #ffffff 0%, #e1e3e7 52%, #b5b8be 100%);
 }
-.stage-card[data-backdrop="skin"] .stage-canvas { background: var(--skin-stage-bg, #202024); }
-.stage-card[data-backdrop="custom"] .stage-canvas { background: var(--custom-stage-bg, #141416); }
+/* A skin's or a chosen colour gets the same lit stage: a soft light in the
+   middle, darker edges and the grid, laid over the colour itself. */
+.stage-card[data-backdrop="skin"] .stage-canvas,
+.stage-card[data-backdrop="custom"] .stage-canvas {
+  --stage-edge: rgba(0, 0, 0, 0.5);
+  --stage-light: rgba(255, 255, 255, 0.07);
+  --stage-grid: rgba(255, 255, 255, 0.04);
+  background:
+    radial-gradient(closest-side at 50% 45%, transparent 45%, var(--stage-edge) 118%),
+    radial-gradient(at 48% 34%, var(--stage-light), transparent 62%),
+    linear-gradient(var(--stage-grid) 1px, transparent 1px) center / 32px 32px,
+    linear-gradient(90deg, var(--stage-grid) 1px, transparent 1px) center / 32px 32px,
+    var(--stage-bg);
+}
+.stage-card[data-backdrop="skin"] .stage-canvas { --stage-bg: var(--skin-stage-bg, #202024); }
+.stage-card[data-backdrop="custom"] .stage-canvas { --stage-bg: var(--custom-stage-bg, #141416); }
+.stage-card.is-light-bg[data-backdrop="skin"] .stage-canvas,
+.stage-card.is-light-bg[data-backdrop="custom"] .stage-canvas {
+  --stage-edge: rgba(60, 64, 72, 0.28);
+  --stage-light: rgba(255, 255, 255, 0.35);
+  --stage-grid: rgba(0, 0, 0, 0.045);
+}
 
 /* Solo Stage View (100% pure avatar stage) */
 .stage-view {
@@ -386,6 +407,21 @@ code, kbd {
 }
 .stage-hints.is-drawing .hint-arrow-body .hint-head {
   animation: hint-draw 0.22s 1.28s ease-out forwards;
+}
+.stage-hint-label.is-pet {
+  text-align: right;
+  transform: rotate(-2deg);
+  transform-origin: right center;
+}
+.stage-hints.is-ready .stage-hint-label.is-pet {
+  opacity: 1;
+  transition-delay: 0.95s;
+}
+.stage-hints.is-drawing .hint-arrow-pet .hint-shaft {
+  animation: hint-draw 0.72s 0.9s ease-out forwards;
+}
+.stage-hints.is-drawing .hint-arrow-pet .hint-head {
+  animation: hint-draw 0.22s 1.58s ease-out forwards;
 }
 @keyframes hint-draw {
   to { stroke-dashoffset: 0; }
@@ -882,6 +918,7 @@ code, kbd {
 .backdrop-swatch.is-skin {
   background: linear-gradient(125deg, #ffc21a 8%, #ff3d9e 36%, #9a4dff 62%, #1fb0ff 92%);
 }
+.backdrop-swatch:disabled { opacity: 0.3; cursor: not-allowed; }
 .backdrop-swatch:hover {
   opacity: 0.92;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3);
@@ -1266,13 +1303,14 @@ code, kbd {
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   margin-block: 4px;
 }
-/* Eight columns of one width (the longest word plus padding, measured by the
-   page) so the rows line up. The gap between buttons grows with the room
+/* Seven columns of one width (the longest word in them plus padding, measured
+   by the page) so the rows line up; the last column takes its own width (a
+   longer word there moves nothing). The gap between buttons grows with the room
    between 4 and 18 px; past that the buttons stay put and the rest of the
    row is left empty, so a wide screen never stretches the buttons apart. */
 .row-btns {
   display: grid;
-  grid-template-columns: repeat(8, var(--btn-w, max-content));
+  grid-template-columns: repeat(7, var(--btn-w, max-content)) max-content;
   column-gap: clamp(4px, calc((100cqi - 72px - 8 * var(--btn-w, 64px)) / 7), 18px);
   justify-content: start;
 }
@@ -1401,6 +1439,12 @@ code, kbd {
 }
 .voice-think-caret[aria-expanded="true"] svg {
   transform: rotate(180deg);
+}
+/* The thinking step and its style menu are one button: lit together. */
+.voice-think-group:has(.voice-think-main.is-active) .voice-think-caret {
+  background: var(--seg-active);
+  color: #fff;
+  border-left-color: rgba(255, 255, 255, 0.14);
 }
 .voice-think-popover {
   position: absolute;

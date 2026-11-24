@@ -383,7 +383,8 @@ new ResizeObserver(() => syncSizeLimit()).observe($('stageCanvas'));
 // Expression buttons: one column width for every row, the longest word plus
 // the button's own padding (both change with the language and the width).
 function fitExpressionColumns() {
-  const groups = $('actionGroups'), btns = [...groups.querySelectorAll('.row-btns button')];
+  // The last column is left out: a longer word there moves nothing else.
+  const groups = $('actionGroups'), btns = [...groups.querySelectorAll('.row-btns button:not(:nth-child(8))')];
   if (!btns.length) return;
   const range = document.createRange(); let text = 0;
   for (const b of btns) { range.selectNodeContents(b); text = Math.max(text, range.getBoundingClientRect().width); }
@@ -485,7 +486,13 @@ function updateUI() {
   if (state.backdrop === 'skin' && skin?.stage) stageCard.style.setProperty('--skin-stage-bg', skin.stage);
   if (state.backdrop === 'custom') stageCard.style.setProperty('--custom-stage-bg', state.flatBg);
   stageCard.dataset.backdrop = state.backdrop;
-  const isLightStage = state.backdrop === 'light' || (state.backdrop === 'skin' && !['1008', '1606', '1702'].includes(state.skinId));
+  // A chosen background colour counts as light when it is bright (the grid and edges turn dark on it).
+  const bright = hex => { const m = /^#?([0-9a-f]{6})$/i.exec(hex || ''); if (!m) return false; const [r, g, b] = [0, 2, 4].map(i => parseInt(m[1].slice(i, i + 2), 16) / 255); return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.55; };
+  const isLightStage = state.backdrop === 'light' || (state.backdrop === 'skin' && !['1008', '1606', '1702'].includes(state.skinId)) || (state.backdrop === 'custom' && bright(state.flatBg));
+  // A plain head has no skin, so there is no skin background to follow.
+  const skinSwatch = document.querySelector('[data-backdrop-btn="skin"]');
+  skinSwatch.disabled = !isSkin;
+  skinSwatch.title = isSkin ? '随皮肤背景' : '随皮肤背景（选了皮肤才能用）';
   stageCard.classList.toggle('is-light-bg', isLightStage);
 
   updateSizeReadouts();
@@ -2502,6 +2509,9 @@ const hintAntennaShaft = $('hintAntennaShaft');
 const hintAntennaHead = $('hintAntennaHead');
 const hintBodyShaft = $('hintBodyShaft');
 const hintBodyHead = $('hintBodyHead');
+const hintPetLabel = $('hintPetLabel');
+const hintPetShaft = $('hintPetShaft');
+const hintPetHead = $('hintPetHead');
 
 let stageHintsDismissed = false;
 let stageHintsDrawn = false;
@@ -2523,6 +2533,8 @@ function measureStageTarget(el, faceBox, fallback) {
 
 function layoutStageHints() {
   if (stageHintsDismissed || state.scene !== 'stage' || stageHints.hidden) return;
+  // The avatar comes first: the hints are drawn once it is on screen.
+  if (stageFace.hasAttribute('data-preparing') || !stageFace.shadowRoot) { setTimeout(scheduleStageHintsLayout, 120); return; }
   const box = stageCenter.getBoundingClientRect();
   const faceBox = stageFace.getBoundingClientRect();
   if (box.width < 120 || faceBox.width < 40) return;
@@ -2593,6 +2605,23 @@ function layoutStageHints() {
   const c2_2 = { x: end2.x - span2 * 0.25, y: end2.y + (compact ? 11 : 16) };
   hintBodyShaft.setAttribute('d', `M${start2.x.toFixed(1)} ${start2.y.toFixed(1)}C${c2_1.x.toFixed(1)} ${c2_1.y.toFixed(1)} ${c2_2.x.toFixed(1)} ${c2_2.y.toFixed(1)} ${end2.x.toFixed(1)} ${end2.y.toFixed(1)}`);
   hintBodyHead.setAttribute('d', buildArrowHead(end2, c2_2));
+
+  // Petting: stroke the forehead. Label up and to the left, the arrow lands on
+  // the upper left of the head.
+  const w3 = hintPetLabel.offsetWidth || 72;
+  const h3 = hintPetLabel.offsetHeight || 20;
+  const headTop = headRect.top - box.top, headW = headRight - headLeft;
+  const x3 = Math.max(8, headLeft - bodyGap - w3);
+  const y3 = Math.max(8, Math.min(y2 - h3 - 28, headTop - h3 * 0.2));
+  hintPetLabel.style.left = `${Math.round(x3)}px`;
+  hintPetLabel.style.top = `${Math.round(y3)}px`;
+  const start3 = { x: x3 + w3 + 7, y: y3 + h3 * 0.5 };
+  const end3 = { x: headLeft + headW * 0.2, y: headTop + (compact ? 6 : 10) };
+  const span3 = Math.max(18, end3.x - start3.x);
+  const c3_1 = { x: start3.x + span3 * 0.35, y: start3.y - (compact ? 12 : 18) };
+  const c3_2 = { x: end3.x - span3 * 0.2, y: end3.y - (compact ? 14 : 22) };
+  hintPetShaft.setAttribute('d', `M${start3.x.toFixed(1)} ${start3.y.toFixed(1)}C${c3_1.x.toFixed(1)} ${c3_1.y.toFixed(1)} ${c3_2.x.toFixed(1)} ${c3_2.y.toFixed(1)} ${end3.x.toFixed(1)} ${end3.y.toFixed(1)}`);
+  hintPetHead.setAttribute('d', buildArrowHead(end3, c3_2));
 
   const paths = stageHintsSvg.querySelectorAll('path');
   const played = stageHintsDrawn && stageHintsSvg.getAnimations({ subtree: true }).every(a => a.playState === 'finished');
