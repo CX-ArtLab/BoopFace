@@ -1008,7 +1008,6 @@ code, kbd {
 .vi-card dl > div { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .vi-card dt { font-size: 11px; color: var(--faint); }
 .vi-card dd { margin: 0; font-size: 14px; font-weight: 600; color: #fff; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.vi-unit { font-size: 10.5px; line-height: 1.5; color: var(--faint); }
 .vi-chart { margin: 0; display: grid; align-content: start; gap: 6px; padding: 10px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.025); }
 .vi-chart figcaption { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); }
 .vi-legend { display: inline-flex; align-items: center; gap: 5px; color: var(--faint); }

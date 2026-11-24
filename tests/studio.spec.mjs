@@ -247,13 +247,13 @@ test('events sit in a strip under the code; opened they take the whole panel, an
   await expect(page.locator('#codeBuildStats')).toBeVisible();
 });
 
-test('the 3D info card shows flat and 3D as two cards (traits, size, time per frame) over a smooth curve that draws in', async ({ page }) => {
+test('the 3D info card shows flat and 3D as two cards (traits, size, smoothness) over a smooth curve that draws in', async ({ page }) => {
   await page.goto('/demo/?lang=zh-CN');
   await ready(page);
   await page.locator('.info-dot').hover();
   await expect(page.locator('#viewInfoCompare .vi-card h4')).toHaveText(['平面', '立体']);
   await expect(page.locator('#viewInfoCompare .vi-tag')).toHaveText(['原生设计', '更强的立体感']);
-  await expect(page.locator('#viewInfoCompare dd')).toHaveText([/KB$/, /毫秒$/, /KB$/, /毫秒$/]);
+  await expect(page.locator('#viewInfoCompare dd')).toHaveText([/KB$/, '每秒 30 帧', /KB$/, '每秒 30 帧']);
   await expect(page.locator('#viewInfoPop .vi-rows, #viewInfoPop .vi-note')).toHaveCount(0);
   const lines = page.locator('#viewInfoPlot path.vi-line');
   await expect(lines).toHaveCount(2);
