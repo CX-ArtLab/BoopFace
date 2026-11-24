@@ -336,6 +336,14 @@ code, kbd {
 .stage-card[data-backdrop="light"] .stage-glow,
 .stage-card[data-backdrop="skin"] .stage-glow { opacity: 0; }
 #stageFace { position: relative; z-index: 2; }
+/* First-visit loader, in the middle of the stage until the avatar shows. */
+.stage-loader { position: absolute; inset: 0; z-index: 1; display: grid; place-content: center; justify-items: center; gap: 10px; pointer-events: none; transition: opacity .35s ease; }
+.stage-loader.is-done { opacity: 0; }
+.stage-loader-bar { width: 140px; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, .1); overflow: hidden; }
+.stage-loader-bar i { display: block; height: 100%; background: rgba(255, 255, 255, .75); transform: scaleX(0); transform-origin: left; transition: transform .25s ease-out; }
+.stage-loader-text { font-size: 11.5px; color: var(--faint); letter-spacing: .04em; }
+.stage-card[data-backdrop="light"] .stage-loader-bar { background: rgba(0, 0, 0, .1); }
+.stage-card[data-backdrop="light"] .stage-loader-bar i { background: rgba(0, 0, 0, .6); }
 
 /* Stage Hand-Drawn Onboarding Callouts */
 .stage-hints {

@@ -147,6 +147,7 @@
           <div class="stage-view" id="soloStageView">
             <div class="stage-center" id="stageCenter">
               <div class="stage-glow" aria-hidden="true"></div>
+              <div class="stage-loader" id="stageLoader" role="progressbar" aria-label="正在加载" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="stage-loader-bar"><i id="stageLoaderFill"></i></span><span class="stage-loader-text">正在加载</span></div>
               <boop-face id="stageFace" size="168" auto-sleep="0" skin="101"></boop-face>
               <div class="stage-hints" id="stageHints" aria-hidden="true">
                 <svg class="stage-hints-svg" id="stageHintsSvg">
@@ -856,6 +857,39 @@
   <div class="chat-modal-backdrop" id="chatModalBackdrop" hidden aria-hidden="true"></div>
 </div>
 
+<script>
+// First-visit loader: the bar fills as the preloaded files arrive and leaves
+// once the stage avatar is on screen.
+(() => {
+  const want = document.querySelectorAll('link[rel="modulepreload"]').length || 1;
+  const seen = new Set();
+  let done = false, shown = 0;
+  const set = v => {
+    const fill = document.getElementById('stageLoaderFill'), box = document.getElementById('stageLoader');
+    if (!fill || !box) return;
+    shown = Math.max(shown, v);
+    fill.style.transform = `scaleX(${shown})`;
+    box.setAttribute('aria-valuenow', String(Math.round(shown * 100)));
+  };
+  try {
+    new PerformanceObserver(list => {
+      for (const e of list.getEntries()) if (/\.js(\?|$)/.test(e.name)) seen.add(e.name);
+      if (!done) set(Math.min(0.9, seen.size / want * 0.9));
+    }).observe({ type: 'resource', buffered: true });
+  } catch {}
+  const finish = () => {
+    if (done) return; done = true; set(1);
+    const box = document.getElementById('stageLoader');
+    setTimeout(() => { box?.classList.add('is-done'); setTimeout(() => box?.remove(), 400); }, 150);
+  };
+  const check = () => {
+    const f = document.getElementById('stageFace');
+    if (f && f.shadowRoot && !f.hasAttribute('data-preparing')) finish(); else if (!done) requestAnimationFrame(check);
+  };
+  requestAnimationFrame(check);
+  setTimeout(finish, 8000);
+})();
+</script>
 <script type="module" src="./studio.js"></script>
 </body>
 </html>
