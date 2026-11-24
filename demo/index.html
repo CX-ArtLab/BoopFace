@@ -669,14 +669,13 @@
         </div>
       </div>
 
-      <!-- TAB 4: CODE & EVENTS -->
+      <!-- TAB 4: CODE (events strip at the bottom) -->
       <div class="inspector-panel code-panel" data-panel="code" hidden>
         <div class="seg-full code-subtabs" role="tablist" aria-label="代码输出类型">
           <button type="button" role="tab" aria-selected="true" data-dev-tab="html">HTML</button>
           <button type="button" role="tab" aria-selected="false" data-dev-tab="js">JS API</button>
           <button type="button" role="tab" aria-selected="false" data-dev-tab="cdn">CDN</button>
           <button type="button" role="tab" aria-selected="false" data-dev-tab="agent">接入 AI</button>
-          <button type="button" role="tab" aria-selected="false" data-dev-tab="events">Events</button>
         </div>
         <div class="insp-section agent-settings" id="agentSection" hidden>
           <div class="insp-head"><h3>接入 AI</h3><span class="insp-hint">改一项，下面的代码和对话场景都跟着变</span></div>
@@ -712,12 +711,17 @@
           <div><strong>104 KB</strong><span>Full 构建（按需加载 188 皮肤）</span></div>
         </div>
 
-        <div class="code-events-bar" id="codeEventsBar" hidden>
-          <span class="code-events-hint">实时组件事件流</span>
-          <button type="button" class="mini-btn" id="clearEventsBtn">清空日志</button>
+        <div class="event-strip" id="eventStrip">
+          <div class="event-strip-head">
+            <button type="button" class="event-strip-toggle" id="eventStripToggle" aria-expanded="false" aria-controls="devEvents">
+              <span class="event-strip-title">事件</span>
+              <span class="event-strip-last" id="eventStripLast">还没有事件</span>
+              <svg class="event-strip-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <button type="button" class="mini-btn" id="clearEventsBtn" hidden>清空</button>
+          </div>
+          <div class="dev-events" id="devEvents" hidden></div>
         </div>
-
-        <div class="dev-events" id="devEvents" hidden></div>
       </div>
     </aside>
   </main>

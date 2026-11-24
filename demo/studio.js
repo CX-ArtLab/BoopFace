@@ -2368,6 +2368,7 @@ function logEvent(name, detail) {
   row.children[2].textContent = JSON.stringify(detail);
   devEvents.prepend(row);
   while (devEvents.children.length > 40) devEvents.lastChild.remove();
+  $('eventStripLast').textContent = `${ts}  ${name}`;
 }
 
 stageFace.addEventListener('face-state', e => logEvent('face-state', e.detail));
@@ -2417,16 +2418,10 @@ document.querySelectorAll('[data-dev-tab]').forEach(tab => {
   tab.addEventListener('click', () => {
     state.devTab = tab.dataset.devTab;
     document.querySelectorAll('[data-dev-tab]').forEach(el => el.setAttribute('aria-selected', String(el === tab)));
-    const isEvents = state.devTab === 'events';
     // Connect AI: the settings sit above its code, in this tab only.
     $('agentSection').hidden = state.devTab !== 'agent';
-    $('devQuickRow').hidden = isEvents || state.devTab === 'agent';
-    $('devCodePre').hidden = isEvents;
-    $('codeActionsRow').hidden = isEvents;
-    $('codeBuildStats').hidden = isEvents;
-    $('codeEventsBar').hidden = !isEvents;
-    devEvents.hidden = !isEvents;
-    if (!isEvents) updateDevCode();
+    $('devQuickRow').hidden = state.devTab === 'agent';
+    updateDevCode();
   });
 });
 
@@ -2441,9 +2436,18 @@ $('copyActionBtn').addEventListener('click', () => {
   flashBtnText($('copyActionBtn'), '已复制', '复制调用');
 });
 
+// Events: a strip at the bottom of the code panel; shows the latest event, opens to the log.
+$('eventStripToggle').addEventListener('click', () => {
+  const open = devEvents.hidden;
+  devEvents.hidden = !open;
+  $('clearEventsBtn').hidden = !open;
+  $('eventStripToggle').setAttribute('aria-expanded', String(open));
+  $('eventStrip').classList.toggle('open', open);
+});
 $('clearEventsBtn').addEventListener('click', () => {
   state.eventTotal = 0;
   devEvents.replaceChildren();
+  $('eventStripLast').textContent = '还没有事件';
 });
 $('copyCodeBtn').addEventListener('click', () => {
   copyText(devCode.textContent, $('copyCodeBtn'));
