@@ -258,3 +258,27 @@ test('an idle avatar never rewrites a value that is already there (CPU)', async 
   }));
   expect(same.seen).toEqual([]);
 });
+
+test('in 3D the wrap sliver reaches the head outline, as on the flat face', async ({ page }) => {
+  await page0(page, '<boop-face id="a" size="240" auto-sleep="0" view="3d" color="#ff3b30"></boop-face>');
+  await page.waitForFunction(() => !!a.shadowRoot.querySelector('.view-3d')?.shadowRoot?.querySelector('.layer.eyes'));
+  await page.waitForTimeout(500);
+  const gaps = await page.evaluate(() => new Promise(done => {
+    a.play('waiting-wrap');
+    const r = a.shadowRoot.querySelector('.view-3d').shadowRoot, out = [], t0 = performance.now();
+    const tick = () => {
+      // The left eye leaving over the left edge (later it comes back on the right).
+      const rx = +a.shadowRoot.getElementById('leftBase').getAttribute('rx'), ex = a.shadowRoot.getElementById('leftEye').transform.baseVal.consolidate()?.matrix.e ?? 120;
+      if (rx > .5 && rx < 14 && ex < 120) {
+        const eye = r.querySelectorAll('.layer.eyes')[0].querySelector('#leftBase').getBoundingClientRect();
+        // The side wall's path is the head's whole silhouette (face rim included).
+        out.push(eye.left - r.querySelector('.wall path').getBoundingClientRect().left);
+      }
+      if (performance.now() - t0 < 5200) requestAnimationFrame(tick); else done(out);
+    };
+    requestAnimationFrame(tick);
+  }));
+  expect(gaps.length).toBeGreaterThan(0);
+  expect(Math.min(...gaps)).toBeLessThan(2.8);
+  expect(Math.min(...gaps)).toBeGreaterThan(-3);
+});

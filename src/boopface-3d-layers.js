@@ -528,11 +528,20 @@ ${pairStyles}
     const x1 = x * cY + z * sY, z1 = -x * sY + z * cY, y2 = y * cP - z1 * sP, z2 = y * sP + z1 * cP, f = D / (D - z2);
     return { x: x1 * zoom * f, y: y2 * zoom * f };
   };
-  // The official head's left and right edge (240-unit space), for the wrap.
-  let rimFor = '', rimX = [20, 220];
+  // The official head's left and right edge (240-unit space), for the wrap:
+  // the outline as drawn, i.e. through the head's own transform (it is drawn
+  // at 94% of the outline path; the bare path would put the rim 6 units out
+  // and keep the eye that far off the edge).
+  let rimFor = '', rimX = [26, 214];
   const headRim = () => {
-    const shape = brain?._headShape, d = shape?.getAttribute('d') || '';
-    if (shape && d !== rimFor) { rimFor = d; try { const b = shape.getBBox(); if (b.width) rimX = [b.x, b.x + b.width]; } catch { /* not rendered */ } }
+    const shape = brain?._headShape, head = brain?._head, key = (shape?.getAttribute('d') || '') + '|' + (head?.getAttribute('transform') || '');
+    if (shape && key !== rimFor) {
+      rimFor = key;
+      try {
+        const b = shape.getBBox(), m = head?.transform?.baseVal?.consolidate?.()?.matrix;
+        if (b.width) rimX = m ? [m.a * b.x + m.e, m.a * (b.x + b.width) + m.e] : [b.x, b.x + b.width];
+      } catch { /* not rendered */ }
+    }
     return rimX;
   };
   const hugSide = (c, sx, sy, eye) => {
