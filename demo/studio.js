@@ -2673,21 +2673,22 @@ function setLanguage(next) {
 setLanguage(initialLanguage());
 syncWakeButton();
 
-// 平面/立体 cost, measured 2026-11-24 in headless Chromium (no GPU), one
-// 168 px avatar, median of 3 runs. timeline: main-thread busy time in % of
-// one core, every 0.5 s from 0.5 s: idle 4 s, pointer moving 4 s, expressions
-// 4 s. compare: runtime download (gzip) and JS time with the pointer moving.
+// 平面/立体 cost, measured 2026-11-24 with Chrome on a Windows PC with an
+// RTX 4080 (real GPU), one 168 px avatar, median of 3 runs. timeline: main
+// thread busy, in % of one core, every 0.5 s: idle 4 s, pointer moving 4 s,
+// expressions 4 s. compare: runtime download (gzip) and main thread busy with
+// the pointer moving, beside look-alike Lottie and Three.js avatars.
 const VIEW_COST = {
   timeline: {
-    '2d': [6.6, 4.9, 4.8, 4.9, 4.5, 5.9, 4.7, 6.5, 6.5, 6.6, 6.2, 5.9, 6.4, 6.3, 7.7, 8.4, 9.6, 10.9, 12.5, 8.5, 8.1, 6.6, 8.8],
-    '3d': [9.5, 9.1, 7.5, 8.6, 8.8, 10.2, 11.1, 12.6, 13.3, 10.8, 9.7, 10.6, 10, 13.8, 14, 11, 14.9, 10.1, 14.5, 9.8, 11.6, 9.7, 14.5],
+    '2d': [4.46, 4.66, 4.95, 4.29, 4.53, 4.94, 5.55, 5.19, 7.31, 6.68, 6.22, 5.39, 6.33, 6.17, 5.29, 5.63, 7.16, 9.05, 7.32, 7.75, 6.71, 8.32, 8.24, 9.22],
+    '3d': [7.34, 8, 8.56, 6.05, 6.81, 5.83, 6.55, 7.45, 9.39, 7.91, 8.23, 7.55, 8.07, 8.23, 7.69, 7.34, 9.41, 12.78, 11.73, 11.94, 11.01, 12.28, 8.92, 12.44],
   },
   compare: [
-    { name: 'BoopFace 平面', kb: 92, js: 2.4, ours: true },
-    { name: 'BoopFace 立体', kb: 111, js: 5.3, ours: true, strong: true },
-    { name: 'Lottie', kb: 74, js: 1.1, kbNote: '+ 动画文件' },
-    { name: 'Three.js', kb: 132, js: 2.0, jsNote: '+ 显卡渲染' },
-    { name: 'Rive', kb: 1117, js: null, jsNote: '未测' },
+    { name: 'BoopFace 平面', kb: 92, cpu: 6.6, ours: true },
+    { name: 'BoopFace 立体', kb: 111, cpu: 7.8, ours: true, strong: true },
+    { name: 'Lottie', kb: 74, cpu: 5.0, kbNote: '+ 动画文件' },
+    { name: 'Three.js', kb: 132, cpu: 4.4 },
+    { name: 'Rive', kb: 1117, cpu: null, cpuNote: '未测' },
   ],
 };
 
@@ -2702,11 +2703,12 @@ function renderViewInfo() {
   const a = VIEW_COST.timeline['2d'], b = VIEW_COST.timeline['3d'], n = a.length;
   const x = i => L + (W - L - R) * i / (n - 1), y = v => T + (H - T - B) * (1 - v / MAX);
   const path = list => list.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)} ${y(v).toFixed(1)}`).join('');
-  const phaseX = s => L + (W - L - R) * (s - 0.5) / (n * 0.5 - 0.5);
+  // Sample i is at (i + 1) × 0.5 s.
+  const phaseX = s => x(Math.max(0, s / 0.5 - 1));
   const grid = [0, 5, 10, 15].map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(255,255,255,${v ? 0.06 : 0.14})"/><text x="${L - 5}" y="${y(v) + 3}" text-anchor="end">${v}%</text>`).join('');
   const phases = [[0.5, 4, '空闲'], [4, 8, '跟随指针'], [8, 12, '播放表情']].map(([s0, s1, label], k) =>
     `${k ? `<line x1="${phaseX(s0)}" x2="${phaseX(s0)}" y1="${T}" y2="${H - B}" stroke="rgba(255,255,255,0.08)"/>` : ''}<text x="${(phaseX(s0) + phaseX(s1)) / 2}" y="${H - 6}" text-anchor="middle">${label}</text>`).join('');
-  plot.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="12 秒实测：立体约 11%，平面约 7%">
+  plot.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="12 秒实测：立体平均约 8.8%，平面约 6.3%">
     <defs><linearGradient id="viFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#f2f2f2" stop-opacity=".16"/><stop offset="1" stop-color="#f2f2f2" stop-opacity="0"/></linearGradient></defs>
     ${grid}${phases}
     <path d="${path(b)}L${x(n - 1)} ${y(0)}L${x(0)} ${y(0)}Z" fill="url(#viFill)"/>
@@ -2726,21 +2728,21 @@ function renderViewInfo() {
     cross.setAttribute('x1', x(i)); cross.setAttribute('x2', x(i));
     d3.setAttribute('cx', x(i)); d3.setAttribute('cy', y(b[i])); d2.setAttribute('cx', x(i)); d2.setAttribute('cy', y(a[i]));
     tip.hidden = false;
-    tip.innerHTML = `<span>${((i + 1) * 0.5).toFixed(1)} s</span><span>立体 <b>${b[i]}%</b></span><span>平面 <b>${a[i]}%</b></span>`;
+    tip.innerHTML = `<span>${((i + 1) * 0.5).toFixed(1)} s</span><span>立体 <b>${b[i].toFixed(1)}%</b></span><span>平面 <b>${a[i].toFixed(1)}%</b></span>`;
     const px = x(i) / W * r.width;
     tip.style.left = `${px > r.width * 0.6 ? px - tip.offsetWidth - 10 : px + 10}px`;
   });
   svg.addEventListener('pointerleave', () => { tip.hidden = true; for (const el of [cross, d3, d2]) el.setAttribute('visibility', 'hidden'); });
   // The comparison: rows of bars, one scale per column.
-  const KB_MAX = 200, JS_MAX = 6;
+  const KB_MAX = 200, CPU_MAX = 10;
   const bar = (v, max, unit, cls, over) => v == null ? `<div class="vi-bar"><em>${over || '—'}</em></div>`
     : `<div class="vi-bar ${cls}${v > max ? ' is-over' : ''}"><i style="width:${Math.min(v, max) / max * 100 * 0.62}%"></i><span>${unit(v)}</span>${over ? `<em>${over}</em>` : ''}</div>`;
-  rows.innerHTML = `<span></span><span class="vi-colhead">载入（gzip）</span><span class="vi-colhead">JS 运算（主线程）</span>` +
+  rows.innerHTML = `<span></span><span class="vi-colhead">载入（gzip）</span><span class="vi-colhead">主线程占用</span>` +
     VIEW_COST.compare.map(c => {
       const cls = c.strong ? 'is-ours is-strong' : c.ours ? 'is-ours' : '';
       return `<span class="vi-name${c.ours ? ' is-ours' : ''}">${c.name}</span>` +
         bar(c.kb, KB_MAX, v => v >= 1000 ? `${(v / 1024).toFixed(1)} MB` : `${v} KB`, cls, c.kbNote) +
-        bar(c.js, JS_MAX, v => `${v.toFixed(1)}%`, cls, c.jsNote);
+        bar(c.cpu, CPU_MAX, v => `${v.toFixed(1)}%`, cls, c.cpuNote);
     }).join('');
 }
 document.querySelector('.view-info')?.addEventListener('pointerenter', renderViewInfo);

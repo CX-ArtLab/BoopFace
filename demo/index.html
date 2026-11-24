@@ -169,8 +169,8 @@
                   </div>
                   <div class="vi-tiles">
                     <div><span>载入</span><strong>+19 KB</strong><small>第一次切到立体时</small></div>
-                    <div><span>CPU</span><strong>约 1.7 倍</strong><small>主线程，和平面比</small></div>
-                    <div><span>内存</span><strong>+1.6 MB</strong><small>2.0 → 3.6 MB</small></div>
+                    <div><span>CPU</span><strong>约 1.3 倍</strong><small>主线程，和平面比</small></div>
+                    <div><span>内存</span><strong>+1.6 MB</strong><small>2.7 → 4.3 MB</small></div>
                   </div>
                   <figure class="vi-chart">
                     <figcaption><span>12 秒实测 · 主线程占用</span><span class="vi-legend"><i class="is-3d"></i>立体<i class="is-2d"></i>平面</span></figcaption>
@@ -180,7 +180,7 @@
                     <figcaption>和其他做法比</figcaption>
                     <div class="vi-rows" id="viewInfoRows"></div>
                   </figure>
-                  <small class="vi-note">同一台电脑上实测（没有独立显卡）。JS 运算不受显卡影响，可以横向比较；Three.js 和 Rive 的显卡渲染另算。Lottie 测的是一段固定的循环动画，不含跟随指针和表情切换。页面切到后台或头像滚出屏幕时，平面和立体都会暂停绘制。</small>
+                  <small class="vi-note">在一台装 RTX 4080 显卡的 Windows 电脑上用 Chrome 实测，每项取 3 次的中间值，主线程占用按一个 CPU 核计。Lottie 和 Three.js 用的是同样一个头加两只会眨的眼睛；Lottie 是一段固定的循环动画，不含跟随指针和表情切换。页面切到后台或头像滚出屏幕时，平面和立体都会暂停绘制。</small>
                 </div>
               </div>
             </div>
