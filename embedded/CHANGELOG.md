@@ -2,6 +2,18 @@
 
 Changes to the embedded eyes library for robot and dev-board screens. It is versioned and released separately from the Web component (`eyes-v*` tags, not published to npm).
 
+## [0.2.0] - Unreleased
+
+Ships together with the Web avatar 0.9.0.
+
+### Changed
+
+- Rounded eyes, as on the Web avatar: every corner a lid cuts into an eye is rounded (radius 4 avatar units), and a thin slit (sleep, a squint) gets half-round ends. `Eyes::setRoundEyes(false)` keeps the straight cuts.
+
+### Added
+
+- `embedded/tools/build-core-data.mjs` builds the WebAssembly core for the Embedded Studio page.
+
 ## [0.1.0] - 2026-11-05
 
 First experimental release. All reference configurations compile in CI; physical verification is pending. Install the standalone ZIP until registry listings are available.

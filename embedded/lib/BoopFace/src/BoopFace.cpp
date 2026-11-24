@@ -292,6 +292,103 @@ void Eyes::setPixel(int x, int y) {
   buffer_[static_cast<size_t>(y) * stride_ + (x >> 3)] |= static_cast<uint8_t>(0x80u >> (x & 7));
 }
 
+namespace {
+// Rounded lid corners, as the Web avatar draws them (src/boopface-eye-shape.js):
+// the eye is the ellipse cut by its two lids, and every corner a lid cuts is
+// rounded. Here that is a morphological opening: the shape shrunk by the
+// corner radius, then grown back by it, which rounds exactly the convex
+// corners and leaves the smooth ellipse alone. A thin slit (sleep, a squint)
+// gets half-round ends: the radius grows to half the slit's height.
+struct RoundShape {
+  enum { MAX = 72 };
+  float x[MAX], y[MAX];
+  int n = 0;
+  float radius = 0;
+};
+const int ELLIPSE_SAMPLES = 48;
+// Clip a convex polygon by a half-plane a*x + b*y + c >= 0.
+int clipHalf(const float* ix, const float* iy, int n, float a, float b, float c, float* ox, float* oy, int max) {
+  int m = 0;
+  for (int i = 0; i < n; ++i) {
+    const int j = (i + 1) % n;
+    const float di = a * ix[i] + b * iy[i] + c, dj = a * ix[j] + b * iy[j] + c;
+    if (di >= 0 && m < max) { ox[m] = ix[i]; oy[m] = iy[i]; ++m; }
+    if ((di >= 0) != (dj >= 0) && m < max) {
+      const float t = di / (di - dj);
+      ox[m] = ix[i] + (ix[j] - ix[i]) * t; oy[m] = iy[i] + (iy[j] - iy[i]) * t; ++m;
+    }
+  }
+  return m;
+}
+// The eroded shape (every point at least radius from the edge) and the radius,
+// in the eye's own units; n == 0 means draw the plain ellipse.
+void roundShape(float rx, float ry, float top, float bottom, float topSlope, float bottomSlope, float baseRadius, RoundShape& out) {
+  float px[RoundShape::MAX], py[RoundShape::MAX], qx[RoundShape::MAX], qy[RoundShape::MAX];
+  int n = 0;
+  for (int i = 0; i < ELLIPSE_SAMPLES; ++i) {
+    const float t = i * 2 * PI / ELLIPSE_SAMPLES;
+    px[n] = rx * cosf(t); py[n] = ry * sinf(t); ++n;
+  }
+  // top lid keeps y >= top + topSlope*x, bottom keeps y <= bottom + bottomSlope*x
+  n = clipHalf(px, py, n, -topSlope, 1, -top, qx, qy, RoundShape::MAX);
+  n = clipHalf(qx, qy, n, bottomSlope, -1, bottom, px, py, RoundShape::MAX);
+  out.n = 0;
+  if (n < 3) return;
+  // How tall the eye is through its middle (as the Web measures it).
+  const float yTop = fmaxf(top, -ry), yBottom = fminf(bottom, ry), h = yBottom - yTop;
+  if (!(h > 0)) return;
+  const float w = fminf(1, fmaxf(0, (24 - h) / 10)), k = w * w * (3 - 2 * w);
+  const float radius = fminf(baseRadius + k * (h / 2 - baseRadius), h / 2 * .999f);
+  if (!(radius > .05f)) return;
+  // Shrink: clip the polygon by each of its own edges moved inward by radius.
+  float cx = 0, cy = 0;
+  for (int i = 0; i < n; ++i) { cx += px[i]; cy += py[i]; }
+  cx /= n; cy /= n;
+  float ex[RoundShape::MAX], ey[RoundShape::MAX];
+  int m = n;
+  for (int i = 0; i < n; ++i) { ex[i] = px[i]; ey[i] = py[i]; }
+  for (int i = 0; i < n && m >= 3; ++i) {
+    const int j = (i + 1) % n;
+    float a = -(py[j] - py[i]), b = px[j] - px[i];
+    const float len = sqrtf(a * a + b * b);
+    if (len < 1e-4f) continue;
+    a /= len; b /= len;
+    if (a * (cx - px[i]) + b * (cy - py[i]) < 0) { a = -a; b = -b; }
+    const float c = -(a * px[i] + b * py[i]) - radius;
+    m = clipHalf(ex, ey, m, a, b, c, qx, qy, RoundShape::MAX);
+    for (int k2 = 0; k2 < m; ++k2) { ex[k2] = qx[k2]; ey[k2] = qy[k2]; }
+  }
+  if (m < 1) { // thinner than the radius everywhere: a point at the middle
+    ex[0] = cx; ey[0] = cy; m = 1;
+  }
+  for (int i = 0; i < m; ++i) { out.x[i] = ex[i]; out.y[i] = ey[i]; }
+  out.n = m; out.radius = radius;
+}
+// Is the point within radius of the (convex) shrunk shape?
+bool nearShape(const RoundShape& r, float x, float y) {
+  if (r.n >= 3) {
+    bool inside = true;
+    float sign = 0;
+    for (int i = 0; i < r.n && inside; ++i) {
+      const int j = (i + 1) % r.n;
+      const float cr = (r.x[j] - r.x[i]) * (y - r.y[i]) - (r.y[j] - r.y[i]) * (x - r.x[i]);
+      if (cr != 0) { if (sign == 0) sign = cr; else if ((cr > 0) != (sign > 0)) inside = false; }
+    }
+    if (inside) return true;
+  }
+  const float rr = r.radius * r.radius;
+  for (int i = 0; i < r.n; ++i) {
+    const int j = r.n > 1 ? (i + 1) % r.n : i;
+    const float vx = r.x[j] - r.x[i], vy = r.y[j] - r.y[i], wx = x - r.x[i], wy = y - r.y[i];
+    const float l = vx * vx + vy * vy;
+    const float t = l > 0 ? fminf(1, fmaxf(0, (wx * vx + wy * vy) / l)) : 0;
+    const float dx = wx - vx * t, dy = wy - vy * t;
+    if (dx * dx + dy * dy <= rr) return true;
+  }
+  return false;
+}
+} // namespace
+
 void Eyes::drawEye(const Eye& e, float scale, float ox, float oy) {
   if (e.rx < .05f || e.ry < .05f) return;
   const float rx = e.rx * scale, ry = e.ry * scale;
@@ -305,6 +402,11 @@ void Eyes::drawEye(const Eye& e, float scale, float ox, float oy) {
   const int y1 = static_cast<int>(fminf(config_.height - 1.f, ceilf(cy + extentY)));
   const bool noClip = e.top <= -e.ry - fabsf(e.topSlope) * e.rx
       && e.bottom >= e.ry + fabsf(e.bottomSlope) * e.rx;
+  // Lids that cut the eye: round the corners they make (see roundShape).
+  RoundShape rounded;
+  if (roundEyes_ && !noClip && e.corner < 0) {
+    roundShape(e.rx, e.ry, e.top, e.bottom, e.topSlope, e.bottomSlope, 4, rounded);
+  }
   const float cornerX = fminf(e.corner*scale,rx), cornerY = fminf(e.cornerY*scale,ry);
   const float cornerIx = cornerX > 0 ? 1/(cornerX*cornerX) : 0;
   const float cornerIy = cornerY > 0 ? 1/(cornerY*cornerY) : 0;
@@ -334,6 +436,7 @@ void Eyes::drawEye(const Eye& e, float scale, float ox, float oy) {
         const float localX = (c * dx + s * dy) / scale;
         const float localY = (-s * dx + c * dy) / scale;
         if (localY < e.top + e.topSlope * localX || localY > e.bottom + e.bottomSlope * localX) continue;
+        if (rounded.n && !nearShape(rounded, localX, localY)) continue;
       }
       setPixel(x,y);
     }

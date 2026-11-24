@@ -75,7 +75,10 @@ class Eyes {
   size_t bufferSize() const { return bytes_; }
   static const char* actionName(Action action);
   static bool parseAction(const char* name, Action& result);
-  static const char* version() { return "0.1.0"; }
+  static const char* version() { return "0.2.0"; }
+  // Lid corners rounded like the Web avatar (on by default); false keeps
+  // the straight lid cuts (the Web eye-style="sharp").
+  void setRoundEyes(bool on) { roundEyes_ = on; force_ = true; }
 
  private:
   struct Eye {
@@ -103,6 +106,7 @@ class Eyes {
   float lookX_ = 0, lookY_ = 0;
   bool force_ = true, sleepRendered_ = false;
   bool crossfade_ = false;
+  bool roundEyes_ = true;
 };
 
 } // namespace boopface
