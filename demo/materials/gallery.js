@@ -1,25 +1,24 @@
-import { VERSION } from '../../boopface.js';
+import '../../boopface.js';
 import { publicSkins, skinById, skinThumbnail, catalogCategories as materialCategories } from '../skin-catalog.js';
 import { t, skinLanguage, skinTitle, seriesTitle, copySkinNumber } from '../skins-i18n.js';
 
 const params = new URLSearchParams(location.search);
-document.getElementById('catalog-build').textContent = `Demo ${VERSION}`;
 const language = params.get('lang') || 'zh-CN';
 const lang = skinLanguage(language);
 document.documentElement.lang = lang;
 document.title = `${t('allSkins', 0, lang)} · BoopFace`;
-for (const [selector, key] of [['#nav-demo', 'demo'], ['#nav-skins', 'skins'], ['#back-to-skins', 'backHome'], ['.library-header h1', 'allSkins'], ['.search-label .sr-only', 'search'], ['#empty-state p', 'none'], ['#clear-search', 'showAll']]) {
+for (const [selector, key] of [['#catalog-title', 'allSkins'], ['#search-label', 'search'], ['#empty-text', 'none'], ['#clear-search', 'showAll']]) {
   document.querySelector(selector).textContent = t(key, 0, lang);
 }
 document.getElementById('skin-search').placeholder = t('search', 0, lang);
-const home = new URL('../skins.html', location.href);
-home.searchParams.set('lang', language);
-if (skinById.has(params.get('skin'))) home.searchParams.set('skin', params.get('skin'));
-document.getElementById('back-to-skins').href = home.href;
-document.getElementById('nav-skins').href = home.href;
-const demoPage = new URL('../index.html', location.href);
-demoPage.searchParams.set('lang', language);
-document.getElementById('nav-demo').href = demoPage.href;
+// Back to the Studio's skin tab, in the same language.
+const studio = new URL('../index.html', location.href);
+studio.searchParams.set('lang', language);
+studio.hash = 'skins';
+document.getElementById('back-to-studio').href = studio.href;
+document.getElementById('back-btn').href = studio.href;
+if (!lang.startsWith('zh')) document.getElementById('back-btn').textContent = '← Back to Studio';
+const home = studio;
 document.getElementById('catalog-count').textContent = t('count', publicSkins.length, lang);
 const grid = document.getElementById('skin-grid');
 const search = document.getElementById('skin-search');

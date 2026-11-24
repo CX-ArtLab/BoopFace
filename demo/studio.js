@@ -2762,6 +2762,13 @@ function openFromHash() {
 openFromHash();
 addEventListener('hashchange', openFromHash);
 
+// Shared links and the full skin gallery: ?skin=301 opens that skin, ?action=love plays it.
+{
+  const q = new URLSearchParams(location.search), skin = q.get('skin'), action = q.get('action');
+  if (skin && skinById.has(skin)) { state.surface = 'skin'; state.skinId = skin; renderSkinGrid(); syncAllFaces(); }
+  if (action && document.querySelector(`[data-action="${CSS.escape(action)}"]`)) setTimeout(() => document.querySelector(`[data-action="${CSS.escape(action)}"]`)?.click(), 600);
+}
+
 // Languages: start in the linked, last chosen or browser language.
 function setLanguage(next) {
   const lang = applyLanguage(next);

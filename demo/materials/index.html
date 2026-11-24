@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="google" content="notranslate">
   <title>全部皮肤 · BoopFace</title>
-  <link rel="icon" href="data:,">
+  <link rel="icon" href="../favicon-white.svg" type="image/svg+xml">
   <link rel="modulepreload" href="../../boopface.js">
   <link rel="modulepreload" href="../skin-catalog.js">
   <link rel="modulepreload" href="../../src/skins/catalog.js">
@@ -13,30 +13,32 @@
   <link rel="modulepreload" href="../../src/skins/eyelids.js">
   <link rel="modulepreload" href="../../src/skins/native.js">
   <link rel="modulepreload" href="../../src/skins/material-library.js">
-  <link rel="stylesheet" href="../boopface-demo.css">
-  <link rel="stylesheet" href="../demo-shell.css">
-  <link rel="stylesheet" href="../skins.css">
+  <link rel="stylesheet" href="../fonts/geist.css">
   <link rel="stylesheet" href="./gallery.css">
 </head>
-<body class="skins-page catalog-page">
-  <header class="page-header catalog-header">
-    <p class="title">BoopFace / SVG + Vanilla JS / Web Component</p>
-    <nav class="demo-nav" aria-label="页面导航"><a id="nav-demo" href="../index.html">演示</a><a id="nav-skins" class="demo-nav-skins" href="../skins.html" aria-current="page">皮肤</a></nav>
-    <div class="build-badge" id="catalog-build"></div>
+<body>
+  <header class="topbar">
+    <a class="brand" id="back-to-studio" href="../index.html#skins">
+      <boop-face size="28" auto-sleep="0" color="#ffffff" eye-color="#000000" press-squeeze="false" antenna-drag="false"></boop-face>
+      <span class="brand-name">BoopFace</span>
+      <span class="badge">Studio</span>
+    </a>
+    <a class="back-btn" id="back-btn" href="../index.html#skins">← 返回 Studio</a>
   </header>
-  <main class="catalog-content">
-    <aside class="catalog-sidebar library" aria-label="筛选皮肤">
-      <a class="skin-home-link" id="back-to-skins" href="../skins.html">← 返回皮肤首页</a>
-      <div class="library-header"><h1>全部皮肤</h1><span id="catalog-count"></span></div>
-      <label class="search-label"><span class="sr-only">搜索皮肤</span><input id="skin-search" type="search" placeholder="搜索皮肤" autocomplete="off"></label>
+  <main class="catalog">
+    <aside class="side" aria-label="筛选皮肤">
+      <div class="side-head"><h1 id="catalog-title">全部皮肤</h1><span id="catalog-count"></span></div>
+      <label class="search"><span class="sr-only" id="search-label">搜索皮肤</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+        <input id="skin-search" type="search" placeholder="搜索皮肤" autocomplete="off"></label>
       <div class="filters" id="skin-filters" aria-label="皮肤分类"></div>
     </aside>
-    <div class="catalog-results">
-      <div class="catalog-sections" id="skin-grid" aria-label="选择皮肤"></div>
-      <div class="empty-state library" id="empty-state" hidden><p>未找到皮肤</p><button id="clear-search" type="button">查看全部</button></div>
+    <div class="results">
+      <div class="sections" id="skin-grid" aria-label="选择皮肤"></div>
+      <div class="empty" id="empty-state" hidden><p id="empty-text">未找到皮肤</p><button id="clear-search" type="button">查看全部</button></div>
     </div>
   </main>
-  <noscript>请启用 JavaScript。<a href="../skins.html">返回皮肤首页</a></noscript>
+  <noscript>请启用 JavaScript。</noscript>
   <script type="module" src="./gallery.js"></script>
 </body>
 </html>
