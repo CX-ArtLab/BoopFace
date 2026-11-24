@@ -2725,9 +2725,9 @@ function renderViewInfo() {
   // Sample i is at (i + 1) × 0.5 s.
   const phaseX = s => x(Math.max(0, s / 0.5 - 1));
   const grid = [0, 5, 10, 15].map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(255,255,255,${v ? 0.06 : 0.14})"/><text x="${L - 5}" y="${y(v) + 3}" text-anchor="end">${v}%</text>`).join('');
-  const phases = [[0.5, 4, '空闲'], [4, 8, '跟随指针'], [8, 12, '播放表情']].map(([s0, s1, label], k) =>
+  const phases = [[0.5, 4, '空闲'], [4, 8, '跟随鼠标'], [8, 12, '播放表情']].map(([s0, s1, label], k) =>
     `${k ? `<line x1="${phaseX(s0)}" x2="${phaseX(s0)}" y1="${T}" y2="${H - B}" stroke="rgba(255,255,255,0.08)"/>` : ''}<text x="${(phaseX(s0) + phaseX(s1)) / 2}" y="${H - 6}" text-anchor="middle">${label}</text>`).join('');
-  plot.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="12 秒实测的电脑负担：平面平均约占一个 CPU 核的 5%，立体约 8%">
+  plot.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="实测 12 秒的 CPU 占用：平面平均约占单核 5%，立体约 8%">
     <defs><linearGradient id="viFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#f2f2f2" stop-opacity=".16"/><stop offset="1" stop-color="#f2f2f2" stop-opacity="0"/></linearGradient></defs>
     ${grid}${phases}
     <path class="vi-area" d="${path(b)}L${x(n - 1)} ${y(0)}L${x(0)} ${y(0)}Z" fill="url(#viFill)"/>
@@ -2747,7 +2747,7 @@ function renderViewInfo() {
     cross.setAttribute('x1', x(i)); cross.setAttribute('x2', x(i));
     d3.setAttribute('cx', x(i)); d3.setAttribute('cy', y(b[i])); d2.setAttribute('cx', x(i)); d2.setAttribute('cy', y(a[i]));
     tip.hidden = false;
-    tip.innerHTML = `<span>${((i + 1) * 0.5).toFixed(1)} s · ${i < 7 ? '空闲' : i < 15 ? '跟随指针' : '播放表情'}</span><span>立体 <b>${b[i].toFixed(1)}%</b></span><span>平面 <b>${a[i].toFixed(1)}%</b></span>`;
+    tip.innerHTML = `<span>${((i + 1) * 0.5).toFixed(1)} s · ${i < 7 ? '空闲' : i < 15 ? '跟随鼠标' : '播放表情'}</span><span>立体 <b>${b[i].toFixed(1)}%</b></span><span>平面 <b>${a[i].toFixed(1)}%</b></span>`;
     const px = x(i) / W * r.width;
     tip.style.left = `${px > r.width * 0.6 ? px - tip.offsetWidth - 10 : px + 10}px`;
   });
