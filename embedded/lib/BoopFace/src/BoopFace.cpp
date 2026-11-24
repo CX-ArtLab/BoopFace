@@ -257,7 +257,8 @@ Eyes::Pose Eyes::poseAt(uint32_t now) const {
   } else {
     p = webPose(selected,elapsed);
   }
-  if (selected == Action::Input && p.left.corner >= 0 && ((now / 265) % 2))
+  // The typing cursor blinks as on the Web avatar 0.9: 530 ms on, 530 ms off.
+  if (selected == Action::Input && p.left.corner >= 0 && ((now / 530) % 2))
     p.left.rx = p.right.rx = 0;
   if (selected == Action::Idle) {
     const float* reach = GAZE_REACH[static_cast<unsigned>(config_.gazeRange)];

@@ -27,7 +27,9 @@ try {
   const selected={waiting:900,'waiting-wrap':900,inspect:2200,warning:1500,love:1200,random:1500};
   for(const frame of reference.frames){
     const index=names.indexOf(frame.action),start=index===16?3500:0;
-    const input=['init 240 160 60 0 0 0'];
+    // The visual reference is the Web drawing with straight lid cuts; the
+    // rounded corners are checked on their own (the oracle turns them off here).
+    const input=['init 240 160 60 0 0 0','round 0'];
     if(index===16)input.push('play 15 0','update 3400');
     input.push(`play ${index} ${start}`,`update ${start+frame.elapsed}`);
     const output=execFileSync(binary,{input:input.join('\n')+'\n',encoding:'utf8'}).trim().split('\n').at(-1).split(' ');
