@@ -283,12 +283,6 @@ function copyText(text, targetBtn) {
   targetBtn._copyTimer = setTimeout(() => delete targetBtn.dataset.copied, 1300);
 }
 
-function effectiveBgColor() {
-  if (state.backdrop === 'light') return '#e6e8ec';
-  if (state.backdrop === 'custom') return state.flatBg;
-  return '#18181b';
-}
-
 function syncFaceGeometry(face, customRound = state.roundness) {
   face.setHeadRoundness(customRound);
   face.setPointerFollow(state.pointerFollow);
@@ -332,10 +326,10 @@ function paintCustomFace(face, { isStage = false, bot = null } = {}) {
     face.setAttribute('data-custom-color', 'true');
     face.setSkin(null);
     face.setAttribute('color', state.flatHead);
-    // The component's own eye colour: see-through on the flat stage (the real
-    // background shows in the eyes); the 3D head and the chat faces take the
+    // The component's own eye colour: see-through on the stage, flat or 3D
+    // (the real background shows in the eyes); the chat faces take the
     // background colour instead (the same look on a plain colour).
-    const eyeColor = !state.eyeThrough ? state.eyeColor : isStage ? (state.dimension === '3d' ? effectiveBgColor() : 'transparent') : (state.chatLook === 'dark' ? '#1f1f21' : '#e8e9ec');
+    const eyeColor = !state.eyeThrough ? state.eyeColor : isStage ? 'transparent' : (state.chatLook === 'dark' ? '#1f1f21' : '#e8e9ec');
     face.setEyeColor(eyeColor);
   }
   if (state.surface === 'skin') face.setEyeColor(skinEyeColor(isStage));
@@ -354,8 +348,7 @@ function throughOn() { return state.surface === 'skin' ? state.skinEyeThrough : 
 function setThrough(on) { if (state.surface === 'skin') state.skinEyeThrough = on; else state.eyeThrough = on; }
 function skinEyeColor(isStage = false) {
   if (!skinTakesEyeColor()) return null;
-  // The 3D stage head takes the background colour (the same look on a plain stage).
-  if (state.skinEyeThrough) return isStage && state.dimension === '3d' ? effectiveBgColor() : 'transparent';
+  if (state.skinEyeThrough) return 'transparent';
   return state.eyeColor;
 }
 // The eye colour the avatar really gets, for the code panel (null = none).
