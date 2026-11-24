@@ -105,9 +105,34 @@ BoopFace.prototype.setView = function(value = '2d') {
 };
 Object.defineProperty(BoopFace.prototype, 'view', { get() { return wantedView(this); }, configurable: true });
 
+// First paint: an avatar asked for a skin or the 3D view is first drawn as the
+// plain black flat face while the skin painter and the 3D renderer load.
+// Instead it stays invisible until it looks the way it was asked to (at most
+// 1.5 s), then fades in.
+const SKIN_MODULE = () => typeof BoopFace.prototype._skinKeepsEyes === 'function';
+function firstPaint(face, now) {
+  if (face._firstShown) return;
+  const skin = face.getAttribute('skin'), wantSkin = SKIN_MODULE() && skin && skin !== 'none';
+  const skinOk = !wantSkin || (face._skinName !== undefined && (face._skinShown ?? null) === (face._skinName ?? null));
+  const viewOk = wantedView(face) !== '3d' || face.dataset.view === '3d';
+  face._firstAt ??= now;
+  if ((skinOk && viewOk) || now - face._firstAt > 1500) {
+    face._firstShown = true;
+    if (face.hasAttribute('data-preparing')) face.removeAttribute('data-preparing');
+    return;
+  }
+  if (!face._firstStyle) {
+    face._firstStyle = document.createElement('style');
+    face._firstStyle.textContent = ':host([data-preparing]) svg,:host([data-preparing]) .view-3d{opacity:0}svg,.view-3d{transition:opacity .22s ease-out}';
+    face.shadowRoot?.append(face._firstStyle);
+  }
+  if (!face.hasAttribute('data-preparing')) face.setAttribute('data-preparing', '');
+}
+
 registerAvatarExtension({
   name: 'view-3d',
   draw(now) {
+    firstPaint(this, now);
     if (wantedView(this) !== '3d') { if (this._view3d || this._view3dState?.avatar) leave3d(this); return; }
     this._view3d = true;
     const v = view3d(this), key = paintKey(this);
