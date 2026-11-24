@@ -361,7 +361,6 @@ const EN = {
 "载入": "Download",
 "第一次切到立体时": "the first time 3D is used",
 "主线程，和平面比": "main thread, vs flat",
-"内存": "Memory",
 "12 秒实测 · 主线程占用": "12 s measured · main thread busy",
 "空闲": "Idle",
 "跟随指针": "Following the pointer",

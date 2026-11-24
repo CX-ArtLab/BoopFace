@@ -247,11 +247,11 @@ test('events sit in a strip under the code; opened they take the whole panel, an
   await expect(page.locator('#codeBuildStats')).toBeVisible();
 });
 
-test('the 3D info card is the three numbers and a smooth curve that draws in', async ({ page }) => {
+test('the 3D info card is two numbers and a smooth curve that draws in', async ({ page }) => {
   await page.goto('/demo/?lang=zh-CN');
   await ready(page);
   await page.locator('.info-dot').hover();
-  await expect(page.locator('#viewInfoPop .vi-tiles > div')).toHaveCount(3);
+  await expect(page.locator('#viewInfoPop .vi-tiles > div')).toHaveCount(2);
   await expect(page.locator('#viewInfoPop .vi-compare, #viewInfoPop .vi-note')).toHaveCount(0);
   const lines = page.locator('#viewInfoPlot path.vi-line');
   await expect(lines).toHaveCount(2);
