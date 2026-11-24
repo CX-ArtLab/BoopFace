@@ -360,8 +360,6 @@ const EN = {
 "两种都有全部表情、皮肤和颜色，代码里只差": "Both have every expression, skin and colour; in code the only difference is",
 "载入": "Download",
 "原生设计": "The original design",
-"流畅度": "Smoothness",
-"每秒 30 帧": "30 frames a second",
 "12 秒实测 · 电脑负担（越低越省电）": "12 s measured · computer load (lower saves power)",
 "12 秒实测的电脑负担：立体比平面略高": "Computer load over 12 s: 3D a little above flat",
 "高": "high",
