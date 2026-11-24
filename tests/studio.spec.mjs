@@ -228,3 +228,33 @@ test('Wake is only pressable while asleep and never sleeps first, and see-throug
   await page.locator('[data-inspector-tab="look"]').click();
   await expect(page.locator('#eyeThroughToggle')).toBeDisabled();
 });
+
+test('events sit in a strip under the code; opened they take the whole panel, and close back', async ({ page }) => {
+  await page.goto('/demo/?lang=zh-CN');
+  await ready(page);
+  await page.locator('[data-inspector-tab="code"]').click();
+  await expect(page.locator('[data-dev-tab="events"]')).toHaveCount(0);
+  await expect(page.locator('#codeBuildStats')).toBeVisible();
+  await page.locator('.row-btns button').nth(2).click();
+  await expect(page.locator('#eventStripLast')).toContainText('action-state');
+  await page.locator('#eventStripToggle').click();
+  await expect(page.locator('#devEvents')).toBeVisible();
+  await expect(page.locator('#devCodePre')).toBeHidden();
+  await expect(page.locator('#codeBuildStats')).toBeHidden();
+  await page.locator('#eventStripToggle').click();
+  await expect(page.locator('#devEvents')).toBeHidden();
+  await expect(page.locator('#devCodePre')).toBeVisible();
+  await expect(page.locator('#codeBuildStats')).toBeVisible();
+});
+
+test('the 3D info card is the three numbers and a smooth curve that draws in', async ({ page }) => {
+  await page.goto('/demo/?lang=zh-CN');
+  await ready(page);
+  await page.locator('.info-dot').hover();
+  await expect(page.locator('#viewInfoPop .vi-tiles > div')).toHaveCount(3);
+  await expect(page.locator('#viewInfoPop .vi-compare, #viewInfoPop .vi-note')).toHaveCount(0);
+  const lines = page.locator('#viewInfoPlot path.vi-line');
+  await expect(lines).toHaveCount(2);
+  expect(await lines.first().getAttribute('d')).toMatch(/C/);
+  await expect(page.locator('#viewInfoPlot svg')).toHaveClass(/is-drawing/);
+});

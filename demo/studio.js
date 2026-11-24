@@ -2365,7 +2365,7 @@ function logEvent(name, detail) {
   row.innerHTML = `<span class="event-time"></span><span class="event-name"></span><span class="event-payload"></span>`;
   row.children[0].textContent = ts;
   row.children[1].textContent = name;
-  row.children[2].textContent = JSON.stringify(detail);
+  row.children[2].textContent = JSON.stringify(detail).replace(/,"/g, ', "').replace(/":/g, '": ');
   devEvents.prepend(row);
   while (devEvents.children.length > 40) devEvents.lastChild.remove();
   $('eventStripLast').textContent = `${ts}  ${name}`;
@@ -2436,13 +2436,15 @@ $('copyActionBtn').addEventListener('click', () => {
   flashBtnText($('copyActionBtn'), '已复制', '复制调用');
 });
 
-// Events: a strip at the bottom of the code panel; shows the latest event, opens to the log.
+// Events: a strip at the bottom of the code panel showing the latest event; opened,
+// it takes the whole panel (the rest hides) and closes back to the strip.
 $('eventStripToggle').addEventListener('click', () => {
   const open = devEvents.hidden;
   devEvents.hidden = !open;
   $('clearEventsBtn').hidden = !open;
   $('eventStripToggle').setAttribute('aria-expanded', String(open));
   $('eventStrip').classList.toggle('open', open);
+  $('eventStrip').closest('.code-panel').classList.toggle('events-full', open);
 });
 $('clearEventsBtn').addEventListener('click', () => {
   state.eventTotal = 0;
@@ -2680,33 +2682,37 @@ syncWakeButton();
 // 平面/立体 cost, measured 2026-11-24 with Chrome on a Windows PC with an
 // RTX 4080 (real GPU), one 168 px avatar, median of 3 runs. timeline: main
 // thread busy, in % of one core, every 0.5 s: idle 4 s, pointer moving 4 s,
-// expressions 4 s. compare: runtime download (gzip) and main thread busy with
-// the pointer moving, beside look-alike Lottie and Three.js avatars.
+// expressions 4 s.
 const VIEW_COST = {
   timeline: {
     '2d': [4.46, 4.66, 4.95, 4.29, 4.53, 4.94, 5.55, 5.19, 7.31, 6.68, 6.22, 5.39, 6.33, 6.17, 5.29, 5.63, 7.16, 9.05, 7.32, 7.75, 6.71, 8.32, 8.24, 9.22],
     '3d': [7.34, 8, 8.56, 6.05, 6.81, 5.83, 6.55, 7.45, 9.39, 7.91, 8.23, 7.55, 8.07, 8.23, 7.69, 7.34, 9.41, 12.78, 11.73, 11.94, 11.01, 12.28, 8.92, 12.44],
   },
-  compare: [
-    { name: 'BoopFace 平面', kb: 92, cpu: 6.6, ours: true },
-    { name: 'BoopFace 立体', kb: 111, cpu: 7.8, ours: true, strong: true },
-    { name: 'Lottie', kb: 74, cpu: 5.0, kbNote: '+ 动画文件' },
-    { name: 'Three.js', kb: 132, cpu: 4.4 },
-    { name: 'Rive', kb: 1117, cpu: null, cpuNote: '未测' },
-  ],
 };
 
 function renderViewInfo() {
-  const plot = $('viewInfoPlot'), rows = $('viewInfoRows');
+  const plot = $('viewInfoPlot');
   // As tall as the room above the button allows (it scrolls inside beyond that).
   const room = document.querySelector('.view-info').getBoundingClientRect().top - 66;
   $('viewInfoPop').style.maxHeight = `${Math.max(220, room)}px`;
-  if (!plot || plot.childElementCount) return;
+  if (!plot) return;
+  if (plot.childElementCount) { replayViewCurve(plot); return; }
   // The curve: one shared y axis (% of a core), three phases along x.
   const W = 416, H = 124, L = 26, R = 6, T = 6, B = 22, MAX = 16;
-  const a = VIEW_COST.timeline['2d'], b = VIEW_COST.timeline['3d'], n = a.length;
+  // A light rolling average (¼ ½ ¼) so the line reads as a trend, not sample noise.
+  const soft = list => list.map((v, i) => (list[Math.max(0, i - 1)] + 2 * v + list[Math.min(list.length - 1, i + 1)]) / 4);
+  const a = soft(VIEW_COST.timeline['2d']), b = soft(VIEW_COST.timeline['3d']), n = a.length;
   const x = i => L + (W - L - R) * i / (n - 1), y = v => T + (H - T - B) * (1 - v / MAX);
-  const path = list => list.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)} ${y(v).toFixed(1)}`).join('');
+  // Smooth curve through the points (Catmull-Rom as cubic Béziers).
+  const path = list => {
+    const p = list.map((v, i) => [x(i), y(v)]), f = n => n.toFixed(1);
+    let d = `M${f(p[0][0])} ${f(p[0][1])}`;
+    for (let i = 0; i < p.length - 1; i++) {
+      const p0 = p[Math.max(0, i - 1)], p1 = p[i], p2 = p[i + 1], p3 = p[Math.min(p.length - 1, i + 2)];
+      d += `C${f(p1[0] + (p2[0] - p0[0]) / 6)} ${f(p1[1] + (p2[1] - p0[1]) / 6)} ${f(p2[0] - (p3[0] - p1[0]) / 6)} ${f(p2[1] - (p3[1] - p1[1]) / 6)} ${f(p2[0])} ${f(p2[1])}`;
+    }
+    return d;
+  };
   // Sample i is at (i + 1) × 0.5 s.
   const phaseX = s => x(Math.max(0, s / 0.5 - 1));
   const grid = [0, 5, 10, 15].map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(255,255,255,${v ? 0.06 : 0.14})"/><text x="${L - 5}" y="${y(v) + 3}" text-anchor="end">${v}%</text>`).join('');
@@ -2715,9 +2721,9 @@ function renderViewInfo() {
   plot.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="12 秒实测：立体平均约 8.8%，平面约 6.3%">
     <defs><linearGradient id="viFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#f2f2f2" stop-opacity=".16"/><stop offset="1" stop-color="#f2f2f2" stop-opacity="0"/></linearGradient></defs>
     ${grid}${phases}
-    <path d="${path(b)}L${x(n - 1)} ${y(0)}L${x(0)} ${y(0)}Z" fill="url(#viFill)"/>
-    <path d="${path(a)}" fill="none" stroke="#7d7d7d" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-    <path d="${path(b)}" fill="none" stroke="#f2f2f2" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <path class="vi-area" d="${path(b)}L${x(n - 1)} ${y(0)}L${x(0)} ${y(0)}Z" fill="url(#viFill)"/>
+    <path class="vi-line" pathLength="1" d="${path(a)}" fill="none" stroke="#7d7d7d" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <path class="vi-line" pathLength="1" d="${path(b)}" fill="none" stroke="#f2f2f2" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
     <line class="vi-cross" y1="${T}" y2="${H - B}" stroke="rgba(255,255,255,0.35)" visibility="hidden"/>
     <circle class="vi-dot3" r="4" fill="#f2f2f2" stroke="#0e0e0e" stroke-width="2" visibility="hidden"/>
     <circle class="vi-dot2" r="4" fill="#7d7d7d" stroke="#0e0e0e" stroke-width="2" visibility="hidden"/>
@@ -2737,17 +2743,12 @@ function renderViewInfo() {
     tip.style.left = `${px > r.width * 0.6 ? px - tip.offsetWidth - 10 : px + 10}px`;
   });
   svg.addEventListener('pointerleave', () => { tip.hidden = true; for (const el of [cross, d3, d2]) el.setAttribute('visibility', 'hidden'); });
-  // The comparison: rows of bars, one scale per column.
-  const KB_MAX = 200, CPU_MAX = 10;
-  const bar = (v, max, unit, cls, over) => v == null ? `<div class="vi-bar"><em>${over || '—'}</em></div>`
-    : `<div class="vi-bar ${cls}${v > max ? ' is-over' : ''}"><i style="width:${Math.min(v, max) / max * 100 * 0.62}%"></i><span>${unit(v)}</span>${over ? `<em>${over}</em>` : ''}</div>`;
-  rows.innerHTML = `<span></span><span class="vi-colhead">载入（gzip）</span><span class="vi-colhead">主线程占用</span>` +
-    VIEW_COST.compare.map(c => {
-      const cls = c.strong ? 'is-ours is-strong' : c.ours ? 'is-ours' : '';
-      return `<span class="vi-name${c.ours ? ' is-ours' : ''}">${c.name}</span>` +
-        bar(c.kb, KB_MAX, v => v >= 1000 ? `${(v / 1024).toFixed(1)} MB` : `${v} KB`, cls, c.kbNote) +
-        bar(c.cpu, CPU_MAX, v => `${v.toFixed(1)}%`, cls, c.cpuNote);
-    }).join('');
+  replayViewCurve(plot);
+}
+// Each time the card opens, the lines draw in from the left.
+function replayViewCurve(plot) {
+  const svg = plot.querySelector('svg');
+  svg.classList.remove('is-drawing'); void svg.getBoundingClientRect(); svg.classList.add('is-drawing');
 }
 document.querySelector('.view-info')?.addEventListener('pointerenter', renderViewInfo);
 document.querySelector('.view-info')?.addEventListener('focusin', renderViewInfo);

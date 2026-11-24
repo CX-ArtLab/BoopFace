@@ -978,19 +978,14 @@ code, kbd {
 .view-info-pop {
   left: -8px;
   right: auto;
-  /* Two columns when there is room (curve | comparison), one when narrow. */
-  width: min(760px, calc(100vw - 60px));
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  width: min(440px, calc(100vw - 40px));
+  grid-template-columns: minmax(0, 1fr);
   align-items: stretch;
   align-content: start;
   /* Never under the page header (the height is set from the room above). */
   overflow-y: auto;
   gap: 12px;
   display: none;
-}
-.view-info-pop > .vi-head, .view-info-pop > .vi-tiles, .view-info-pop > .vi-note { grid-column: 1 / -1; }
-@media (max-width: 1180px) {
-  .view-info-pop { width: min(440px, calc(100vw - 40px)); grid-template-columns: minmax(0, 1fr); }
 }
 .view-info:hover .view-info-pop, .view-info:focus-within .view-info-pop { display: grid; }
 .vi-head { display: grid; gap: 3px; }
@@ -1003,8 +998,8 @@ code, kbd {
 .vi-tiles span { font-size: 10.5px; color: var(--faint); }
 .vi-tiles strong { font-size: 17px; font-weight: 600; color: #fff; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
 .vi-tiles small { font-size: 10px; color: var(--faint); }
-.vi-chart, .vi-compare { margin: 0; display: grid; align-content: start; gap: 6px; padding: 10px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.025); }
-.vi-chart figcaption, .vi-compare figcaption { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); }
+.vi-chart { margin: 0; display: grid; align-content: start; gap: 6px; padding: 10px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.025); }
+.vi-chart figcaption { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); }
 .vi-legend { display: inline-flex; align-items: center; gap: 5px; color: var(--faint); }
 .vi-legend i { width: 12px; height: 2px; border-radius: 1px; margin-left: 6px; }
 .vi-legend i.is-3d { background: #f2f2f2; }
@@ -1015,21 +1010,11 @@ code, kbd {
 .vi-tip { position: absolute; top: 0; pointer-events: none; padding: 5px 7px; border-radius: 7px; background: #262626; border: 1px solid rgba(255, 255, 255, 0.12); font-size: 10.5px; color: #d4d4d4; white-space: nowrap; display: grid; gap: 1px; font-variant-numeric: tabular-nums; }
 .vi-tip b { font-weight: 600; color: #fff; }
 /* The comparison: a table whose cells are bars. */
-.vi-rows { display: grid; grid-template-columns: auto 1fr 1fr; gap: 6px 10px; align-items: center; font-size: 11px; }
-.vi-rows .vi-colhead { font-size: 10px; color: var(--faint); }
-.vi-rows .vi-name { color: #a3a3a3; white-space: nowrap; }
-.vi-rows .vi-name.is-ours { color: #fff; }
-.vi-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; min-width: 0; }
-.vi-bar i { height: 6px; border-radius: 0 3px 3px 0; background: #5c5c5c; flex: none; position: relative; }
-.vi-bar.is-ours i { background: #bdbdbd; }
-.vi-bar.is-strong i { background: #f2f2f2; }
-/* A bar that runs off the scale (Rive's 1.1 MB) ends in a break. */
-.vi-bar.is-over i::after { content: ""; position: absolute; right: 10px; top: -2px; width: 3px; height: 10px; background: #141414; transform: skewX(-20deg); }
-.vi-bar span { color: #d4d4d4; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.vi-bar em { font-style: normal; color: var(--faint); font-size: 10px; white-space: nowrap; }
-/* A note goes under its bar, unless it is the whole cell (not measured). */
-.vi-bar i ~ em { flex-basis: 100%; }
-.vi-note { font-size: 10.5px; line-height: 1.6; color: var(--faint); }
+.vi-plot svg.is-drawing .vi-line { stroke-dasharray: 1; animation: vi-draw 1.1s cubic-bezier(.33, 0, .2, 1) both; }
+.vi-plot svg.is-drawing .vi-area { animation: vi-fade .7s .45s ease-out both; }
+@keyframes vi-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes vi-fade { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .vi-plot svg.is-drawing .vi-line, .vi-plot svg.is-drawing .vi-area { animation: none; } }
 .export-popover {
   width: 228px;
   top: calc(100% + 8px);
@@ -2805,7 +2790,8 @@ input:checked + .switch-track::after {
   flex-direction: column;
   min-height: 0;
 }
-.event-strip.open { flex: 0 1 220px; }
+.event-strip.open { flex: 1 1 auto; }
+.code-panel.events-full > :not(.event-strip) { display: none !important; }
 .event-strip-head { display: flex; align-items: center; gap: 6px; padding-right: 6px; }
 .event-strip-toggle {
   flex: 1;
@@ -2842,7 +2828,7 @@ input:checked + .switch-track::after {
 .event-line { display: flex; gap: 8px; padding: 4px 8px; border-radius: 7px; background: rgba(255, 255, 255, 0.03); }
 .event-time { color: var(--faint); flex: none; }
 .event-name { color: #93c5fd; flex: none; }
-.event-payload { color: #d4d4d8; word-break: break-all; }
+.event-payload { color: #d4d4d8; overflow-wrap: anywhere; }
 
 /* Responsive Tablet / Mobile (< 1180px / 1024px) */
 @media (max-width: 1180px) {

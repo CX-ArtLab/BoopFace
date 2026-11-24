@@ -366,14 +366,8 @@ const EN = {
 "空闲": "Idle",
 "跟随指针": "Following the pointer",
 "播放表情": "Expressions",
-"和其他做法比": "Compared with other ways",
-"载入（gzip）": "Download (gzip)",
-"+ 动画文件": "+ animation files",
-"未测": "not measured",
 "约 1.3 倍": "About 1.3×",
 "12 秒实测：立体平均约 8.8%，平面约 6.3%": "12 s measured: 3D about 8.8% on average, flat about 6.3%",
-"主线程占用": "Main thread busy",
-"在一台装 RTX 4080 显卡的 Windows 电脑上用 Chrome 实测，每项取 3 次的中间值，主线程占用按一个 CPU 核计。Lottie 和 Three.js 用的是同样一个头加两只会眨的眼睛；Lottie 是一段固定的循环动画，不含跟随指针和表情切换。页面切到后台或头像滚出屏幕时，平面和立体都会暂停绘制。": "Measured in Chrome on a Windows PC with an RTX 4080, median of 3 runs, main thread as a share of one CPU core. Lottie and Three.js drew the same head with two blinking eyes; Lottie played one fixed loop, without pointer following or expression changes. Flat and 3D both pause in a background tab or off screen.",
 "再点可互换": "click again to swap",
 "点击复制": "click to copy"
 };
