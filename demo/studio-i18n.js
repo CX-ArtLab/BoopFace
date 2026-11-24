@@ -366,7 +366,6 @@ const EN = {
 "空闲": "Idle",
 "跟随指针": "Following the pointer",
 "播放表情": "Expressions",
-"约 1.3 倍": "About 1.3×",
 "12 秒实测：立体平均约 8.8%，平面约 6.3%": "12 s measured: 3D about 8.8% on average, flat about 6.3%",
 "再点可互换": "click again to swap",
 "点击复制": "click to copy"
