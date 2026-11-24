@@ -189,6 +189,8 @@ const state = {
   scene: 'stage',
   backdrop: 'dark',
   size: 168,
+  // Auto: 40% of the stage's shorter side (120-260 px) until the size is set by hand.
+  sizeAuto: true,
   exportSize: '512',
   exportAlpha: true,
   surface: 'skin',
@@ -369,12 +371,18 @@ function maxStageSize() {
   const fit = Math.floor(Math.min(r.width, r.height) * 0.6 / 2) * 2;
   return Math.max(SIZE_MIN, Math.min(SIZE_CAP, fit || SIZE_CAP));
 }
+function autoStageSize() {
+  const r = $('stageCanvas').getBoundingClientRect();
+  const want = Math.round(Math.min(r.width, r.height) * 0.4 / 2) * 2;
+  return Math.max(120, Math.min(260, maxStageSize(), want || 168));
+}
 function syncSizeLimit() {
   const max = maxStageSize();
   $('sizeSlider').max = String(max);
-  if (state.size > max) {
-    state.size = max;
-    stageFace.setAttribute('size', String(max));
+  const next = state.sizeAuto ? autoStageSize() : Math.min(state.size, max);
+  if (next !== state.size) {
+    state.size = next;
+    stageFace.setAttribute('size', String(next));
     updateSizeReadouts();
     updateDevCode();
   }
@@ -431,6 +439,7 @@ function syncSkinPreviewFace() {
 }
 
 function syncAllFaces() {
+  if (state.sizeAuto) state.size = autoStageSize();
   roundnessFeedback.stop();
   syncStageMinHeight();
   stageFace.setAttribute('size', String(state.size));
@@ -444,7 +453,7 @@ function syncAllFaces() {
 }
 
 function updateSizeReadouts() {
-  $('sizeTrigger').title = `缩放尺寸（当前 ${state.size}px）`;
+  $('sizeTrigger').title = `点击恢复自动大小（当前 ${state.size}px）`;
   $('sizePopoverVal').textContent = `${state.size}px`;
   $('sizeSlider').value = String(state.size);
   document.querySelectorAll('[data-size-stop]').forEach(btn => {
@@ -635,17 +644,27 @@ $('langPopover').addEventListener('click', e => {
   closePopovers();
 });
 
+// The magnifier: hovering shows the sizes; a click goes back to the automatic
+// size (40% of the stage), whatever was chosen.
+{
+  let openT = 0, closeT = 0;
+  const show = open => { clearTimeout(openT); clearTimeout(closeT); $('sizePopover').hidden = !open; $('sizeTrigger').setAttribute('aria-expanded', String(open)); };
+  $('sizeMenu').addEventListener('pointerenter', () => { clearTimeout(closeT); openT = setTimeout(() => show(true), 120); });
+  $('sizeMenu').addEventListener('pointerleave', () => { clearTimeout(openT); closeT = setTimeout(() => show(false), 250); });
+  $('sizeMenu').addEventListener('focusin', () => show(true));
+  $('sizeMenu').addEventListener('focusout', e => { if (!$('sizeMenu').contains(e.relatedTarget)) show(false); });
+}
 $('sizeTrigger').addEventListener('click', e => {
   e.stopPropagation();
-  const next = $('sizePopover').hidden;
-  closePopovers();
-  $('sizePopover').hidden = !next;
-  $('sizeTrigger').setAttribute('aria-expanded', String(next));
+  state.sizeAuto = true;
+  syncSizeLimit();
+  syncAllFaces();
 });
 $('sizePopover').addEventListener('click', e => e.stopPropagation());
 // Dragging only resizes the stage avatar (no repaint of every face), so the
 // avatar follows the slider as it moves.
 $('sizeSlider').addEventListener('input', e => {
+  state.sizeAuto = false;
   state.size = Math.min(Number(e.target.value), maxStageSize());
   stageFace.setAttribute('size', String(state.size));
   updateSizeReadouts();
@@ -653,6 +672,7 @@ $('sizeSlider').addEventListener('input', e => {
 });
 document.querySelectorAll('[data-size-stop]').forEach(btn => {
   btn.addEventListener('click', () => {
+    state.sizeAuto = false;
     state.size = Math.min(Number(btn.dataset.sizeStop), maxStageSize());
     syncAllFaces();
   });
@@ -786,7 +806,7 @@ $('stageResetBtn').addEventListener('click', () => {
   stopVoiceDemo(false);
   setVoiceStage(null, { play: false });
   Object.assign(state, {
-    backdrop: 'dark', size: 168, surface: 'skin', dimension: '3d', skinId: '101',
+    backdrop: 'dark', size: 168, sizeAuto: true, surface: 'skin', dimension: '3d', skinId: '101',
     roundness: 50, antenna: true, pointerFollow: true,
     pressSqueeze: true, antennaDrag: true, autoSleep: '0', wakeOn: 'activity', motion: 'auto',
     flatBg: DEFAULT_FLAT.bg, flatHead: DEFAULT_FLAT.head, eyeThrough: true, eyeColor: null,
