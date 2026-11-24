@@ -516,6 +516,13 @@ ${pairStyles}
     const x1 = x * cY + z * sY, z1 = -x * sY + z * cY, y2 = y * cP - z1 * sP, z2 = y * sP + z1 * cP, f = D / (D - z2);
     return { x: x1 * zoom * f, y: y2 * zoom * f };
   };
+  // The official head's left and right edge (240-unit space), for the wrap.
+  let rimFor = '', rimX = [20, 220];
+  const headRim = () => {
+    const shape = brain?._headShape, d = shape?.getAttribute('d') || '';
+    if (shape && d !== rimFor) { rimFor = d; try { const b = shape.getBBox(); if (b.width) rimX = [b.x, b.x + b.width]; } catch { /* not rendered */ } }
+    return rimX;
+  };
   const hugSide = (c, sx, sy, eye) => {
     const n = eye.narrowX || 0; if (n <= 0) return c;
     const sign = Math.sign(sx) || 1, eyeScr = project(c.x, c.y, c.z);
@@ -534,13 +541,18 @@ ${pairStyles}
     for (let k = 0; k < 3; k++) { const q = project(x, c.y, c.z), d = want - sign * q.x, slope = Math.max(.3, Math.abs(project(x + sign, c.y, c.z).x - q.x)); x += sign * d / slope; }
     // Outward or inward: the official eye drifts a little further out as it
     // narrows, which in 3D can end past the outline, so it is pulled back too.
-    // In the wrap the flat drawing slides the eye onto the rim the moment it
-    // starts to narrow there (and clips it), so it never floats inside the
-    // outline: the plate follows it out as soon as it narrows, fully there by
-    // a quarter. Other expressions narrow an eye a little (a head shake) and
-    // only go to the outline once it is a real sliver.
-    const wrap = brain?._waitingFx?.variant === 'wrap';
-    const w = Math.max(0, Math.min(1, wrap ? (n - .03) / .22 : (n - .15) / .45));
+    // In the wrap it follows the flat drawing's timing: the official eye
+    // reaches the rim and is clipped there, so the plate goes onto the outline
+    // over the official eye's last 10 units to the rim, never earlier (an
+    // early move would open a gap between the two eyes). Other expressions
+    // narrow an eye a little (a head shake) and only go to the outline once it
+    // is a real sliver.
+    let w;
+    if (brain?._waitingFx?.variant === 'wrap') {
+      const rim = headRim(), ox = eye.ex + eye.off[0], half = eye.rx * Math.abs(eye.lin[0] || 1);
+      const gap = sign < 0 ? (ox - half) - rim[0] : rim[1] - (ox + half);
+      w = Math.max(0, Math.min(1, 1 - gap / 10));
+    } else w = Math.max(0, Math.min(1, (n - .15) / .45));
     const s = w * w * (3 - 2 * w);
     // Moved out to the outline, the plate faces the head's front (its own slope there would turn it edge-on).
     return { ...c, x: c.x + (x - c.x) * s, hx: c.hx * (1 - s), hy: c.hy * (1 - s) };
@@ -556,8 +568,12 @@ ${pairStyles}
     // one off the outline.
     const gone = eyes.some(e => (e.rx ?? 27) < 1);
     const gap = Math.hypot(t[0][0] - t[1][0], t[0][1] - t[1][1]), rigid = gone ? 0 : Math.max(0, Math.min(1, (56 * size - gap) / 20));
-    const mid = [(t[0][0] + t[1][0]) / 2, (t[0][1] + t[1][1]) / 2], anchor = rigid > 0 ? surface(...mid, .7) : null;
-    const together = rigid >= .5;
+    // Shapes drawn as one (bloom, cross, the listening circle, shape wait)
+    // become the one-surface pair the moment the eyes touch, as on the flat
+    // face; otherwise two shaded eyes would show a seam while they merge.
+    const asOne = !!brain?._eyesAsOne?.(8);
+    const mid = [(t[0][0] + t[1][0]) / 2, (t[0][1] + t[1][1]) / 2], anchor = rigid > 0 || asOne ? surface(...mid, .7) : null;
+    const together = asOne || rigid >= .5;
     // display, not visibility: the eye clones force their eye visible inside.
     pair.node.style.display = together ? '' : 'none';
     for (const e of eyes) for (const c of e.copies) c.node.style.display = together ? 'none' : '';
@@ -565,7 +581,7 @@ ${pairStyles}
       const mo = [(eyes[0].off[0] + eyes[1].off[0]) / 2, (eyes[0].off[1] + eyes[1].off[1]) / 2];
       const pm = eyeMatrix({ ex: 120, ey: 126, lin: [1, 0, 0, 1] }, anchor, -mo[0], -mo[1]);
       pair.node.style.transform = `matrix3d(${pm.map(v => +v.toFixed(5)).join(',')})`;
-      setJoined(!!(brain?._eyesAsOne ? brain._eyesAsOne() : brain?._loveFx));
+      setJoined(asOne || !!(!brain?._eyesAsOne && brain?._loveFx));
       fitUnionPaint();
       return;
     }

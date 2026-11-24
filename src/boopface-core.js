@@ -1155,7 +1155,9 @@ const BoopFace = (() => {
     // them), and the shape wait. While the two eyes overlap there, a skin
     // paints them as one surface; otherwise each eye's own shading shows a
     // seam. Eyes that only pass each other (spin, dizzy) stay two eyes.
-    _eyesAsOne() {
+    // margin: how close (avatar units) already counts as touching; the 3D head
+    // draws the eyes a little larger on its curved face, so it asks early.
+    _eyesAsOne(margin = 0) {
       if (!(this._loveFx || this._voiceFx || this._voiceExit || this._leftBase?.hasAttribute('data-shape'))) return false;
       const parent = this._leftEye?.parentElement;
       if (!parent?.getCTM?.()) return false;
@@ -1165,8 +1167,9 @@ const BoopFace = (() => {
         for (const [x, y] of [[b.x, b.y], [b.x + b.width, b.y], [b.x, b.y + b.height], [b.x + b.width, b.y + b.height]]) { xs.push(m.a * x + m.c * y + m.e); ys.push(m.b * x + m.d * y + m.f); }
         return { x0: Math.min(...xs), y0: Math.min(...ys), x1: Math.max(...xs), y1: Math.max(...ys) };
       };
-      const a = box(this._leftEye), c = box(this._rightEye);
-      return a.x1 > c.x0 && c.x1 > a.x0 && a.y1 > c.y0 && c.y1 > a.y0;
+      // The eye shapes themselves (their groups also hold the wide lid masks).
+      const a = box(this._leftBase), c = box(this._rightBase);
+      return a.x1 + margin > c.x0 && c.x1 + margin > a.x0 && a.y1 + margin > c.y0 && c.y1 + margin > a.y0;
     }
 
     _canPauseFrames(now) {
