@@ -2672,3 +2672,76 @@ function setLanguage(next) {
 }
 setLanguage(initialLanguage());
 syncWakeButton();
+
+// 平面/立体 cost, measured 2026-11-24 in headless Chromium (no GPU), one
+// 168 px avatar, median of 3 runs. timeline: main-thread busy time in % of
+// one core, every 0.5 s from 0.5 s: idle 4 s, pointer moving 4 s, expressions
+// 4 s. compare: runtime download (gzip) and JS time with the pointer moving.
+const VIEW_COST = {
+  timeline: {
+    '2d': [6.6, 4.9, 4.8, 4.9, 4.5, 5.9, 4.7, 6.5, 6.5, 6.6, 6.2, 5.9, 6.4, 6.3, 7.7, 8.4, 9.6, 10.9, 12.5, 8.5, 8.1, 6.6, 8.8],
+    '3d': [9.5, 9.1, 7.5, 8.6, 8.8, 10.2, 11.1, 12.6, 13.3, 10.8, 9.7, 10.6, 10, 13.8, 14, 11, 14.9, 10.1, 14.5, 9.8, 11.6, 9.7, 14.5],
+  },
+  compare: [
+    { name: 'BoopFace 平面', kb: 92, js: 2.4, ours: true },
+    { name: 'BoopFace 立体', kb: 111, js: 5.3, ours: true, strong: true },
+    { name: 'Lottie', kb: 74, js: 1.1, kbNote: '+ 动画文件' },
+    { name: 'Three.js', kb: 132, js: 2.0, jsNote: '+ 显卡渲染' },
+    { name: 'Rive', kb: 1117, js: null, jsNote: '未测' },
+  ],
+};
+
+function renderViewInfo() {
+  const plot = $('viewInfoPlot'), rows = $('viewInfoRows');
+  // As tall as the room above the button allows (it scrolls inside beyond that).
+  const room = document.querySelector('.view-info').getBoundingClientRect().top - 66;
+  $('viewInfoPop').style.maxHeight = `${Math.max(220, room)}px`;
+  if (!plot || plot.childElementCount) return;
+  // The curve: one shared y axis (% of a core), three phases along x.
+  const W = 416, H = 124, L = 26, R = 6, T = 6, B = 22, MAX = 16;
+  const a = VIEW_COST.timeline['2d'], b = VIEW_COST.timeline['3d'], n = a.length;
+  const x = i => L + (W - L - R) * i / (n - 1), y = v => T + (H - T - B) * (1 - v / MAX);
+  const path = list => list.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)} ${y(v).toFixed(1)}`).join('');
+  const phaseX = s => L + (W - L - R) * (s - 0.5) / (n * 0.5 - 0.5);
+  const grid = [0, 5, 10, 15].map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(255,255,255,${v ? 0.06 : 0.14})"/><text x="${L - 5}" y="${y(v) + 3}" text-anchor="end">${v}%</text>`).join('');
+  const phases = [[0.5, 4, '空闲'], [4, 8, '跟随指针'], [8, 12, '播放表情']].map(([s0, s1, label], k) =>
+    `${k ? `<line x1="${phaseX(s0)}" x2="${phaseX(s0)}" y1="${T}" y2="${H - B}" stroke="rgba(255,255,255,0.08)"/>` : ''}<text x="${(phaseX(s0) + phaseX(s1)) / 2}" y="${H - 6}" text-anchor="middle">${label}</text>`).join('');
+  plot.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="12 秒实测：立体约 11%，平面约 7%">
+    <defs><linearGradient id="viFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#f2f2f2" stop-opacity=".16"/><stop offset="1" stop-color="#f2f2f2" stop-opacity="0"/></linearGradient></defs>
+    ${grid}${phases}
+    <path d="${path(b)}L${x(n - 1)} ${y(0)}L${x(0)} ${y(0)}Z" fill="url(#viFill)"/>
+    <path d="${path(a)}" fill="none" stroke="#7d7d7d" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="${path(b)}" fill="none" stroke="#f2f2f2" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <line class="vi-cross" y1="${T}" y2="${H - B}" stroke="rgba(255,255,255,0.35)" visibility="hidden"/>
+    <circle class="vi-dot3" r="4" fill="#f2f2f2" stroke="#0e0e0e" stroke-width="2" visibility="hidden"/>
+    <circle class="vi-dot2" r="4" fill="#7d7d7d" stroke="#0e0e0e" stroke-width="2" visibility="hidden"/>
+    <rect x="${L}" y="${T}" width="${W - L - R}" height="${H - T - B}" fill="transparent"/>
+  </svg><div class="vi-tip" hidden></div>`;
+  const svg = plot.querySelector('svg'), tip = plot.querySelector('.vi-tip');
+  const cross = svg.querySelector('.vi-cross'), d3 = svg.querySelector('.vi-dot3'), d2 = svg.querySelector('.vi-dot2');
+  svg.addEventListener('pointermove', e => {
+    const r = svg.getBoundingClientRect(), u = (e.clientX - r.left) / r.width * W;
+    const i = Math.max(0, Math.min(n - 1, Math.round((u - L) / (W - L - R) * (n - 1))));
+    for (const el of [cross, d3, d2]) el.setAttribute('visibility', 'visible');
+    cross.setAttribute('x1', x(i)); cross.setAttribute('x2', x(i));
+    d3.setAttribute('cx', x(i)); d3.setAttribute('cy', y(b[i])); d2.setAttribute('cx', x(i)); d2.setAttribute('cy', y(a[i]));
+    tip.hidden = false;
+    tip.innerHTML = `<span>${((i + 1) * 0.5).toFixed(1)} s</span><span>立体 <b>${b[i]}%</b></span><span>平面 <b>${a[i]}%</b></span>`;
+    const px = x(i) / W * r.width;
+    tip.style.left = `${px > r.width * 0.6 ? px - tip.offsetWidth - 10 : px + 10}px`;
+  });
+  svg.addEventListener('pointerleave', () => { tip.hidden = true; for (const el of [cross, d3, d2]) el.setAttribute('visibility', 'hidden'); });
+  // The comparison: rows of bars, one scale per column.
+  const KB_MAX = 200, JS_MAX = 6;
+  const bar = (v, max, unit, cls, over) => v == null ? `<div class="vi-bar"><em>${over || '—'}</em></div>`
+    : `<div class="vi-bar ${cls}${v > max ? ' is-over' : ''}"><i style="width:${Math.min(v, max) / max * 100 * 0.62}%"></i><span>${unit(v)}</span>${over ? `<em>${over}</em>` : ''}</div>`;
+  rows.innerHTML = `<span></span><span class="vi-colhead">载入（gzip）</span><span class="vi-colhead">JS 运算（主线程）</span>` +
+    VIEW_COST.compare.map(c => {
+      const cls = c.strong ? 'is-ours is-strong' : c.ours ? 'is-ours' : '';
+      return `<span class="vi-name${c.ours ? ' is-ours' : ''}">${c.name}</span>` +
+        bar(c.kb, KB_MAX, v => v >= 1000 ? `${(v / 1024).toFixed(1)} MB` : `${v} KB`, cls, c.kbNote) +
+        bar(c.js, JS_MAX, v => `${v.toFixed(1)}%`, cls, c.jsNote);
+    }).join('');
+}
+document.querySelector('.view-info')?.addEventListener('pointerenter', renderViewInfo);
+document.querySelector('.view-info')?.addEventListener('focusin', renderViewInfo);
