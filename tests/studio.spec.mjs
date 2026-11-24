@@ -157,15 +157,22 @@ test('the eye colour row paints the real eyes, turns see-through off, and is gre
   await expect.poll(() => face.evaluate(f => f.getAttribute('eye-color'))).toBeNull();
 });
 
-test('every expression group fits on one line, and saved skins are a star filter with a placeholder', async ({ page }) => {
-  for (const [width, height] of [[1440, 900], [1025, 700]]) {
+test('expression groups sit on one line where they fit and wrap (never clip) where they do not; saved skins are a star filter with a placeholder', async ({ page }) => {
+  for (const [width, height, lang, oneLine] of [[1440, 900, 'zh-CN', true], [1025, 700, 'zh-CN', true], [1440, 900, 'en', true], [1440, 900, 'de', false], [360, 740, 'fr', false], [1025, 700, 'en', false]]) {
     await page.setViewportSize({ width, height });
-    for (const lang of ['zh-CN', 'en']) {
-      await page.goto(`/demo/?lang=${lang}`);
-      await ready(page);
-      const lines = await page.evaluate(() => [...document.querySelectorAll('#actionGroups .row-btns')].map(r => new Set([...r.children].map(c => Math.round(c.getBoundingClientRect().top))).size));
-      expect(lines, `${lang} ${width}`).toEqual([1, 1, 1, 1]);
-    }
+    await page.goto(`/demo/?lang=${lang}`);
+    await ready(page);
+    const { lines, clipped, hscroll } = await page.evaluate(() => {
+      const rows = [...document.querySelectorAll('#actionGroups .row-btns')];
+      return {
+        lines: rows.map(r => new Set([...r.children].map(c => Math.round(c.getBoundingClientRect().top))).size),
+        clipped: rows.some(r => r.scrollWidth > r.clientWidth + 1),
+        hscroll: document.documentElement.scrollWidth > innerWidth,
+      };
+    });
+    expect(clipped, `${lang} ${width} clipped`).toBe(false);
+    expect(hscroll, `${lang} ${width} page scrolls sideways`).toBe(false);
+    if (oneLine) expect(lines, `${lang} ${width}`).toEqual([1, 1, 1, 1]);
   }
   await page.locator('[data-inspector-tab="skins"]').click();
   const star = page.locator('#skinFilters [data-filter="saved"]');
@@ -260,4 +267,24 @@ test('the 3D info card shows flat and 3D as two cards (traits, size) over a smoo
   await expect(lines).toHaveCount(2);
   expect(await lines.first().getAttribute('d')).toMatch(/C/);
   await expect(page.locator('#viewInfoPlot svg')).toHaveClass(/is-drawing/);
+});
+
+test('every Studio language has its own words: no Chinese left on the page (zh-TW: no Simplified-only text)', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const names = new Set(['简体中文', '繁體中文', '日本語']);
+  for (const lang of ['en', 'ja', 'ko', 'es', 'pt', 'de', 'fr', 'zh-TW']) {
+    await page.goto(`/demo/?lang=${lang}`);
+    await ready(page);
+    const texts = await page.evaluate(() => {
+      const out = [];
+      const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      for (let n; (n = walk.nextNode());) if (!n.parentElement.closest('script,style,pre,code')) out.push(n.nodeValue.trim());
+      for (const el of document.querySelectorAll('[title],[aria-label],[placeholder]')) for (const a of ['title', 'aria-label', 'placeholder']) if (el.getAttribute(a)) out.push(el.getAttribute(a));
+      return out.filter(Boolean);
+    });
+    // Han characters are fine in Japanese and Traditional Chinese; the check
+    // there is a few characters that only Simplified Chinese writes.
+    const bad = lang === 'zh-TW' ? /[这们说过对时会发头动语设实点样经单区态体号钮选门无应]/ : lang === 'ja' ? /[这们说过对时头动语设实样经钮选门无]/ : /[㐀-鿿]/;
+    expect(texts.filter(t => !names.has(t) && bad.test(t)), lang).toEqual([]);
+  }
 });

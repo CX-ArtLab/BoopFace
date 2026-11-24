@@ -1,7 +1,7 @@
 import { VERSION } from '../boopface.js';
 import { createRoundnessFeedback } from './roundness-feedback.js';
 import { createVoiceEngine } from './studio-voice.js';
-import { applyLanguage, initialLanguage, rememberLanguage } from './studio-i18n.js';
+import { addNames, applyLanguage, initialLanguage, rememberLanguage } from './studio-i18n.js';
 import { plan, pretendStream, agentCode, labelOf } from './studio-agent.js';
 import { connectAgent } from '../boopface.js';
 import {
@@ -412,6 +412,12 @@ function fitExpressionColumns() {
   for (const l of groups.querySelectorAll('.row-label')) { range.selectNodeContents(l); label = Math.max(label, range.getBoundingClientRect().width); }
   const lw = `${Math.max(34, Math.ceil(label + 9))}px`;
   if (groups.style.getPropertyValue('--label-w') !== lw) groups.style.setProperty('--label-w', lw);
+  // Too narrow for eight in a row: the buttons wrap at their own widths.
+  // Measured on the one-line layout, so the answer never depends on itself.
+  const was = groups.classList.contains('is-wrapped');
+  if (was) groups.classList.remove('is-wrapped');
+  const wrap = [...groups.querySelectorAll('.row-btns')].some(row => row.scrollWidth > row.clientWidth + 1);
+  groups.classList.toggle('is-wrapped', wrap);
 }
 new ResizeObserver(fitExpressionColumns).observe($('actionGroups'));
 new MutationObserver(fitExpressionColumns).observe($('actionGroups'), { subtree: true, characterData: true, childList: true });
@@ -2604,6 +2610,11 @@ function measureStageTarget(el, faceBox, fallback) {
   return valid ? raw : fallback;
 }
 
+function fitHintLabel(label, room) {
+  label.style.whiteSpace = ''; label.style.width = '';
+  if (label.offsetWidth > room) { label.style.whiteSpace = 'normal'; label.style.width = `${Math.floor(room)}px`; }
+}
+
 function layoutStageHints() {
   if (stageHintsDismissed || state.scene !== 'stage' || stageHints.hidden) return;
   // The avatar comes first: the hints are drawn once it is on screen.
@@ -2638,6 +2649,10 @@ function layoutStageHints() {
     ? Math.max(24, (box.width - faceBox.width) * 0.18)
     : Math.min(82, Math.max(46, (box.width - faceBox.width) * 0.18));
 
+  // A label too long for its side (long words in some languages) wraps.
+  const sideRoom = Math.max(70, headLeft - (compact ? Math.max(30, gap) : gap) - 8);
+  fitHintLabel(hintBodyLabel, sideRoom); fitHintLabel(hintPetLabel, sideRoom);
+  fitHintLabel(hintAntennaLabel, Math.max(70, box.width - Math.max(dotRight + 28, headRight + gap) - 8));
   const w1 = hintAntennaLabel.offsetWidth || 64;
   const h1 = hintAntennaLabel.offsetHeight || 20;
   const x1 = Math.max(dotRight + 28, Math.min(box.width - w1 - 8, headRight + gap));
@@ -2789,6 +2804,7 @@ addEventListener('hashchange', openFromHash);
 }
 
 // Languages: start in the linked, last chosen or browser language.
+addNames([...publicSkins.map(skin => [skin.label, skin.english]), ...catalogCategories.map(group => [group.label, group.labelEn])]);
 function setLanguage(next) {
   const lang = applyLanguage(next);
   renderSkinGrid(); // series headings follow the language
