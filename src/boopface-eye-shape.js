@@ -32,9 +32,14 @@ export function roundInto(t, R) {
   for (const el of targets) if (el.getAttribute('clip-path') !== `url(#${t.id})`) el.setAttribute('clip-path', `url(#${t.id})`);
 }
 
-function matrixOf(el) {
-  const list = el.transform?.baseVal; const c = list && list.numberOfItems ? list.consolidate() : null;
-  return c ? c.matrix : null;
+// The element's transform as one matrix, read without consolidate(): that
+// rewrites the attribute itself (Firefox then shows it as matrix(...)), so the
+// next frame's write would no longer find the same value.
+export function matrixOf(el) {
+  const list = el?.transform?.baseVal; if (!list || !list.numberOfItems) return null;
+  let m = new DOMMatrix();
+  for (let i = 0; i < list.numberOfItems; i++) m = m.multiply(DOMMatrix.fromMatrix(list.getItem(i).matrix));
+  return m;
 }
 const apply2 = (m, x, y) => m ? [m.a * x + m.c * y + m.e, m.b * x + m.d * y + m.f] : [x, y];
 

@@ -3,7 +3,7 @@
 // CSS 3D scene. Every layer is painted once; turning the head only changes CSS
 // transforms, so the browser compositor (GPU) does the per-frame work.
 // Same camera as the spatial-eyes experiment: pinhole distance 180, depth 52.
-import { roundInto } from './boopface-eye-shape.js';
+import { roundInto, matrixOf } from './boopface-eye-shape.js';
 const D = 180;
 const NS = 'http://www.w3.org/2000/svg';
 const EYES = [['leftEye', 86, 126], ['rightEye', 154, 126]];
@@ -124,7 +124,12 @@ export function createLayeredAvatar(host, captured, { size = 300, depth = 52, sl
   root.innerHTML = `<style>${captured.styles}
 ${pairStyles}
     :host{display:block;width:${size}px;height:${size}px}
-    .stage{position:relative;width:${size}px;height:${size}px;perspective:${D * u}px;perspective-origin:50% 50%}
+    .stage{position:relative;width:${size}px;height:${size}px}
+    .cut{position:absolute;inset:0}
+    .scene{position:absolute;inset:0;perspective:${D * u}px;perspective-origin:50% 50%}
+    .probe{position:absolute;width:0;height:0;overflow:hidden}
+    /* See-through eyes: the eyes are holes cut through the whole head (below). */
+    .stage.through .layer.eyes{opacity:0}
     .head{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}
     .wall{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
     .layer{position:absolute;left:0;top:0;width:${size}px;height:${size}px;pointer-events:none;will-change:transform;overflow:hidden}
@@ -132,7 +137,10 @@ ${pairStyles}
     /* The copied drawings are frozen: their motion groups must not become GPU
        layers of their own (each one a large hidden texture per avatar). */
     #dragMotion,#headFollow,#headMotion,[id$="dragMotion"],[id$="headFollow"],[id$="headMotion"]{will-change:auto}
-  </style><div class="stage" role="img" aria-label="Robot avatar"><div class="head" aria-hidden="true"></div></div>`;
+  </style><div class="stage" role="img" aria-label="Robot avatar"><div class="cut"><div class="cut"><div class="cut"><div class="cut"><div class="scene"><div class="head" aria-hidden="true"></div></div></div></div></div></div></div><svg class="probe" aria-hidden="true"><path/></svg>`;
+  // See-through eyes are cut by the 3D view itself (below), not by the flat
+  // drawing's mask, which would punch its holes at the flat eye positions.
+  for (const n of captured.svg.querySelectorAll('[mask]')) if (/eye-through/.test(n.getAttribute('mask'))) n.removeAttribute('mask');
   const head = root.querySelector('.head');
   const headD = captured.svg.querySelector('#headShape').getAttribute('d');
   const outline = (headD.match(/-?\d*\.?\d+/g) || []).map(Number).reduce((a, v, i, all) => (i % 2 ? a : a.concat([[(v - 120) * .94, (all[i + 1] - 120) * .94]])), []);
@@ -159,7 +167,7 @@ ${pairStyles}
   const wall = document.createElementNS(NS, 'svg');
   wall.setAttribute('viewBox', '0 0 240 240'); wall.setAttribute('class', 'wall');
   wall.innerHTML = `<defs><linearGradient id="wall-paint" x1="0" y1="0" x2=".35" y2="1">${tones.map((c, n) => `<stop offset="${tones.length > 1 ? n / (tones.length - 1) : 0}" stop-color="${css(c.map(v => v * .8))}"/>`).join('')}</linearGradient></defs><path fill="url(#wall-paint)"/>`;
-  root.querySelector('.stage').prepend(wall);
+  root.querySelector('.scene').prepend(wall);
   const wallPath = wall.querySelector('path');
   const sectionCount = Math.max(2, Math.min(slices, 5)), sections = Array.from({ length: sectionCount }, (_, i) => front - (front + depth * .92) * i / (sectionCount - 1));
   let wallOutline = outline, wallCache = null;
@@ -228,7 +236,7 @@ ${pairStyles}
   // Centre of a highlight stroke in headShape coordinates (pattern space).
   const glossCenter = h => {
     try {
-      const b = h.node.getBBox(), m = h.node.transform.baseVal.consolidate()?.matrix || new DOMMatrix();
+      const b = h.node.getBBox(), m = matrixOf(h.node) || new DOMMatrix();
       const q = new DOMPoint(b.x + b.width / 2, b.y + b.height / 2).matrixTransform(m);
       return b.width && Number.isFinite(q.x) ? [q.x, q.y] : [120, 120];
     } catch { return [120, 120]; }
@@ -298,7 +306,8 @@ ${pairStyles}
     }
     outlinePaths.push(...svg.querySelectorAll('path[id$="headShape"]'));
     // dx: the strip's centre, measured from the eye centre (eye units).
-    return { node, svg, pre, parts, dx: (x0 + x1) / 2 - ex };
+    // box/origin: where the plate sits, for the see-through cut.
+    return { node, svg, pre, parts, dx: (x0 + x1) / 2 - ex, box: [x0, ey - 48], origin: [(ex - x0) * u, 48 * u] };
   };
   const eyes = EYES.map(([id, ex, ey], i) => {
     const copies = Array.from({ length: STRIPS }, (_, j) => eyeCopy(id, ex, ey, i, j));
@@ -397,7 +406,7 @@ ${pairStyles}
   const fitUnionPaint = () => {
     if (!unionPaint || pair.node.style.display === 'none') return;
     let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
-    for (const { m } of pair.sides) { const b = m.base.getBBox(), mt = m.group.transform.baseVal.consolidate()?.matrix || new DOMMatrix();
+    for (const { m } of pair.sides) { const b = m.base.getBBox(), mt = matrixOf(m.group) || new DOMMatrix();
       for (const [x, y] of [[b.x, b.y], [b.x + b.width, b.y], [b.x, b.y + b.height], [b.x + b.width, b.y + b.height]]) { const q = new DOMPoint(x, y).matrixTransform(mt); x0 = Math.min(x0, q.x); y0 = Math.min(y0, q.y); x1 = Math.max(x1, q.x); y1 = Math.max(y1, q.y); } }
     if (unionPaint.tagName === 'linearGradient') { unionPaint.setAttribute('x1', x1.toFixed(2)); unionPaint.setAttribute('y1', y0.toFixed(2)); unionPaint.setAttribute('x2', x0.toFixed(2)); unionPaint.setAttribute('y2', y1.toFixed(2)); }
     else { // radial: same relative centre and radius, now over the joined box
@@ -439,7 +448,7 @@ ${pairStyles}
       }
       // The whole eye transform (position, tilt, scale: hearts, orbits, nods),
       // minus the look, which the 3D placement turns into gaze instead.
-      const src = r.getElementById(eye.side + 'Eye'), m = src?.transform.baseVal.consolidate()?.matrix;
+      const src = r.getElementById(eye.side + 'Eye'), m = matrixOf(src);
       if (m) { eye.off = [m.e - eye.ex - look.x, m.f - eye.ey - look.y]; eye.lin = [m.a, m.b, m.c, m.d]; }
       // The random reels roll the eye inside its group (its centre's cx/cy
       // move, up to the head's top and bottom edges). The plate only shows a
@@ -601,11 +610,12 @@ ${pairStyles}
     if (together) {
       const mo = [(eyes[0].off[0] + eyes[1].off[0]) / 2, (eyes[0].off[1] + eyes[1].off[1]) / 2];
       const pm = eyeMatrix({ ex: 120, ey: 126, lin: [1, 0, 0, 1] }, anchor, -mo[0], -mo[1]);
-      pair.node.style.transform = `matrix3d(${pm.map(v => +v.toFixed(5)).join(',')})`;
+      pair.node.style.transform = `matrix3d(${pm.map(v => +v.toFixed(5)).join(',')})`; pair.m = pm; pair.on = true;
       setJoined(asOne || !!(!brain?._eyesAsOne && brain?._loveFx));
       fitUnionPaint();
       return;
     }
+    pair.on = false;
     eyes.forEach((eye, i) => {
       const [a, b, cc, d] = eye.lin;
       // Strip edges on the dome: neighbours share the exact same edge point,
@@ -628,7 +638,70 @@ ${pairStyles}
           m = [X[0], X[1], X[2], 0, Yv[0], Yv[1], Yv[2], 0, n[0] / nl, n[1] / nl, n[2] / nl, 0, (120 + o[0] - eye.ex) * u, (120 + o[1] - eye.ey) * u, o[2] * u, 1];
         }
         if (anchor) { const r = eyeMatrix(eye, anchor, t[i][0] - mid[0], t[i][1] - mid[1]); m = m.map((v, j) => v + (r[j] - v) * rigid); }
-        c.node.style.transform = `matrix3d(${m.map(v => +v.toFixed(5)).join(',')})`;
+        c.node.style.transform = `matrix3d(${m.map(v => +v.toFixed(5)).join(',')})`; c.m = m;
+      });
+    });
+  };
+
+  // ---- See-through eyes (eye-color="transparent"). ----
+  // The official face cuts its eyes out of the head; here every eye is a
+  // plate floating in 3D, so each frame the eye's current outline (lids,
+  // shapes and the typing cursor included) is carried through its plate's 3D
+  // placement onto the screen and cut out of the whole head (face, side wall,
+  // highlights). One wrapper per outline, each clipping its own hole, so
+  // overlapping holes (a heart, the cursor forming) simply add up.
+  const cuts = [...root.querySelectorAll('.cut')], probe = root.querySelector('.probe path');
+  const sampled = new Map();
+  const sampleD = d => {
+    let pts = sampled.get(d); if (pts) return pts;
+    probe.setAttribute('d', d); const L = probe.getTotalLength(); pts = [];
+    for (let i = 0; i < 64; i++) { const q = probe.getPointAtLength(L * i / 64); pts.push([q.x, q.y]); }
+    if (sampled.size > 300) sampled.clear(); sampled.set(d, pts); return pts;
+  };
+  const num = (el, a, dflt = 0) => { const v = el?.getAttribute(a); return v == null || v === '' ? dflt : +v; };
+  const ring = (cx, cy, rx, ry) => Array.from({ length: 48 }, (_, i) => { const t = i / 48 * Math.PI * 2; return [cx + rx * Math.cos(t), cy + ry * Math.sin(t)]; });
+  const roundRect = (x, y, w, h, r) => { r = Math.max(0, Math.min(r, w / 2, h / 2)); const p = [];
+    for (const [cx, cy, a0] of [[x + w - r, y + r, -90], [x + w - r, y + h - r, 0], [x + r, y + h - r, 90], [x + r, y + r, 180]])
+      for (let i = 0; i <= 6; i++) { const a = (a0 + 15 * i) * Math.PI / 180; p.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]); }
+    return p; };
+  // One eye's visible outline in its own group's units: [eye shape, typing cursor].
+  const outlines = (r, side) => {
+    const base = r.getElementById(side + 'Base'), input = r.getElementById(side + 'InputBase'); let a = null, b = null;
+    if (base && num(base, 'opacity', 1) > .01) {
+      const id = base.getAttribute('clip-path')?.match(/#([^)"']+)/)?.[1], d = id && r.getElementById(id)?.querySelector('path')?.getAttribute('d');
+      const rx = num(base, 'rx'), ry = num(base, 'ry');
+      a = d ? sampleD(d) : rx > .05 && ry > .05 ? ring(num(base, 'cx'), num(base, 'cy'), rx, ry) : null;
+      const m = a ? matrixOf(base) : null;
+      if (m) a = a.map(([x, y]) => [m.a * x + m.c * y + m.e, m.b * x + m.d * y + m.f]);
+    }
+    if (input && num(input, 'opacity', 1) > .01 && num(input, 'width') > .05 && num(input, 'height') > .05)
+      b = roundRect(num(input, 'x'), num(input, 'y'), num(input, 'width'), num(input, 'height'), num(input, 'rx'));
+    return [a, b];
+  };
+  let cutOn = false;
+  const cutHoles = () => {
+    const through = /^(transparent|none|through)$/i.test(String(brain?._eyeColorApplied || ''));
+    if (!through) { if (cutOn) { cutOn = false; stage.classList.remove('through'); for (const c of cuts) c.style.clipPath = ''; } return; }
+    if (!cutOn) { cutOn = true; stage.classList.add('through'); }
+    const r = brain.shadowRoot, c0 = size / 2;
+    const H = new DOMMatrix().translate(c0, c0).multiply(new DOMMatrix(head.style.transform || 'matrix(1,0,0,1,0,0)')).translate(-c0, -c0);
+    const P = new DOMMatrix().translate(c0, c0).multiply(new DOMMatrix([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, -1 / (D * u), 0, 0, 0, 1])).translate(-c0, -c0);
+    const PH = P.multiply(H), big = size * 2, f = v => (Math.round(v * 10) / 10);
+    ['left', 'right'].forEach((side, i) => {
+      const eye = eyes[i], copy = eye.copies[0];
+      // The plate this eye is drawn on: its own, or the shared one of the pair.
+      let box, origin, m, place;
+      if (pair.on && pair.m) { box = [0, 0]; origin = [120 * u, 126 * u]; m = pair.m; const gm = matrixOf(pair.sides[i].parts.group) || new DOMMatrix(); place = ([x, y]) => [gm.a * x + gm.c * y + gm.e, gm.b * x + gm.d * y + gm.f]; }
+      else { box = copy.box; origin = copy.origin; m = copy.m; place = ([x, y]) => [eye.ex + x, eye.ey + y]; }
+      const F = m && PH.multiply(new DOMMatrix().translate(box[0] * u + origin[0], box[1] * u + origin[1]).multiply(new DOMMatrix(m)).translate(-origin[0], -origin[1]));
+      outlines(r, side).forEach((pts, k) => {
+        let clip = '';
+        if (pts && F) {
+          let d = '';
+          for (const q of pts) { const [x, y] = place(q), v = F.transformPoint(new DOMPoint((x - box[0]) * u, (y - box[1]) * u, 0, 1)); d += (d ? 'L' : 'M') + f(v.x / v.w) + ' ' + f(v.y / v.w); }
+          clip = `path(evenodd, "M${-big} ${-big}H${big}V${big}H${-big}Z${d}Z")`;
+        }
+        const el = cuts[i * 2 + k]; if (el._clip !== clip) { el._clip = clip; el.style.clipPath = clip; }
       });
     });
   };
@@ -767,7 +840,7 @@ ${pairStyles}
       } else sq.a = sq.v = 0;
       sq.Y = Y; sq.P = P;
       const key = [yaw, pitch, gazeX, gazeY, touch, center, ax, ay, sq.a, ...eyes.flatMap(e => [...e.off, ...e.lin])].map(v => v.toFixed(3)).join() + headAnim + dragT + shape.length + shape.slice(-40);
-      if (key === last) return; last = key;
+      if (key === last) { cutHoles(); return; } last = key;
       const m0 = headAnim.match(/matrix\(([^)]+)\)/)?.[1].split(',').map(Number);
       // The squash is folded into the head motion, so the side wall and the
       // antenna billboard follow it with no extra work.
@@ -787,6 +860,7 @@ ${pairStyles}
       const r = Math.PI / 180, gx = gazeX * .40 - Y * r * .65, gy = gazeY * .30 + P * r * .65;
       curY = Y; curP = P;
       placeEyes(gx, gy);
+      cutHoles();
       // Billboard: the ball follows the official spring but always faces the camera.
       const hs = m || hm;
       shown = { Y, P, hm: hs, ax, ay };

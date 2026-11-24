@@ -268,7 +268,7 @@ test('in 3D the wrap sliver reaches the head outline, as on the flat face', asyn
     const r = a.shadowRoot.querySelector('.view-3d').shadowRoot, out = [], t0 = performance.now();
     const tick = () => {
       // The left eye leaving over the left edge (later it comes back on the right).
-      const rx = +a.shadowRoot.getElementById('leftBase').getAttribute('rx'), ex = a.shadowRoot.getElementById('leftEye').transform.baseVal.consolidate()?.matrix.e ?? 120;
+      const rx = +a.shadowRoot.getElementById('leftBase').getAttribute('rx'), ex = (() => { const l = a.shadowRoot.getElementById('leftEye').transform.baseVal; let e = 120; for (let i = 0; i < l.numberOfItems; i++) e = l.getItem(i).matrix.e; return e; })();
       if (rx > .5 && rx < 14 && ex < 120) {
         const eye = r.querySelectorAll('.layer.eyes')[0].querySelector('#leftBase').getBoundingClientRect();
         // The side wall's path is the head's whole silhouette (face rim included).
@@ -281,4 +281,22 @@ test('in 3D the wrap sliver reaches the head outline, as on the flat face', asyn
   expect(gaps.length).toBeGreaterThan(0);
   expect(Math.min(...gaps)).toBeLessThan(2.8);
   expect(Math.min(...gaps)).toBeGreaterThan(-3);
+});
+
+test('in 3D, see-through eyes are real holes: the page behind shows through them', async ({ page }) => {
+  await page0(page, '<boop-face id="a" size="240" auto-sleep="0" motion="reduce" view="3d" color="#ff3b30" eye-color="transparent"></boop-face>');
+  await page.evaluate(() => { document.body.style.cssText = 'margin:0;background:#00ff00'; });
+  await page.waitForFunction(() => a.shadowRoot.querySelector('.view-3d')?.shadowRoot?.querySelector('.stage.through .cut')?.style.clipPath);
+  await page.waitForTimeout(300);
+  const png = await page.locator('#a').screenshot();
+  const px = await page.evaluate(async src => {
+    const im = new Image(); im.src = src; await im.decode();
+    const c = document.createElement('canvas'); c.width = 240; c.height = 240; const g = c.getContext('2d'); g.drawImage(im, 0, 0, 240, 240);
+    // Eye centres (86, 126) and (154, 126) and a spot on the forehead.
+    return [[86, 126], [154, 126], [120, 60]].map(([x, y]) => [...g.getImageData(x, y, 1, 1).data.slice(0, 3)]);
+  }, 'data:image/png;base64,' + png.toString('base64'));
+  const green = ([r, g, b]) => g > 200 && r < 80 && b < 80;
+  expect(green(px[0])).toBe(true);
+  expect(green(px[1])).toBe(true);
+  expect(green(px[2])).toBe(false);
 });
