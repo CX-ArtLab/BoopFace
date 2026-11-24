@@ -407,6 +407,11 @@ function fitExpressionColumns() {
   const cs = getComputedStyle(btns[0]), pad = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) + parseFloat(cs.borderLeftWidth) * 2;
   const w = `${Math.ceil(text + pad)}px`;
   if (groups.style.getPropertyValue('--btn-w') !== w) groups.style.setProperty('--btn-w', w);
+  // The group names share one column as wide as the longest of them (English is longer).
+  let label = 0;
+  for (const l of groups.querySelectorAll('.row-label')) { range.selectNodeContents(l); label = Math.max(label, range.getBoundingClientRect().width); }
+  const lw = `${Math.max(34, Math.ceil(label + 9))}px`;
+  if (groups.style.getPropertyValue('--label-w') !== lw) groups.style.setProperty('--label-w', lw);
 }
 new ResizeObserver(fitExpressionColumns).observe($('actionGroups'));
 new MutationObserver(fitExpressionColumns).observe($('actionGroups'), { subtree: true, characterData: true, childList: true });

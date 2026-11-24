@@ -1291,7 +1291,7 @@ code, kbd {
    groups tighten little by little as the page narrows and never wrap. */
 .action-row {
   display: grid;
-  grid-template-columns: clamp(34px, calc(4cqi + 13px), 42px) minmax(0, 1fr);
+  grid-template-columns: var(--label-w, clamp(34px, calc(4cqi + 13px), 42px)) minmax(0, 1fr);
   align-items: center;
   gap: clamp(6px, calc(0.5cqi + 3.5px), 8px);
   padding: clamp(2px, calc(0.6dvh - 1px), 5px) clamp(6px, calc(0.5cqi + 3.5px), 8px);
