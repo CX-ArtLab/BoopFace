@@ -253,7 +253,7 @@ test('the 3D info card shows flat and 3D as two cards (traits, size) over a smoo
   await page.locator('.info-dot').hover();
   await expect(page.locator('#viewInfoCompare .vi-card h4')).toHaveText(['平面', '立体']);
   await expect(page.locator('#viewInfoCompare .vi-tag')).toHaveText(['原生设计', '更强的立体感']);
-  await expect(page.locator('#viewInfoCompare dd')).toHaveText([/KB$/, /KB$/]);
+  await expect(page.locator('#viewInfoCompare dd')).toHaveText([/KB$/, '不转，始终正对', '聊天列表、小图标', /KB$/, '左右 22°，上下 15°', '页面主角、大尺寸']);
   await expect(page.locator('#viewInfoPop .vi-rows, #viewInfoPop .vi-note')).toHaveCount(0);
   const lines = page.locator('#viewInfoPlot path.vi-line');
   await expect(lines).toHaveCount(2);
