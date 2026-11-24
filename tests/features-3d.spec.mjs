@@ -230,3 +230,14 @@ test('tugging the antenna leaves the avatar dizzy', async ({ page }) => {
   await expect.poll(() => page.evaluate(() => window.states), { timeout: 5000 }).toContain('dizzy');
   expect(await page.evaluate(() => window.states)).not.toContain('angry');
 });
+
+test('3D copies of the drawing ask for no GPU layers of their own (memory)', async ({ page }) => {
+  await page0(page, '<boop-face id="a" view="3d" skin="101"></boop-face>');
+  await page.waitForFunction(() => !!a.shadowRoot.querySelector('.view-3d')?.shadowRoot?.querySelector('.layer.eyes'));
+  const hints = await page.evaluate(() => {
+    const r = a.shadowRoot.querySelector('.view-3d').shadowRoot;
+    return [...r.querySelectorAll('[id$="dragMotion"], [id$="headFollow"], [id$="headMotion"]')].map(n => getComputedStyle(n).willChange);
+  });
+  expect(hints.length).toBeGreaterThan(0);
+  expect(hints.every(h => h === 'auto')).toBe(true);
+});

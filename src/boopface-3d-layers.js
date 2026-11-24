@@ -120,6 +120,9 @@ ${pairStyles}
     .wall{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
     .layer{position:absolute;left:0;top:0;width:${size}px;height:${size}px;pointer-events:none;will-change:transform;overflow:hidden}
     .layer svg{width:100%;height:100%;overflow:visible}
+    /* The copied drawings are frozen: their motion groups must not become GPU
+       layers of their own (each one a large hidden texture per avatar). */
+    #dragMotion,#headFollow,#headMotion,[id$="dragMotion"],[id$="headFollow"],[id$="headMotion"]{will-change:auto}
   </style><div class="stage" role="img" aria-label="Robot avatar"><div class="head" aria-hidden="true"></div></div>`;
   const head = root.querySelector('.head');
   const headD = captured.svg.querySelector('#headShape').getAttribute('d');
