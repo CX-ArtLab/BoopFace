@@ -373,6 +373,7 @@ const EN = {
 "小尺寸、一屏很多头像、手机": "Small sizes, many avatars, phones",
 "主角头像、大尺寸展示": "A featured, large avatar",
 "CPU 是同一台电脑上的实测比值。页面切到后台或头像滚出屏幕时，两种都会暂停绘制。": "CPU measured side by side on one computer. Both pause in a background tab or off screen.",
+"睡着以后才能叫醒": "Only a sleeping avatar can be woken",
 "再点可互换": "click again to swap",
 "点击复制": "click to copy"
 };

@@ -1241,10 +1241,18 @@ code, kbd {
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   margin-block: 4px;
 }
-.row-btns { display: flex; flex-wrap: wrap; gap: clamp(3px, calc(0.9cqi - 1.5px), 8px); }
+/* Eight equal columns: the buttons share the whole width (roomy when there is
+   space, down to just their words when narrow) and line up across the rows. */
+.row-btns {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(max-content, 1fr));
+  gap: clamp(3px, calc(1.2cqi - 3px), 10px);
+  max-width: 820px;
+}
 .row-btns button {
   position: relative;
   padding: clamp(5px, calc(0.6dvh + 0.5px), 7.5px) clamp(5px, calc(1.6cqi - 4px), 13px);
+  white-space: nowrap;
   border-radius: 8px;
   border: 1px solid transparent;
   background: transparent;
@@ -1264,6 +1272,8 @@ code, kbd {
   background: #ef4444;
   pointer-events: none;
 }
+.row-btns button:disabled { color: #5a5a5a; cursor: not-allowed; }
+.row-btns button:disabled:hover { background: transparent; color: #5a5a5a; }
 .row-btns button:hover {
   background: rgba(255, 255, 255, 0.06);
   color: #fff;

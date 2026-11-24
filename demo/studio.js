@@ -554,6 +554,7 @@ function setChatExpanded(expanded) {
 
 function setScene(scene) {
   state.scene = scene;
+  queueMicrotask(syncWakeButton);
   if (scene !== 'chat') {
     setChatExpanded(false);
     stopBackgroundBots();
@@ -794,6 +795,15 @@ stageCanvas.addEventListener('pointermove', e => {
 stageCanvas.addEventListener('pointerleave', () => stageMaterial?.light(-0.5, -0.5));
 
 /* Actions Dock & Voice Suite */
+// Wake can only be pressed while the avatar sleeps (or is falling asleep).
+function syncWakeButton() {
+  const face = activeAvatarFace(), btn = document.querySelector('#actionGroups button[data-action="wake"]');
+  if (!btn || !face) return;
+  const asleep = !!(face._sleeping || face._state === 'sleep' || face._state === 'sleepy');
+  btn.disabled = !asleep;
+  btn.title = asleep ? "avatar.play('wake')" : '睡着以后才能叫醒';
+}
+
 function activeAvatarFace() {
   return state.scene === 'chat' && activeTalkFace ? activeTalkFace : stageFace;
 }
@@ -853,6 +863,9 @@ async function playAction(action) {
   // nothing. A press already wakes it by itself (wake-on activity).
   if (runtimeAction === 'wake') {
     if (targetFace._sleeping || targetFace._state === 'sleep') await targetFace.play('wake');
+    // Still falling asleep: stop it (the original demo's way).
+    else if (targetFace._state === 'sleepy') await targetFace.play('idle');
+    syncWakeButton();
     return;
   }
   do {
@@ -2044,6 +2057,7 @@ const botRowEls = [];
 
 function createBotFace(bot, size) {
   const face = document.createElement('boop-face');
+  face.addEventListener('face-state', syncWakeButton);
   face.setAttribute('size', String(size));
   face.setAttribute('auto-sleep', '0');
   return face;
@@ -2357,6 +2371,7 @@ function logEvent(name, detail) {
 }
 
 stageFace.addEventListener('face-state', e => logEvent('face-state', e.detail));
+stageFace.addEventListener('face-state', syncWakeButton);
 stageFace.addEventListener('action-state', e => logEvent('action-state', e.detail));
 stageFace.addEventListener('head-roundness-change', e => logEvent('head-roundness-change', e.detail));
 
@@ -2656,3 +2671,4 @@ function setLanguage(next) {
   $('langPopover').querySelectorAll('[data-lang]').forEach(el => el.setAttribute('aria-checked', String(el.dataset.lang === lang)));
 }
 setLanguage(initialLanguage());
+syncWakeButton();

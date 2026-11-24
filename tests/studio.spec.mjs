@@ -200,13 +200,19 @@ test('the size slider resizes the 3D avatar while dragging, centred, up to 300 p
   expect(result.worst).toBeLessThan(22);
 });
 
-test('Wake does not put an awake avatar to sleep first, and see-through on a skin keeps the skin', async ({ page }) => {
+test('Wake is only pressable while asleep and never sleeps first, and see-through on a skin keeps the skin', async ({ page }) => {
   await page.goto('/demo/?lang=zh-CN');
   await ready(page);
   const face = page.locator('#stageFace');
   await face.evaluate(f => { window.played = []; const play = f.play.bind(f); f.play = a => { window.played.push(a); return play(a); }; });
-  await page.locator('#actionGroups button[data-action="wake"]').click();
-  await page.waitForTimeout(500);
+  const wake = page.locator('#actionGroups button[data-action="wake"]');
+  // Awake: Wake is greyed out. Asleep: it wakes, without sleeping again first.
+  await expect(wake).toBeDisabled();
+  await page.locator('#actionGroups button[data-action="sleep"]').click();
+  await expect(wake).toBeEnabled();
+  await page.evaluate(() => { window.played = []; });
+  await wake.click();
+  await expect(wake).toBeDisabled();
   expect(await page.evaluate(() => window.played)).not.toContain('sleep');
   // A skin with plain eyes: see-through stays on the skin.
   await page.locator('[data-inspector-tab="skins"]').click();
