@@ -271,7 +271,7 @@ avatar.setSkin(102);  // 也可以写 '102'
 avatar.setSkin(null); // 回到纯色
 ```
 
-所有皮肤及编号见[全部皮肤页](https://cx-artlab.github.io/BoopFace/materials/?lang=zh-CN)。
+所有皮肤及编号可以在 [Studio 的皮肤页](https://cx-artlab.github.io/BoopFace/?lang=zh-CN#skins)查看。
 
 | 系列 | 编号 | 系列 | 编号 | 系列 | 编号 |
 | --- | --- | --- | --- | --- | --- |
@@ -417,7 +417,7 @@ onMounted(() => { agent = connectAgent(avatar.value); });
 
 ## 新支持：BoopFace Embedded 嵌入式设备版
 
-与网页版相同的表情，现在也可以用在机器人和开发板的屏幕上。一个小巧的 C++ 库移植了网页版的全部表情，动作和节奏都与网页版一致。固件示例支持 28 种开发板和屏幕组合，覆盖 ESP32、ESP32-S3、STM32 和树莓派 Pico：圆形和方形 TFT、长条屏、AMOLED 和单色 OLED，也可以自定义屏幕尺寸。
+与网页版相同的表情，现在也可以用在机器人和开发板的屏幕上。一个小巧的 C++ 库移植了网页版的全部表情，动作和节奏都与网页版一致。0.2 版跟上网页版 0.9：眼睛同样是圆角，并新增鞠躬、观察、思考、眨眼、得意、眩晕、弹跳等 13 个表情，共 31 个。固件示例支持 28 种开发板和屏幕组合，覆盖 ESP32、ESP32-S3、STM32 和树莓派 Pico：圆形和方形 TFT、长条屏、AMOLED 和单色 OLED，也可以自定义屏幕尺寸。
 
 | 你的设备 | 用哪个 |
 | --- | --- |
@@ -431,10 +431,10 @@ onMounted(() => { agent = connectAgent(avatar.value); });
 
 **调好，就能直接用。** 选好你的屏幕，调整布局、颜色和帧率，点「导出设置」。把导出的 `eyes_settings.h` 放进示例固件再编译，板子上显示的就是模拟器里的样子。详见[操作步骤](../embedded/README.zh-CN.md#在模拟器里调好直接用到板子上)。
 
-**安装。** 从[嵌入式发布页](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.1.0)下载 `BoopFace-Embedded-0.1.0.zip`，在 Arduino IDE 里选「项目 → 导入库 → 添加 .ZIP 库」安装。Arduino 库管理器索引仍在更新，目前请使用 ZIP 或源码。[PlatformIO](https://registry.platformio.org/libraries/cxlab/BoopFace) 用户可在 `platformio.ini` 的环境配置中添加：
+**安装。** 从[嵌入式发布页](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0)下载 `BoopFace-Embedded-0.2.0.zip`，在 Arduino IDE 里选「项目 → 导入库 → 添加 .ZIP 库」安装。Arduino 库管理器索引仍在更新，目前请使用 ZIP 或源码。[PlatformIO](https://registry.platformio.org/libraries/cxlab/BoopFace) 用户可在 `platformio.ini` 的环境配置中添加：
 
 ```ini
-lib_deps = cxlab/BoopFace@^0.1.0
+lib_deps = cxlab/BoopFace@^0.2.0
 ```
 
 **在你自己的程序里**，按名字播放表情：
@@ -467,7 +467,7 @@ void loop() {
 ## 项目状态
 
 **当前公开版本：v0.9.0**（网页版）\
-BoopFace Embedded 嵌入式设备版：v0.1.0（实验版）
+BoopFace Embedded 嵌入式设备版：v0.2.0（实验版）
 
 公开 API 会在未来 `1.0.0` 稳定性承诺前继续保持精简并谨慎演进。
 

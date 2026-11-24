@@ -44,7 +44,7 @@
 
 下载并用浏览器打开 [`preview/boopface-embedded-preview.html`](preview/boopface-embedded-preview.html)。这是一个完整的离线文件，不需要服务器、开发板、Python、Node.js 或编译工具；请下载原始 HTML，而不是保存 GitHub 的文件查看页面。也可在克隆后的项目中直接双击这个文件。
 
-它将**同一份嵌入式 C++ 源码编译成 WebAssembly**，不是原 Web Demo 或另一套 JavaScript 动画。支持 18 种动作（原有 17 种及新增波动等待）、自动轮播、暂停/逐帧、注视方向，以及 32 种屏幕预设（圆屏、方屏、长条屏、开发套件和 OLED 五组）和宽高 16–512 的自定义分辨率。可设置完整显示或裁切铺满、缩放、偏移与圆形裁切。命名预设使用对应参考模组的 SVG 外框，保留 PCB、玻璃、安装孔与排线的不同结构；横屏、竖屏整板旋转，自定义分辨率使用通用外框。打开「注视跟随」后，鼠标可模拟接近的物体；感应范围、只看移动物体、跟随速度和离开后的停留时间在库接口里设置，真正的摄像头或传感器接入由宿主程序提供。暂停只冻结时间，仍可切换动作；慢速播放可用于检查过渡。浏览器输出不能代替真机接线、驱动、刷新率和性能测试。重建和验证方法见 [模拟器说明](preview/README.md)。
+它将**同一份嵌入式 C++ 源码编译成 WebAssembly**，不是原 Web Demo 或另一套 JavaScript 动画。支持 31 种动作（0.1 的 18 种，加上 0.2 跟随网页版 0.9 新增的鞠躬、观察、思考、眨眼、得意、眩晕、弹跳等 13 种），眼睛默认是圆角（`setRoundEyes(false)` 恢复直角）、自动轮播、暂停/逐帧、注视方向，以及 32 种屏幕预设（圆屏、方屏、长条屏、开发套件和 OLED 五组）和宽高 16–512 的自定义分辨率。可设置完整显示或裁切铺满、缩放、偏移与圆形裁切。命名预设使用对应参考模组的 SVG 外框，保留 PCB、玻璃、安装孔与排线的不同结构；横屏、竖屏整板旋转，自定义分辨率使用通用外框。打开「注视跟随」后，鼠标可模拟接近的物体；感应范围、只看移动物体、跟随速度和离开后的停留时间在库接口里设置，真正的摄像头或传感器接入由宿主程序提供。暂停只冻结时间，仍可切换动作；慢速播放可用于检查过渡。浏览器输出不能代替真机接线、驱动、刷新率和性能测试。重建和验证方法见 [模拟器说明](preview/README.md)。
 
 ## 在模拟器里调好，直接用到板子上
 
@@ -123,12 +123,12 @@ pio device monitor -b 115200
 
 ## 接入自己的设备
 
-库在 `embedded/lib/BoopFace`。Arduino 用户可将这个目录复制到自己的 `libraries` 目录；也可以从[嵌入式发布页](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.1.0)下载 `BoopFace-Embedded-0.1.0.zip`，用“项目 → 导入库 → 添加 .ZIP 库”安装。Arduino 库管理器索引仍在更新，目前请使用 ZIP 或源码。其他 C++11 平台可编译库的整个 `src` 目录。
+库在 `embedded/lib/BoopFace`。Arduino 用户可将这个目录复制到自己的 `libraries` 目录；也可以从[嵌入式发布页](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0)下载 `BoopFace-Embedded-0.2.0.zip`，用“项目 → 导入库 → 添加 .ZIP 库”安装。Arduino 库管理器索引仍在更新，目前请使用 ZIP 或源码。其他 C++11 平台可编译库的整个 `src` 目录。
 
 [PlatformIO](https://registry.platformio.org/libraries/cxlab/BoopFace) 已收录 `cxlab/BoopFace`，在 `platformio.ini` 的环境配置中添加：
 
 ```ini
-lib_deps = cxlab/BoopFace@^0.1.0
+lib_deps = cxlab/BoopFace@^0.2.0
 ```
 
 库里带两个 Arduino IDE 示例，在“文件 → 示例 → BoopFace”下：**SerialEyes** 在串口监视器里用字符画出眼睛，不需要屏幕；**OledSSD1306** 运行在 0.96 寸 128×64 I²C OLED 上（需先安装 Adafruit SSD1306 库）。两个示例都可以在串口监视器里输入动作名来播放。CI 会为 ESP32 和 RP2040 编译它们。
