@@ -9,18 +9,25 @@ import { petPose } from './boopface-petting.js';
 // for real. view="2d" (the default) is the flat drawing.
 const SQUASH_GAIN = 0.3; // the settle bounce after a turn (the approved 30%)
 
+// The skin the avatar really shows: setSkin() changes it without touching the
+// skin attribute (the lite build has no skins).
+function skinOf(face) {
+  const name = typeof face.getSkin === 'function' && face._skinName !== undefined ? face.getSkin() : face.getAttribute('skin');
+  return name && name !== 'none' ? String(name) : '';
+}
+
 function wantedView(face) {
   return String(face.getAttribute('view') || face._viewWanted || '2d').trim().toLowerCase() === '3d' ? '3d' : '2d';
 }
 
 // What the 3D head is painted from; when any of it changes, it is rebuilt.
 function paintKey(face) {
-  return [face.getAttribute('skin') || '', face.getAttribute('color') || '', face.getAttribute('eye-color') || '', face.getAttribute('eye-style') || '',
+  return [skinOf(face), face.getAttribute('color') || '', face.getAttribute('eye-color') || '', face.getAttribute('eye-style') || '',
     Math.round(face._headRoundness ?? 50), Math.round(face.getBoundingClientRect().width || 0)].join('|');
 }
 
 async function wallColors(face) {
-  const skin = face.getAttribute('skin');
+  const skin = skinOf(face);
   if (skin) {
     try { const { SKIN_CATALOG } = await import('./skins/catalog.js'); const base = SKIN_CATALOG[skin]?.base; if (base?.length) return base; } catch { /* lite build */ }
   }
@@ -59,7 +66,7 @@ async function build(face, v, key) {
   const { captureSkin, createLayeredAvatar } = await loadLayers();
   if (token !== v.token || !face.isConnected) return;
   const size = Math.round(face.getBoundingClientRect().width) || 112;
-  const captured = await captureSkin(face.getAttribute('skin'), face._headRoundness ?? 50, {
+  const captured = await captureSkin(skinOf(face) || null, face._headRoundness ?? 50, {
     color: face.getAttribute('color'), eyeColor: face.getAttribute('eye-color'), eyeStyle: face.getAttribute('eye-style'),
   });
   if (token !== v.token || !face.isConnected) return;
@@ -159,7 +166,9 @@ registerAvatarExtension({
       v.building = key;
       clearTimeout(v.timer); v.timer = 0;
       // Debounced: the size slider rebuilds once it rests.
-      v.timer = setTimeout(() => { v.timer = 0; v.inflight = true; build(this, v, key).finally(() => { v.inflight = false; if (v.building === key) v.building = null; this._resumeFrames?.(); }); }, v.avatar ? 150 : 0);
+      // A new skin or colour is built at once; only the size slider waits.
+      const sizeOnly = !!v.key && key.split('|').every((part, i) => i === 5 || part === v.key.split('|')[i]);
+      v.timer = setTimeout(() => { v.timer = 0; v.inflight = true; build(this, v, key).finally(() => { v.inflight = false; if (v.building === key) v.building = null; this._resumeFrames?.(); }); }, v.avatar && sizeOnly ? 150 : 0);
     }
     if (!v.avatar) return;
     // The outline follows the roundness slider while it moves (the rebuild waits for it to rest).
