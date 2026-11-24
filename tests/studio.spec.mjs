@@ -254,7 +254,8 @@ test('the 3D info card shows flat and 3D as two cards (traits, size) over a smoo
   await expect(page.locator('#viewInfoCompare .vi-card h4')).toHaveText(['平面', '立体']);
   await expect(page.locator('#viewInfoCompare .vi-tag')).toHaveText(['经典平面造型', '更强的立体感']);
   await expect(page.locator('#viewInfoCompare dd')).toHaveText([/KB$/, '固定正面', '列表、小尺寸头像', /KB$/, '左右 22°、上下 15°', '主视觉、大尺寸展示']);
-  await expect(page.locator('#viewInfoPop .vi-rows, #viewInfoPop .vi-note')).toHaveCount(0);
+  await expect(page.locator('#viewInfoPop .vi-rows')).toHaveCount(0);
+  await expect(page.locator('#viewInfoPop .vi-note')).toContainText('一个 CPU 核');
   const lines = page.locator('#viewInfoPlot path.vi-line');
   await expect(lines).toHaveCount(2);
   expect(await lines.first().getAttribute('d')).toMatch(/C/);

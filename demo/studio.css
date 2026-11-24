@@ -1020,6 +1020,7 @@ code, kbd {
 .vi-legend i.is-3d { background: #f2f2f2; }
 .vi-legend i.is-2d { background: #7d7d7d; }
 .vi-plot { position: relative; }
+.vi-note { font-size: 12px; line-height: 1.6; color: var(--faint); }
 .vi-plot svg { display: block; width: 100%; height: auto; overflow: visible; }
 .vi-plot text { font-size: 10px; fill: #7a7a7a; font-family: inherit; }
 .vi-tip { position: absolute; top: 0; pointer-events: none; padding: 6px 9px; border-radius: 8px; background: #262626; border: 1px solid rgba(255, 255, 255, 0.12); font-size: 12px; color: #d4d4d4; white-space: nowrap; display: grid; gap: 1px; font-variant-numeric: tabular-nums; }
