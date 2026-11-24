@@ -359,13 +359,13 @@ const EN = {
 "睡着以后才能叫醒": "Only a sleeping avatar can be woken",
 "两种都有全部表情、皮肤和颜色，代码里只差": "Both have every expression, skin and colour; in code the only difference is",
 "载入": "Download",
-"第一次切到立体时": "the first time 3D is used",
-"主线程，和平面比": "main thread, vs flat",
-"12 秒实测 · 主线程占用": "12 s measured · main thread busy",
+"每帧耗时": "Time per frame",
+"12 秒实测 · 每帧耗时": "12 s measured · time per frame",
+"一帧 16.7 ms（每秒 60 帧）": "one frame is 16.7 ms (60 fps)",
+"12 秒实测：每帧平均立体约 1.5 ms，平面约 1.1 ms，一帧共 16.7 ms": "12 s measured: about 1.5 ms a frame in 3D, 1.1 ms flat, of a 16.7 ms frame",
 "空闲": "Idle",
 "跟随指针": "Following the pointer",
 "播放表情": "Expressions",
-"12 秒实测：立体平均约 8.8%，平面约 6.3%": "12 s measured: 3D about 8.8% on average, flat about 6.3%",
 "再点可互换": "click again to swap",
 "点击复制": "click to copy"
 };

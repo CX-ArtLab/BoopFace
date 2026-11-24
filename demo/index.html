@@ -167,12 +167,15 @@
                     <strong class="view-info-title">平面和立体</strong>
                     <span>两种都有全部表情、皮肤和颜色，代码里只差 <code>view="3d"</code></span>
                   </div>
-                  <div class="vi-tiles">
-                    <div><span>载入</span><strong>+19 KB</strong><small>第一次切到立体时</small></div>
-                    <div><span>CPU</span><strong>+40%</strong><small>主线程，和平面比</small></div>
+                  <div class="vi-compare" id="viewInfoCompare">
+                    <span></span><span class="vi-col">平面</span><span class="vi-col">立体</span>
+                    <span class="vi-label">载入</span><strong>92 KB</strong><strong>111 KB</strong>
+                    <span class="vi-label">每帧耗时</span>
+                    <div class="vi-ms"><strong>1.1 ms</strong><i style="--w:6.3%"></i></div>
+                    <div class="vi-ms"><strong>1.5 ms</strong><i style="--w:8.8%"></i></div>
                   </div>
                   <figure class="vi-chart">
-                    <figcaption><span>12 秒实测 · 主线程占用</span><span class="vi-legend"><i class="is-3d"></i>立体<i class="is-2d"></i>平面</span></figcaption>
+                    <figcaption><span>12 秒实测 · 每帧耗时</span><span class="vi-legend"><i class="is-3d"></i>立体<i class="is-2d"></i>平面</span></figcaption>
                     <div class="vi-plot" id="viewInfoPlot"></div>
                   </figure>
                 </div>

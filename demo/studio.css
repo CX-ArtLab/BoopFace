@@ -993,11 +993,13 @@ code, kbd {
 .vi-head span { font-size: 11.5px; color: var(--muted); line-height: 1.5; }
 .view-info-pop code { font-family: var(--mono); font-size: 10.5px; color: #e5e5e5; padding: 1px 5px; border-radius: 5px; background: rgba(255, 255, 255, 0.08); }
 /* Three figures: what 3D adds over flat. */
-.vi-tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
-.vi-tiles > div { display: grid; gap: 2px; padding: 9px 10px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.025); }
-.vi-tiles span { font-size: 10.5px; color: var(--faint); }
-.vi-tiles strong { font-size: 17px; font-weight: 600; color: #fff; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
-.vi-tiles small { font-size: 10px; color: var(--faint); }
+.vi-compare { display: grid; grid-template-columns: auto 1fr 1fr; align-items: center; gap: 8px 14px; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.025); }
+.vi-compare .vi-col { font-size: 11px; color: var(--muted); }
+.vi-compare .vi-label { font-size: 11px; color: var(--faint); white-space: nowrap; }
+.vi-compare strong { font-size: 16px; font-weight: 600; color: #fff; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+/* Time per frame: the bar is one whole frame at 60 fps (16.7 ms); the fill is what the avatar uses of it. */
+.vi-ms { display: grid; gap: 5px; }
+.vi-ms i { display: block; height: 4px; border-radius: 2px; background: linear-gradient(90deg, #f2f2f2 var(--w), rgba(255, 255, 255, 0.1) var(--w)); }
 .vi-chart { margin: 0; display: grid; align-content: start; gap: 6px; padding: 10px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.025); }
 .vi-chart figcaption { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); }
 .vi-legend { display: inline-flex; align-items: center; gap: 5px; color: var(--faint); }
