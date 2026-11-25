@@ -2249,7 +2249,7 @@ code, kbd {
 }
 .scheme-grid {
   display: grid;
-  grid-template-columns: repeat(11, 1fr);
+  grid-template-columns: repeat(12, 1fr);
   justify-items: center;
   align-items: center;
   gap: 10px 4px;
@@ -3066,7 +3066,7 @@ body.has-chat-modal {
   .color-pair-wrap .aw-row, .eye-color-row .aw-row { flex: 1 1 100%; justify-content: space-between; }
   .color-pair-wrap { grid-template-rows: auto auto; }
   .color-pair-wrap .divider-swap-btn { left: auto; right: 0; top: calc(50% + 18px); transform: translateY(-50%); }
-  .scheme-grid { grid-template-columns: repeat(11, minmax(0, 1fr)); gap: 8px 2px; min-width: 0; }
+  .scheme-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 8px 2px; min-width: 0; }
   .insp-head { min-width: 0; }
   .preset-dot { width: min(22px, 100%); height: auto; aspect-ratio: 1; }
   /* Wrapped on a phone: the group name sits above its buttons. */

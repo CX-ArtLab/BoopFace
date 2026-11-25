@@ -38,6 +38,10 @@ const PALETTES = [
   { id: 'lavender', bg: '#ece6ff', head: '#7c5cff', name: '薰衣草' },
   { id: 'coral', bg: '#ff6f61', head: '#fff4e6', name: '珊瑚' },
   { id: 'deep-sea', bg: '#0b2545', head: '#8ecae6', name: '深海' },
+  // Old LCD: the see-through eyes show the background, so a pale green head on
+  // a dark ground reads as dark pixels on green glass, and the other way round.
+  { id: 'lcd', bg: '#1f2a1a', head: '#b9cc98', name: '液晶屏' },
+  { id: 'lcd-night', bg: '#b9cc98', head: '#0c110b', name: '夜光液晶' },
 ];
 
 const OFFICIAL_BOTS = [
