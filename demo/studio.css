@@ -3084,17 +3084,17 @@ body.has-chat-modal {
   .dock-tools { flex-wrap: wrap; justify-content: flex-end; row-gap: 4px; }
   .dock-tools .mini-btn { padding: 0 7px; font-size: 11px; }
   .dock-tools .switch-inline { gap: 5px; font-size: 11px; }
-  .talk { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  /* Narrow, the list is a column of faces down the left (as Grokbot does):
+     no names, no scrollbar, never taller than the chat. */
+  .talk { grid-template-columns: 66px minmax(0, 1fr); }
   .talk-resizer { display: none; }
-  .talk-side { border-bottom: 1px solid var(--w-line); }
-  .talk-bar { display: none; }
-  .talk-bots { display: flex; overflow-x: auto; padding: 6px 8px; gap: 4px; }
-  .talk-bots > li { flex: none; }
-  .talk-bots .talk-bot { width: auto; height: auto; flex: none; padding: 5px 10px 5px 7px; gap: 7px; justify-content: flex-start; border-radius: 10px; }
-  .talk-bots .talk-bot-text { display: grid; }
-  .talk-bots .talk-hero { flex-direction: row; padding: 5px 10px 5px 7px; }
-  .talk-bots .talk-divider { width: 1px; height: auto; margin: 6px 2px; flex: none; }
-  .talk-bot-preview { display: none; }
+  .talk-side { contain: size; }
+  .talk-bar { justify-content: center; padding-left: 0; padding-right: 0; }
+  .talk-bots { justify-items: center; gap: 6px; padding: 4px 5px 10px; }
+  .talk-bots .talk-bot { width: 52px; height: 52px; padding: 0; justify-content: center; border-radius: 13px; }
+  .talk-bots .talk-hero { width: 56px; height: auto; padding: 4px 0; }
+  .talk-bots .talk-bot-text { display: none; }
+  .talk-bots .talk-divider { width: 70%; margin: 2px auto; }
   .skin-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .palette-grid,
   .saved-palettes-row { grid-template-columns: repeat(6, 1fr); }

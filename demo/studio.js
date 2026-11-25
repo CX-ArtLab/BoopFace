@@ -2177,10 +2177,13 @@ function createBotFace(bot, size) {
 }
 
 // The main bot is about 1.6 times the others (1.2 in the narrow icon rail).
+// On a phone the list is a narrow column of faces, as the icon rail is.
+const narrowChat = matchMedia('(max-width: 720px)');
 function sideFaceSize(hero) {
   const base = currentChatScale().sideFace;
-  return hero ? Math.round(base * (state.chatRail ? 1.2 : 1.6)) : base;
+  return hero ? Math.round(base * (state.chatRail || narrowChat.matches ? 1.2 : 1.6)) : base;
 }
+narrowChat.addEventListener('change', () => botRowEls.forEach(row => { if (row.hero) row.face.setAttribute('size', String(sideFaceSize(true))); }));
 
 function buildSidebarBots() {
   const list = $('talkBots');
