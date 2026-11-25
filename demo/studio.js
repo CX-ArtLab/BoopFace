@@ -230,7 +230,7 @@ const state = {
   skinCategory: 'featured',
   skinQuery: '',
   inspectorTab: 'look',
-  devTab: 'html',
+  devTab: 'cdn',
   // Connect AI: the format the chat scene and the code use, and which expression each AI state shows.
   agent: { format: 'openai', thinking: 'waiting-spin', tool: 'waiting-wave', replying: 'idle' },
   chatLook: 'dark',
@@ -2494,6 +2494,13 @@ function buildAttributes() {
   return attrs.join(' ');
 }
 
+// One line above each code tab: what it is for, in plain words.
+const DEV_TAB_NOTES = {
+  cdn: '复制到网页的 HTML 里，打开网页就能看到这个头像，不用安装任何东西。',
+  html: '用 React、Vue、Vite 等工具做的项目用这个：先安装，再把这段放进页面。',
+  js: '想在程序里让头像换表情、换皮肤时用，上方那行是当前这个表情。',
+};
+
 function updateDevCode() {
   const attrs = buildAttributes();
   const actionLine = formatApiCall(state.action);
@@ -2501,8 +2508,12 @@ function updateDevCode() {
   const roundLine = state.roundness !== 50 ? `\navatar.setHeadRoundness(${state.roundness});` : '';
   const followLine = (!state.pointerFollow ? `\navatar.setPointerFollow(false);` : '') + (state.petting === false ? `\navatar.setPetting(false);` : '') + (state.idleGaze === false ? `\navatar.setIdleGaze(false);` : '');
 
+  $('devTabNote').textContent = DEV_TAB_NOTES[state.devTab] || '';
+  $('devTabNote').hidden = !DEV_TAB_NOTES[state.devTab];
+  // The current-expression call belongs to the control tab only.
+  $('devQuickRow').hidden = state.devTab !== 'js';
   if (state.devTab === 'html') {
-    devCode.textContent = `<boop-face ${attrs}></boop-face>\n\n<script type="module">\n  import 'boopface';\n  const avatar = document.querySelector('#avatar');${roundLine}${followLine}\n  ${actionLine};\n</script>`;
+    devCode.textContent = `<!-- 先在项目里安装：npm install boopface -->\n<boop-face ${attrs}></boop-face>\n\n<script type="module">\n  import 'boopface';\n  const avatar = document.querySelector('#avatar');${roundLine}${followLine}\n  ${actionLine};\n</script>`;
   } else if (state.devTab === 'js') {
     const eyeColor = appliedEyeColor();
     const skinLine = (state.surface === 'skin' ? `avatar.setSkin('${state.skinId}');` : `avatar.setSkin(null);\navatar.setAttribute('color', '${state.flatHead}');`)
@@ -2522,7 +2533,6 @@ document.querySelectorAll('[data-dev-tab]').forEach(tab => {
     document.querySelectorAll('[data-dev-tab]').forEach(el => el.setAttribute('aria-selected', String(el === tab)));
     // Connect AI: the settings sit above its code, in this tab only.
     $('agentSection').hidden = state.devTab !== 'agent';
-    $('devQuickRow').hidden = state.devTab === 'agent';
     updateDevCode();
   });
 });

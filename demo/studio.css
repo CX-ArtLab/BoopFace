@@ -2831,6 +2831,7 @@ input:checked + .switch-track::after {
   font-family: var(--mono);
   font-size: 10px;
 }
+.dev-tab-note { margin: 0; }
 .dev-quick-row {
   flex: none;
   display: flex;

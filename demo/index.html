@@ -781,11 +781,12 @@
       <!-- TAB 4: CODE (events strip at the bottom) -->
       <div class="inspector-panel code-panel" data-panel="code" hidden>
         <div class="seg-full code-subtabs" role="tablist" aria-label="代码输出类型">
-          <button type="button" role="tab" aria-selected="true" data-dev-tab="html">HTML</button>
-          <button type="button" role="tab" aria-selected="false" data-dev-tab="js">JS API</button>
-          <button type="button" role="tab" aria-selected="false" data-dev-tab="cdn">CDN</button>
+          <button type="button" role="tab" aria-selected="true" data-dev-tab="cdn">快速开始</button>
+          <button type="button" role="tab" aria-selected="false" data-dev-tab="html">npm 项目</button>
+          <button type="button" role="tab" aria-selected="false" data-dev-tab="js">控制头像</button>
           <button type="button" role="tab" aria-selected="false" data-dev-tab="agent">接入 AI</button>
         </div>
+        <p class="insp-help dev-tab-note" id="devTabNote">复制到网页的 HTML 里，打开网页就能看到这个头像，不用安装任何东西。</p>
         <div class="insp-section agent-settings" id="agentSection" hidden>
           <div class="insp-head"><h3>接入 AI</h3><span class="insp-hint">改一项，下面的代码和对话场景都跟着变</span></div>
           <div class="agent-rows">
@@ -802,7 +803,7 @@
 
         <div class="dev-quick-row" id="devQuickRow">
           <div class="dev-quick-left">
-            <span class="dev-quick-label">当前表情</span>
+            <span class="dev-quick-label" title="在程序里让头像做出当前这个表情">当前表情</span>
             <code id="devQuickAction">avatar.play('idle')</code>
           </div>
           <button type="button" class="mini-btn" id="copyActionBtn">复制调用</button>
