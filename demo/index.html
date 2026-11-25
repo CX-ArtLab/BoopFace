@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="google" content="notranslate">
-<title>BoopFace Studio v2 — Interactive Demo (v0.8.0 Preview)</title>
+<title>BoopFace Studio</title>
 <link rel="icon" href="./favicon-white.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./fonts/geist.css">
 <link rel="stylesheet" href="./studio.css">
@@ -74,8 +74,8 @@
         </span>
         <span class="brand-wordmark">Boop<span class="wordmark-face">Face</span></span>
       </a>
-      <span class="badge badge-studio">Studio v2</span>
-      <span class="badge badge-version" id="versionBadge">v0.8.0</span>
+      <span class="badge badge-version" id="versionBadge">v0.9.0</span>
+      <span class="badge badge-studio">Studio</span>
     </div>
 
     <nav class="scene-switch" role="tablist" aria-label="场景模式">
@@ -690,7 +690,10 @@
             <label class="switch-row" title="指针在舞台内移动时眼睛与头部轻微转向">
               <span class="switch-row-lead">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 17v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2"/><path d="M21 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2"/><circle cx="12" cy="12" r="1"/><path d="M18.944 12.33a1 1 0 0 0 0-.66 7.5 7.5 0 0 0-13.888 0 1 1 0 0 0 0 .66 7.5 7.5 0 0 0 13.888 0"/></svg>
-                <strong>眼神跟随</strong>
+                <span>
+                  <strong>眼神跟随</strong>
+                  <small>指针在舞台上移动时，眼睛和头会轻轻转过去</small>
+                </span>
               </span>
               <input type="checkbox" id="pointerFollowToggle" checked>
               <span class="switch-track" aria-hidden="true"></span>
@@ -698,7 +701,10 @@
             <label class="switch-row" title="按住头像中心产生弹性压扁反馈">
               <span class="switch-row-lead">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
-                <strong>按压挤压</strong>
+                <span>
+                  <strong>按压挤压</strong>
+                  <small>按住头像中间，它会被压扁再弹回来</small>
+                </span>
               </span>
               <input type="checkbox" id="pressSqueezeToggle" checked>
               <span class="switch-track" aria-hidden="true"></span>
@@ -706,7 +712,10 @@
             <label class="switch-row" title="拉动顶部天线，松手回弹，头像会晕一下">
               <span class="switch-row-lead">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.725 7.296h.01"/><path d="M6 12a6 6 0 016-6"/><circle cx="12" cy="12" r="10"/></svg>
-                <strong>天线拖拽</strong>
+                <span>
+                  <strong>天线拖拽</strong>
+                  <small>拉一下头顶的天线，松手回弹，头像会晕一下</small>
+                </span>
               </span>
               <input type="checkbox" id="antennaDragToggle" checked>
               <span class="switch-track" aria-hidden="true"></span>
@@ -714,7 +723,10 @@
             <label class="switch-row" title="在额头上来回划几下，头像会闭眼撒娇">
               <span class="switch-row-lead">
                 <svg viewBox="0 0 24 24" aria-hidden="true" style="transform:rotate(180deg)"><path d="M11 12h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 14"/><path d="m7 18 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9"/><path d="m2 13 6 6"/></svg>
-                <strong>抚摸</strong>
+                <span>
+                  <strong>抚摸</strong>
+                  <small>在额头上来回划几下，头像会闭眼蹭过来</small>
+                </span>
               </span>
               <input type="checkbox" id="pettingToggle" checked>
               <span class="switch-track" aria-hidden="true"></span>
@@ -743,6 +755,7 @@
               <button type="button" data-wakeon="manual" aria-pressed="false">手动</button>
             </div>
           </div>
+          <p class="insp-help">任意动态：页面上有鼠标、触摸或键盘操作就醒；仅交互：点到或摸到头像才醒；手动：只有调用 wake()（或点「醒来」）才醒。</p>
         </div>
 
         <div class="insp-section">
