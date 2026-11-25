@@ -8,7 +8,7 @@
 
 [English](https://github.com/CX-ArtLab/boopface/blob/main/README.md) | [简体中文](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.zh-CN.md) | [Español](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.es.md) | [Русский](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.ru.md) | [Français](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.fr.md) | [Português](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.pt.md) | [Deutsch](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.de.md) | [日本語](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.ja.md) | [한국어](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.ko.md) | [繁體中文](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.zh-TW.md)
 
-![Version](https://img.shields.io/badge/version-v0.8.1-111111?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-0A7EA4?style=flat-square)](../LICENSE) [![CI](https://github.com/CX-ArtLab/boopface/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/CX-ArtLab/boopface/actions/workflows/validate.yml) [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-FF5E5B?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/P0E625WIOI)
+![Version](https://img.shields.io/badge/version-v0.9.0-111111?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-0A7EA4?style=flat-square)](../LICENSE) [![CI](https://github.com/CX-ArtLab/boopface/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/CX-ArtLab/boopface/actions/workflows/validate.yml) [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-FF5E5B?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/P0E625WIOI)
 
 ![Vanilla JavaScript](https://img.shields.io/badge/Vanilla-JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=000) ![Web Component](https://img.shields.io/badge/Web-Native%20Component-5A67D8?style=flat-square) ![SVG](https://img.shields.io/badge/Rendering-SVG-FFB13B?style=flat-square&logo=svg&logoColor=000) ![Zero Dependencies](https://img.shields.io/badge/Dependencies-0-2EA44F?style=flat-square) ![Embedded](https://img.shields.io/badge/Embedded-ESP32%20%7C%20STM32%20%7C%20Pico-E7352C?style=flat-square&logo=espressif&logoColor=white)
 
@@ -18,7 +18,7 @@ AI アシスタントやエージェントの顔と状態表示に使えます�
 
 デスクトップコンパニオン、バーチャルペット、デジタルマスコット、チャットボットのアバターなどのインタラクティブなキャラクターや、AG-UI スタイルのエージェント UI の視覚フィードバック層としても使えます。
 
-SVG と素の JavaScript で作られたネイティブ Web Component で、実行時の依存関係はゼロ、MIT ライセンスです。188 種類の[スキン](#スキン--07-の新機能)にいつでも着せ替えられます。
+SVG と素の JavaScript で作られたネイティブ Web Component で、実行時の依存関係はゼロ、MIT ライセンスです。平面のまま表示することも、本当に回転する [3D ヘッド](#3d-ヘッド--09-の新機能)に切り替えることもできます。188 種類の[スキン](#スキン--07-の新機能)もいつでも着せ替えられます。
 
 <p align="center">
   <img src="../assets/demo/boopface-demo.gif" alt="BoopFace インタラクティブアニメーションデモ" width="560">
@@ -34,7 +34,9 @@ ESP32、STM32、Raspberry Pi Pico の画面や、その他の C++ プログラ�
 
 ## ライブデモ
 
-[インタラクティブデモを開く](https://cx-artlab.github.io/BoopFace/?lang=ja) · [スキンギャラリーを見る](https://cx-artlab.github.io/BoopFace/skins.html?lang=ja) · [AI 接続デモ](https://cx-artlab.github.io/BoopFace/agent.html?lang=ja)
+0.9 から、デモ、スキン、AI 接続はひとつのページ「Studio」にまとまりました。ステージは平面と 3D を切り替えられ、横ではすべての表情と音声キットを試し、スキンや色を変え、ふるまいを設定し、AI につないだアバターとチャットし、今の見た目のコードをいつでもコピーできます。
+
+[Studio を開く](https://cx-artlab.github.io/BoopFace/?lang=ja) · [スキンを選ぶ](https://cx-artlab.github.io/BoopFace/?lang=ja#skins) · [AI 接続を試す](https://cx-artlab.github.io/BoopFace/?lang=ja#agent)
 
 [組み込みシミュレーターを開く](https://cx-artlab.github.io/BoopFace/hardware/?lang=ja)
 
@@ -43,12 +45,15 @@ ESP32、STM32、Raspberry Pi Pico の画面や、その他の C++ プログラ�
 - ネイティブ Web Component
 - SVG レンダリング + Vanilla JavaScript
 - ランタイム依存なし
+- 平面または 3D。3D ヘッドはポインターの方へ本当に回転
 - 自動まばたきと控えめな idle 動作
-- ポインター追従する目と慣性のある頭部モーション
+- ポインターを追う目と慣性のある頭の動き。どの表情も頭全体が動く
+- おでこをなでると、目を閉じてすり寄る
 - ゼリー風の局所ドラッグ変形と弾性復帰
 - 長押しによる圧縮と、ドラッグ可能なばね式アンテナ
 - Agent の状態や表情をプログラムから制御可能
-- waiting、success、failure、affirm、wary、inspect、angry、refuse、love などの表情
+- 30 以上の表情：waiting、success、failure、affirm、wary、inspect、angry、refuse、love、そして 0.9 で追加されたお辞儀、観察、考える、ウインク、ドヤ顔、目が回る、バウンスなど
+- 丸みのある目は好きな色に。背景が透けて見える設定も
 - Reduced Motion 対応
 - 設定可能なスリープ動作
 - 頭部の丸みを調整可能
@@ -107,9 +112,11 @@ import 'boopface/lite';
 
 | 版 | サイズ |
 | --- | --- |
-| 軽量版 `boopface/lite` | 約 45 KB |
-| フル版、ページでスキンを使わない | 約 56 KB。スキンの描画コードはダウンロードされません |
-| フル版、スキンを使う | 約 113 KB。増えた分は最初にスキンを使ったときにダウンロードされます |
+| 軽量版 `boopface/lite` | 約 92 KB |
+| フル版、ページでスキンを使わない | 約 104 KB。スキンの描画コードはダウンロードされません |
+| フル版、スキンを使う | 約 161 KB。増えた分は最初にスキンを使ったときにダウンロードされます |
+
+どちらのビルドも 3D に切り替えると、3D 描画用に約 19 KB を追加で読み込みます。
 
 ## 基本的な使い方
 
@@ -133,6 +140,8 @@ avatar.reset();
 | `waiting-wrap` | 目が片側から出て反対側から戻る | 返信待ち |
 | `waiting-wave` | 目が交互に上下に揺れる | 返信待ち |
 | `waiting-bloom` | 交差した 2 つの楕円が花のように呼吸して回る | 返答待ち。音声会話のために作られた形 |
+| `waiting-cross` | 交差した 2 つの楕円が × の形で止まり、4 分の 1 回転ずつ回って細い・太いが入れ替わる | 返信待ち。音声対話にも |
+| `shape-wait` | 両目がひとつの形になり、円と角丸の四角に交互に変わる | 返信待ち |
 | `input` | 目が点滅する入力カーソルになる | ユーザーが入力中 |
 | `listening` | 両目がひとつの丸い目に合わさり、声に合わせてふくらむ | 音声会話：ユーザーが話している |
 | `speaking` | 目が 2 つに戻り、返答に合わせて伸び縮みする | 音声会話：AI が答えている |
@@ -141,15 +150,25 @@ avatar.reset();
 | `failure` | 頭と目が下がる | タスクや接続の失敗 |
 | `wary` | 首をかしげ、上下に見定める | ユーザーの確認が必要な操作 |
 | `inspect` | 目を細めて上下にスキャンする | 内容の確認・レビュー |
+| `observe` | 目を大きく開き、身を乗り出して見回す | じっくり見る、読み取る |
+| `think` | 上を見上げ、ゆっくり反対側へ向く | 答える前に考える |
+| `ponder` | 下を向き、左右を見てから顔を上げる | じっくり検討する |
+| `bow` | 深くうなずき、少し止まってから戻る | お礼、お詫び、あいさつ |
 | `angry` | 目を伏せてにらむ | コンテンツがブロックされた |
 | `refuse` | 首を横に振る | できない、またはしない依頼 |
+| `shake` | 先に目がそらされ、頭がそれに続く | 同意しない、見たくない |
 | `surprise` | 目を大きく見開く | 予想外のこと |
 | `love` | 両目が鼓動するハートになる | 感謝・好意 |
+| `wink` | 首をかしげてウインク | あいさつ、冗談 |
+| `smug` | 目を細め、上と左右を見る | 得意げ、いたずらっぽく |
+| `bounce` | ボールのように弾む | うれしい、お祝い |
+| `smug-bounce` | 笑顔で 2 回弾み、左右に首をかしげる | ちょっと得意 |
+| `dizzy` | 両目が逆向きに回り、片方は大きく片方は小さい | 目が回る、情報が多すぎる |
 | `random` | 目がスロットのリールのように回る | ランダムな選択、遊び心 |
 | `sleep` | 目を閉じて眠る | 長時間操作がない |
 | `wake` | 目を開けて起きる | 操作が再開した |
 
-待機系のアクションは `play()` で 1 回再生されます。`startWaiting({ variant: 'spin' | 'wrap' | 'wave' | 'bloom' })` は、別のアクションを再生するか `stopWaiting()` を呼ぶまでループします。
+待機系のアクションは `play()` で 1 回再生されます。`startWaiting({ variant: 'spin' | 'wrap' | 'wave' | 'bloom' | 'cross' })` は、別のアクションを再生するか `stopWaiting()` を呼ぶまでループします。
 
 0.5 の旧名（`send`、`warning`、`error`、`blocked`、`slot` など）は 1.0 まで使えますが、コンソールに名前変更の通知が出ます。[移行表](../CHANGELOG.md#upgrading-from-05x)を参照してください。
 
@@ -177,7 +196,9 @@ try {
 ```html
 <boop-face
   size="160"
+  view="3d"
   color="#08090b"
+  eye-color="#2bd67b"
   auto-sleep="30000"
   wake-on="activity"
   motion="auto">
@@ -187,30 +208,55 @@ try {
 | 属性 | 用途 |
 | --- | --- |
 | `size` | アバターのサイズ（px） |
+| `view` | `2d`（既定、平面）または `3d` |
 | `color` | アバターのメインカラー |
+| `eye-color` | 目の色。`transparent` で目から背景が透けて見える |
+| `eye-style` | 既定は丸みのある目。`sharp` で以前の直線的な切り口に戻す |
 | `auto-sleep` | 自動スリープまでの待機時間。`0` で無効 |
 | `wake-on` | 自動ウェイク方針：`activity`、`interaction`、`manual` |
 | `motion` | モーション方針：`auto`、`reduce`、`full` |
 | `press-squeeze` | 中央を長押しして圧縮。`false` で無効化 |
-| `antenna-drag` | アンテナのドラッグ、ばね復帰、怒り反応。`false` で無効化 |
+| `antenna` | `false` でアンテナの玉を隠す |
+| `antenna-drag` | アンテナを引っぱり、ばねで戻って目が回るリアクション。`false` で無効 |
+| `idle-gaze` | 待機中にときどき目がきょろきょろする。`false` で正面を見たまま |
 | `skin` | スキン番号（例：`301`）。省略すると単色 |
 
 よく使うランタイム制御：
 
 ```js
 avatar.setPointerFollow(false);
+avatar.setIdleGaze(false);
 avatar.setHeadRoundness(75);
 avatar.setPressSqueeze(true);
 avatar.setAntennaDrag(true);
+avatar.setView('3d');
+avatar.setEyeColor('#2bd67b');
+avatar.setPetting(false); // なでる操作をオフ
 ```
 
-中央の長押しで圧縮が始まり、4 CSS ピクセルを超えて動かすと、同じポインタージェスチャーが従来の頭部ドラッグへ切り替わります。アンテナには頭部ドラッグと同じ距離制限が適用され、復帰後に従来の怒り反応が続きます。
+アバターの中央を押すとつぶす操作が始まります。4 CSS ピクセル以上動くと、同じポインター操作が従来の頭のドラッグに切り替わります。アンテナのドラッグは頭のドラッグと同じ距離制限を使い、戻ったあとは目が回る表情になります。
+
+## 3D ヘッド · 0.9 の新機能
+
+```html
+<boop-face view="3d"></boop-face>
+```
+
+`view="3d"`（または `avatar.setView('3d')`）でアバターが厚みのある立体の頭になります。ポインターの方へ本当に回転し、顔は曲面で、回るたびに少し弾んでから止まります。すべての表情、ジェスチャー、スキン、色は 3D でもそのまま使えます。`view="2d"` で平面に戻ります。3D 描画のコードは初めて 3D に切り替えたときに読み込まれるので、平面だけのページでは読み込まれません。
+
+**どの表情も頭が動く。** 目の向きに合わせて頭が回り、うなずき、傾き、跳ねます。3D では本当に回転し、平面では回転した姿を描きます。`motion="reduce"` のときは動きません。
+
+**丸みのある目。** まぶたが目を切る部分の角が丸くなり、睡眠・細目・まばたき・入力カーソルなどの細いすき間は両端が半円になりました。以前の直線的な切り口は `eye-style="sharp"` で使えます。
+
+**目の色。** `eye-color="#2bd67b"`（または `setEyeColor()`）で目に色を付けられます。単色のアバターと、目が単色の 131 種類のスキンで使えます。残り 57 種類のスキンは目に独自の質感（立体、ガラス、模様）があり、そのまま保たれます。どれが変えられるかは `SKINS[番号].eyeColor` で分かります。`eye-color="transparent"` は目を頭からくり抜き、アバターの後ろにあるものが目から見えるようにします。質感のある目も含め、すべてのスキンで使えます。
+
+**なでる。** おでこを何回かなでると、アバターは目を閉じてすり寄ってきます。既定でオン、`setPetting(false)` でオフにできます。
 
 ## スキン · 0.7 の新機能
 
 17 シリーズ・188 種類のスキン。光はポインターを追いかけます。各スキンの番号は固定です：シリーズ番号のあとに 2 桁が続き、305 はシリーズ 3 の 5 番目です。名前は今後変わることがありますが、番号は変わらず、再利用もされません。
 
-スキンもすべて純粋な SVG で描かれており、画像・Canvas・WebGL は使っていません。全スキン合わせても通信量は約 70 KB（非圧縮で約 290 KB）で、その大部分はページがスキンを使うときにだけ読み込まれます。比較として、アバター本体（スキンを含まない lite 版）は約 45 KB です。
+スキンもすべて純粋な SVG で描かれており、画像・Canvas・WebGL は使っていません。全スキン合わせても通信量は約 70 KB（非圧縮で約 290 KB）で、その大部分はページがスキンを使うときにだけ読み込まれます。比較として、アバター本体（スキンを含まない lite 版）は約 92 KB です。
 
 <img src="../assets/readme/skin-gallery.jpg" alt="スキンギャラリー：おすすめ、絞り込み、検索" width="100%">
 
@@ -223,7 +269,7 @@ avatar.setSkin(102);  // '102' でも可
 avatar.setSkin(null); // 単色に戻す
 ```
 
-すべてのスキンと番号は[スキン一覧ページ](https://cx-artlab.github.io/BoopFace/materials/?lang=ja)で確認できます。
+すべてのスキンと番号は [Studio のスキンタブ](https://cx-artlab.github.io/BoopFace/?lang=ja#skins)で見られます。
 
 | シリーズ | 番号 | シリーズ | 番号 | シリーズ | 番号 |
 | --- | --- | --- | --- | --- | --- |
@@ -238,7 +284,7 @@ avatar.setSkin(null); // 単色に戻す
 
 すべての表情とジェスチャーはスキンと一緒に使えます。スキンを外すと `color` 属性が再び適用されます。
 
-## AI ストリームと接続 · 0.8.1 の新機能
+## AI ストリームと接続 · 0.9 の新機能
 
 `connectAgent()` を使うと、AI のストリームがそのままアバターを動かします。AI SDK が返すイベントを渡すだけで、考え中・ツール使用・返信中・完了・失敗・拒否をアバターが自分で表現します。
 
@@ -280,9 +326,9 @@ connectAgent(avatar, {
 });
 ```
 
-[AI 接続デモ](https://cx-artlab.github.io/BoopFace/agent.html?lang=ja) ですべての形式を試せます。
+[Studio](https://cx-artlab.github.io/BoopFace/?lang=ja#agent) では AI につないだアバターとチャットでき、「コード › AI に接続」で状態ごとの表情を選び、各形式の接続コードを確認できます。
 
-## 音声対話表情キット · 0.8.1 の新機能
+## 音声対話表情キット · 0.9 の新機能
 
 聞く、考える、話す。どの音声アシスタントも毎回この 3 ステップを踏みます。音声対話表情キットは、なめらかにつながる 3 つの表情をアバターに用意します。話しかけて使う製品ならどの音声サービスでも使えます。3 つのメソッドを自分で呼ぶことも、`connectAgent()` に音声 API を追わせることもできます。
 
@@ -295,7 +341,7 @@ avatar.setVoiceLevel(0.6);                 // 任意：音量 0〜1
 
 聞くときは両目がひとつの丸い目に合わさり、ユーザーの声に合わせてふくらみます。考えるときは交差した 2 つの楕円になり、ゆっくり回る花のように呼吸します。話すときは 2 つの目に戻って一度静止し、返答に合わせて伸び縮みします。低い音は左目、高い音は右目を動かします。音量は `setVoiceLevel(level)` または `setVoiceLevel([low, high])` で渡します。渡さない場合、話す表情は独自のリズムで動き、聞く表情はじっとしています。各ステップは次のステップまでループし、切り替えでは目が飛ばずに変形します。
 
-「考える」は待機の一種です。ブルーム（`variant: 'bloom'`）は「聞く」の丸い目からそのまま変形し、ほかの待機スタイルも使えます。
+「考える」は待機の一種です。ブルーム（`variant: 'bloom'`）とクロス（`variant: 'cross'`）は「聞く」の丸い目からそのまま変形し、ほかの待機スタイルも使えます。
 
 `connectAgent()` は表情を自動で切り替えることもできます。OpenAI Realtime や、ElevenLabs などの SDK が返す `mode` といった、よく使われる音声 API のイベントをすでに理解しています。考えている間はブルームで待機し（`actions.thinking` でほかのスタイルにも変更可能）、返答のたびに「聞く」へ戻ります。OpenAI Realtime の例：
 
@@ -369,7 +415,7 @@ ES Modules、Custom Elements、SVG、Pointer Events、Web Animations API、`Inte
 
 ## 新対応：BoopFace Embedded
 
-Web版の目の表情を、ロボットや開発ボードの画面でも使えます。小さなC++11エンジンが動きとタイミングを再現します。ESP32、ESP32-S3、STM32、Raspberry Pi Pico の28構成に対応し、円形・長方形TFT、横長画面、AMOLED、単色OLEDをカバー。画面サイズも指定できます。
+Web版の目の表情を、ロボットや開発ボードの画面でも使えます。小さなC++11エンジンが動きとタイミングを再現します。ESP32、ESP32-S3、STM32、Raspberry Pi Pico の28構成に対応し、円形・長方形TFT、横長画面、AMOLED、単色OLEDをカバー。画面サイズも指定できます。0.2 では Web 版 0.9 に追いつき、同じ丸みのある目と、お辞儀・観察・考える・ウインク・ドヤ顔・目が回る・バウンスなど 13 の新しい表情、さらに音声キットの「聞く」と「話す」を加えて全 33 種類になりました。
 
 | 使用する機器 | 選ぶバージョン |
 | --- | --- |
@@ -384,10 +430,10 @@ Web版の目の表情を、ロボットや開発ボードの画面でも使え�
 
 **調整して、書き出して、ビルド。** 画面、配置、色、フレームレートを選び、**設定を書き出す**を押します。`eyes_settings.h` をサンプルの `main.cpp` と同じ場所に保存してビルドします。[手順](../embedded/README.md)をご覧ください。画面と書き出すコメントは選んだ言語に切り替わります。
 
-**ZIPからインストール。** [組み込み版リリース](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.1.0)から `BoopFace-Embedded-0.1.0.zip` を取得し、Arduino IDE の **スケッチ → ライブラリをインクルード → .ZIP形式のライブラリをインストール**で追加します。Arduino Library Manager のインデックス更新は保留中のため、当面はZIPかソースを使ってください。[PlatformIO](https://registry.platformio.org/libraries/cxlab/BoopFace) では、`platformio.ini` の環境設定に次の依存関係を追加します。
+**ZIPからインストール。** [組み込み版リリース](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0)から `BoopFace-Embedded-0.2.0.zip` を取得し、Arduino IDE の **スケッチ → ライブラリをインクルード → .ZIP形式のライブラリをインストール**で追加します。Arduino Library Manager のインデックス更新は保留中のため、当面はZIPかソースを使ってください。[PlatformIO](https://registry.platformio.org/libraries/cxlab/BoopFace) では、`platformio.ini` の環境設定に次の依存関係を追加します。
 
 ```ini
-lib_deps = cxlab/BoopFace@^0.1.0
+lib_deps = cxlab/BoopFace@^0.2.0
 ```
 
 **自分のプログラムから**名前で表情を再生できます：
@@ -419,8 +465,8 @@ Issue と Pull Request を歓迎します。変更を送る前に [`CONTRIBUTING
 
 ## プロジェクト状況
 
-**現在の公開バージョン：v0.8.1**\
-BoopFace Embedded：v0.1.0（実験版）
+**現在の公開バージョン：v0.9.0**\
+BoopFace Embedded：v0.2.0（実験版）
 
 公開 API は、将来の `1.0.0` における安定性コミットメントに向けて、意図的にコンパクトなまま慎重に進化させています。
 

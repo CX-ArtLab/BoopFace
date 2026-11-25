@@ -20,7 +20,7 @@ The Web and embedded implementations share expression names and visual design. T
 
 Download [`preview/boopface-embedded-preview.html`](preview/boopface-embedded-preview.html) as a raw file and open it in a current browser, or double-click it in a local checkout. No server, compiler, Python, Node.js, CDN or network is needed to run the built file. Saving GitHub's file-view page is not the same as downloading the raw HTML.
 
-The preview runs **this exact embedded C++ engine compiled to WebAssembly**, not the separate Web avatar renderer. It offers 18 actions (17 original expressions plus the added waiting-wave variant), cycling/manual interruption, pause/step, playback speed, explicit gaze, blink/transition switches, and 32 screen presets in five groups (round, square, bar, dev kits and OLEDs) plus custom resolutions from 16 to 512 pixels per axis. Layout controls include aspect-preserving fit, crop-to-fill, zoom, offsets and circular clipping. Named presets use SVG front views of specific reference modules; see [artwork sources](preview/frames/README.md). TFT mode centers a 240×160 mask inside a 240×240 canvas, matching the Arduino example. OLED mode renders a 128×64 mask; it does not emulate the display driver's page conversion. Changing the screen restarts the simulation; timing, layout and display changes apply without restarting, and hidden tabs freeze its clock. This validates animation, not board performance or screen electronics. See [preview/README.md](preview/README.md) for rebuilding and tests.
+The preview runs **this exact embedded C++ engine compiled to WebAssembly**, not the separate Web avatar renderer. It offers 33 actions (the 18 of 0.1, plus 13 that 0.2 brings over from the Web avatar 0.9, such as bow, observe, think, wink, smug, dizzy and bounce, and the Voice Kit's listening and speaking), cycling/manual interruption, pause/step, playback speed, explicit gaze, blink/transition switches, and 32 screen presets in five groups (round, square, bar, dev kits and OLEDs) plus custom resolutions from 16 to 512 pixels per axis. Eyes are rounded by default; `setRoundEyes(false)` keeps the straight cuts. Layout controls include aspect-preserving fit, crop-to-fill, zoom, offsets and circular clipping. Named presets use SVG front views of specific reference modules; see [artwork sources](preview/frames/README.md). TFT mode centers a 240×160 mask inside a 240×240 canvas, matching the Arduino example. OLED mode renders a 128×64 mask; it does not emulate the display driver's page conversion. Changing the screen restarts the simulation; timing, layout and display changes apply without restarting, and hidden tabs freeze its clock. This validates animation, not board performance or screen electronics. See [preview/README.md](preview/README.md) for rebuilding and tests.
 
 The [online simulator](https://cx-artlab.github.io/BoopFace/hardware/?lang=en) supports 10 languages; exported settings comments follow the selected language. You can also download the standalone offline HTML from the embedded release.
 
@@ -134,10 +134,10 @@ reset
 Install [BoopFace from PlatformIO](https://registry.platformio.org/libraries/cxlab/BoopFace) by adding this dependency to your environment in `platformio.ini`:
 
 ```ini
-lib_deps = cxlab/BoopFace@^0.1.0
+lib_deps = cxlab/BoopFace@^0.2.0
 ```
 
-For Arduino IDE, download `BoopFace-Embedded-0.1.0.zip` from the [embedded release](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.1.0) and import it with *Sketch → Include Library → Add .ZIP Library*, or copy `lib/BoopFace` into an Arduino `libraries` folder. Arduino Library Manager indexing is pending; use the ZIP or source until then. For non-Arduino projects, compile the source directory into your C++11 application; no Arduino library is needed.
+For Arduino IDE, download `BoopFace-Embedded-0.2.0.zip` from the [embedded release](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0) and import it with *Sketch → Include Library → Add .ZIP Library*, or copy `lib/BoopFace` into an Arduino `libraries` folder. Arduino Library Manager indexing is pending; use the ZIP or source until then. For non-Arduino projects, compile the source directory into your C++11 application; no Arduino library is needed.
 
 The library ships two Arduino IDE examples under *File → Examples → BoopFace*: **SerialEyes** draws the eyes as text in the Serial Monitor and needs no screen, and **OledSSD1306** runs them on a 0.96″ 128×64 I²C OLED (install *Adafruit SSD1306* first). Both take action names typed in the Serial Monitor. CI compiles them for ESP32 and RP2040.
 
@@ -170,17 +170,18 @@ The application provides an advancing `uint32_t` millisecond clock. A clock roll
 
 ## Actions and lifecycle
 
-`idle`, `bored`, `waiting-spin`, `waiting-wrap`, `input`, `affirm`, `success`, `failure`, `wary`, `inspect`, `angry`, `refuse`, `surprise`, `love`, `random`, `sleep`, `wake`, `waiting-wave`.
+`idle`, `bored`, `waiting-spin`, `waiting-wrap`, `input`, `affirm`, `success`, `failure`, `wary`, `inspect`, `angry`, `refuse`, `surprise`, `love`, `random`, `sleep`, `wake`, `waiting-wave`, and since 0.2 `observe`, `ponder`, `think`, `waiting-bloom`, `waiting-cross`, `shape-wait`, `bow`, `shake`, `smug`, `wink`, `dizzy`, `bounce`, `smug-bounce`, `listening`, `speaking` (appended in this order, so the earlier numeric IDs stay).
 
 `waiting-wave` is an additional persistent waiting variant restored from the first experimental C++ implementation: two elliptical eyes bob with a 1400 ms period and staggered phase. The original waiting variants remain available. The SVG waiting-wave variant is separately tuned to three 1100 ms cycles; this hardware variant retains its earlier continuous 1400 ms motion. Its numeric ID is appended after `wake` to retain existing command IDs.
 
 The names match the Web avatar and describe what the eyes do. `waiting` also starts `waiting-spin`. Names from 0.5 still parse until 1.0: `wait` → `waiting-spin`; `send` → `affirm`; `warning` → `wary`; `blocked` / `policy-blocked` → `angry`; `error` / `system-error` / `connection-error` → `refuse`; `failed` / `fail` → `failure`; `verify` / `review` → `inspect`; `slot` → `random`. `Action::Affirm`, `Wary`, `Angry`, `Refuse` and `WaitingSpin` keep the numeric IDs of the old enumerators.
 
 - `play(name, nowMs)` returns false for an invalid command and leaves the active action unchanged.
-- One-shot expressions return to idle. Idle, waiting, input and sleep persist until another command.
+- One-shot expressions return to idle. Idle, waiting, input, listening, speaking and sleep persist until another command.
 - A new action replaces the previous action; there are no deferred callbacks that can finish an older action later.
-- Repeating the current waiting, input or sleep action does not restart it.
+- Repeating the current waiting, input, listening, speaking or sleep action does not restart it.
 - `stopWaiting(nowMs)` only stops waiting; it leaves other actions alone.
+- `setVoiceLevel(level, nowMs)` or `setVoiceLevel(low, high, nowMs)` feeds the loudness while `listening` or `speaking` plays (0 to 1; while speaking the left eye takes low sounds, the right eye high ones). Without a value from the last 260 ms, listening holds still and speaking keeps a speech rhythm of its own, as on the Web.
 - Settled sleep stops drawing. `wake(nowMs)` only acts when sleeping.
 - `lookAt(x,y)` clamps finite coordinates, normalizes non-finite input to zero, and does not wake sleeping eyes. A new gaze shows on the next frame within `maxFps`, so a sensor can call it on every loop; `redraw()` makes the next `update()` draw at once. Gaze applies only to idle, preserving the original eye motion of active expressions.
 - `setTiming(maxFps, autoBlink, transitionMs)` changes frame rate, blinking and transition time without restarting the current action; it accepts the same ranges as `begin()`.

@@ -44,7 +44,7 @@
 
 下载并用浏览器打开 [`preview/boopface-embedded-preview.html`](preview/boopface-embedded-preview.html)。这是一个完整的离线文件，不需要服务器、开发板、Python、Node.js 或编译工具；请下载原始 HTML，而不是保存 GitHub 的文件查看页面。也可在克隆后的项目中直接双击这个文件。
 
-它将**同一份嵌入式 C++ 源码编译成 WebAssembly**，不是原 Web Demo 或另一套 JavaScript 动画。支持 31 种动作（0.1 的 18 种，加上 0.2 跟随网页版 0.9 新增的鞠躬、观察、思考、眨眼、得意、眩晕、弹跳等 13 种），眼睛默认是圆角（`setRoundEyes(false)` 恢复直角）、自动轮播、暂停/逐帧、注视方向，以及 32 种屏幕预设（圆屏、方屏、长条屏、开发套件和 OLED 五组）和宽高 16–512 的自定义分辨率。可设置完整显示或裁切铺满、缩放、偏移与圆形裁切。命名预设使用对应参考模组的 SVG 外框，保留 PCB、玻璃、安装孔与排线的不同结构；横屏、竖屏整板旋转，自定义分辨率使用通用外框。打开「注视跟随」后，鼠标可模拟接近的物体；感应范围、只看移动物体、跟随速度和离开后的停留时间在库接口里设置，真正的摄像头或传感器接入由宿主程序提供。暂停只冻结时间，仍可切换动作；慢速播放可用于检查过渡。浏览器输出不能代替真机接线、驱动、刷新率和性能测试。重建和验证方法见 [模拟器说明](preview/README.md)。
+它将**同一份嵌入式 C++ 源码编译成 WebAssembly**，不是原 Web Demo 或另一套 JavaScript 动画。支持 33 种动作（0.1 的 18 种，加上 0.2 跟随网页版 0.9 新增的鞠躬、观察、思考、眨眼、得意、眩晕、弹跳等 13 种，以及语音套件的聆听和说话）、自动轮播、暂停/逐帧、注视方向，以及 32 种屏幕预设（圆屏、方屏、长条屏、开发套件和 OLED 五组）和宽高 16–512 的自定义分辨率。眼睛默认是圆角，`setRoundEyes(false)` 恢复直角。可设置完整显示或裁切铺满、缩放、偏移与圆形裁切。命名预设使用对应参考模组的 SVG 外框，保留 PCB、玻璃、安装孔与排线的不同结构；横屏、竖屏整板旋转，自定义分辨率使用通用外框。打开「注视跟随」后，鼠标可模拟接近的物体；感应范围、只看移动物体、跟随速度和离开后的停留时间在库接口里设置，真正的摄像头或传感器接入由宿主程序提供。暂停只冻结时间，仍可切换动作；慢速播放可用于检查过渡。浏览器输出不能代替真机接线、驱动、刷新率和性能测试。重建和验证方法见 [模拟器说明](preview/README.md)。
 
 ## 在模拟器里调好，直接用到板子上
 
@@ -110,7 +110,8 @@ pio device monitor -b 115200
 串口中发送英文动作名，末尾加换行：
 
 - `love`：爱心。
-- `waiting-spin` / `waiting-wrap` / `waiting-wave`：持续等待（旋转、滚动、波动），直到新动作替换。
+- `waiting-spin` / `waiting-wrap` / `waiting-wave` / `waiting-bloom` / `waiting-cross` / `shape-wait`：持续等待（旋转、环绕、波动、绽放、十字、方圆），直到新动作替换。
+- `listening` / `speaking`：语音套件的聆听和说话，持续到新动作替换；程序里可用 `setVoiceLevel()` 传入音量。
 - `success` / `failure`：任务成功或失败。
 - `wary` / `inspect` / `angry` / `refuse`：警惕、审视、生气、拒绝。
 - `sleep` / `wake`：睡眠、唤醒。
@@ -119,7 +120,7 @@ pio device monitor -b 115200
 - `reset`：回到待机。
 - `help`：列出命令。
 
-完整动作还包括 `idle`、`bored`、`input`、`affirm`（肯定）、`surprise`、`random`。0.5 版的旧名字（`send`、`warning`、`blocked`、`error` 等）在 1.0 之前仍可使用，对照关系详见英文接口说明。
+完整动作还包括 `idle`、`bored`、`input`、`affirm`（肯定）、`surprise`、`random`，以及 0.2 新增的 `observe`、`think`、`ponder`、`bow`、`shake`、`wink`、`smug`、`bounce`、`smug-bounce`、`dizzy`。0.5 版的旧名字（`send`、`warning`、`blocked`、`error` 等）在 1.0 之前仍可使用，对照关系详见英文接口说明。
 
 ## 接入自己的设备
 
