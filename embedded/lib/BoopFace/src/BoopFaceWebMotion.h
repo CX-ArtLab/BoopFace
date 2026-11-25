@@ -3,7 +3,7 @@
 #pragma once
 #include <stdint.h>
 namespace boopface { namespace web_reference {
-static const char SOURCE_SHA256[] = "84a6cb3d35cb59cab79dab13ce7276ecb367082f63e76a5a4683d40031a8a33f";
+static const char SOURCE_SHA256[] = "c50e6bdaf75a7364764d33d3955128274558f763f244b091c46e6282afda3276";
 struct Clip { const int16_t* values; uint16_t count; };
 static const int16_t ACTION_0[] = {
   4603,5000,2697,2899,0,-3600,3600,0,0,-100,11397,5000,2697,2899,0,-3600,3600,0,0,-100,
