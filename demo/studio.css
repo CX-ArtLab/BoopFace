@@ -658,6 +658,8 @@ code, kbd {
 }
 .talk-hero .talk-bot-text { justify-items: center; }
 .talk-hero .talk-bot-preview { display: none; }
+.talk-hero.is-open { background: var(--w-hero-open, rgba(0, 0, 0, 0.32)); }
+.talk[data-look="light"] .talk-hero.is-open { --w-hero-open: rgba(0, 0, 0, 0.13); }
 .talk-divider { height: 1px; margin: 6px 10px; background: var(--w-line); }
 
 /* Grokbot-style Icon Rail */

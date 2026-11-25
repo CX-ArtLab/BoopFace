@@ -2300,12 +2300,17 @@ function placeActiveTalkFace(bot, lastTurnElement) {
   paintCustomFace(activeTalkFace, { bot });
 }
 
-function openBot(index) {
+// The main bot looks chosen only once someone picks it (the page opens on it
+// without marking it).
+let heroPicked = false;
+function openBot(index, { picked = true } = {}) {
   roundnessFeedback.stop();
   state.activeBotIndex = index;
   const bot = OFFICIAL_BOTS[index];
   if (bot?.bgTasks) applyBotBgStep(index, null);
-  botRowEls.forEach(({ btn }, i) => btn.classList.toggle('is-open', i === index));
+  if (picked && OFFICIAL_BOTS[index]?.custom) heroPicked = true;
+  if (!OFFICIAL_BOTS[index]?.custom) heroPicked = false;
+  botRowEls.forEach(({ btn, hero }, i) => btn.classList.toggle('is-open', i === index && (!hero || heroPicked)));
   $('talkTitle').textContent = bot.name;
   $('talkHeadBadge').textContent = bot.custom
     ? (state.surface === 'skin' ? `皮肤 #${state.skinId}` : `纯色 ${state.flatHead}`)
@@ -2352,7 +2357,7 @@ document.querySelectorAll('[data-chat-pos]').forEach(btn => {
   });
 });
 
-$('chatResetBtn').addEventListener('click', () => openBot(state.activeBotIndex));
+$('chatResetBtn').addEventListener('click', () => openBot(state.activeBotIndex, { picked: false }));
 
 (() => {
   const resizer = $('talkResizer');
@@ -2809,7 +2814,7 @@ renderSavedPalettes();
 renderPalettes();
 renderCpQuick();
 buildSidebarBots();
-openBot(0);
+openBot(0, { picked: false });
 syncChatScale();
 syncAllFaces();
 requestAnimationFrame(() => {
