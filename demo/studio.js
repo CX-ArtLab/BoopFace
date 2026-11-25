@@ -399,6 +399,11 @@ new ResizeObserver(() => syncSizeLimit()).observe($('stageCanvas'));
 
 // Pointer following stays inside the stage: leaving it, the avatar looks ahead again.
 $('stageCanvas').addEventListener('pointerenter', () => { pointerOverStage = true; stageFace.setPointerFollow(state.pointerFollow); });
+// The pointer may already be over the stage when the Studio starts (the page
+// was still loading when it came in): no enter event will come, so check now
+// and take the first move inside as an enter too.
+$('stageCanvas').addEventListener('pointermove', () => { if (!pointerOverStage) { pointerOverStage = true; stageFace.setPointerFollow(state.pointerFollow); } });
+if ($('stageCanvas').matches(':hover')) { pointerOverStage = true; stageFace.setPointerFollow(state.pointerFollow); }
 $('stageCanvas').addEventListener('pointerleave', () => { pointerOverStage = false; stageFace.setPointerFollow(false); });
 
 // Expression buttons: one column width for every row, the longest word plus
@@ -2915,3 +2920,6 @@ function replayViewCurve(plot) {
   info?.addEventListener('focusin', open);
   info?.addEventListener('focusout', close);
 }
+
+// Everything is wired: the controls take clicks from now on.
+document.documentElement.classList.remove('studio-booting');

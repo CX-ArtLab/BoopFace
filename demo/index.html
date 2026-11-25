@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN" translate="no">
+<html class="studio-booting" lang="zh-CN" translate="no">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -909,6 +909,8 @@
   };
   requestAnimationFrame(check);
   setTimeout(finish, 8000);
+  // Never leave the controls locked if the Studio fails to start.
+  setTimeout(() => document.documentElement.classList.remove('studio-booting'), 20000);
 })();
 </script>
 <script type="module" src="./studio.js"></script>

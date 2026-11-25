@@ -3128,3 +3128,10 @@ body.has-chat-modal {
 .mini-seg button{border:0;background:none;color:#a3a3a8;font:inherit;font-size:12.5px;padding:5px 9px;border-radius:8px;cursor:pointer}
 .mini-seg button:hover{color:#fff}
 .mini-seg button[aria-pressed="true"]{background:#3a3a3f;color:#fff}
+
+/* Until the Studio's code has wired them, the controls cannot be used (on a
+   slow connection the page shows before its last files arrive). */
+.studio-booting .action-dock,
+.studio-booting .inspector-shell,
+.studio-booting .stage-toolbar,
+.studio-booting .scene-switch { opacity: .55; pointer-events: none; transition: opacity .2s; }
