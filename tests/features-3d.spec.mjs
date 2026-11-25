@@ -196,7 +196,8 @@ test('the wink flattens the whole eye into a round-ended line, without lids cutt
   expect(shaped.length).toBeGreaterThan(5);
   // A rounded outline (arcs), never the lids coming down over the eye.
   for (const f of shaped) expect(f.shape).toContain('A');
-  for (const f of frames) expect(f.lidY).toBeLessThan(-30);
+  // (Only while the wink runs: the 4 s sample can also catch a natural blink.)
+  for (const f of shaped) expect(f.lidY).toBeLessThan(-30);
   // At its thinnest the line is about 9 units thick.
   const thinnest = Math.min(...shaped.map(f => 2 * +/A[-\d.]+ ([-\d.]+)/.exec(f.shape)[1]));
   expect(thinnest).toBeGreaterThan(8);
