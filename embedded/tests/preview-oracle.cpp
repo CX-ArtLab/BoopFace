@@ -7,6 +7,7 @@ int eyes_init(int, int, int, int, int, uint32_t);
 int eyes_play(int, uint32_t);
 void eyes_gaze(float, float);
 int eyes_update(uint32_t);
+void eyes_round(int);
 int eyes_action();
 const uint8_t* eyes_data();
 int eyes_size();
@@ -32,6 +33,9 @@ int main() {
       int action; unsigned now;
       if (std::scanf("%d%u", &action, &now) != 2) return 1;
       std::printf("%d\n", eyes_play(action,now));
+    } else if (!std::strcmp(command, "round")) {
+      int on = 1;
+      if (std::scanf("%d", &on) == 1) eyes_round(on);
     } else if (!std::strcmp(command, "gaze")) {
       float x,y;
       if (std::scanf("%f%f", &x, &y) != 2) return 1;

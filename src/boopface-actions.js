@@ -127,6 +127,16 @@ const actionHandlers = Object.fromEntries(BUILT_IN_ACTIONS.map(action => [
   function() { return playBuiltInAction.call(this, action); },
 ]));
 
+// Idle gaze on (the default) lets the eyes look around now and then while
+// nothing happens; off keeps them on the viewer. The pointer, expressions and
+// the bored routine still move them.
+proto.setIdleGaze = function(enabled = true) {
+  this._idleGaze = enabled !== false;
+  if (!this._idleGaze && !this._boredRoutine) { this._wanderTarget.x = this._wanderTarget.y = 0; }
+  this._resumeFrames?.();
+  return this;
+};
+
 proto.setPointerFollow = function(enabled = true) {
   this._pointerFollowEnabled = enabled !== false;
   if (!this._pointerFollowEnabled) {

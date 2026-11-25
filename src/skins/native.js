@@ -726,7 +726,7 @@ export function joinNativeEyes(instance) {
   const skin = instance._nativeSkin;
   if (!skin?.name) return;
   const [left, right] = skin.eyeGroups;
-  if (!instance._loveFx || !left || !right) { joinEyes(skin, false); return; }
+  if (!left || !right || !(instance._eyesAsOne ? instance._eyesAsOne() : instance._loveFx)) { joinEyes(skin, false); return; }
   const parent = left.parentElement;
   const a = eyeBox(left, parent), b = eyeBox(right, parent);
   const overlap = a.x1 > b.x0 && b.x1 > a.x0 && a.y1 > b.y0 && b.y1 > a.y0;

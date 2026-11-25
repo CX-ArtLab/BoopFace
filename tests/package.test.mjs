@@ -48,6 +48,8 @@ test('package contains the complete runtime and excludes the demo', async () => 
     'src/boopface-random.js',
     'src/boopface-head-roundness.js',
     'src/boopface-runtime.js',
+    'src/boopface-agent.js',
+    'src/boopface-voice.js',
   ];
 
   for (const file of required) assert.ok(files.has(file), `Missing package file: ${file}`);
@@ -85,12 +87,13 @@ test('version is consistent across the package, runtime, and demo', async () => 
   const packageJson = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
   const runtime = await import(pathToFileURL(path.join(root, 'boopface.js')).href);
   const demo = await readFile(path.join(root, 'demo', 'index.html'), 'utf8');
-  const demoRuntime = await readFile(path.join(root, 'demo', 'boopface-demo.js'), 'utf8');
+  const studio = await readFile(path.join(root, 'demo', 'studio.js'), 'utf8');
 
   assert.equal(runtime.VERSION, packageJson.version);
   assert.match(packageJson.version, /^\d+\.\d+\.\d+(?:-rc\.\d+)?$/);
-  assert.match(demo, /<script type="module" src="\.\/boopface-demo\.js"><\/script>/);
-  assert.match(demoRuntime, /BoopFaceDemoBuild = VERSION/);
+  assert.match(demo, /<script type="module" src="\.\/studio\.js"><\/script>/);
+  // The Studio shows the version it really runs, read from the component.
+  assert.match(studio, /import \{ VERSION \} from '\.\.\/boopface\.js'/);
   assert.doesNotMatch(demo, /boopface\.js\?v=|demoVersion/);
 });
 
@@ -110,13 +113,13 @@ test('packed package installs and can be imported without browser globals', asyn
       '--eval',
       "import('boopface').then(module => console.log(Object.keys(module).sort().join(',')))",
     ], { cwd: consumer });
-    assert.match(imported, /BoopFace,SKINS,SKIN_NAMES,SKIN_SERIES,VERSION,default,loadSkins/);
+    assert.match(imported, /BoopFace,SKINS,SKIN_NAMES,SKIN_SERIES,VERSION,connectAgent,default,loadSkins/);
     const lite = run(process.execPath, [
       '--input-type=module',
       '--eval',
       "import('boopface/lite').then(module => console.log(Object.keys(module).sort().join(',')))",
     ], { cwd: consumer });
-    assert.match(lite, /BoopFace,VERSION,default/);
+    assert.match(lite, /BoopFace,VERSION,connectAgent,default/);
 
     const packageJson = JSON.parse(await readFile(path.join(consumer, 'node_modules', 'boopface', 'package.json'), 'utf8'));
     assert.notEqual(packageJson.sideEffects, false);
@@ -136,13 +139,13 @@ test('packed package installs and can be imported without browser globals', asyn
 test('Pages build resolves both its component preload and import at the deployment root', async () => {
   run(process.execPath, ['scripts/build-pages.mjs']);
   const html = await readFile(path.join(root, '.pages-site', 'index.html'), 'utf8');
-  const demoRuntime = await readFile(path.join(root, '.pages-site', 'boopface-demo.js'), 'utf8');
+  const studio = await readFile(path.join(root, '.pages-site', 'studio.js'), 'utf8');
   assert.doesNotMatch(html, /\.\.\/boopface\.js/);
-  assert.doesNotMatch(demoRuntime, /\.\.\/boopface\.js/);
+  assert.doesNotMatch(studio, /\.\.\/boopface\.js/);
   const preloads = [...html.matchAll(/rel="modulepreload" href="([^"]+)"/g)].map(match => match[1]);
   assert.ok(preloads.includes('./boopface.js'));
-  assert.match(html, /src="\.\/boopface-demo\.js"/);
-  assert.match(demoRuntime, /import\('\.\/boopface\.js'\)/);
+  assert.match(html, /src="\.\/studio\.js"/);
+  assert.match(studio, /from '\.\/boopface\.js'/);
   for (const preload of preloads) {
     await readFile(path.join(root, '.pages-site', preload), 'utf8');
   }

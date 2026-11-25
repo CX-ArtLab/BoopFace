@@ -5,14 +5,23 @@ import BoopFace from './src/boopface-extension-host.js';
 import './src/boopface-actions.js';
 import './src/boopface-antenna.js';
 import './src/boopface-waiting.js';
+import './src/boopface-voice.js';
 import './src/boopface-inspect.js';
 import './src/boopface-failure.js';
 import './src/boopface-love.js';
 import './src/boopface-random.js';
 import './src/boopface-head-roundness.js';
 import './src/boopface-gestures.js';
+import './src/boopface-new-expressions.js';
+import './src/boopface-body-motion.js';
+import './src/boopface-petting.js';
+import './src/boopface-3d.js';
 import './src/boopface-runtime.js';
+import './src/boopface-eye-color.js';
+// Last, so it rounds whatever the other modules drew this frame.
+import './src/boopface-round-eyes.js';
 import { VERSION } from './src/boopface-version.js';
+import { connectAgent } from './src/boopface-agent.js';
 
 const proto = BoopFace.prototype;
 let warned = false;
@@ -40,6 +49,6 @@ if (typeof window !== 'undefined') {
   window.BoopFaceVersion = window.AgentRobotAvatarVersion = VERSION;
 }
 
-export { BoopFace, BoopFace as AgentRobotAvatar, VERSION };
+export { BoopFace, BoopFace as AgentRobotAvatar, VERSION, connectAgent };
 // AgentRobotAvatar: the 0.7 name, kept until 1.0.
 export default BoopFace;

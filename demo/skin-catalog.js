@@ -11,15 +11,17 @@ export const skinsReady = loadSkins();
 export { featured };
 export const catalogCategories = SKIN_SERIES.map(series => ({ id: series.id, label: series.title, labelEn: series.titleEn, names: [...series.skins] }));
 export const filters = [
-  ['featured', '精选'], ['all', '全部'], ['metal', '金属'], ['glaze', '釉面与透明'],
-  ['soft', '柔软'], ['natural', '自然'], ['pattern', '图案'],
+  ['featured', '精选'], ['all', '全部'], ['metal', '金属'], ['glass', '玻璃与透明'], ['material', '材质与图案'],
 ];
+// The Studio's three groups, from each skin's series.
+const GLASS_SERIES = new Set(['glaze', 'ice', 'candy', 'acrylic', 'jelly', 'frosted', 'gloss']);
+const groupOf = id => SKINS[id].series === 'metal' ? 'metal' : GLASS_SERIES.has(SKINS[id].series) ? 'glass' : 'material';
 
 export const catalog = [
   { id: 'classic', label: '经典黑', english: 'ORIGINAL', description: '', group: 'pattern' },
   ...SKIN_NAMES.map(id => ({
     id, label: SKINS[id].title, english: SKINS[id].titleEn, description: '', base: SKINS[id].base,
-    group: demoSkins[id].group, stage: demoSkins[id].stage,
+    group: groupOf(id), stage: demoSkins[id].stage, eyeColor: SKINS[id].eyeColor,
   })),
 ];
 export const publicSkins = catalog.filter(skin => skin.id !== 'classic');

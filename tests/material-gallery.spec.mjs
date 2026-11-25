@@ -10,14 +10,16 @@ const iceEyes = {
 
 test('ice skin previews and catalog thumbnails preserve the original eye colors', async ({page}) => {
   for (const [skin, [key, color]] of Object.entries(iceEyes)) {
-    await page.goto(`/demo/skins.html?skin=${skin}&lang=zh-CN`);
-    await expect(page.locator(`#face #material-${key}-eye-porcelain stop`).first()).toHaveAttribute('stop-color', color);
+    await page.goto('/demo/?lang=zh-CN');
+    await page.locator('#stageFace').evaluate((face, n) => face.setSkin(n), skin);
+    await expect(page.locator(`#stageFace #material-${key}-eye-porcelain stop`).first()).toHaveAttribute('stop-color', color);
   }
 
-  await page.goto('/demo/materials/index.html?view=ice&lang=zh-CN');
-  await expect(page.locator('.skin-card')).toHaveCount(6);
+  // The Studio's skin tab, "All": every ice card's thumbnail keeps its eye colour.
+  await page.goto('/demo/?lang=zh-CN#skins');
+  await page.locator('#skinFilters [data-filter="all"]').click();
   for (const [skin, [key, color]] of Object.entries(iceEyes)) {
-    const image = page.locator(`.skin-card[data-skin="${skin}"] img`);
+    const image = page.locator(`#skinGrid .skin-card[data-skin="${skin}"] img`);
     await image.scrollIntoViewIfNeeded();
     await expect(image).toHaveAttribute('src', /^blob:/);
     const exportedEye = await image.evaluate(async (img, id) => {
@@ -26,27 +28,4 @@ test('ice skin previews and catalog thumbnails preserve the original eye colors'
     }, key);
     expect(exportedEye, `${skin} thumbnail`).toBe(color);
   }
-});
-
-test('the skin page opens on a featured skin when the saved one no longer exists', async ({page}) => {
-  const errors = [];
-  page.on('pageerror', error => errors.push(error.message));
-  // A number from before the skins were renumbered.
-  await page.addInitScript(() => localStorage.setItem('boopFaceDemoSkin', 'blueglaze'));
-  await page.goto('/demo/skins.html?lang=zh-CN');
-  await expect(page.locator('html')).not.toHaveClass(/skin-initializing/);
-  await expect.poll(() => page.evaluate(() => document.getElementById('face').getSkin())).toBe('101');
-  expect(errors).toEqual([]);
-});
-
-test('the demo keeps the original avatar after a visit to the skin page, which remembers its skin', async ({page}) => {
-  await page.goto('/demo/skins.html?skin=305&lang=zh-CN');
-  await expect(page.locator('html')).not.toHaveClass(/skin-initializing/);
-  await page.locator('#demo-link').click();
-  await expect(page.locator('html')).toHaveAttribute('data-demo-ready', 'true');
-  expect(new URL(page.url()).searchParams.get('skin')).toBeNull();
-  expect(await page.evaluate(() => document.getElementById('face').getSkin())).toBeNull();
-  await page.goto('/demo/skins.html?lang=zh-CN');
-  await expect(page.locator('html')).not.toHaveClass(/skin-initializing/);
-  await expect.poll(() => page.evaluate(() => document.getElementById('face')?.getSkin?.())).toBe('305');
 });

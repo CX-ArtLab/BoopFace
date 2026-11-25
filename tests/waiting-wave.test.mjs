@@ -24,6 +24,7 @@ function instance() {
     _dragJelly:{pullX:0,pullY:0,active:false,returning:false}, _sleeping:false,
     _headMotion:new SvgNode(), _resumeFrames(){}, noteActivity(){}, _animateHead(){},
     dispatchEvent(event){ events.push(event.detail.state); },
+    getAttribute(){ return null; }, hasAttribute(){ return false; },
     _wait(ms){ return new Promise(resolve => waits.push({at:clock+ms,resolve})); },
     _cancelPendingWaits(){ for(const wait of waits.splice(0))wait.resolve(); },
   });

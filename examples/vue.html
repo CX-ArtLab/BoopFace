@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BoopFace — Vue Example</title>
+  <style>
+    html,body{height:100%;margin:0}
+    body{display:grid;place-items:center;background:#f7f7f5;font-family:system-ui,sans-serif}
+    #app{display:grid;gap:20px;justify-items:center}
+    button{border:0;border-radius:10px;padding:8px 12px;cursor:pointer}
+    p{margin:0;color:#666;font-size:13px;min-height:1.4em}
+  </style>
+</head>
+<body>
+  <!--
+    Vue needs to know that <boop-face> is a custom element. This page loads Vue from
+    a CDN so it runs without a build step. In a Vite app, set it in vite.config.js:
+
+      vue({ template: { compilerOptions: { isCustomElement: tag => tag === 'boop-face' } } })
+
+    In Nuxt, set vue.compilerOptions.isCustomElement in nuxt.config and import
+    'boopface' in a client-only plugin.
+  -->
+  <div id="app">
+    <boop-face ref="avatar" size="140" @action-state="onAction"></boop-face>
+    <p>{{ reply }}</p>
+    <button type="button" @click="ask">Ask</button>
+  </div>
+
+  <script type="module">
+    import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.prod.js';
+    import { connectAgent } from '../boopface.js';
+
+    // Pretend AI reply: thinking, then text, then done.
+    async function* fakeStream() {
+      const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+      yield { type: 'RUN_STARTED' };
+      await wait(1500);
+      for (const word of ['Hello', ' from', ' Vue', '.']) {
+        yield { type: 'TEXT_MESSAGE_CONTENT', delta: word };
+        await wait(250);
+      }
+      yield { type: 'RUN_FINISHED' };
+    }
+
+    const app = createApp({
+      data: () => ({ reply: '' }),
+      mounted() {
+        this.agent = connectAgent(this.$refs.avatar);
+      },
+      methods: {
+        async ask() {
+          this.reply = '';
+          for await (const event of this.agent.track(fakeStream())) {
+            if (event.delta) this.reply += event.delta;
+          }
+        },
+        onAction(event) {
+          console.log('avatar', event.detail.action, event.detail.phase);
+        },
+      },
+    });
+    app.config.compilerOptions.isCustomElement = tag => tag === 'boop-face';
+    app.mount('#app');
+  </script>
+</body>
+</html>

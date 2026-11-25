@@ -1,5 +1,9 @@
 import BoopFace, { registerAvatarExtension } from './boopface-extension-host.js';
 
+// Per-frame writes skip values that are already there (a same-value write
+// still costs the browser a style, layout and paint pass).
+const setA = (el, name, value) => { if (el.getAttribute(name) !== value) el.setAttribute(name, value); };
+
 const proto = BoopFace.prototype;
 const basePlay = proto.play;
 const baseNoteActivity = proto.noteActivity;
@@ -21,6 +25,8 @@ const baseCanPauseFrames = proto._canPauseFrames;
 const baseInput = proto.input;
 const baseStartWaiting = proto.startWaiting;
 const baseStopWaiting = proto.stopWaiting;
+const baseStartListening = proto.startListening;
+const baseStartSpeaking = proto.startSpeaking;
 const baseDraw = proto._draw;
 
 const DEFAULT_SIZE = 112;
@@ -29,6 +35,17 @@ const DEFAULT_SIZE = 112;
 // action, but print a one-time deprecation notice; they are removed in 1.0.
 const ACTION_ALIASES = Object.freeze({
   idle: 'idle',
+  bow: 'bow',
+  shake: 'shake',
+  observe: 'observe',
+  think: 'think',
+  ponder: 'ponder',
+  'shape-wait': 'shape-wait',
+  bounce: 'bounce',
+  'smug-bounce': 'smug-bounce',
+  dizzy: 'dizzy',
+  wink: 'wink',
+  smug: 'smug',
   bored: 'bored',
   waiting: 'waiting',
   'waiting-spin': 'waiting',
@@ -36,6 +53,10 @@ const ACTION_ALIASES = Object.freeze({
   'waiting-wrap': 'waiting',
   'waiting-wave': 'waiting',
   input: 'input',
+  'waiting-bloom': 'waiting',
+  'waiting-cross': 'waiting',
+  listening: 'listening',
+  speaking: 'speaking',
   affirm: 'affirm',
   send: 'affirm',
   success: 'success',
@@ -219,12 +240,13 @@ function dragAtRest(drag) {
 
 function clearIdleDragVisuals(instance) {
   if (!dragAtRest(instance._dragJelly)) return;
-  if (instance._dragMotion) {
-    instance._dragMotion.style.transform = '';
-    instance._dragMotion.style.transformOrigin = '';
+  const motion = instance._dragMotion;
+  if (motion && (motion.style.transform || motion.style.transformOrigin)) {
+    motion.style.transform = '';
+    motion.style.transformOrigin = '';
   }
   if (instance._headShape && instance._baseHeadPathD) {
-    instance._headShape.setAttribute('d', instance._baseHeadPathD);
+    setA(instance._headShape, 'd', instance._baseHeadPathD);
   }
 }
 
@@ -344,9 +366,11 @@ function programActionOwnsExpression(instance) {
 
 function startDragReaction(instance, reaction) {
   if (!reaction || programActionOwnsExpression(instance)) return;
-  const result = reaction === 'angry'
-    ? instance.angry({ fromDrag: true })
-    : instance.success({ fromDrag: true });
+  const result = reaction === 'dizzy'
+    ? instance.play('dizzy')
+    : reaction === 'angry'
+      ? instance.angry({ fromDrag: true })
+      : instance.success({ fromDrag: true });
   const record = beginAction(instance, 'reaction', 'interaction', false);
   trackFiniteAction(instance, record, result);
 }
@@ -445,13 +469,15 @@ function ensureRuntime(instance) {
         if (record.attributeName === 'motion') motionChanged = true;
         if (record.attributeName === 'auto-sleep') autoSleepChanged = true;
         if (record.attributeName === 'skin') instance._applySkinAttribute?.();
+        // Read on the next frame by their own modules (3D view, eye colour, rounded eyes).
+        if (['view', 'eye-color', 'eye-style', 'color'].includes(record.attributeName)) instance._resumeFrames?.();
       }
       if (motionChanged) handleMotionChange(instance);
       if (autoSleepChanged) scheduleAutoSleep(instance);
     });
     instance._runtimeAttributeObserver.observe(instance, {
       attributes: true,
-      attributeFilter: ['size', 'motion', 'wake-on', 'auto-sleep', 'skin'],
+      attributeFilter: ['size', 'motion', 'wake-on', 'auto-sleep', 'skin', 'view', 'eye-color', 'eye-style', 'color'],
     });
   }
   // A skin set with setSkin() survives a reconnect: markup applies only when it
@@ -612,7 +638,7 @@ proto._updateHeadFollow = function(now, dt) {
   if (!reducedMotion(this)) return baseUpdateHeadFollow.call(this, now, dt);
   this._headFollowPose.x = this._headFollowPose.y = this._headFollowPose.rot = 0;
   this._headFollowVel.x = this._headFollowVel.y = this._headFollowVel.rot = 0;
-  if (this._headFollow) this._headFollow.setAttribute('transform', '');
+  if (this._headFollow) setA(this._headFollow, 'transform', '');
 };
 
 proto._updateDragJelly = function(dt) {
@@ -695,7 +721,8 @@ proto._endGestureAction = function(phase, react = false, silent = false) {
     if (silent) cancelActiveAction(this, { silent: true });
     else finishAction(this, record, phase);
   }
-  if (react) startDragReaction(this, 'angry');
+  // Tugging the antenna leaves the avatar dizzy.
+  if (react) startDragReaction(this, 'dizzy');
 };
 
 proto._onDragEnd = function(event) {
@@ -809,9 +836,27 @@ proto.startWaiting = async function(options = {}) {
   ensureRuntime(this);
   clearAutoSleep(this);
   const result = await baseStartWaiting.call(this, options);
-  if (this._waitingRequested && this._waitingFx) beginAction(this, 'waiting', 'api', true);
+  const bloom = this._voiceFx?.mode === 'thinking' && this._voiceFx.continuous;
+  if ((this._waitingRequested && this._waitingFx) || (bloom && this._activeActionState?.action !== 'waiting')) {
+    beginAction(this, 'waiting', 'api', true);
+  }
   return result;
 };
+
+// Voice loops behave like waiting: one continuous action until the next one.
+for (const [method, base, action] of [['startListening', baseStartListening, 'listening'], ['startSpeaking', baseStartSpeaking, 'speaking']]) {
+  if (typeof base !== 'function') continue;
+  proto[method] = async function(options = {}) {
+    ensureRuntime(this);
+    clearAutoSleep(this);
+    const result = await base.call(this, options);
+    // The next step of the set starts its own record; the same step keeps it.
+    if (this._voiceFx?.mode === action && this._voiceFx.continuous && this._activeActionState?.action !== action) {
+      beginAction(this, action, 'api', true);
+    }
+    return result;
+  };
+}
 
 proto.stopWaiting = function() {
   ensureRuntime(this);
@@ -865,26 +910,26 @@ proto._teardownRuntime = function() {
 
 function setMask(top, bottom, topY, bottomY, topAngle = 0, bottomAngle = 0) {
   if (top) {
-    top.setAttribute('y', (topY - 90).toFixed(2));
-    top.setAttribute('height', '90');
-    top.setAttribute('transform', `rotate(${topAngle.toFixed(2)} 0 ${topY.toFixed(2)})`);
+    setA(top, 'y', (topY - 90).toFixed(2));
+    setA(top, 'height', '90');
+    setA(top, 'transform', `rotate(${topAngle.toFixed(2)} 0 ${topY.toFixed(2)})`);
   }
   if (bottom) {
-    bottom.setAttribute('y', bottomY.toFixed(2));
-    bottom.setAttribute('height', '90');
-    bottom.setAttribute('transform', `rotate(${bottomAngle.toFixed(2)} 0 ${bottomY.toFixed(2)})`);
+    setA(bottom, 'y', bottomY.toFixed(2));
+    setA(bottom, 'height', '90');
+    setA(bottom, 'transform', `rotate(${bottomAngle.toFixed(2)} 0 ${bottomY.toFixed(2)})`);
   }
 }
 
 function setEye(eye, x, y = 126, sx = 1, sy = 1) {
-  if (eye) eye.setAttribute('transform', `translate(${x.toFixed(2)} ${y.toFixed(2)}) scale(${sx.toFixed(3)} ${sy.toFixed(3)})`);
+  if (eye) setA(eye, 'transform', `translate(${x.toFixed(2)} ${y.toFixed(2)}) scale(${sx.toFixed(3)} ${sy.toFixed(3)})`);
 }
 
 function drawReducedState(instance) {
   if (!reducedMotion(instance)) return;
   if (instance._state === 'input') {
-    instance._leftInputBase?.setAttribute('opacity', '1');
-    instance._rightInputBase?.setAttribute('opacity', '1');
+    if (instance._leftInputBase) setA(instance._leftInputBase, 'opacity', '1');
+    if (instance._rightInputBase) setA(instance._rightInputBase, 'opacity', '1');
   }
   if (instance._antennaDot) instance._antennaDot.style.opacity = '1';
 
@@ -913,7 +958,7 @@ function drawReducedState(instance) {
   }
 }
 
-for (const property of ['_waitingFx', '_inspectFx', '_loveFx', '_randomFx', '_failureFx', '_warningFx', '_systemErrorShake']) {
+for (const property of ['_waitingFx', '_voiceFx', '_inspectFx', '_loveFx', '_randomFx', '_failureFx', '_warningFx', '_systemErrorShake']) {
   const slot = Symbol(property);
   Object.defineProperty(proto, property, {
     configurable: true,

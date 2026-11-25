@@ -1,0 +1,201 @@
+import BoopFace, { registerAvatarExtension } from './boopface-extension-host.js';
+import { newExpressionPose } from './boopface-new-expressions.js';
+import { bodyMotionPose } from './boopface-body-motion.js';
+import { petPose } from './boopface-petting.js';
+
+// The 3D view: view="3d" (or setView('3d')). The avatar keeps running as usual
+// underneath (its expressions, gestures, eyes, skin light) with its own flat
+// drawing hidden; a layered 3D head copies all of that every frame and turns
+// for real. view="2d" (the default) is the flat drawing.
+const SQUASH_GAIN = 0.3; // the settle bounce after a turn (the approved 30%)
+
+// The skin the avatar really shows: setSkin() changes it without touching the
+// skin attribute (the lite build has no skins).
+function skinOf(face) {
+  const name = typeof face.getSkin === 'function' && face._skinName !== undefined ? face.getSkin() : face.getAttribute('skin');
+  return name && name !== 'none' ? String(name) : '';
+}
+
+function wantedView(face) {
+  return String(face.getAttribute('view') || face._viewWanted || '2d').trim().toLowerCase() === '3d' ? '3d' : '2d';
+}
+
+// What the 3D head is painted from; when any of it changes, it is rebuilt.
+function paintKey(face) {
+  return [skinOf(face), face.getAttribute('color') || '', face.getAttribute('eye-color') || '', face.getAttribute('eye-style') || '',
+    Math.round(face._headRoundness ?? 50), Math.round(face.getBoundingClientRect().width || 0)].join('|');
+}
+
+async function wallColors(face) {
+  const skin = skinOf(face);
+  if (skin) {
+    try { const { SKIN_CATALOG } = await import('./skins/catalog.js'); const base = SKIN_CATALOG[skin]?.base; if (base?.length) return base; } catch { /* lite build */ }
+  }
+  return [face.getAttribute('color') || '#08090b'];
+}
+
+// The official head motion for the 3D head: the expression's own motion plus
+// the official "head follows the eyes" tilt, both around the head centre.
+function headOf(b) {
+  const hmEl = b._headMotion, t = hmEl.getAnimations?.().length ? getComputedStyle(hmEl).transform : hmEl.style.transform;
+  const hm = t && t !== 'none' ? new DOMMatrix(t) : new DOMMatrix(), f = b._headFollowPose || { rot: 0, x: 0, y: 0 }, a = f.rot * Math.PI / 180;
+  if (!f.rot && !f.x && !f.y) return t;
+  return hm.multiply(new DOMMatrix([Math.cos(a), Math.sin(a), -Math.sin(a), Math.cos(a), f.x, f.y])).toString();
+}
+
+function view3d(face) {
+  let v = face._view3dState;
+  if (v) return v;
+  const root = face.shadowRoot;
+  const host = document.createElement('div');
+  host.className = 'view-3d';
+  host.setAttribute('aria-hidden', 'true');
+  const style = document.createElement('style');
+  style.textContent = ':host{position:relative}.view-3d{position:absolute;inset:0}:host([data-view="3d"]) svg{visibility:hidden}';
+  root.append(style, host);
+  v = face._view3dState = { host, avatar: null, key: '', building: null, pose: { yaw: 0, pitch: 0 }, t: performance.now() };
+  return v;
+}
+
+// The 3D renderer is downloaded the first time a head turns 3D, so flat pages never load it.
+let layers = null;
+const loadLayers = () => (layers ||= import('./boopface-3d-layers.js'));
+
+async function build(face, v, key) {
+  const token = (v.token || 0) + 1; v.token = token;
+  const { captureSkin, createLayeredAvatar } = await loadLayers();
+  if (token !== v.token || !face.isConnected) return;
+  const size = Math.round(face.getBoundingClientRect().width) || 112;
+  const captured = await captureSkin(skinOf(face) || null, face._headRoundness ?? 50, {
+    color: face.getAttribute('color'), eyeColor: face.getAttribute('eye-color'), eyeStyle: face.getAttribute('eye-style'),
+  });
+  if (token !== v.token || !face.isConnected) return;
+  const sideColors = await wallColors(face);
+  if (token !== v.token || !face.isConnected) return;
+  // The new head is built hidden next to the old one, takes over its state and
+  // draws one frame (eyes, turn) before the swap, so nothing jumps or blinks.
+  const host = document.createElement('div');
+  host.className = 'view-3d'; host.setAttribute('aria-hidden', 'true');
+  host.style.visibility = 'hidden';
+  v.host.after(host);
+  const avatar = createLayeredAvatar(host, captured, { size, sideColors, squash: 'settle' });
+  avatar.setSquashGain(SQUASH_GAIN);
+  avatar.setRoundEyes(() => (String(face.getAttribute('eye-style') || '').toLowerCase() === 'sharp' ? 0 : 4));
+  avatar.restore(v.avatar?.snapshot());
+  avatar.syncEyes(face);
+  avatar.setHeadMotion(headOf(face));
+  avatar.pose(v.lastPose || { yaw: v.pose.yaw, pitch: v.pose.pitch, gazeX: 0, gazeY: 0 });
+  const old = v.host;
+  v.host = host; v.avatar = avatar; v.size = size;
+  host.style.visibility = '';
+  old.remove();
+  v.key = key;
+  face._motionHost = host;
+  face.dataset.view = '3d';
+  face._resumeFrames?.();
+}
+
+function leave3d(face) {
+  const v = face._view3dState; if (!v) return;
+  v.token = (v.token || 0) + 1;
+  v.host.replaceChildren(); v.host.shadowRoot && (v.host.shadowRoot.innerHTML = '');
+  v.avatar = null; v.key = '';
+  face._view3d = false; face._motionHost = null;
+  delete face.dataset.view;
+}
+
+BoopFace.prototype.setView = function(value = '2d') {
+  this._viewWanted = String(value).toLowerCase() === '3d' ? '3d' : '2d';
+  if (this.hasAttribute('view')) this.setAttribute('view', this._viewWanted);
+  this._resumeFrames?.();
+  return this;
+};
+Object.defineProperty(BoopFace.prototype, 'view', { get() { return wantedView(this); }, configurable: true });
+
+// First paint: an avatar asked for a skin or the 3D view is first drawn as the
+// plain black flat face while the skin painter and the 3D renderer load.
+// Instead it stays invisible until it looks the way it was asked to (at most
+// 4 s, for slow networks), then fades in.
+const SKIN_MODULE = () => typeof BoopFace.prototype._skinKeepsEyes === 'function';
+function firstPaint(face, now) {
+  if (face._firstShown) return;
+  const skin = face.getAttribute('skin'), wantSkin = SKIN_MODULE() && skin && skin !== 'none';
+  const skinOk = !wantSkin || (face._skinName !== undefined && (face._skinShown ?? null) === (face._skinName ?? null));
+  const viewOk = wantedView(face) !== '3d' || face.dataset.view === '3d';
+  face._firstAt ??= now;
+  if ((skinOk && viewOk) || now - face._firstAt > 4000) {
+    face._firstShown = true;
+    if (face.hasAttribute('data-preparing')) face.removeAttribute('data-preparing');
+    return;
+  }
+  if (!face._firstStyle) {
+    face._firstStyle = document.createElement('style');
+    // Hidden at once (no fade out), shown with a short fade in.
+    face._firstStyle.textContent = 'svg,.view-3d{transition:opacity .25s ease-out}:host([data-preparing]) svg,:host([data-preparing]) .view-3d{opacity:0;transition:none}';
+    face.shadowRoot?.append(face._firstStyle);
+  }
+  if (!face.hasAttribute('data-preparing')) face.setAttribute('data-preparing', '');
+}
+
+// Checked as soon as the avatar joins the page, before its first paint, so the
+// plain face is never shown even for one frame.
+const baseConnected = BoopFace.prototype.connectedCallback;
+BoopFace.prototype.connectedCallback = function() {
+  baseConnected?.call(this);
+  if (this.shadowRoot) firstPaint(this, performance.now());
+};
+
+registerAvatarExtension({
+  name: 'view-3d',
+  draw(now) {
+    firstPaint(this, now);
+    if (wantedView(this) !== '3d') { if (this._view3d || this._view3dState?.avatar) leave3d(this); return; }
+    this._view3d = true;
+    const v = view3d(this), key = paintKey(this);
+    // Only the roundness changed (its slider being dragged): rebuild again and
+    // again while it moves, one after the other, so the skin's highlights
+    // follow the new shape too. Anything else (the size slider) rebuilds once
+    // it rests.
+    const onlyRound = !!v.key && key.split('|').every((part, i) => i === 4 || part === v.key.split('|')[i]);
+    if (key !== v.key && onlyRound && v.avatar) {
+      if (!v.inflight && !v.timer) v.timer = setTimeout(() => {
+        v.timer = 0; v.inflight = true; v.building = null;
+        build(this, v, paintKey(this)).finally(() => { v.inflight = false; this._resumeFrames?.(); });
+      }, 40);
+    } else if (key !== v.key && v.building !== key && !v.inflight) {
+      v.building = key;
+      clearTimeout(v.timer); v.timer = 0;
+      // Debounced: the size slider rebuilds once it rests.
+      // A new skin or colour is built at once; only the size slider waits.
+      const sizeOnly = !!v.key && key.split('|').every((part, i) => i === 5 || part === v.key.split('|')[i]);
+      v.timer = setTimeout(() => { v.timer = 0; v.inflight = true; build(this, v, key).finally(() => { v.inflight = false; if (v.building === key) v.building = null; this._resumeFrames?.(); }); }, v.avatar && sizeOnly ? 150 : 0);
+    }
+    if (!v.avatar) return;
+    // The outline follows the roundness slider while it moves (the rebuild waits for it to rest).
+    if (this._baseHeadPathD) v.avatar.setHeadPath?.(this._baseHeadPathD);
+    // Resized (a size slider being dragged): the head built for the old size is
+    // scaled to the new one at once, so it follows the drag and stays centred;
+    // the sharp rebuild comes once the size rests.
+    const width = this.getBoundingClientRect().width, fit = v.size && width ? width / v.size : 1;
+    const scale = Math.abs(fit - 1) > .001 ? `scale(${fit.toFixed(4)})` : '';
+    if (v.host.style.transform !== scale) { v.host.style.transformOrigin = '0 0'; v.host.style.transform = scale; }
+    // Head turn: follows where the eyes look (the avatar's own look, which
+    // already follows the pointer, wanders, or keeps still for an expression).
+    const dt = Math.min(50, now - v.t); v.t = now;
+    const look = this._look || { x: 0, y: 0 }, tx = look.x / 36, ty = look.y / 27, k = 1 - Math.exp(-dt / 200);
+    v.pose.yaw += (tx * 18 - v.pose.yaw) * k; v.pose.pitch += (-ty * 18 * .65 - v.pose.pitch) * k;
+    const base = { yaw: v.pose.yaw, pitch: v.pose.pitch, gazeX: 0, gazeY: 0 };
+    const p = newExpressionPose(this, base);
+    v.avatar.syncEyes(this);
+    v.avatar.setHeadMotion(headOf(this));
+    const petted = petPose(this, p), body = bodyMotionPose(this, petted);
+    // New expressions, body motion and petting turn the head even while the
+    // gaze is held still (that lock straightens the 3D turn otherwise).
+    if (body !== base) {
+      const lock = this._expressionLock, hc = this._headCenteringUntil;
+      this._expressionLock = false; this._headCenteringUntil = 0;
+      try { v.avatar.pose(body); } finally { this._expressionLock = lock; this._headCenteringUntil = hc; }
+    } else v.avatar.pose(base);
+    v.lastPose = body;
+  },
+});

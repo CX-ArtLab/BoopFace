@@ -14,6 +14,10 @@ const gazeTarget=(box,event)=>{
 };
 const SQUEEZE_HOLD_SECONDS=.14;
 
+// The head's pull limit, as for a drag: up to 15, stiffening into it.
+const PULL_REACH=18.75;
+const stiffPull=p=>{const m=Math.min(Math.abs(p),PULL_REACH);return Math.sign(p)*(m-m**5/(5*PULL_REACH**4));};
+
 function restore(face) {
   face._headMotion.style.transform='';face._headMotion.removeAttribute('transform');
   face._dragMotion.style.transform='';face._dragMotion.style.transformOrigin='';
@@ -153,7 +157,7 @@ function drawAntennaDrag(face,s,dt,reduced) {
     s.hvx+=(k*((s.held?s.x*.45:0)-s.hx)-d*s.hvx)*h;s.hvy+=(k*((s.held?s.y*.45:0)-s.hy)-d*s.hvy)*h;
     s.hx+=s.hvx*h;s.hy+=s.hvy*h;
   }
-  const pullX=clamp(s.hx,-25,25),pullY=clamp(s.hy,-25,25),radius=(50+Math.hypot(pullX,pullY)*.8)*.92;
+  const pullX=stiffPull(s.hx),pullY=stiffPull(s.hy),radius=(50+Math.hypot(pullX,pullY)*.8)*.92;
   const points=face._baseHeadPoints.map(p=>{const w=Math.exp(-((p.x-s.home.x)**2+(p.y-clamp(s.home.y,20,220))**2)/(2*radius*radius));return{x:p.x+pullX*w,y:p.y+pullY*w};});
   face._headShape.setAttribute('d',face._pointsToPath(points));face._headFollow.setAttribute('transform','');
   face._headMotion.style.transform=`translate(${s.hx*.12}px,${s.hy*.12}px) rotate(${s.hx*.08}deg)`;

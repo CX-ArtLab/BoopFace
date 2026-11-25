@@ -1,6 +1,10 @@
 import BoopFace, { registerAvatarExtension } from './boopface-extension-host.js';
 import { DEFAULT_HEAD_HEIGHT_SCALE, flattenHeadPoints } from './boopface-geometry.js';
 
+// Per-frame writes skip values that are already there (a same-value write
+// still costs the browser a style, layout and paint pass).
+const setA = (el, name, value) => { if (el.getAttribute(name) !== value) el.setAttribute(name, value); };
+
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const ANTENNA_DEFAULTS = Object.freeze({
   x: 120,
@@ -45,7 +49,7 @@ function flattenHead(instance) {
 
   instance._baseHeadPoints = flattened;
   instance._baseHeadPathD = path;
-  instance._headShape.setAttribute('d', path);
+  setA(instance._headShape, 'd', path);
   instance._headFlattenedR32 = true;
 }
 
@@ -103,6 +107,9 @@ function updateAntenna(instance, now) {
 
   const spring = instance._antennaSpring;
   const dot = instance._antennaDot;
+  // antenna="false" hides the ball (and with it the antenna tug).
+  const shown = String(instance.getAttribute('antenna') ?? '').trim().toLowerCase() !== 'false' ? '' : 'none';
+  if (dot.style.display !== shown) dot.style.display = shown;
   const target = antennaTarget(instance);
 
   if (instance._isReducedMotion?.()) {
@@ -133,10 +140,10 @@ function updateAntenna(instance, now) {
     spring.y += spring.vy * dt;
   }
 
-  dot.setAttribute('cx', spring.x.toFixed(2));
-  dot.setAttribute('cy', spring.y.toFixed(2));
-  dot.setAttribute('r', configNumber('radius', ANTENNA_DEFAULTS.radius, 2, 40).toFixed(2));
-  dot.setAttribute('fill', instance._head?.getAttribute('fill') || '#08090b');
+  setA(dot, 'cx', spring.x.toFixed(2));
+  setA(dot, 'cy', spring.y.toFixed(2));
+  setA(dot, 'r', configNumber('radius', ANTENNA_DEFAULTS.radius, 2, 40).toFixed(2));
+  setA(dot, 'fill', instance._head?.getAttribute('fill') || '#08090b');
 }
 
 function drawAntenna(now) {

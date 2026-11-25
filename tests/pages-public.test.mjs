@@ -25,13 +25,9 @@ test('public artifact contains only approved demo files and component runtime', 
     assert.equal(existsSync(path.join(output, forbidden)), false, forbidden);
   }
 });
-test('public gallery has a return link and no editing controls or editor modules', () => {
+test('the old full-gallery address leads to the Studio skin tab', () => {
   const html = readFileSync(path.join(output, 'materials/index.html'), 'utf8');
-  assert.match(html, /id="back-to-skins"/);
-  for (const file of publicDemoFiles.filter(file => file.startsWith('materials/'))) {
-    const source = readFileSync(path.join(output, file), 'utf8');
-    assert.doesNotMatch(source, /setupMaterialTuner|setupOtherMaterialTuner|applyLayerSettings|layerControls|material-edit|material-delete|tuner-history|material-presets|local-only\//, file);
-  }
+  assert.match(html, /url=\.\.\/#skins/);
 });
 test('published JS module imports resolve inside the artifact', () => {
   for (const file of files(output).filter(file => file.endsWith('.js'))) {

@@ -9,7 +9,14 @@ namespace boopface {
 enum class Action : uint8_t {
   Idle, Bored, WaitingSpin, WaitingWrap, Input, Affirm, Success, Failure,
   Wary, Inspect, Angry, Refuse, Surprise, Love, Random, Sleep, Wake,
-  WaitingWave, Count // Append new actions to preserve existing numeric IDs.
+  WaitingWave,
+  // 0.2: the Web avatar 0.9 expressions.
+  Observe, Ponder, Think, WaitingBloom, WaitingCross, ShapeWait, Bow, Shake,
+  Smug, Wink, Dizzy, Bounce, SmugBounce,
+  // 0.2: the voice kit's listening and speaking (thinking is WaitingBloom /
+  // WaitingCross or any other wait).
+  Listening, Speaking,
+  Count // Append new actions to preserve existing numeric IDs.
 };
 
 // How far idle gaze moves the eyes in the 160 x 100 face area. Small is the
@@ -52,6 +59,11 @@ class Eyes {
   void wake(uint32_t now);
   // Explicit host-controlled gaze. This never installs pointer/touch listeners.
   void lookAt(float x, float y); // normalized [-1, 1]; shows on the next frame
+  // Loudness while Listening or Speaking, [0, 1] (low and high for the two
+  // eyes while speaking). Without a fresh value (260 ms) listening holds
+  // still and speaking keeps a speech rhythm of its own, as on the Web.
+  void setVoiceLevel(float level, uint32_t now) { setVoiceLevel(level, level, now); }
+  void setVoiceLevel(float low, float high, uint32_t now);
   void redraw() { force_ = true; } // the next update() draws, even within the frame limit
   // Changes how far lookAt() moves the eyes; keeps the current animation.
   bool setGazeRange(GazeRange range);
@@ -66,7 +78,8 @@ class Eyes {
   bool update(uint32_t now);
 
   Action action() const { return action_; }
-  bool isWaiting() const { return action_ == Action::WaitingSpin || action_ == Action::WaitingWrap || action_ == Action::WaitingWave; }
+  bool isWaiting() const { return action_ == Action::WaitingSpin || action_ == Action::WaitingWrap || action_ == Action::WaitingWave
+      || action_ == Action::WaitingBloom || action_ == Action::WaitingCross; }
   bool isSleeping() const { return action_ == Action::Sleep; }
   const uint8_t* data() const { return buffer_; }
   uint16_t width() const { return config_.width; }
@@ -75,7 +88,10 @@ class Eyes {
   size_t bufferSize() const { return bytes_; }
   static const char* actionName(Action action);
   static bool parseAction(const char* name, Action& result);
-  static const char* version() { return "0.1.0"; }
+  static const char* version() { return "0.2.0"; }
+  // Lid corners rounded like the Web avatar (on by default); false keeps
+  // the straight lid cuts (the Web eye-style="sharp").
+  void setRoundEyes(bool on) { roundEyes_ = on; force_ = true; }
 
  private:
   struct Eye {
@@ -99,10 +115,15 @@ class Eyes {
   uint16_t stride_ = 0;
   Action action_ = Action::Idle;
   uint32_t started_ = 0, lastFrame_ = 0;
+  float voiceLow_ = 0, voiceHigh_ = 0;
+  uint32_t voiceAt_ = 0;
+  bool voiceFresh_ = false;
+  uint32_t transitionFor(Action action) const;
   Pose from_ = neutral(), current_ = neutral();
   float lookX_ = 0, lookY_ = 0;
   bool force_ = true, sleepRendered_ = false;
   bool crossfade_ = false;
+  bool roundEyes_ = true;
 };
 
 } // namespace boopface

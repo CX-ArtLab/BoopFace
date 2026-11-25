@@ -3,7 +3,12 @@ const BoopFace = (() => {
   const EASE = {
     outQuint: t => 1 - Math.pow(1 - t, 5),
     inOutCubic: t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3)/2,
+    outCubic: t => 1 - Math.pow(1 - t, 3),
   };
+
+  // The eyes travel between the typing cursor in the middle and their own
+  // places in this many ms: almost at once, with just a hint of the motion.
+  const CURSOR_MS = 160;
 
   const POSES = {
     idle: {
@@ -37,7 +42,7 @@ const BoopFace = (() => {
       scale: 1,
     },
     input: {
-      w: 12, h: 78, rx: 2,
+      w: 15, h: 78, rx: 2,
       topY: -44, bottomY: 44,
       topAL: 0, topAR: 0, bottomAL: 0, bottomAR: 0,
       scale: 1,
@@ -58,6 +63,14 @@ const BoopFace = (() => {
   };
 
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  // Per-frame writes go through this: an attribute set to the value it already
+  // has still makes the browser redo style, layout and paint for that element.
+  const setA = (el, name, value) => { if (el.getAttribute(name) !== value) el.setAttribute(name, value); };
+  // How far a drag pulls the head: up to 15, stiffening on the way so it eases
+  // into the limit: f(m) = m - m^5 / (5 * L^4), which reaches 4L/5 = 15 at
+  // L = 18.75 and stays there.
+  const PULL_REACH = 18.75;
+  const stiffPull = p => { const m = Math.min(Math.abs(p), PULL_REACH); return Math.sign(p) * (m - m ** 5 / (5 * PULL_REACH ** 4)); };
   const lerp = (a, b, t) => a + (b - a) * t;
   const clonePose = p => ({...p});
   const DEFAULT_SIZE = 112;
@@ -336,7 +349,7 @@ const BoopFace = (() => {
       if (!this._headShape || !this._baseHeadPoints?.length) return;
       const amount = Math.hypot(j.pullX, j.pullY);
       if (amount < 0.015) {
-        this._headShape.setAttribute('d', this._baseHeadPathD);
+        setA(this._headShape, 'd', this._baseHeadPathD);
         return;
       }
       const radius = (50 + amount * 0.8) * 0.92;
@@ -346,7 +359,7 @@ const BoopFace = (() => {
         const w = Math.exp(-(dx*dx + dy*dy) / (2 * radius * radius));
         return {x:p.x + j.pullX * w, y:p.y + j.pullY * w};
       });
-      this._headShape.setAttribute('d', this._pointsToPath(pts));
+      setA(this._headShape, 'd', this._pointsToPath(pts));
     }
 
     _onVisibility() {
@@ -448,8 +461,8 @@ const BoopFace = (() => {
       j.angle = Math.atan2(j.uy, j.ux);
       j.intent = radial < -6 ? 'success' : 'angry';
       const gain = dist > j.threshold * .60 ? 0.24 : 0.19;
-      j.targetPullX = clamp(pdx * gain, -25, 25);
-      j.targetPullY = clamp(pdy * gain, -25, 25);
+      j.targetPullX = stiffPull(pdx * gain);
+      j.targetPullY = stiffPull(pdy * gain);
       j.targetX = clamp(dx * 0.065, -5.2, 5.2);
       j.targetY = clamp(dy * 0.065, -5.2, 5.2);
       j.targetStretch = clamp((radial / 240) * .08, -.028, .052);
@@ -484,7 +497,7 @@ const BoopFace = (() => {
       j.shear = j.shearVel = 0;
       j.pullX = j.pullY = j.pullVX = j.pullVY = 0;
       if (this._dragMotion) this._dragMotion.style.transform = '';
-      if (this._headShape) this._headShape.setAttribute('d', this._baseHeadPathD);
+      if (this._headShape) setA(this._headShape, 'd', this._baseHeadPathD);
       if (reaction === 'angry') this.angry({fromDrag:true});
       else if (reaction === 'success') this.success({fromDrag:true});
     }
@@ -536,6 +549,10 @@ const BoopFace = (() => {
       j.shear = clamp(j.shear, -0.026, 0.026);
       j.pullX = clamp(j.pullX, -26, 26);
       j.pullY = clamp(j.pullY, -26, 26);
+      // At rest there is nothing to draw: skip the writes (the runtime keeps
+      // the resting look; writing the identity transform each frame and
+      // clearing it again made the browser redo the head every frame).
+      if (!j.active && !j.returning && !j.pendingReaction && !j.x && !j.y && !j.stretch && !j.shear && !j.pullX && !j.pullY) return;
       this._applyHeadDeform();
       if (this._dragMotion) {
         const sx = 1 + j.stretch;
@@ -603,6 +620,14 @@ const BoopFace = (() => {
     _startMorph(target, duration, ease) {
       this._fromPose = clonePose(this._pose);
       this._toPose = clonePose(target);
+      // The input cursor sits in the middle: the eyes slide there and back
+      // with the morph instead of jumping.
+      this._centerFrom = this._center ?? 0;
+      this._centerTo = this._state === 'input' ? 1 : 0;
+      if (Math.abs(this._centerTo - this._centerFrom) > 0.01 && duration > 0) {
+        duration = CURSOR_MS;
+        ease = EASE.outCubic;
+      }
       this._morphStart = performance.now();
       this._morphDuration = Math.max(0, duration);
       this._morphEase = ease;
@@ -838,10 +863,12 @@ const BoopFace = (() => {
       this._eyeMicro.rX = this._eyeMicro.rY = 0;
       this._wanderTarget.x = this._wanderTarget.y = 0;
       this._headCenteringUntil = performance.now() + duration + pause;
+      // Leaving the typing cursor takes longer: the eyes slide back apart first.
+      const fromCursor = (this._center ?? 0) > 0.01;
       if (normalizePose && this._state !== 'idle') {
         this.setState('idle', {duration:Math.min(140, duration), keepGazeLock:true});
       }
-      await this._wait(duration);
+      await this._wait(fromCursor ? Math.max(duration, CURSOR_MS) : duration);
       if (token !== this._transitionToken) return false;
       if (pause > 0) await this._wait(pause);
       return token === this._transitionToken;
@@ -898,10 +925,12 @@ const BoopFace = (() => {
     _updateMorph(now) {
       if (!this._morphDuration) {
         this._pose = clonePose(this._toPose);
+        this._center = this._centerTo ?? 0;
         return;
       }
       const t = clamp((now - this._morphStart) / this._morphDuration, 0, 1);
       const k = this._morphEase(t);
+      this._center = lerp(this._centerFrom ?? 0, this._centerTo ?? 0, k);
       const p = {};
       for (const key of Object.keys(this._toPose)) p[key] = lerp(this._fromPose[key], this._toPose[key], k);
       this._pose = p;
@@ -928,7 +957,11 @@ const BoopFace = (() => {
       const pointerFresh = (now - this._pointer.lastMove) < 900;
       const antennaGaze = this._gestureFx?.kind === 'antenna-drag' && this._gestureFx.held;
       const gazeLocked = this._expressionLock && !antennaGaze;
-      if (!this._expressionLock && !this._boredRoutine && !this._sleeping && this._state!=='input' && now >= this._nextWanderAt) {
+      // Idle gaze: the eyes wander now and then. idle-gaze="false" (or
+      // setIdleGaze(false)) keeps them looking straight ahead instead.
+      const idleGaze = this._idleGaze ?? String(this.getAttribute('idle-gaze') ?? '').trim().toLowerCase() !== 'false';
+      if (!idleGaze && !this._boredRoutine) this._wanderTarget.x = this._wanderTarget.y = 0;
+      if (idleGaze && !this._expressionLock && !this._boredRoutine && !this._sleeping && this._state!=='input' && now >= this._nextWanderAt) {
         const ampX = 12 + Math.random()*13;
         const ampY = 5 + Math.random()*9;
         this._wanderTarget.x = (Math.random()*2-1)*ampX;
@@ -1003,7 +1036,7 @@ const BoopFace = (() => {
         const a = this._headFollowPose.rot.toFixed(2);
         const tx = this._headFollowPose.x.toFixed(2);
         const ty = this._headFollowPose.y.toFixed(2);
-        this._headFollow.setAttribute('transform', `translate(${tx} ${ty}) translate(120 120) rotate(${a}) translate(-120 -120)`);
+        setA(this._headFollow, 'transform', `translate(${tx} ${ty}) translate(120 120) rotate(${a}) translate(-120 -120)`);
       }
     }
 
@@ -1049,7 +1082,7 @@ const BoopFace = (() => {
 
       const blinkH = Math.max(2.6, p.h * this._blink * nodScaleY * surpriseScale);
       const yAdjust = (p.h - blinkH) * 0.02;
-      const cursorPeriod = 530;
+      const cursorPeriod = 1060; // a text caret's pace: 530 ms on, 530 ms off
       const inputBlinkOn = this._state==='input' ? ((Math.floor(now / (cursorPeriod/2)) % 2) === 0) : true;
       const inputPulseL = this._state==='input' ? (inputBlinkOn ? 1 : 0) : 1;
       const inputPulseR = inputPulseL;
@@ -1065,8 +1098,15 @@ const BoopFace = (() => {
         return {x: j.pullX * w, y: j.pullY * w};
       };
 
+      // 1 = the cursor, 0 = a normal eye; in between it is changing.
+      const cursor = clamp(this._center ?? 0, 0, 1);
+      // The cursor's corner: the original 3, or half-round ends (rounded eyes).
+      const cursorCorner = String(this.getAttribute('eye-style') || '').trim().toLowerCase() === 'sharp' ? 3 : p.w / 2;
       const setEye = (base, inputBase, top, bottom, side, cx, microX, microY, opacity) => {
-        const isInput = this._state === 'input';
+        // While it changes to or from an eye, the cursor stays a rounded
+        // rectangle whose corners grow into the eye's ellipse (no pointed
+        // narrow ellipse on the way).
+        const isInput = this._state === 'input' || cursor > 0.001;
         const projectedX = cx + this._look.x + microX;
         const edgeDistance = side==='L' ? (projectedX - 32) : (208 - projectedX);
         const edgeFactor = clamp(1 - edgeDistance / 58, 0, 1);
@@ -1077,41 +1117,42 @@ const BoopFace = (() => {
         const inwardShift = ((baseW - w) * 0.58) * (side==='L' ? 1 : -1);
 
         if (isInput) {
-          base.setAttribute('opacity', '0');
-          inputBase.setAttribute('x', (-p.w/2).toFixed(2));
-          inputBase.setAttribute('y', (-p.h/2 + yAdjust).toFixed(2));
-          inputBase.setAttribute('width', p.w.toFixed(2));
-          inputBase.setAttribute('height', p.h.toFixed(2));
-          inputBase.setAttribute('rx', '3');
-          inputBase.setAttribute('opacity', opacity.toFixed(3));
+          setA(base, 'opacity', '0');
+          setA(inputBase, 'x', (-p.w/2).toFixed(2));
+          setA(inputBase, 'y', (-p.h/2 + yAdjust).toFixed(2));
+          setA(inputBase, 'width', p.w.toFixed(2));
+          setA(inputBase, 'height', p.h.toFixed(2));
+          setA(inputBase, 'rx', lerp(p.w / 2, cursorCorner, cursor).toFixed(2));
+          setA(inputBase, 'ry', lerp(p.h / 2, cursorCorner, cursor).toFixed(2));
+          setA(inputBase, 'opacity', opacity.toFixed(3));
         } else {
-          inputBase.setAttribute('opacity', '0');
-          base.setAttribute('cx', '0');
-          base.setAttribute('cy', yAdjust.toFixed(2));
-          base.setAttribute('rx', (w/2).toFixed(2));
-          base.setAttribute('ry', (h/2).toFixed(2));
-          base.setAttribute('opacity', opacity.toFixed(3));
+          setA(inputBase, 'opacity', '0');
+          setA(base, 'cx', '0');
+          setA(base, 'cy', yAdjust.toFixed(2));
+          setA(base, 'rx', (w/2).toFixed(2));
+          setA(base, 'ry', (h/2).toFixed(2));
+          setA(base, 'opacity', opacity.toFixed(3));
         }
         const topY = p.topY;
         const bottomY = p.bottomY;
         const ta = side==='L' ? p.topAL : p.topAR;
         const ba = side==='L' ? p.bottomAL : p.bottomAR;
-        top.setAttribute('y', (topY-90).toFixed(2));
-        top.setAttribute('height', '90');
-        top.setAttribute('transform', `rotate(${ta.toFixed(2)} 0 ${topY.toFixed(2)})`);
-        bottom.setAttribute('y', bottomY.toFixed(2));
-        bottom.setAttribute('height', '90');
-        bottom.setAttribute('transform', `rotate(${ba.toFixed(2)} 0 ${bottomY.toFixed(2)})`);
+        setA(top, 'y', (topY-90).toFixed(2));
+        setA(top, 'height', '90');
+        setA(top, 'transform', `rotate(${ta.toFixed(2)} 0 ${topY.toFixed(2)})`);
+        setA(bottom, 'y', bottomY.toFixed(2));
+        setA(bottom, 'height', '90');
+        setA(bottom, 'transform', `rotate(${ba.toFixed(2)} 0 ${bottomY.toFixed(2)})`);
         const jelly = jellyEyeOffset(cx, 126);
         return `translate(${(cx + this._look.x + microX + jelly.x + (isInput ? 0 : inwardShift)).toFixed(2)} ${(126 + this._look.y + microY + jelly.y + nodY + angryDropY + emotionBobY).toFixed(2)})`;
       };
 
-      const inputCenter = this._state==='input';
+      const inputCenter = clamp(this._center ?? 0, 0, 1);
       const surpriseSpread = this._state==='surprise' ? 3.4 * EASE.outQuint(clamp((p.w - 34) / (POSES.surprise.w - 34), 0, 1)) : 0;
-      const leftCX = inputCenter ? 120 : 86 - surpriseSpread;
-      const rightCX = inputCenter ? 120 : 154 + surpriseSpread;
-      this._leftEye.setAttribute('transform', setEye(this._leftBase,this._leftInputBase,this._leftTop,this._leftBottom,'L',leftCX,this._eyeMicro.lX,this._eyeMicro.lY,inputPulseL));
-      this._rightEye.setAttribute('transform', setEye(this._rightBase,this._rightInputBase,this._rightTop,this._rightBottom,'R',rightCX,this._eyeMicro.rX,this._eyeMicro.rY,inputPulseR));
+      const leftCX = lerp(86 - surpriseSpread, 120, inputCenter);
+      const rightCX = lerp(154 + surpriseSpread, 120, inputCenter);
+      setA(this._leftEye, 'transform', setEye(this._leftBase,this._leftInputBase,this._leftTop,this._leftBottom,'L',leftCX,this._eyeMicro.lX,this._eyeMicro.lY,inputPulseL));
+      setA(this._rightEye, 'transform', setEye(this._rightBase,this._rightInputBase,this._rightTop,this._rightBottom,'R',rightCX,this._eyeMicro.rX,this._eyeMicro.rY,inputPulseR));
     }
 
     _resumeFrames() {
@@ -1120,6 +1161,28 @@ const BoopFace = (() => {
       this._framePaused = false;
       this._lastFrame = performance.now();
       this._raf = requestAnimationFrame(this._loop);
+    }
+
+    // Shapes designed as one, drawn by both eyes on top of each other: the
+    // heart, the voice kit's circle and crossed ovals (and the morphs between
+    // them), and the shape wait. While the two eyes overlap there, a skin
+    // paints them as one surface; otherwise each eye's own shading shows a
+    // seam. Eyes that only pass each other (spin, dizzy) stay two eyes.
+    // margin: how close (avatar units) already counts as touching; the 3D head
+    // draws the eyes a little larger on its curved face, so it asks early.
+    _eyesAsOne(margin = 0) {
+      if (!(this._loveFx || this._voiceFx || this._voiceExit || this._leftBase?.hasAttribute('data-shape'))) return false;
+      const parent = this._leftEye?.parentElement;
+      if (!parent?.getCTM?.()) return false;
+      const box = eye => {
+        const b = eye.getBBox(), m = parent.getCTM().inverse().multiply(eye.getCTM());
+        const xs = [], ys = [];
+        for (const [x, y] of [[b.x, b.y], [b.x + b.width, b.y], [b.x, b.y + b.height], [b.x + b.width, b.y + b.height]]) { xs.push(m.a * x + m.c * y + m.e); ys.push(m.b * x + m.d * y + m.f); }
+        return { x0: Math.min(...xs), y0: Math.min(...ys), x1: Math.max(...xs), y1: Math.max(...ys) };
+      };
+      // The eye shapes themselves (their groups also hold the wide lid masks).
+      const a = box(this._leftBase), c = box(this._rightBase);
+      return a.x1 + margin > c.x0 && c.x1 + margin > a.x0 && a.y1 + margin > c.y0 && c.y1 + margin > a.y0;
     }
 
     _canPauseFrames(now) {

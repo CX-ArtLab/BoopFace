@@ -2,6 +2,20 @@
 
 Changes to the embedded eyes library for robot and dev-board screens. It is versioned and released separately from the Web component (`eyes-v*` tags, not published to npm).
 
+## [0.2.0] - 2026-11-25
+
+Ships together with the Web avatar 0.9.0.
+
+### Changed
+
+- Rounded eyes, as on the Web avatar: every corner a lid cuts into an eye is rounded (radius 4 avatar units), and a thin slit (sleep, a squint) gets half-round ends. `Eyes::setRoundEyes(false)` keeps the straight cuts.
+
+### Added
+
+- The 13 expressions of the Web avatar 0.9: `observe`, `ponder`, `think`, `waiting-bloom`, `waiting-cross`, `shape-wait`, `bow`, `shake`, `smug`, `wink`, `dizzy`, `bounce`, `smug-bounce` (31 in all, 33 with listening and speaking). The bloom and cross waits are computed by the core (no motion data); the rest are sampled from the Web avatar in a browser (`embedded/tools/sample-web-expressions-browser.mjs`, about 85 KB of geometry). On a screen the head motions of bow, shake and bounce become eye motion. Turned shapes interpolate the short way round (no backward spin). The bloom, cross and shape waits are centred on the eyes (the Web avatar centres them on its face, which on a screen of eyes alone sits high).
+- The voice kit's `listening` (both eyes one round eye that swells with the voice) and `speaking` (two eyes growing taller with the reply, the left with low sounds, the right with high ones; a speech rhythm of their own without a level), with `Eyes::setVoiceLevel()`; into listening and the bloom and cross in 420 ms, back to two eyes for speaking in 640 ms, as on the Web.
+- `embedded/tools/build-core-data.mjs` builds the WebAssembly core for the Embedded Studio page.
+
 ## [0.1.0] - 2026-11-05
 
 First experimental release. All reference configurations compile in CI; physical verification is pending. Install the standalone ZIP until registry listings are available.

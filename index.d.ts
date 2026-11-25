@@ -5,7 +5,11 @@ export type BoopFaceAction =
   | 'waiting-spin'
   | 'waiting-wrap'
   | 'waiting-wave'
+  | 'waiting-bloom'
+  | 'waiting-cross'
   | 'input'
+  | 'listening'
+  | 'speaking'
   | 'affirm'
   | 'success'
   | 'failure'
@@ -18,6 +22,18 @@ export type BoopFaceAction =
   | 'random'
   | 'sleep'
   | 'wake'
+  // 0.9: new expressions.
+  | 'bow'
+  | 'shake'
+  | 'observe'
+  | 'think'
+  | 'ponder'
+  | 'shape-wait'
+  | 'bounce'
+  | 'smug-bounce'
+  | 'dizzy'
+  | 'wink'
+  | 'smug'
   | BoopFaceDeprecatedAction;
 
 /**
@@ -72,6 +88,12 @@ export interface BoopFaceSkinInfo {
   readonly titleEn: string;
   /** Representative colors, light to dark. */
   readonly base: readonly string[];
+  /**
+   * Whether `eye-color` can repaint this skin's eyes. Skins whose eyes are part
+   * of their design (raised, glassy or patterned) keep their colour; on every
+   * skin `eye-color="transparent"` still makes the eyes see-through.
+   */
+  readonly eyeColor: boolean;
 }
 
 /** A group of related skins, in gallery order. */
@@ -108,6 +130,8 @@ export type BoopFaceState =
   | 'love'
   | 'random'
   | 'waiting'
+  | 'listening'
+  | 'speaking'
   | 'wary'
   | 'refuse'
   | 'inspect'
@@ -120,6 +144,8 @@ export type BoopFaceCanonicalAction =
   | 'bored'
   | 'waiting'
   | 'input'
+  | 'listening'
+  | 'speaking'
   | 'affirm'
   | 'success'
   | 'failure'
@@ -141,7 +167,8 @@ export type BoopFaceActionSource = 'api' | 'interaction' | 'automatic';
 export type BoopFaceWakeOn = 'activity' | 'interaction' | 'manual';
 export type BoopFaceMotion = 'auto' | 'reduce' | 'full';
 export interface BoopFaceWaitingOptions {
-  variant?: 'default' | 'spin' | 'wrap' | 'wave';
+  /** `bloom` is the voice set's thinking style: two crossed ovals that breathe and turn. */
+  variant?: 'default' | 'spin' | 'wrap' | 'wave' | 'bloom' | 'cross';
 }
 
 export interface BoopFaceActionStateDetail {
@@ -164,12 +191,39 @@ export declare class BoopFace extends HTMLElement {
   input(active?: boolean): this | Promise<void>;
   startWaiting(options?: BoopFaceWaitingOptions): Promise<this>;
   stopWaiting(): this;
+  /** Voice conversation: both eyes merge into one that swells with the user's voice. */
+  startListening(): Promise<this>;
+  /** Voice conversation: the eyes split back and stretch with the reply. */
+  startSpeaking(): Promise<this>;
+  /**
+   * Loudness from 0 (silent) to 1 (loud) while listening or speaking; a pair
+   * `[low, high]` drives the left and right eye separately while speaking.
+   * Without it, speaking keeps a rhythm of its own and listening holds still.
+   */
+  setVoiceLevel(level: number | readonly [number, number]): this;
   setPointerFollow(enabled?: boolean): this;
+  /** Idle eyes look around now and then (default); false keeps them looking straight ahead. Also the `idle-gaze` attribute. */
+  setIdleGaze(enabled?: boolean): this;
   /** @deprecated Removed in 0.6; does nothing and logs a one-time notice. Deleted in 1.0. */
   setAntennaFlash(enabled?: boolean): this;
   setPressSqueeze(enabled?: boolean): this;
   setAntennaDrag(enabled?: boolean): this;
   setHeadRoundness(value?: number): this;
+  /**
+   * Flat drawing ('2d', the default) or the layered 3D head ('3d') that turns
+   * for real. Same as the `view` attribute.
+   */
+  setView(view?: '2d' | '3d'): this;
+  readonly view: '2d' | '3d';
+  /**
+   * Eye colour, over a skin's own too (not on skins whose `eyeColor` is
+   * false). `'transparent'` cuts the eyes out of the head on every skin, so
+   * whatever is behind the avatar shows in them. `null` restores it.
+   * Same as the `eye-color` attribute.
+   */
+  setEyeColor(color?: string | null): this;
+  /** Stroking the forehead makes the avatar nuzzle in (on by default). */
+  setPetting(enabled?: boolean): this;
   getHeadRoundness(): number;
   /**
    * Dresses the head in a numbered skin with light that follows the pointer.
@@ -194,6 +248,70 @@ export declare class BoopFace extends HTMLElement {
 }
 
 export declare const VERSION: string;
+
+/**
+ * What an AI agent is doing, as understood by `connectAgent()`.
+ * Busy states (`thinking`, `tool`, `replying`, `speaking`) and `listening` keep
+ * looping until the next state.
+ */
+export type BoopFaceAgentState =
+  | 'idle'
+  | 'typing'
+  | 'listening'
+  | 'thinking'
+  | 'tool'
+  | 'replying'
+  | 'speaking'
+  | 'approval'
+  | 'done'
+  | 'error'
+  | 'refused'
+  | 'cancelled';
+
+/** An action name, a function that drives the avatar itself, or `null`/`false` to show nothing. */
+export type BoopFaceAgentAction =
+  | Exclude<BoopFaceAction, BoopFaceDeprecatedAction>
+  | ((avatar: BoopFace, state: BoopFaceAgentState) => unknown)
+  | null
+  | false;
+
+export interface BoopFaceAgentOptions {
+  /** Replace the expression shown for any state. */
+  actions?: Partial<Record<BoopFaceAgentState, BoopFaceAgentAction>>;
+  /** Called after every state change, for status text or logging. */
+  onChange?: (state: BoopFaceAgentState, previous: BoopFaceAgentState) => void;
+}
+
+export interface BoopFaceAgent {
+  /** The current state. */
+  readonly state: BoopFaceAgentState;
+  readonly avatar: BoopFace;
+  /**
+   * Reads one stream item: an AG-UI event, an OpenAI Responses, Realtime or Chat
+   * Completions event, an Anthropic Messages event, a Vercel AI SDK stream part, a useChat
+   * status, or a state word such as `'thinking'`. Unrecognized items are ignored.
+   */
+  handle(event: unknown): BoopFaceAgentState;
+  /**
+   * Passes a stream through unchanged while the avatar follows it. A clean end
+   * counts as done, a thrown error as error, an abort or early stop as cancelled.
+   */
+  track<T>(stream: AsyncIterable<T> | Iterable<T> | ReadableStream<T>): AsyncGenerator<T, void, undefined>;
+  /**
+   * Lets the eyes follow real sound: `input` (the microphone) while listening,
+   * `output` (the reply) while speaking. Each is a MediaStream or an
+   * `<audio>` / `<video>` element. Returns a function that disconnects them.
+   */
+  connectAudio(sources: {
+    input?: MediaStream | HTMLMediaElement;
+    output?: MediaStream | HTMLMediaElement;
+  }): () => void;
+  /** Back to idle. */
+  reset(): BoopFaceAgentState;
+}
+
+/** Lets an AI stream drive the avatar's expressions. */
+export declare function connectAgent(avatar: BoopFace | string, options?: BoopFaceAgentOptions): BoopFaceAgent;
 
 export default BoopFace;
 

@@ -4,6 +4,37 @@ All notable user-facing changes to BoopFace (called Agent Robot Avatar before 0.
 
 The project follows Semantic Versioning for public releases. Internal development build numbers are not part of the public version history.
 
+## [0.9.0] - 2026-11-25
+
+This release brings the 3D head, a new demo, and everything planned for 0.8.1 (Connect AI and the Voice Interaction Kit), which was never published on its own.
+
+### Added
+- `antenna="false"`: hides the antenna ball (flat and 3D).
+- `idle-gaze="false"` / `setIdleGaze(false)`: idle eyes keep looking straight ahead instead of glancing around.
+
+- **3D view.** `view="3d"` (or `setView('3d')`) turns the avatar into a layered 3D head that really turns toward the pointer, with depth, a curved face and a springy settle after each turn. All expressions, gestures, skins and colours work the same. `view="2d"` (the default) keeps the flat drawing.
+- **Rounded eyes.** Wherever a lid cuts an eye, the corner is now rounded, and a thin slit (sleep, a squint, a wink, the typing cursor) has half-round ends. `eye-style="sharp"` keeps the old straight cut.
+- **Eye colour.** `eye-color="#2bd67b"` (or `setEyeColor()`) paints the eyes, on the plain avatar and on the 131 skins with plain eyes. The 57 skins whose eyes are part of their design (raised, glassy or patterned) keep them; `SKINS[n].eyeColor` tells which. `eye-color="transparent"` cuts the eyes out of the head on every skin, textured eyes included, so whatever is behind the avatar shows in them. The Studio has an eye colour row under head and background.
+- **11 new expressions:** `bow`, `shake`, `observe`, `think`, `ponder`, `bounce`, `smug-bounce`, `dizzy`, `wink`, `smug`, and `shape-wait` (one shape turning between a circle and a rounded square).
+- **Cross wait.** `startWaiting({ variant: 'cross' })` (`waiting-cross`): two crossed ovals resting on a ×, turning a quarter at a time, full and slim in turn. Like Bloom, it works as the thinking step of a voice turn.
+- **Body motion.** Every expression now moves the whole head as well: it follows where the eyes look, nods, leans and hops. In 3D the head really turns; in 2D the turn is drawn flat. `motion="reduce"` keeps it still.
+- **Petting.** Stroke the forehead a few times and the avatar closes its eyes and nuzzles in. `setPetting(false)` turns it off.
+- **A new demo, the Studio**, in one page: the stage (2D or 3D), every expression and the Voice Kit, the 188 skins, colours and head shape, the behaviour settings, Connect AI with a live chat, and the code for whatever is shown. The old Skin Gallery and Connect AI addresses open the matching part of the Studio.
+- `connectAgent(avatar)` lets an AI stream drive the avatar. It reads AG-UI events, OpenAI Responses and Chat Completions streams, Anthropic Messages streams, Vercel AI SDK stream parts and `useChat` status, and shows thinking, tool use, replying, approval, done, failure and refusal. `agent.track(stream)` follows a stream while passing every item through; `actions` changes the expression for any state. Both the full and the lite build include it.
+- Voice Interaction Kit, for any product people talk to: a set of three expressions that flow into each other. `listening` merges the eyes into one round eye that swells with the user's voice, the thinking step is any waiting style, with a new Bloom style of two crossed ovals that morphs straight out of the listening eye (`startWaiting({ variant: 'bloom' })`, `waiting-bloom`), and `speaking` splits it back into two eyes that stretch with the reply (low sounds left, high sounds right). `startListening()` and `startSpeaking()` loop until the next action; `setVoiceLevel()` feeds the loudness. `connectAgent()` already understands common voice APIs such as OpenAI Realtime and returns to listening after each reply, and `agent.connectAudio({ input, output })` reads the microphone and the reply by itself. The Studio's Voice Kit tab has the three steps, a thinking style choice and a demo turn with sound and captions.
+- Connect AI in the Studio: the chat scene plays a reply in any of the four formats through `connectAgent()`, the Behaviour tab picks the expression for each state, and the Code tab shows the code for each format.
+- React and Vue examples, `examples/react.html` and `examples/vue.html`, and a README section on using the component in both.
+
+### Changed
+
+- Tugging the antenna now leaves the avatar dizzy (it used to turn angry).
+- Dragging the head (or tugging the antenna) pulls the outline up to 15 units instead of 25, stiffening as it nears the limit; the same in 3D.
+- The typing cursor is a little thicker and blinks at a text caret's pace (530 ms on, 530 ms off).
+
+### Fixed
+
+- Leaving the typing cursor (`input`) no longer makes the eyes jump out to the sides: the cursor splits in the middle into two eyes almost at once, staying rounded the whole way (no pointed sliver).
+
 ## [0.8.0] - 2026-11-05
 
 ### Changed
@@ -243,6 +274,7 @@ First public release.
 - npm-compatible package metadata for later package publication
 - Contribution guide, issue templates, pull request template, MIT License, and Ko-fi funding metadata
 
+[0.8.1]: https://github.com/CX-ArtLab/boopface/releases/tag/v0.8.1
 [0.8.0]: https://github.com/CX-ArtLab/boopface/releases/tag/v0.8.0
 [0.7.2]: https://github.com/CX-ArtLab/boopface/releases/tag/v0.7.2
 [0.7.1]: https://github.com/CX-ArtLab/boopface/releases/tag/v0.7.1
