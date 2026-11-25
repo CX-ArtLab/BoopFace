@@ -11,7 +11,7 @@ import { execFileSync } from 'node:child_process';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const zig = process.env.ZIG || 'zig';
 const exported = ['eyes_init', 'eyes_play', 'eyes_gaze', 'eyes_update', 'eyes_action', 'eyes_data', 'eyes_size', 'eyes_stride',
-  'eyes_layout', 'eyes_tracking', 'eyes_target', 'eyes_motion_target', 'eyes_gaze_config', 'eyes_is_tracking', 'eyes_duration', 'eyes_gaze_range', 'eyes_timing'];
+  'eyes_layout', 'eyes_tracking', 'eyes_target', 'eyes_motion_target', 'eyes_gaze_config', 'eyes_is_tracking', 'eyes_duration', 'eyes_gaze_range', 'eyes_timing', 'eyes_voice_level'];
 const temp = await mkdtemp(join(tmpdir(), 'boopface-core-'));
 try {
   const wasmPath = join(temp, 'eyes.wasm');

@@ -13,6 +13,9 @@ enum class Action : uint8_t {
   // 0.2: the Web avatar 0.9 expressions.
   Observe, Ponder, Think, WaitingBloom, WaitingCross, ShapeWait, Bow, Shake,
   Smug, Wink, Dizzy, Bounce, SmugBounce,
+  // 0.2: the voice kit's listening and speaking (thinking is WaitingBloom /
+  // WaitingCross or any other wait).
+  Listening, Speaking,
   Count // Append new actions to preserve existing numeric IDs.
 };
 
@@ -56,6 +59,11 @@ class Eyes {
   void wake(uint32_t now);
   // Explicit host-controlled gaze. This never installs pointer/touch listeners.
   void lookAt(float x, float y); // normalized [-1, 1]; shows on the next frame
+  // Loudness while Listening or Speaking, [0, 1] (low and high for the two
+  // eyes while speaking). Without a fresh value (260 ms) listening holds
+  // still and speaking keeps a speech rhythm of its own, as on the Web.
+  void setVoiceLevel(float level, uint32_t now) { setVoiceLevel(level, level, now); }
+  void setVoiceLevel(float low, float high, uint32_t now);
   void redraw() { force_ = true; } // the next update() draws, even within the frame limit
   // Changes how far lookAt() moves the eyes; keeps the current animation.
   bool setGazeRange(GazeRange range);
@@ -107,6 +115,10 @@ class Eyes {
   uint16_t stride_ = 0;
   Action action_ = Action::Idle;
   uint32_t started_ = 0, lastFrame_ = 0;
+  float voiceLow_ = 0, voiceHigh_ = 0;
+  uint32_t voiceAt_ = 0;
+  bool voiceFresh_ = false;
+  uint32_t transitionFor(Action action) const;
   Pose from_ = neutral(), current_ = neutral();
   float lookX_ = 0, lookY_ = 0;
   bool force_ = true, sleepRendered_ = false;

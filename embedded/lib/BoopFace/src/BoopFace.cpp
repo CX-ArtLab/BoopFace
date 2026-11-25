@@ -21,7 +21,7 @@ const char* const NAMES[] = {
   "idle", "bored", "waiting-spin", "waiting-wrap", "input", "affirm", "success", "failure",
   "wary", "inspect", "angry", "refuse", "surprise", "love", "random", "sleep", "wake", "waiting-wave",
   "observe", "ponder", "think", "waiting-bloom", "waiting-cross", "shape-wait", "bow", "shake",
-  "smug", "wink", "dizzy", "bounce", "smug-bounce"
+  "smug", "wink", "dizzy", "bounce", "smug-bounce", "listening", "speaking"
 };
 const unsigned FIRST_NEW = static_cast<unsigned>(Action::Observe);
 
@@ -43,6 +43,14 @@ size_t Eyes::requiredBytes(uint16_t width, uint16_t height) {
   return ((static_cast<size_t>(width) + 7) / 8) * height;
 }
 
+// Eyes look the same after half a turn (ellipses and rounded rectangles), so
+// an angle moves the shorter way round: a sample going from 180 back to 0, or
+// a fade between two turned shapes, never spins backwards.
+static float lerpAngle(float a, float b, float t) {
+  float d = fmodf(b - a + 90, 180); if (d < 0) d += 180;
+  return a + (d - 90) * t;
+}
+
 Eyes::Pose Eyes::webPose(Action action, uint32_t elapsed) {
   const unsigned id = static_cast<unsigned>(action);
   const auto& clip = id >= FIRST_NEW ? web_reference::NEW_CLIPS[id - FIRST_NEW] : web_reference::CLIPS[id];
@@ -59,7 +67,7 @@ Eyes::Pose Eyes::webPose(Action action, uint32_t elapsed) {
       const float scale = j == 7 || j == 8 ? 4096.f : 100.f;
       const float first = clip.values[a * 20 + side * 10 + j] / scale;
       const float second = clip.values[b * 20 + side * 10 + j] / scale;
-      v[j] = j == 9 ? first : lerp(first,second,t);
+      v[j] = j == 9 ? first : j == 4 ? lerpAngle(first,second,t) : lerp(first,second,t);
     }
     const float corner = v[9] < 0 ? -1 : fminf(v[9],fminf(v[2],v[3]));
     *eyes[side] = {v[0],v[1],v[2],v[3],v[4],v[5],v[6],v[7],v[8],corner,corner};
@@ -119,9 +127,10 @@ uint32_t Eyes::duration(Action action) {
     case Action::Random: return 2260;
     case Action::Wake: return 750;
     case Action::WaitingBloom: case Action::WaitingCross: return 0; // until stopped
+    case Action::Listening: case Action::Speaking: return 0;
     default: {
       const unsigned index = static_cast<unsigned>(action);
-      if (index >= FIRST_NEW && index < static_cast<unsigned>(Action::Count))
+      if (index >= FIRST_NEW && index <= static_cast<unsigned>(Action::SmugBounce))
         return web_reference::NEW_CLIPS[index - FIRST_NEW].count * 20u;
       return 0;
     }
@@ -130,13 +139,14 @@ uint32_t Eyes::duration(Action action) {
 
 bool Eyes::play(Action action, uint32_t now) {
   if (!buffer_ || !actionName(action)) return false;
-  if (action == action_ && (isWaiting() || isSleeping() || action == Action::Input)) return true;
+  if (action == action_ && (isWaiting() || isSleeping() || action == Action::Input
+      || action == Action::Listening || action == Action::Speaking)) return true;
   // Sample at the command timestamp, even if the last display flush was delayed.
   from_ = poseAt(now);
   current_ = from_;
   const bool cursorShape = from_.left.corner >= 0 || from_.right.corner >= 0;
   crossfade_ = (action_ != Action::Idle || action == Action::WaitingWave || action == Action::WaitingBloom
-      || action == Action::WaitingCross || cursorShape)
+      || action == Action::WaitingCross || action == Action::Listening || action == Action::Speaking || cursorShape)
       && (action != Action::Wake || cursorShape);
   action_ = action;
   started_ = now;
@@ -154,6 +164,21 @@ void Eyes::startWaiting(uint32_t now, bool wrap) { play(wrap ? Action::WaitingWr
 void Eyes::stopWaiting(uint32_t now) { if (isWaiting()) reset(now); }
 void Eyes::sleep(uint32_t now) { play(Action::Sleep, now); }
 void Eyes::wake(uint32_t now) { if (isSleeping()) play(Action::Wake, now); }
+
+void Eyes::setVoiceLevel(float low, float high, uint32_t now) {
+  voiceLow_ = isfinite(low) ? clamp(low, 0, 1) : 0;
+  voiceHigh_ = isfinite(high) ? clamp(high, 0, 1) : 0;
+  voiceAt_ = now; voiceFresh_ = true;
+}
+
+// The voice kit's own pace (src/boopface-voice.js): into the listening eye and
+// the thinking shapes in 420 ms, back to two eyes for speaking in 640 ms.
+uint32_t Eyes::transitionFor(Action action) const {
+  if (!config_.transitionMs) return 0;
+  if (action == Action::Listening || action == Action::WaitingBloom || action == Action::WaitingCross) return 420;
+  if (action == Action::Speaking) return 640;
+  return config_.transitionMs;
+}
 
 void Eyes::lookAt(float x, float y) {
   const float lx = isfinite(x) ? clamp(x, -1, 1) : 0;
@@ -207,7 +232,7 @@ Eyes::Eye Eyes::mixEye(const Eye& a, const Eye& b, float t) {
   const float bx = b.corner < 0 ? b.rx : fminf(b.corner,b.rx);
   const float by = b.corner < 0 ? b.ry : fminf(b.cornerY,b.ry);
   return {lerp(a.x,b.x,t), lerp(a.y,b.y,t), lerp(a.rx,b.rx,t), lerp(a.ry,b.ry,t),
-          lerp(a.angle,b.angle,t), lerp(a.top,b.top,t), lerp(a.bottom,b.bottom,t),
+          lerpAngle(a.angle,b.angle,t), lerp(a.top,b.top,t), lerp(a.bottom,b.bottom,t),
           lerp(a.topSlope,b.topSlope,t), lerp(a.bottomSlope,b.bottomSlope,t),
           ellipses ? -1 : lerp(ax,bx,t), ellipses ? -1 : lerp(ay,by,t)};
 }
@@ -249,6 +274,33 @@ Eyes::Pose Eyes::poseAt(uint32_t now) const {
     // shows only the eyes, so the face's centre would sit visibly high.
     p = {{80, 50, rx[0], ry[0], angle, -100, 100, 0, 0, -1, -1},
          {80, 50, rx[1], ry[1], angle, -100, 100, 0, 0, -1, -1}};
+  } else if (selected == Action::Listening || selected == Action::Speaking) {
+    // The voice kit (src/boopface-voice.js), on the eyes' centre (y 50).
+    const bool fed = voiceFresh_ && now - voiceAt_ < 260;
+    if (selected == Action::Listening) {
+      // Both eyes one round eye that swells with the voice; still without one.
+      const float level = fed ? fmaxf(voiceLow_, voiceHigh_) : 0, r = (93 + 19 * level) / 2;
+      p = {{80, 50, r, r, 0, -100, 100, 0, 0, -1, -1}, {80, 50, r, r, 0, -100, 100, 0, 0, -1, -1}};
+    } else {
+      // Two eyes again; after the split and a short settle (640 + 140 ms) each
+      // grows taller with the reply, the left with low sounds, the right with
+      // high ones; standard width and rounded ends.
+      float low = 0, high = 0;
+      if (fed) { low = voiceLow_; high = voiceHigh_; }
+      else if (elapsed > 780) {
+        const auto rhythm = [](float ms, float offset) {
+          const float s = ms / 1000 + offset;
+          const float syllable = fmaxf(0, sinf(s * PI * 2 * 4.1f + .9f * sinf(s * 2.3f)));
+          const float phrase = .55f + .45f * sinf(s * PI * 2 * .37f);
+          return fmodf(ms, 2900) > 2350 ? 0.f : powf(syllable, .8f) * phrase;
+        };
+        const float ms = static_cast<float>(elapsed - 780);
+        low = rhythm(ms, 0); high = rhythm(ms, .11f) * .85f;
+      }
+      const float grow[2] = {27 * fminf(.48f, .44f * tanhf(low * 1.65f)), 27 * fminf(.48f, .44f * tanhf(high * 1.65f))};
+      p = {{46.03f, 50, 26.97f, 28.99f + grow[0], 0, -100, 100, 0, 0, 26.97f, 28.99f},
+           {113.97f, 50, 26.97f, 28.99f + grow[1], 0, -100, 100, 0, 0, 26.97f, 28.99f}};
+    }
   } else if (selected == Action::WaitingWave) {
     // Restore the experimental v0.1 waiting motion verbatim as a NEW variant.
     // Source: e600f7e3b22dd792c3fc7b26994fa6bae39f1e66, poseAt/Waiting.
@@ -299,8 +351,9 @@ Eyes::Pose Eyes::poseAt(uint32_t now) const {
     }
   }
   const uint32_t commandElapsed = now - started_;
-  if (crossfade_ && config_.transitionMs && commandElapsed < config_.transitionMs)
-    p = mix(from_,p,smooth(commandElapsed/static_cast<float>(config_.transitionMs)));
+  const uint32_t fade = transitionFor(action_);
+  if (crossfade_ && fade && commandElapsed < fade)
+    p = mix(from_,p,smooth(commandElapsed/static_cast<float>(fade)));
   return p;
 }
 

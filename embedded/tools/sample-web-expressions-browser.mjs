@@ -96,6 +96,11 @@ try {
           let diag = 0; for (let i = 0; i < xs.length; i++) diag = Math.max(diag, Math.min(Math.abs(xs[i] - cx), Math.abs(ys[i] - cy)));
           const a0 = Math.min(rx, ry), rr = /A/.test(shape) ? a0 : Math.min(a0, Math.max(0, (a0 - diag) / (1 - Math.SQRT1_2)));
           corner = rr * sx;
+          // The outline clips the eye's own ellipse (shape-wait grows the
+          // ellipse into it): what shows is the smaller of the two on each axis,
+          // with the ellipse's round ends while it is the smaller one.
+          const erx = num(base, 'rx', rx), ery = num(base, 'ry', ry);
+          if (erx < rx || ery < ry) { rx = Math.min(rx, erx); ry = Math.min(ry, ery); corner = Math.min(rx, ry) * sx; }
           if (num(base, 'opacity', 1) < .01) rx = ry = 0;
         } else {
           cx = num(base, 'cx'); cy = num(base, 'cy'); rx = num(base, 'rx'); ry = num(base, 'ry');

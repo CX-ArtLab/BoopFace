@@ -70,6 +70,7 @@ int eyes_play(int action, uint32_t now) {
 }
 // The page moves the gaze while paused too, when the clock stands still.
 void eyes_gaze(float x, float y) { eyes.lookAt(x, y); eyes.redraw(); }
+void eyes_voice_level(float low, float high, uint32_t now) { eyes.setVoiceLevel(low, high, now); }
 // Rounded lid corners on (1, the default) or off (0).
 void eyes_round(int on) { eyes.setRoundEyes(on != 0); }
 int eyes_timing(int fps, int blink, int transition) {
