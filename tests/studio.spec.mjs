@@ -284,7 +284,7 @@ test('the 3D info card shows flat and 3D as two cards (traits, size) over a smoo
 test('every Studio language has its own words: no Chinese left on the page (zh-TW: no Simplified-only text)', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   const names = new Set(['简体中文', '繁體中文', '日本語']);
-  for (const lang of ['en', 'ja', 'ko', 'es', 'pt', 'de', 'fr', 'zh-TW']) {
+  for (const lang of ['en', 'ja', 'ko', 'es', 'ru', 'pt', 'de', 'fr', 'zh-TW']) {
     await page.goto(`/demo/?lang=${lang}`);
     await ready(page);
     const texts = await page.evaluate(() => {
