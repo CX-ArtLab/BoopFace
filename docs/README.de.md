@@ -20,25 +20,53 @@ Auch für Desktop-Begleiter, virtuelle Haustiere, digitale Maskottchen, Chatbot-
 
 Gebaut mit SVG und reinem JavaScript, ist es eine native Web Component ohne Laufzeitabhängigkeiten, MIT-lizenziert. Es lässt sich flach zeigen oder auf einen [3D-Kopf](#3d-kopf--neu-in-09) umschalten, der sich wirklich dreht; 188 [Skins](#skins--neu-in-07) stehen jederzeit bereit.
 
-<p align="center">
-  <img src="../assets/demo/boopface-demo.gif" alt="Interaktive Animationsdemo von BoopFace" width="560">
-</p>
+https://github.com/user-attachments/assets/533940e6-38e8-45e3-a276-606e1e7bba51
 
 ## Neu: [BoopFace Embedded](#boopface-embedded)
 
 <p align="center">
-  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="Dieselben Augenausdrücke auf ESP32-, STM32- und Raspberry-Pi-Pico-Bildschirmen oder in anderen C++-Programmen. Mit Firmware-Beispielen für 28 Konfigurationen und einem Simulator samt Einstellungsexport."></a>
+  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="BoopFace Embedded: dieselben Augenausdrücke auf ESP32-, STM32- und Raspberry-Pi-Pico-Bildschirmen oder in anderen C++-Programmen. Mit Firmware-Beispielen für 28 Konfigurationen und einem Simulator samt Einstellungsexport."></a>
 </p>
 
 Dieselben Augenausdrücke auf ESP32-, STM32- und Raspberry-Pi-Pico-Bildschirmen oder in anderen C++-Programmen. Mit Firmware-Beispielen für 28 Konfigurationen und einem Simulator samt Einstellungsexport.
 
 ## Live-Demo
 
+<h3 align="center">Offizielle Website</h3>
+
+<p align="center">
+  <a href="https://boopface.com/">boopface.com</a>
+</p>
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+<h3 align="center">BoopFace Web Component</h3>
+
 Ab 0.9 sind Demo, Skins und KI-Anbindung eine Seite: das Studio. Die Bühne schaltet zwischen flach und 3D; daneben kannst du jeden Ausdruck und das Sprach-Kit ausprobieren, Skins und Farben wechseln, das Verhalten einstellen, mit einem an eine KI angebundenen Avatar chatten und jederzeit den Code für das Gezeigte kopieren.
 
-[Studio öffnen](https://cx-artlab.github.io/BoopFace/?lang=de) · [Skin aussuchen](https://cx-artlab.github.io/BoopFace/?lang=de#skins) · [KI-Anbindung ausprobieren](https://cx-artlab.github.io/BoopFace/?lang=de#agent)
+<p align="center">
+  <a href="https://boopface.com/demo/?lang=de">Studio öffnen</a> · <a href="https://boopface.com/demo/?lang=de#skins">Skin aussuchen</a> · <a href="https://boopface.com/demo/?lang=de#agent">KI-Anbindung ausprobieren</a>
+</p>
 
-[Embedded-Simulator öffnen](https://cx-artlab.github.io/BoopFace/hardware/?lang=de)
+<p align="center">
+  <img src="../assets/demo/boopface-demo.gif" alt="Interaktive Animationsdemo von BoopFace" width="560">
+</p>
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+<h3 align="center">BoopFace Embedded</h3>
+
+<p align="center">
+  <a href="https://boopface.com/hardware/?lang=de">Embedded-Simulator öffnen</a> (Vorschau mit 32 Bildschirmvoreinstellungen für Embedded-Geräte)
+</p>
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
 ## Besondere Merkmale
 
@@ -62,6 +90,7 @@ Ab 0.9 sind Demo, Skins und KI-Anbindung eine Seite: das Studio. Die Bühne scha
 - `connectAgent()`: Ereignisse eines KI-Streams steuern die Ausdrücke (AG-UI, OpenAI, Anthropic, Vercel AI SDK)
 - Sprach-Interaktions-Kit: ein Set aus Zuhören, Nachdenken und Sprechen, das der echten Lautstärke folgt
 - TypeScript-Deklarationen enthalten
+- BoopFace Embedded bringt dieselben Augenausdrücke auf 28 Platinen-/Displaykonfigurationen mit ESP32, ESP32-S3, STM32 und Raspberry Pi Pico, mit Export der Simulatoreinstellungen für die Firmware
 
 ## Installation
 
@@ -258,7 +287,7 @@ Ein Druck auf die Mitte des Avatars startet das Quetschen. Bewegt sich der Zeige
 
 Alle Skins sind weiterhin reines SVG – ohne Bilder, Canvas oder WebGL. Alle Skins zusammen sind über das Netz nur etwa 70 KB groß (unkomprimiert etwa 290 KB), und das meiste davon lädt erst, wenn eine Seite einen Skin verwendet. Zum Vergleich: Der Avatar selbst (der Lite-Build, ohne Skins) ist etwa 92 KB groß.
 
-<img src="../assets/readme/skin-gallery.jpg" alt="Skin-Galerie: Empfehlungen, Filter und Suche" width="100%">
+<img src="../assets/readme/boopface-skin-gallery.jpg" alt="BoopFace Skin-Galerie: Empfehlungen, Filter und Suche" width="100%">
 
 ```html
 <boop-face skin="301"></boop-face>
@@ -269,7 +298,7 @@ avatar.setSkin(102);  // oder '102'
 avatar.setSkin(null); // zurück zur flachen Farbe
 ```
 
-Alle Skins mit ihren Nummern gibt es im [Skin-Tab des Studios](https://cx-artlab.github.io/BoopFace/?lang=de#skins).
+Alle Skins mit ihren Nummern gibt es im [Skin-Tab des Studios](https://boopface.com/demo/?lang=de#skins).
 
 | Serie | Nummern | Serie | Nummern | Serie | Nummern |
 | --- | --- | --- | --- | --- | --- |
@@ -326,7 +355,7 @@ connectAgent(avatar, {
 });
 ```
 
-Im [Studio](https://cx-artlab.github.io/BoopFace/?lang=de#agent) kannst du mit einem an eine KI angebundenen Avatar chatten; unter Code › KI anbinden legst du den Ausdruck für jeden Zustand fest und siehst den Code für jedes Format.
+Im [Studio](https://boopface.com/demo/?lang=de#agent) kannst du mit einem an eine KI angebundenen Avatar chatten; unter Code › KI anbinden legst du den Ausdruck für jeden Zustand fest und siehst den Code für jedes Format.
 
 ## Sprach-Interaktions-Kit · Neu in 0.9
 
@@ -424,9 +453,9 @@ Die Augenausdrücke der Webversion laufen jetzt auf Robotern und Entwicklungspla
 | Andere Mikrocontroller oder C++-Programme | C++-Bibliothek; eigenen Bildschirmtreiber einbinden |
 
 
-<img src="../assets/readme/hardware-preview.jpg" alt="Simulator: Augenausdrücke auf rundem TFT, Anordnung, Farben und Export" width="100%">
+<img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded Simulator: Augenausdrücke auf rundem TFT, Anordnung, Farben und Export" width="100%">
 
-**Ohne Platine ausprobieren.** Der [Simulator](https://cx-artlab.github.io/BoopFace/hardware/?lang=de) führt dieselbe C++-Engine im Browser auf 32 simulierten Bildschirmen aus. So kannst du Module vergleichen und die Darstellung vorab ansehen.
+**Ohne Platine ausprobieren.** Der [Simulator](https://boopface.com/hardware/?lang=de) führt dieselbe C++-Engine im Browser auf 32 simulierten Bildschirmen aus. So kannst du Module vergleichen und die Darstellung vorab ansehen.
 
 **Anpassen, exportieren, bauen.** Wähle Bildschirm, Anordnung, Farben und Bildrate, dann **Einstellungen exportieren**. Speichere `eyes_settings.h` neben der `main.cpp` des Beispiels und kompiliere. Siehe die [Anleitung](../embedded/README.md). Oberfläche und exportierte Kommentare folgen der gewählten Sprache.
 
@@ -441,7 +470,7 @@ lib_deps = cxlab/BoopFace@^0.2.0
 ```cpp
 #include <BoopFace.h>
 boopface::Eyes eyes;
-uint8_t pixels[4800]; // 240 x 160, 1 bit per pixel
+uint8_t pixels[4800]; // 240 x 160, 1 Bit pro Pixel
 
 void setup() {
   boopface::EyesConfig config;
@@ -450,14 +479,21 @@ void setup() {
 
 void loop() {
   if (eyes.update(millis())) {
-    // Send eyes.data() to the display driver.
+    // eyes.data() an den Bildschirmtreiber senden.
   }
 }
 
-// When needed: eyes.play("success", millis());
+// Bei Bedarf
+// eyes.play("success", millis());
 ```
 
 Experimentell: CI kompiliert alle Konfigurationen, auf realer Hardware sind sie noch nicht geprüft. Sende nach einem Test einen [Hardwarebericht](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml). API und Anschlüsse stehen in der [Anleitung](../embedded/README.md).
+
+## Mit BoopFace erstellte Projekte
+
+Mach bei dieser Liste mit und zeige anderen, was du mit BoopFace erstellt hast. Reiche dein Projekt über dieses Formular ein: https://github.com/CX-ArtLab/BoopFace/issues/new?template=showcase-submission.yml
+
+[Community-Projekte ansehen](../SHOWCASE.md)
 
 ## Mitwirken
 

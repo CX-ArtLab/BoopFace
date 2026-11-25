@@ -20,25 +20,53 @@ AI アシスタントやエージェントの顔と状態表示に使えます�
 
 SVG と素の JavaScript で作られたネイティブ Web Component で、実行時の依存関係はゼロ、MIT ライセンスです。平面のまま表示することも、本当に回転する [3D ヘッド](#3d-ヘッド--09-の新機能)に切り替えることもできます。188 種類の[スキン](#スキン--07-の新機能)もいつでも着せ替えられます。
 
-<p align="center">
-  <img src="../assets/demo/boopface-demo.gif" alt="BoopFace インタラクティブアニメーションデモ" width="560">
-</p>
+https://github.com/user-attachments/assets/533940e6-38e8-45e3-a276-606e1e7bba51
 
 ## 新対応：[BoopFace Embedded](#boopface-embedded)
 
 <p align="center">
-  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="ESP32、STM32、Raspberry Pi Pico の画面や、その他の C++ プログラムで同じ目の表情を使えます。28種類の構成に対応するサンプルファームウェアと、設定を書き出せるシミュレーターを用意しました。"></a>
+  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="BoopFace Embedded：ESP32、STM32、Raspberry Pi Pico の画面や、その他の C++ プログラムで同じ目の表情を使えます。28種類の構成に対応するサンプルファームウェアと、設定を書き出せるシミュレーターを用意しました。"></a>
 </p>
 
 ESP32、STM32、Raspberry Pi Pico の画面や、その他の C++ プログラムで同じ目の表情を使えます。28種類の構成に対応するサンプルファームウェアと、設定を書き出せるシミュレーターを用意しました。
 
 ## ライブデモ
 
+<h3 align="center">公式サイト</h3>
+
+<p align="center">
+  <a href="https://boopface.com/">boopface.com</a>
+</p>
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+<h3 align="center">BoopFace Web Component</h3>
+
 0.9 から、デモ、スキン、AI 接続はひとつのページ「Studio」にまとまりました。ステージは平面と 3D を切り替えられ、横ではすべての表情と音声キットを試し、スキンや色を変え、ふるまいを設定し、AI につないだアバターとチャットし、今の見た目のコードをいつでもコピーできます。
 
-[Studio を開く](https://cx-artlab.github.io/BoopFace/?lang=ja) · [スキンを選ぶ](https://cx-artlab.github.io/BoopFace/?lang=ja#skins) · [AI 接続を試す](https://cx-artlab.github.io/BoopFace/?lang=ja#agent)
+<p align="center">
+  <a href="https://boopface.com/demo/?lang=ja">Studio を開く</a> · <a href="https://boopface.com/demo/?lang=ja#skins">スキンを選ぶ</a> · <a href="https://boopface.com/demo/?lang=ja#agent">AI 接続を試す</a>
+</p>
 
-[組み込みシミュレーターを開く](https://cx-artlab.github.io/BoopFace/hardware/?lang=ja)
+<p align="center">
+  <img src="../assets/demo/boopface-demo.gif" alt="BoopFace インタラクティブアニメーションデモ" width="560">
+</p>
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+<h3 align="center">BoopFace Embedded</h3>
+
+<p align="center">
+  <a href="https://boopface.com/hardware/?lang=ja">組み込みシミュレーターを開く</a> （32種類の組み込み画面プリセットをプレビュー）
+</p>
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
 ## 特長
 
@@ -62,6 +90,7 @@ ESP32、STM32、Raspberry Pi Pico の画面や、その他の C++ プログラ�
 - `connectAgent()`：AI ストリームのイベントで表情を自動切り替え（AG-UI、OpenAI、Anthropic、Vercel AI SDK）
 - 音声対話表情キット：実際の音量に合わせて動く「聞く・考える・話す」の表情セット
 - TypeScript 型定義を同梱
+- BoopFace Embedded は ESP32、ESP32-S3、STM32、Raspberry Pi Pico の28種類のボード・画面構成で同じ目の表情を再現し、シミュレーターの設定をファームウェア用に書き出せます
 
 ## インストール
 
@@ -258,7 +287,7 @@ avatar.setPetting(false); // なでる操作をオフ
 
 スキンもすべて純粋な SVG で描かれており、画像・Canvas・WebGL は使っていません。全スキン合わせても通信量は約 70 KB（非圧縮で約 290 KB）で、その大部分はページがスキンを使うときにだけ読み込まれます。比較として、アバター本体（スキンを含まない lite 版）は約 92 KB です。
 
-<img src="../assets/readme/skin-gallery.jpg" alt="スキンギャラリー：おすすめ、絞り込み、検索" width="100%">
+<img src="../assets/readme/boopface-skin-gallery.jpg" alt="BoopFace スキンギャラリー：おすすめ、絞り込み、検索" width="100%">
 
 ```html
 <boop-face skin="301"></boop-face>
@@ -269,7 +298,7 @@ avatar.setSkin(102);  // '102' でも可
 avatar.setSkin(null); // 単色に戻す
 ```
 
-すべてのスキンと番号は [Studio のスキンタブ](https://cx-artlab.github.io/BoopFace/?lang=ja#skins)で見られます。
+すべてのスキンと番号は [Studio のスキンタブ](https://boopface.com/demo/?lang=ja#skins)で見られます。
 
 | シリーズ | 番号 | シリーズ | 番号 | シリーズ | 番号 |
 | --- | --- | --- | --- | --- | --- |
@@ -326,7 +355,7 @@ connectAgent(avatar, {
 });
 ```
 
-[Studio](https://cx-artlab.github.io/BoopFace/?lang=ja#agent) では AI につないだアバターとチャットでき、「コード › AI に接続」で状態ごとの表情を選び、各形式の接続コードを確認できます。
+[Studio](https://boopface.com/demo/?lang=ja#agent) では AI につないだアバターとチャットでき、「コード › AI に接続」で状態ごとの表情を選び、各形式の接続コードを確認できます。
 
 ## 音声対話表情キット · 0.9 の新機能
 
@@ -424,9 +453,9 @@ Web版の目の表情を、ロボットや開発ボードの画面でも使え�
 | その他のマイコン・C++プログラム | C++ライブラリ。画面ドライバーは自分で接続 |
 
 
-<img src="../assets/readme/hardware-preview.jpg" alt="シミュレーター：円形TFTの目の表情、配置、色、設定の書き出し" width="100%">
+<img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded シミュレーター：円形TFTの目の表情、配置、色、設定の書き出し" width="100%">
 
-**ボードなしでも試せます。** [シミュレーター](https://cx-artlab.github.io/BoopFace/hardware/?lang=ja)は同じC++エンジンをブラウザーで動かし、32種類の画面を再現します。表示の確認やモジュールの比較に使えます。
+**ボードなしでも試せます。** [シミュレーター](https://boopface.com/hardware/?lang=ja)は同じC++エンジンをブラウザーで動かし、32種類の画面を再現します。表示の確認やモジュールの比較に使えます。
 
 **調整して、書き出して、ビルド。** 画面、配置、色、フレームレートを選び、**設定を書き出す**を押します。`eyes_settings.h` をサンプルの `main.cpp` と同じ場所に保存してビルドします。[手順](../embedded/README.md)をご覧ください。画面と書き出すコメントは選んだ言語に切り替わります。
 
@@ -441,7 +470,7 @@ lib_deps = cxlab/BoopFace@^0.2.0
 ```cpp
 #include <BoopFace.h>
 boopface::Eyes eyes;
-uint8_t pixels[4800]; // 240 x 160, 1 bit per pixel
+uint8_t pixels[4800]; // 240 x 160、1ピクセルあたり1ビット
 
 void setup() {
   boopface::EyesConfig config;
@@ -450,14 +479,21 @@ void setup() {
 
 void loop() {
   if (eyes.update(millis())) {
-    // Send eyes.data() to the display driver.
+    // eyes.data() を画面ドライバーに送ります。
   }
 }
 
-// When needed: eyes.play("success", millis());
+// 必要なときに
+// eyes.play("success", millis());
 ```
 
 実験版：全構成をCIでコンパイルしていますが、実機では未確認です。試した場合は[実機レポート](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml)をお寄せください。APIと配線は[組み込み版ガイド](../embedded/README.md)に記載しています。
+
+## BoopFace で作られた作品
+
+BoopFace で作った作品をこの一覧に載せて、もっと多くの人に見てもらいませんか？ 作品の応募はこちらのフォームからどうぞ。 https://github.com/CX-ArtLab/BoopFace/issues/new?template=showcase-submission.yml
+
+[コミュニティの作品を見る](../SHOWCASE.md)
 
 ## コントリビューション
 

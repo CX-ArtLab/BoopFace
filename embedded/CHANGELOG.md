@@ -2,7 +2,7 @@
 
 Changes to the embedded eyes library for robot and dev-board screens. It is versioned and released separately from the Web component (`eyes-v*` tags, not published to npm).
 
-## [0.2.0] - Unreleased
+## [0.2.0] - 2026-11-25
 
 Ships together with the Web avatar 0.9.0.
 

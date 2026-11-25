@@ -1,56 +1,6 @@
-# BoopFace Showcase
+# Built with BoopFace
 
-Examples of how BoopFace can be used in interactive applications.
+Welcome to join this list, and let more people see the cool things you've created. To submit yours, open the submission form: https://github.com/CX-ArtLab/BoopFace/issues/new?template=showcase-submission.yml
 
-## AI Assistant Interfaces
-
-Add a visual personality layer to AI assistants and agent products:
-
-- Chat-style AI assistants
-- Coding assistants
-- Local LLM applications
-- Agent dashboards
-
-Typical feedback states:
-
-- Waiting for a response
-- Processing a task
-- Success completion
-- Failure or system error
-
-## Agent UI Feedback
-
-BoopFace can provide visual feedback for AI workflows without replacing the host application's own status system.
-
-Examples:
-
-- Request started → waiting animation
-- Task completed → success state
-- Connection issue → error state
-- User review required → inspect state
-
-## Virtual Pets and Digital Companions
-
-The component can also be used for character-based interactive experiences:
-
-- Virtual pets
-- Desktop companions
-- Digital mascots
-- Interactive characters
-
-## Web Application Integration
-
-Built as a native Web Component, it can be embedded into different frontend environments:
-
-- Vanilla JavaScript applications
-- React applications
-- Vue applications
-- Custom web interfaces
-
-## Why BoopFace?
-
-- Zero runtime dependencies
-- Native Web Component architecture
-- SVG-based rendering
-- Programmatic state control
-- Lightweight integration for interactive experiences
+| Project | What it does |
+| --- | --- |

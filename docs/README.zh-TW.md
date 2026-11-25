@@ -20,26 +20,53 @@ BoopFace 是一個輕量、富表現力的機器人頭像元件，適用於 AI �
 
 使用 SVG 與原生 JavaScript 構建，是一個原生 Web Component，執行時零依賴，MIT 開源。可以平面顯示，也可以切換成會真正轉動的[立體 3D 頭像](#立體-3d-頭像--09-新增)；另有 188 款[皮膚](#皮膚--07-新功能)可以隨時換上。
 
-<p align="center">
-  <img src="../assets/demo/boopface-demo.gif" alt="BoopFace 互動動畫演示" width="560">
-</p>
+https://github.com/user-attachments/assets/533940e6-38e8-45e3-a276-606e1e7bba51
 
 ## 新支援：[BoopFace Embedded 嵌入式裝置版](#boopface-embedded)
 
 <p align="center">
-  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="BoopFace Embedded 嵌入式裝置版：小巧的 C++ 表情引擎，保留網頁版的全部表情、動作和節奏；現成韌體支援 ESP32、ESP32-S3、STM32 和樹莓派 Pico 上的 28 種開發板與螢幕組合"></a>
+  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="BoopFace Embedded 嵌入式設備版：小巧的 C++11 表情引擎，保留網頁版眼部表情的動作和節奏；現成固件支持 ESP32、ESP32-S3、STM32 和樹莓派 Pico 上的 28 種開發板與屏幕組合"></a>
 </p>
 
-用於 ESP32、STM32、樹莓派 Pico 等開發板的螢幕，也可以編譯進其他 C++ 程式。\
-在桌面小型機器人或各種嵌入式裝置上，顯示與網頁版相同的眼睛表情。\
-提供韌體示例，以及一個支援多種流行開發板和螢幕的線上模擬器，調好後可直接匯出設定用於編譯。
+用於 ESP32、STM32、樹莓派 Pico 等開發板的屏幕，也可以編譯進其他 C++ 程序。在桌面小型機器人或各種嵌入式設備上，顯示與網頁版相同的眼睛表情。提供 28 種開發板與屏幕組合的固件示例，以及一個支持多種流行開發板和屏幕的在線模擬器，調好後可直接導出設置用於編譯。
 
 ## 線上 Demo
 
+<h3 align="center">官方網站</h3>
+
+<p align="center">
+  <a href="https://boopface.com/">boopface.com</a>
+</p>
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+<h3 align="center">BoopFace Web 元件</h3>
+
 0.9 起，演示、皮膚和接入 AI 合併成一個頁面：Studio。舞臺可以切換平面或立體，旁邊能試所有表情和語音套件、換皮膚和顏色、調整行為設定、和接入了 AI 的頭像聊天，並隨時複製當前效果的程式碼。
 
-[開啟 Studio](https://cx-artlab.github.io/BoopFace/?lang=zh-TW) · [挑選皮膚](https://cx-artlab.github.io/BoopFace/?lang=zh-TW#skins) · [試試接入 AI](https://cx-artlab.github.io/BoopFace/?lang=zh-TW#agent)\
-[開啟嵌入式裝置模擬器](https://cx-artlab.github.io/BoopFace/hardware/?lang=zh-TW)（可預覽 32 種常用嵌入式裝置螢幕）
+<p align="center">
+  <a href="https://boopface.com/demo/?lang=zh-TW">開啟 Studio</a> · <a href="https://boopface.com/demo/?lang=zh-TW#skins">挑選皮膚</a> · <a href="https://boopface.com/demo/?lang=zh-TW#agent">試試接入 AI</a>
+</p>
+
+<p align="center">
+  <img src="../assets/demo/boopface-demo.gif" alt="BoopFace 交互動畫演示" width="560">
+</p>
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+<h3 align="center">BoopFace Embedded 嵌入式設備版</h3>
+
+<p align="center">
+  <a href="https://boopface.com/hardware/?lang=zh-TW">打開嵌入式設備模擬器</a> （可預覽 32 種嵌入式螢幕預設）
+</p>
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
 ## 特點
 
@@ -62,8 +89,8 @@ BoopFace 是一個輕量、富表現力的機器人頭像元件，適用於 AI �
 - 不含皮膚的精簡版，適合對大小特別在意的頁面
 - `connectAgent()`：AI 資料流的事件直接驅動表情（AG-UI、OpenAI、Anthropic、Vercel AI SDK）
 - 語音互動表情套件：聆聽、思考、說話一組三個表情，跟著真實的音量動
-- 內建 TypeScript 型別宣告
-- BoopFace Embedded 嵌入式裝置版：同樣的表情跑在 28 種 ESP32、STM32 和樹莓派 Pico 開發板與螢幕組合上，線上模擬器裡調好後直接匯出到韌體
+- 內置 TypeScript 類型聲明
+- BoopFace Embedded 嵌入式設備版：同樣的眼部表情跑在 28 種 ESP32、ESP32-S3、STM32 和樹莓派 Pico 開發板與屏幕組合上，在線模擬器裏調好後直接導出到固件
 
 ## 安裝
 
@@ -260,7 +287,7 @@ avatar.setPetting(false); // 關閉撫摸
 
 所有皮膚仍然是純 SVG 繪製，沒有使用圖片、Canvas 或 WebGL。它非常輕：全部皮膚加起來，網路傳輸只有約 70 KB（不壓縮約 290 KB），而且大部分程式碼只在網頁用到皮膚時才會載入。作為對比，頭像本身（精簡版，不含皮膚）大約 92 KB。
 
-<img src="../assets/readme/skin-gallery.jpg" alt="皮膚美術館：精選皮膚、分類篩選和搜尋" width="100%">
+<img src="../assets/readme/boopface-skin-gallery.jpg" alt="BoopFace 皮膚美術館：精選皮膚、分類篩選和搜索" width="100%">
 
 ```html
 <boop-face skin="301"></boop-face>
@@ -271,7 +298,7 @@ avatar.setSkin(102);  // 也可以寫 '102'
 avatar.setSkin(null); // 回到純色
 ```
 
-所有皮膚及編號可以在 [Studio 的皮膚頁](https://cx-artlab.github.io/BoopFace/?lang=zh-TW#skins)檢視。
+所有皮膚及編號可以在 [Studio 的皮膚頁](https://boopface.com/demo/?lang=zh-TW#skins)檢視。
 
 | 系列 | 編號 | 系列 | 編號 | 系列 | 編號 |
 | --- | --- | --- | --- | --- | --- |
@@ -328,7 +355,7 @@ connectAgent(avatar, {
 });
 ```
 
-在 [Studio](https://cx-artlab.github.io/BoopFace/?lang=zh-TW#agent) 裡可以和接入了 AI 的頭像聊天；「程式碼 › 接入 AI」裡可以給每個狀態換表情，並看到每種格式的接法。
+在 [Studio](https://boopface.com/demo/?lang=zh-TW#agent) 裡可以和接入了 AI 的頭像聊天；「程式碼 › 接入 AI」裡可以給每個狀態換表情，並看到每種格式的接法。
 
 ## 語音互動表情套件 · 0.9 新增
 
@@ -417,7 +444,7 @@ onMounted(() => { agent = connectAgent(avatar.value); });
 
 ## 新支援：BoopFace Embedded 嵌入式裝置版
 
-與網頁版相同的表情，現在也可以用在機器人和開發板的螢幕上。一個小巧的 C++ 庫移植了網頁版的全部表情，動作和節奏都與網頁版一致。0.2 版跟上網頁版 0.9：眼睛同樣是圓角，新增鞠躬、觀察、思考、眨眼、得意、眩暈、彈跳等 13 個表情，以及語音套件的聆聽和說話，共 33 個。韌體示例支援 28 種開發板和螢幕組合，覆蓋 ESP32、ESP32-S3、STM32 和樹莓派 Pico：圓形和方形 TFT、長條屏、AMOLED 和單色 OLED，也可以自定義螢幕尺寸。
+與網頁版相同的表情，現在也可以用在機器人和開發板的屏幕上。小巧的 C++11 引擎保留了網頁版眼部表情的動作和節奏。0.2 版跟上網頁版 0.9：眼睛同樣是圓角，新增鞠躬、觀察、思考、眨眼、得意、眩暈、彈跳等 13 個表情，以及語音套件的聆聽和說話，共 33 個。固件示例支持 28 種開發板和屏幕組合，覆蓋 ESP32、ESP32-S3、STM32 和樹莓派 Pico：圓形和方形 TFT、長條屏、AMOLED 和單色 OLED，也可以自定義屏幕尺寸。
 
 | 你的裝置 | 用哪個 |
 | --- | --- |
@@ -425,11 +452,11 @@ onMounted(() => { agent = connectAgent(avatar.value); });
 | ESP32、STM32、樹莓派 Pico 等開發板 | 嵌入式裝置版，有韌體示例 |
 | 其他微控制器或 C++ 程式 | 嵌入式裝置版的 C++ 庫，自己接螢幕驅動 |
 
-<img src="../assets/readme/hardware-preview.jpg" alt="嵌入式裝置模擬器：圓形 TFT 模組顯示眼睛，旁邊是佈局、顏色和匯出設定" width="100%">
+<img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded 嵌入式設備模擬器：圓形 TFT 模組顯示眼睛，旁邊是佈局、顏色和導出設置" width="100%">
 
-**沒有板子也能先預覽效果。** [線上模擬器](https://cx-artlab.github.io/BoopFace/hardware/?lang=zh-TW)在瀏覽器裡就能執行同一套 C++ 引擎，模擬 32 種螢幕，你可以大致看到它在真實模組上的樣子，選購螢幕時也能拿來參考。
+**沒有板子也能先預覽效果。** [在線模擬器](https://boopface.com/hardware/?lang=zh-TW)在瀏覽器裏就能運行同一套 C++ 引擎，模擬 32 種屏幕，你可以大致看到它在真實模組上的樣子，選購屏幕時也能拿來參考。
 
-**調好，就能直接用。** 選好你的螢幕，調整佈局、顏色和幀率，點「匯出設定」。把匯出的 `eyes_settings.h` 放進示例韌體再編譯，板子上顯示的就是模擬器裡的樣子。詳見[操作步驟](../embedded/README.zh-CN.md#在模拟器里调好直接用到板子上)。
+**調整、匯出、編譯。** 選好你的屏幕，調整佈局、顏色和幀率，點「導出設置」。把匯出的 `eyes_settings.h` 放在示例固件的 `main.cpp` 旁邊，使用這些設定編譯韌體。詳見[操作步驟](../embedded/README.zh-CN.md#在模拟器里调好直接用到板子上)。模擬器介面和匯出的註解會跟隨所選語言。
 
 **安裝。** 從[嵌入式釋出頁](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0)下載 `BoopFace-Embedded-0.2.0.zip`，在 Arduino IDE 裡選「專案 → 匯入庫 → 新增 .ZIP 庫」安裝。Arduino 庫管理器索引仍在更新，目前請使用 ZIP 或原始碼。[PlatformIO](https://registry.platformio.org/libraries/cxlab/BoopFace) 使用者可在 `platformio.ini` 的環境配置中新增：
 
@@ -459,6 +486,12 @@ void loop() {
 ```
 
 實驗版：所有配置都在 CI 中編譯透過，但還沒有在真實硬體上驗證。如果你在實物上執行過，歡迎提交[實機驗證報告](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml)。完整說明見[嵌入式裝置版說明](../embedded/README.zh-CN.md)。
+
+## BoopFace 作品展示
+
+歡迎把你的作品加入這份名單，讓更多人看見你用 BoopFace 做出的精彩作品。投稿請開啟表單： https://github.com/CX-ArtLab/BoopFace/issues/new?template=showcase-submission.yml
+
+[查看社群作品名單](../SHOWCASE.md)
 
 ## 參與貢獻
 
