@@ -16,6 +16,13 @@ test('lid corners are rounded by default and sharp on request', async ({ page })
   expect(await page.evaluate(() => b.shadowRoot.getElementById('leftBase').getAttribute('clip-path'))).toBeNull();
 });
 
+test('see-through works on skins whose eyes keep their colour, a colour does not', async ({ page }) => {
+  await page0(page, '<boop-face id="a" skin="101" eye-color="transparent"></boop-face><boop-face id="b" skin="101" eye-color="#2bd67b"></boop-face>');
+  await page.waitForFunction(() => window.a?.shadowRoot?.getElementById('headMotion') && window.b?.shadowRoot?.getElementById('headMotion'));
+  await expect.poll(() => page.evaluate(() => a.shadowRoot.getElementById('headMotion').getAttribute('mask'))).toBe('url(#eye-through)');
+  await expect.poll(() => page.evaluate(() => b._eyeColorApplied)).toBe('');
+});
+
 test('eye-color paints the eyes, and transparent cuts them out of the head', async ({ page }) => {
   await page0(page, '<boop-face id="a" eye-color="#2bd67b"></boop-face><boop-face id="b" eye-color="transparent"></boop-face>');
   await expect.poll(() => page.evaluate(() => getComputedStyle(a.shadowRoot.getElementById('leftBase')).fill)).toBe('rgb(43, 214, 123)');

@@ -90,7 +90,8 @@ export interface BoopFaceSkinInfo {
   readonly base: readonly string[];
   /**
    * Whether `eye-color` can repaint this skin's eyes. Skins whose eyes are part
-   * of their design (raised, glassy or patterned) keep them as they are.
+   * of their design (raised, glassy or patterned) keep their colour; on every
+   * skin `eye-color="transparent"` still makes the eyes see-through.
    */
   readonly eyeColor: boolean;
 }
@@ -215,8 +216,9 @@ export declare class BoopFace extends HTMLElement {
   setView(view?: '2d' | '3d'): this;
   readonly view: '2d' | '3d';
   /**
-   * Eye colour, over a skin's own too. `'transparent'` cuts the eyes out of the
-   * head so whatever is behind the avatar shows in them. `null` restores it.
+   * Eye colour, over a skin's own too (not on skins whose `eyeColor` is
+   * false). `'transparent'` cuts the eyes out of the head on every skin, so
+   * whatever is behind the avatar shows in them. `null` restores it.
    * Same as the `eye-color` attribute.
    */
   setEyeColor(color?: string | null): this;

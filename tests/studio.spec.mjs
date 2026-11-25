@@ -132,13 +132,19 @@ test('old addresses land in the Studio', async ({ page }) => {
   await expect(page.locator('#chatSceneView')).toBeVisible();
 });
 
-test('the eye colour row paints the real eyes, turns see-through off, and is greyed out on skins that keep their eyes', async ({ page }) => {
+test('the eye colour row paints the real eyes, turns see-through off, and is greyed out on skins that keep their eyes (see-through still works there)', async ({ page }) => {
   await page.goto('/demo/?lang=zh-CN');
   await ready(page);
   const face = page.locator('#stageFace');
   const row = page.locator('#eyeColorRow');
-  // The default skin (101) keeps its own eyes.
+  // The default skin (101) keeps its own eye colour, but its eyes can still
+  // show the background.
   await expect(row).toHaveClass(/is-locked/);
+  await expect(page.locator('#eyeThroughToggle')).toBeEnabled();
+  await page.locator('label:has(#eyeThroughToggle)').click();
+  await expect.poll(() => face.evaluate(f => f.getAttribute('eye-color'))).toBe('transparent');
+  await expect.poll(() => face.evaluate(f => f.shadowRoot.getElementById('headMotion')?.getAttribute('mask'))).toBe('url(#eye-through)');
+  await page.locator('label:has(#eyeThroughToggle)').click();
   await page.locator('[data-surface-btn="flat"]').click();
   await expect(row).not.toHaveClass(/is-locked/);
   await expect(page.locator('#eyeThroughToggle')).toBeChecked();
@@ -229,11 +235,13 @@ test('Wake is only pressable while asleep and never sleeps first, and see-throug
   await page.locator('label:has(#eyeThroughToggle)').click();
   await expect.poll(() => face.evaluate(f => f.getAttribute('skin'))).toBe('901');
   await expect.poll(() => face.evaluate(f => f.getAttribute('eye-color'))).not.toBeNull();
-  // A skin whose eyes are part of its design: the switch is disabled.
+  // A skin whose eyes are part of its design: see-through works there too.
   await page.locator('[data-inspector-tab="skins"]').click();
   await page.locator('button.skin-card[data-skin="101"]').click();
   await page.locator('[data-inspector-tab="look"]').click();
-  await expect(page.locator('#eyeThroughToggle')).toBeDisabled();
+  await expect(page.locator('#eyeThroughToggle')).toBeEnabled();
+  await expect(page.locator('#eyeThroughToggle')).toBeChecked();
+  await expect.poll(() => face.evaluate(f => f.getAttribute('eye-color'))).toBe('transparent');
 });
 
 test('events sit in a strip under the code; opened they take the whole panel, and close back', async ({ page }) => {

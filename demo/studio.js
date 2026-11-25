@@ -352,14 +352,15 @@ function skinTakesEyeColor(id = state.skinId) {
 // The see-through switch belongs to the current look: plain or skin.
 function throughOn() { return state.surface === 'skin' ? state.skinEyeThrough : state.eyeThrough; }
 function setThrough(on) { if (state.surface === 'skin') state.skinEyeThrough = on; else state.eyeThrough = on; }
+// See-through works on every skin; a colour only on skins with plain eyes.
 function skinEyeColor(isStage = false) {
-  if (!skinTakesEyeColor()) return null;
   if (state.skinEyeThrough) return 'transparent';
+  if (!skinTakesEyeColor()) return null;
   return state.eyeColor;
 }
 // The eye colour the avatar really gets, for the code panel (null = none).
 function appliedEyeColor() {
-  if (state.surface === 'skin') return skinTakesEyeColor() ? (state.skinEyeThrough ? 'transparent' : state.eyeColor) : null;
+  if (state.surface === 'skin') return state.skinEyeThrough ? 'transparent' : skinTakesEyeColor() ? state.eyeColor : null;
   return state.eyeThrough ? 'transparent' : state.eyeColor;
 }
 
@@ -529,10 +530,7 @@ function updateUI() {
   $('customHeadDot').style.setProperty('--cur-color', state.flatHead);
   syncEyeColorRow(isSkin);
   $('eyeThroughToggle').checked = throughOn();
-  // A skin whose eyes are part of its design cannot be seen through either.
-  const throughLocked = isSkin && !skinTakesEyeColor();
-  $('eyeThroughToggle').disabled = throughLocked;
-  $('eyeThroughToggle').closest('label').classList.toggle('is-locked', throughLocked);
+  // See-through works on every skin, textured eyes included.
   syncColorDotSelections();
   syncPaletteSelections();
   syncSavePaletteBtn();
@@ -1497,7 +1495,7 @@ function syncEyeColorRow(isSkin) {
   const dim = !locked && throughOn();
   row.classList.toggle('is-locked', locked);
   row.classList.toggle('is-dim', dim);
-  row.title = locked ? '这款皮肤的眼睛有自己的质感，不能改色' : dim ? '眼睛穿透开启中，选一个颜色会关闭穿透' : '';
+  row.title = locked ? '这款皮肤的眼睛有自己的质感，不能改色' : dim ? '眼睛透出背景开启中，选一个颜色会关闭它' : '';
   row.querySelectorAll('button').forEach(btn => { btn.disabled = locked; });
   const dot = $('customEyeDot');
   const shown = locked || dim ? null : state.eyeColor;

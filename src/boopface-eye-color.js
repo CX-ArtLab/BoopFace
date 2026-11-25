@@ -31,10 +31,12 @@ function parts(instance) {
   return instance._eyeColorParts;
 }
 
-// What is actually applied: nothing on a skin whose eyes are part of its design.
+const THROUGH = /^(transparent|none|through)$/i;
+// What is actually applied: a colour is skipped on a skin whose eyes are part
+// of its design (their texture is the point); see-through works on every skin.
 function wanted(instance) {
   const raw = String(instance.getAttribute('eye-color') || '').trim();
-  return raw && instance._skinKeepsEyes?.() ? '' : raw;
+  return raw && !THROUGH.test(raw) && instance._skinKeepsEyes?.() ? '' : raw;
 }
 
 function apply(instance) {
@@ -42,9 +44,9 @@ function apply(instance) {
   const asked = String(instance.getAttribute('eye-color') || '').trim(), raw = wanted(instance);
   if (asked && !raw && !instance._eyeColorWarned) {
     instance._eyeColorWarned = true;
-    console.warn(`boopface: skin ${instance.getSkin?.()} keeps its own eyes; eye-color is ignored while it is on.`);
+    console.warn(`boopface: skin ${instance.getSkin?.()} keeps its own eye colour; eye-color is ignored while it is on ("transparent" still works).`);
   }
-  const through = /^(transparent|none|through)$/i.test(raw);
+  const through = THROUGH.test(raw);
   if (through) {
     p.head.setAttribute('mask', 'url(#eye-through)');
     // The lids are part of each eye group, so they would be cut out too: they

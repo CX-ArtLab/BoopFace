@@ -24,7 +24,8 @@ export const SKIN_SERIES = [
 ];
 
 // "eyeColor": false marks a skin whose eyes are part of its design (raised,
-// glassy or patterned): eye-color leaves them as they are. Every other skin
+// glassy or patterned): a colour from eye-color leaves them as they are (see-
+// through, eye-color="transparent", works on every skin). Every other skin
 // has plain eyes in one colour that eye-color may repaint.
 
 // Numbers that were once published and must not be used again.
