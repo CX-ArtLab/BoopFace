@@ -871,7 +871,10 @@ ${pairStyles}
       else stage.style.transform = '';
       // The official outline bulge, and the highlights nudged along with it.
       const fx = brain?._gestureFx, jj = brain?._dragJelly;
-      if (fx?.kind === 'antenna-drag') bend(clamp(fx.hx, -25, 25), clamp(fx.hy, -25, 25), fx.home.x, clamp(fx.home.y, 20, 220));
+      // The antenna tug bends the outline as far as a drag does: up to 15,
+      // stiffening into it (as the flat drawing does).
+      const stiff = p => { const m = Math.min(Math.abs(p), 18.75); return Math.sign(p) * (m - m ** 5 / (5 * 18.75 ** 4)); };
+      if (fx?.kind === 'antenna-drag') bend(stiff(fx.hx), stiff(fx.hy), fx.home.x, clamp(fx.home.y, 20, 220));
       else if (jj && (jj.active || jj.returning)) bend(jj.pullX, jj.pullY, jj.hotX, jj.hotY);
       else bend(0, 0, 120, 120);
       drawWall(Y, P, m || [1, 0, 0, 1, 0, 0]);

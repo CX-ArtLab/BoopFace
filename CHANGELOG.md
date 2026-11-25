@@ -28,7 +28,7 @@ This release brings the 3D head, a new demo, and everything planned for 0.8.1 (C
 ### Changed
 
 - Tugging the antenna now leaves the avatar dizzy (it used to turn angry).
-- Dragging the head pulls it up to 20 units instead of 25, stiffening as it nears the limit.
+- Dragging the head (or tugging the antenna) pulls the outline up to 15 units instead of 25, stiffening as it nears the limit; the same in 3D.
 - The typing cursor is a little thicker and blinks at a text caret's pace (530 ms on, 530 ms off).
 
 ### Fixed

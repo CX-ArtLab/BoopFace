@@ -14,8 +14,9 @@ const gazeTarget=(box,event)=>{
 };
 const SQUEEZE_HOLD_SECONDS=.14;
 
-// The head's pull limit, as for a drag: up to 20, stiffening into it.
-const stiffPull=p=>{const m=Math.min(Math.abs(p),25);return Math.sign(p)*(m-m**5/(5*25**4));};
+// The head's pull limit, as for a drag: up to 15, stiffening into it.
+const PULL_REACH=18.75;
+const stiffPull=p=>{const m=Math.min(Math.abs(p),PULL_REACH);return Math.sign(p)*(m-m**5/(5*PULL_REACH**4));};
 
 function restore(face) {
   face._headMotion.style.transform='';face._headMotion.removeAttribute('transform');

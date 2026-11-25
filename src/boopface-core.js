@@ -66,9 +66,11 @@ const BoopFace = (() => {
   // Per-frame writes go through this: an attribute set to the value it already
   // has still makes the browser redo style, layout and paint for that element.
   const setA = (el, name, value) => { if (el.getAttribute(name) !== value) el.setAttribute(name, value); };
-  // How far a drag pulls the head: up to 20 (not 25), stiffening on the way so
-  // it eases into the limit: f(m) = m - m^5 / (5 * 25^4), which is 20 at 25.
-  const stiffPull = p => { const m = Math.min(Math.abs(p), 25); return Math.sign(p) * (m - m ** 5 / (5 * 25 ** 4)); };
+  // How far a drag pulls the head: up to 15, stiffening on the way so it eases
+  // into the limit: f(m) = m - m^5 / (5 * L^4), which reaches 4L/5 = 15 at
+  // L = 18.75 and stays there.
+  const PULL_REACH = 18.75;
+  const stiffPull = p => { const m = Math.min(Math.abs(p), PULL_REACH); return Math.sign(p) * (m - m ** 5 / (5 * PULL_REACH ** 4)); };
   const lerp = (a, b, t) => a + (b - a) * t;
   const clonePose = p => ({...p});
   const DEFAULT_SIZE = 112;
