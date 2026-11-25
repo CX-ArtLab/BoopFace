@@ -14,7 +14,7 @@
 
 BoopFace는 AI 봇, 에이전트, 인터랙티브 앱을 위한 가볍고 표현력 있는 로봇 아바타 컴포넌트입니다. 생각 중, 대기 중, 완료, 오류까지 에이전트의 모든 상태를 표정으로 보여 줄 수 있습니다.
 
-AI 어시스턴트와 에이전트의 얼굴이자 상태 피드백으로 쓸 수 있습니다. ChatGPT, Claude, Gemini, Grok, DeepSeek 같은 채팅 어시스턴트, Codex, Claude Code, Cursor, Gemini CLI, OpenCode 같은 코딩 에이전트, 그리고 Grok Bot, ChatGPT dots, Meta Muse, OpenClaw, Hermes Agent 같은 상주형 에이전트에 어울립니다.
+AI 어시스턴트와 에이전트의 얼굴이자 상태 피드백으로 쓸 수 있습니다. ChatGPT, Claude, Gemini, Grok, DeepSeek 같은 채팅 어시스턴트, Codex, Claude Code, Cursor, Gemini CLI, OpenCode 같은 코딩 에이전트, 그리고 Grok Bot, ChatGPT dots, Meta Muse, OpenClaw, Hermes Agent 같은 개인 에이전트에 어울립니다.
 
 데스크톱 컴패니언, 가상 펫, 디지털 마스코트, 챗봇 아바타 같은 인터랙티브 캐릭터에도, AG-UI 스타일 에이전트 인터페이스의 시각 피드백 레이어로도 쓸 수 있습니다.
 

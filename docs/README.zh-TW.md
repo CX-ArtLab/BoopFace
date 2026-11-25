@@ -14,7 +14,7 @@
 
 BoopFace 是一個輕量、富表現力的機器人頭像元件，適用於 AI 機器人、智慧體與互動式應用。思考、等待、完成、出錯，智慧體的每個狀態都能用一個表情說出來。
 
-適合作為 AI 助手和智慧體的形象與狀態反饋：類似 ChatGPT、Claude、Gemini、Grok、DeepSeek 的對話助手，類似 Codex、Claude Code、Cursor、Gemini CLI、OpenCode 的程式設計智慧體，以及類似 Grok Bot、ChatGPT dots、Meta Muse、OpenClaw、Hermes Agent 的常駐智慧體。
+適合作為 AI 助手和智慧體的形象與狀態反饋：類似 ChatGPT、Claude、Gemini、Grok、DeepSeek 的對話助手，類似 Codex、Claude Code、Cursor、Gemini CLI、OpenCode 的程式設計智慧體，以及類似 Grok Bot、ChatGPT dots、Meta Muse、OpenClaw、Hermes Agent 的個人智慧體。
 
 也可用於桌面夥伴、虛擬寵物、數字吉祥物、聊天機器人頭像等互動角色，或作為 AG-UI 風格 Agent 介面的視覺反饋層。
 

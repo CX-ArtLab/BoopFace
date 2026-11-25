@@ -14,7 +14,7 @@
 
 BoopFace est un composant d’avatar robot léger et expressif pour les bots IA, les agents et les applications interactives. Réflexion, attente, réussite ou erreur : chaque état d’un agent peut s’afficher sous forme d’expression.
 
-Utilisez-le comme visage et retour d’état pour les assistants et agents IA : assistants de chat comme ChatGPT, Claude, Gemini, Grok et DeepSeek, agents de code comme Codex, Claude Code, Cursor, Gemini CLI et OpenCode, et agents toujours actifs comme Grok Bot, ChatGPT dots, Meta Muse, OpenClaw et Hermes Agent.
+Utilisez-le comme visage et retour d’état pour les assistants et agents IA : assistants de chat comme ChatGPT, Claude, Gemini, Grok et DeepSeek, agents de code comme Codex, Claude Code, Cursor, Gemini CLI et OpenCode, et agents personnels comme Grok Bot, ChatGPT dots, Meta Muse, OpenClaw et Hermes Agent.
 
 Il convient aussi aux compagnons de bureau, animaux virtuels, mascottes numériques, avatars de chatbot et autres personnages interactifs, ou comme couche de retour visuel pour les interfaces d’agents de style AG-UI.
 
