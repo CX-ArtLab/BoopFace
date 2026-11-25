@@ -719,6 +719,16 @@ async function exportAvatarImage(fmt) {
   const px = resolvedExportSize();
   const clone = svgNode.cloneNode(true);
   clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  // Frame the avatar as it is drawn now (head and antenna; the antenna ball
+  // reaches above the 240 box): centred, 80% of the picture's height.
+  const sr = svgNode.getBoundingClientRect(), k = sr.width / 240 || 1;
+  const parts = ['head', 'antennaDot'].map(id => stageFace.shadowRoot.getElementById(id)?.getBoundingClientRect()).filter(q => q && q.width > 0);
+  const [x0, y0, x1, y1] = parts.length
+    ? [Math.min(...parts.map(q => q.left)), Math.min(...parts.map(q => q.top)), Math.max(...parts.map(q => q.right)), Math.max(...parts.map(q => q.bottom))].map((v, i) => (v - (i % 2 ? sr.top : sr.left)) / k)
+    : [25, -3, 215, 205];
+  const side = Math.max(y1 - y0, x1 - x0) / 0.8, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+  clone.setAttribute('viewBox', `${(cx - side / 2).toFixed(2)} ${(cy - side / 2).toFixed(2)} ${side.toFixed(2)} ${side.toFixed(2)}`);
+  clone.setAttribute('overflow', 'visible');
   clone.setAttribute('width', String(px));
   clone.setAttribute('height', String(px));
   for (const prop of stageFace.style) {
