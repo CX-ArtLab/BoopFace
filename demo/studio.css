@@ -623,11 +623,14 @@ code, kbd {
   padding: 0 7px 8px;
   display: grid;
   gap: 2px;
+  /* Like Grokbot's list: it still scrolls with the wheel or a finger when it
+     runs long, but shows no scrollbar, and never sideways. */
+  overflow-x: hidden;
   overflow-y: auto;
   min-height: 0;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(128, 128, 128, 0.25) transparent;
+  scrollbar-width: none;
 }
+.talk-bots::-webkit-scrollbar { display: none; }
 .talk-bot {
   display: flex;
   align-items: center;
@@ -686,7 +689,7 @@ code, kbd {
 .talk.is-rail .talk-bot-text {
   display: none;
 }
-.talk.is-rail .talk-hero { width: auto; height: auto; padding: 6px; }
+.talk.is-rail .talk-hero { width: var(--talk-rail-tile, 52px); height: auto; padding: 4px 0; }
 .talk.is-rail .talk-divider { width: 70%; margin: 2px auto; }
 
 .talk-main {
