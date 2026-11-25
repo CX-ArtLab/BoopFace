@@ -2683,6 +2683,7 @@ function layoutStageHints() {
   const headLeft = headRect.left - box.left;
   const headRight = headRect.right - box.left;
   const headCenterY = (headRect.top + headRect.bottom) / 2 - box.top;
+  const headTop = headRect.top - box.top, headW = headRight - headLeft;
 
   const compact = box.width < 500;
   const gap = compact
@@ -2700,18 +2701,13 @@ function layoutStageHints() {
   hintAntennaLabel.style.left = `${Math.round(x1)}px`;
   hintAntennaLabel.style.top = `${Math.round(y1)}px`;
 
-  const start1 = { x: x1 - 7, y: y1 + h1 * 0.45 };
-  const aim1 = { x: dotRight + 14, y: dotTop - 2 };
-  const end1 = start1.x - aim1.x > 92
-    ? {
-        x: start1.x + ((dotRight + 8) - start1.x) * 0.78,
-        y: start1.y + ((dotCenterY - 6) - start1.y) * 0.78,
-      }
-    : { x: Math.min(start1.x - 18, aim1.x), y: aim1.y };
-  const dx1 = start1.x - end1.x;
-  const arch1 = compact ? 18 : 26;
-  const c1_1 = { x: start1.x - dx1 * 0.18, y: start1.y - arch1 };
-  const c1_2 = { x: end1.x + dx1 * 0.22, y: Math.min(start1.y, end1.y) - arch1 * 0.92 };
+  // Antenna: from above the label an arch that rises, turns over and comes
+  // down onto the ball from the upper right.
+  const start1 = { x: x1 + Math.min(w1 * 0.45, 46), y: y1 - 8 };
+  const end1 = { x: dotRight + 6, y: dotTop - 8 };
+  const lift1 = compact ? 26 : 40;
+  const c1_1 = { x: start1.x - (start1.x - end1.x) * 0.15, y: Math.min(start1.y, end1.y) - lift1 };
+  const c1_2 = { x: end1.x + (start1.x - end1.x) * 0.35, y: Math.min(start1.y, end1.y) - lift1 * 0.95 };
   hintAntennaShaft.setAttribute('d', `M${start1.x.toFixed(1)} ${start1.y.toFixed(1)}C${c1_1.x.toFixed(1)} ${c1_1.y.toFixed(1)} ${c1_2.x.toFixed(1)} ${c1_2.y.toFixed(1)} ${end1.x.toFixed(1)} ${end1.y.toFixed(1)}`);
   hintAntennaHead.setAttribute('d', buildArrowHead(end1, c1_2));
 
@@ -2723,14 +2719,13 @@ function layoutStageHints() {
   hintBodyLabel.style.left = `${Math.round(x2)}px`;
   hintBodyLabel.style.top = `${Math.round(y2)}px`;
 
-  const start2 = { x: x2 + w2 + 7, y: y2 + h2 * 0.45 };
-  let end2 = { x: headLeft - 14, y: headCenterY + 6 };
-  if (end2.x - start2.x < 18) {
-    end2.x = Math.min(headLeft - 8, start2.x + 22);
-  }
+  // Drag: from under the label a soft S that rises to the head's lower left.
+  const headBottom = headRect.bottom - box.top;
+  const start2 = { x: x2 + w2 * 0.5, y: Math.min(box.height - 10, y2 + h2 + 12) };
+  const end2 = { x: headLeft - 8, y: headTop + (headBottom - headTop) * 0.76 };
   const span2 = Math.max(18, end2.x - start2.x);
-  const c2_1 = { x: start2.x + span2 * 0.3, y: start2.y + (compact ? 12 : 18) };
-  const c2_2 = { x: end2.x - span2 * 0.25, y: end2.y + (compact ? 11 : 16) };
+  const c2_1 = { x: start2.x + span2 * 0.4, y: start2.y + (compact ? 6 : 10) };
+  const c2_2 = { x: end2.x - span2 * 0.35, y: end2.y + (compact ? 10 : 16) };
   hintBodyShaft.setAttribute('d', `M${start2.x.toFixed(1)} ${start2.y.toFixed(1)}C${c2_1.x.toFixed(1)} ${c2_1.y.toFixed(1)} ${c2_2.x.toFixed(1)} ${c2_2.y.toFixed(1)} ${end2.x.toFixed(1)} ${end2.y.toFixed(1)}`);
   hintBodyHead.setAttribute('d', buildArrowHead(end2, c2_2));
 
@@ -2738,39 +2733,23 @@ function layoutStageHints() {
   // the upper left of the head.
   const w3 = hintPetLabel.offsetWidth || 72;
   const h3 = hintPetLabel.offsetHeight || 20;
-  const headTop = headRect.top - box.top, headW = headRight - headLeft;
   const x3 = Math.max(8, headLeft - bodyGap - w3);
   const y3 = Math.max(8, Math.min(y2 - h3 - 28, headTop - h3 * 0.2));
   hintPetLabel.style.left = `${Math.round(x3)}px`;
   hintPetLabel.style.top = `${Math.round(y3)}px`;
-  const start3 = { x: x3 + w3 + 7, y: y3 + h3 * 0.5 };
-  const end3 = { x: headLeft + headW * 0.2, y: headTop + (compact ? 6 : 10) };
+  // Petting: a short, gentle stroke from the label to the head's upper left.
+  const start3 = { x: x3 + w3 + 8, y: y3 + h3 * 0.6 };
+  const end3 = { x: headLeft - 6, y: headTop + headW * 0.14 };
   const span3 = Math.max(18, end3.x - start3.x);
-  const c3_1 = { x: start3.x + span3 * 0.35, y: start3.y - (compact ? 12 : 18) };
-  const c3_2 = { x: end3.x - span3 * 0.2, y: end3.y - (compact ? 14 : 22) };
+  const c3_1 = { x: start3.x + span3 * 0.4, y: start3.y + (compact ? 5 : 8) };
+  const c3_2 = { x: end3.x - span3 * 0.35, y: end3.y - (compact ? 4 : 6) };
   hintPetShaft.setAttribute('d', `M${start3.x.toFixed(1)} ${start3.y.toFixed(1)}C${c3_1.x.toFixed(1)} ${c3_1.y.toFixed(1)} ${c3_2.x.toFixed(1)} ${c3_2.y.toFixed(1)} ${end3.x.toFixed(1)} ${end3.y.toFixed(1)}`);
   hintPetHead.setAttribute('d', buildArrowHead(end3, c3_2));
 
-  const paths = stageHintsSvg.querySelectorAll('path');
-  const played = stageHintsDrawn && stageHintsSvg.getAnimations({ subtree: true }).every(a => a.playState === 'finished');
-  if (played) {
-    paths.forEach(p => {
-      p.style.strokeDasharray = 'none';
-      p.style.strokeDashoffset = '0';
-    });
-    return;
-  }
+  // No drawing animation: the arrows and their labels simply show.
+  stageHintsSvg.querySelectorAll('path').forEach(p => { p.style.strokeDasharray = 'none'; p.style.strokeDashoffset = '0'; });
   stageHintsDrawn = true;
-  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  paths.forEach(p => {
-    const length = Math.ceil(p.getTotalLength());
-    p.style.strokeDasharray = String(length);
-    p.style.strokeDashoffset = still ? '0' : String(length);
-  });
   stageHints.classList.add('is-ready');
-  stageHints.classList.remove('is-drawing');
-  stageHints.getBoundingClientRect();
-  stageHints.classList.add('is-drawing');
 }
 
 function scheduleStageHintsLayout() {

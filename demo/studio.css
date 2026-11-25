@@ -433,6 +433,9 @@ code, kbd {
 .stage-hints.is-drawing .hint-arrow-pet .hint-head {
   animation: hint-draw 0.22s 1.58s ease-out forwards;
 }
+/* The hints show at once: no fade, no drawing. */
+.stage-hints .stage-hint-label { transition: none !important; }
+.stage-hints path { animation: none !important; }
 @keyframes hint-draw {
   to { stroke-dashoffset: 0; }
 }
