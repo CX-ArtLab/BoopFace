@@ -2751,8 +2751,11 @@ function layoutStageHints() {
   const start3 = { x: x3 + w3 + 8, y: y3 + h3 * 0.6 };
   const end3 = { x: headLeft - 6, y: headTop + headW * 0.14 };
   const span3 = Math.max(18, end3.x - start3.x);
-  const c3_1 = { x: start3.x + span3 * 0.4, y: start3.y + (compact ? 5 : 8) };
-  const c3_2 = { x: end3.x - span3 * 0.35, y: end3.y - (compact ? 4 : 6) };
+  // A clear arc over the top, landing on the forehead from above (no straight
+  // line with a sudden head).
+  const arch3 = compact ? 18 : 26;
+  const c3_1 = { x: start3.x + span3 * 0.3, y: Math.min(start3.y, end3.y) - arch3 };
+  const c3_2 = { x: end3.x - span3 * 0.2, y: Math.min(start3.y, end3.y) - arch3 * 0.8 };
   hintPetShaft.setAttribute('d', `M${start3.x.toFixed(1)} ${start3.y.toFixed(1)}C${c3_1.x.toFixed(1)} ${c3_1.y.toFixed(1)} ${c3_2.x.toFixed(1)} ${c3_2.y.toFixed(1)} ${end3.x.toFixed(1)} ${end3.y.toFixed(1)}`);
   hintPetHead.setAttribute('d', buildArrowHead(end3, c3_2));
 
