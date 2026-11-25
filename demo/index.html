@@ -557,7 +557,10 @@
             <label class="prop-row is-tail switch-row" title="眼睛透出背后的舞台背景（有质感眼睛的皮肤不能用）">
               <span class="prop-lead">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.8-6 10-6 10 6 10 6-3.8 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="2.8"/></svg>
-                <strong>眼睛穿透</strong>
+                <span>
+                  <strong>眼睛穿透</strong>
+                  <small>眼睛变成透明的，能看到头像背后的背景；眼睛有质感的皮肤不能用</small>
+                </span>
               </span>
               <input type="checkbox" id="eyeThroughToggle" checked>
               <span class="switch-track" aria-hidden="true"></span>
@@ -590,11 +593,15 @@
             </button>
             <input type="number" id="roundnessInput" class="roundness-input" min="0" max="100" step="1" value="50" aria-label="头部圆度数值">
           </div>
+          <p class="insp-help">拖动改变头的圆度：0 是方头，100 是圆头；点两边的小头像可以直接切到最方或最圆</p>
           <div class="switch-list has-divider">
             <label class="switch-row" title="控制顶部球形天线显隐">
               <span class="switch-row-lead">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5.5" r="2.5"/><path d="M12 8v5"/><rect x="6" y="13" width="12" height="7" rx="3"/></svg>
-                <strong>显示天线</strong>
+                <span>
+                  <strong>显示天线</strong>
+                  <small>头顶的小球天线；关掉后没有天线，也就不能拉天线了</small>
+                </span>
               </span>
               <input type="checkbox" id="antennaToggle" checked>
               <span class="switch-track" aria-hidden="true"></span>

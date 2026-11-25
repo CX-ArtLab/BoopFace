@@ -2082,9 +2082,13 @@ code, kbd {
   padding: 0 2px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
+/* The see-through row carries a note under its name. */
+.prop-row.is-tail .prop-lead { flex: 1 1 auto; }
+.prop-lead small { display: block; font-size: 11px; color: var(--faint); line-height: 1.35; white-space: normal; }
 .prop-row.is-tail {
-  height: 36px;
-  padding: 6px 2px 0;
+  height: auto;
+  min-height: 36px;
+  padding: 8px 2px 0;
   border-bottom: 0;
 }
 .prop-lead {
