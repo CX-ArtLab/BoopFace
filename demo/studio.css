@@ -271,19 +271,21 @@ code, kbd {
   min-height: 260px;
 }
 .stage-card[data-backdrop="dark"] .stage-canvas {
-  /* The stage itself is lit: brighter in the middle, darker at the edges. */
+  /* The stage itself is lit: brighter in the middle, darker at the edges.
+     The vignette is centred and reaches full strength only past the corners,
+     in eased steps, so no dark band shows inside the picture. */
   background:
-    radial-gradient(closest-side at 50% 45%, transparent 45%, #080808 118%),
+    radial-gradient(farthest-corner at 50% 50%, transparent 30%, color-mix(in srgb, #080808 18%, transparent) 52%, color-mix(in srgb, #080808 45%, transparent) 74%, color-mix(in srgb, #080808 75%, transparent) 92%, #080808 108%),
     linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px) center / 32px 32px,
     linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px) center / 32px 32px,
-    radial-gradient(at 48% 34%, #222222 0%, #141414 48%, #090909 100%);
+    radial-gradient(farthest-corner at 50% 46%, #222222 0%, #181818 30%, #121212 60%, #0b0b0b 100%);
 }
 .stage-card[data-backdrop="light"] .stage-canvas {
   background:
-    radial-gradient(closest-side at 50% 45%, transparent 45%, #b5b8be 124%),
+    radial-gradient(farthest-corner at 50% 50%, transparent 30%, color-mix(in srgb, #b5b8be 18%, transparent) 52%, color-mix(in srgb, #b5b8be 45%, transparent) 74%, color-mix(in srgb, #b5b8be 75%, transparent) 92%, #b5b8be 108%),
     linear-gradient(rgba(0, 0, 0, 0.045) 1px, transparent 1px) center / 32px 32px,
     linear-gradient(90deg, rgba(0, 0, 0, 0.045) 1px, transparent 1px) center / 32px 32px,
-    radial-gradient(circle at 50% 40%, #ffffff 0%, #e1e3e7 52%, #b5b8be 100%);
+    radial-gradient(farthest-corner at 50% 46%, #ffffff 0%, #eef0f3 30%, #dfe1e5 62%, #c9ccd1 100%);
 }
 /* A skin's or a chosen colour gets the same lit stage: a soft light in the
    middle, darker edges and the grid, laid over the colour itself. */
@@ -293,8 +295,8 @@ code, kbd {
   --stage-light: rgba(255, 255, 255, 0.07);
   --stage-grid: rgba(255, 255, 255, 0.04);
   background:
-    radial-gradient(closest-side at 50% 45%, transparent 45%, var(--stage-edge) 118%),
-    radial-gradient(at 48% 34%, var(--stage-light), transparent 62%),
+    radial-gradient(farthest-corner at 50% 50%, transparent 30%, color-mix(in srgb, var(--stage-edge) 18%, transparent) 52%, color-mix(in srgb, var(--stage-edge) 45%, transparent) 74%, color-mix(in srgb, var(--stage-edge) 75%, transparent) 92%, var(--stage-edge) 108%),
+    radial-gradient(farthest-corner at 50% 46%, var(--stage-light), color-mix(in srgb, var(--stage-light) 40%, transparent) 30%, transparent 62%),
     linear-gradient(var(--stage-grid) 1px, transparent 1px) center / 32px 32px,
     linear-gradient(90deg, var(--stage-grid) 1px, transparent 1px) center / 32px 32px,
     var(--stage-bg);
