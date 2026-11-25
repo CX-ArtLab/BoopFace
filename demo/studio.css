@@ -648,6 +648,18 @@ code, kbd {
 .talk[data-look="light"] .talk-bot-preview[data-tone="error"] { color: #dc2626; }
 .talk[data-look="light"] .talk-bot-preview[data-tone="done"] { color: #15803d; }
 
+/* The main bot: the current character, bigger, its name under it, apart. */
+.talk-hero {
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 8px 8px;
+  text-align: center;
+}
+.talk-hero .talk-bot-text { justify-items: center; }
+.talk-hero .talk-bot-preview { display: none; }
+.talk-divider { height: 1px; margin: 6px 10px; background: var(--w-line); }
+
 /* Grokbot-style Icon Rail */
 .talk.is-rail {
   --talk-side-w: var(--talk-rail-w, 74px);
@@ -667,6 +679,8 @@ code, kbd {
 .talk.is-rail .talk-bot-text {
   display: none;
 }
+.talk.is-rail .talk-hero { width: auto; height: auto; padding: 6px; }
+.talk.is-rail .talk-divider { width: 70%; margin: 2px auto; }
 
 .talk-main {
   min-width: 0;
@@ -3068,6 +3082,8 @@ body.has-chat-modal {
   .talk-bots > li { flex: none; }
   .talk-bots .talk-bot { width: auto; height: auto; flex: none; padding: 5px 10px 5px 7px; gap: 7px; justify-content: flex-start; border-radius: 10px; }
   .talk-bots .talk-bot-text { display: grid; }
+  .talk-bots .talk-hero { flex-direction: row; padding: 5px 10px 5px 7px; }
+  .talk-bots .talk-divider { width: 1px; height: auto; margin: 6px 2px; flex: none; }
   .talk-bot-preview { display: none; }
   .skin-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .palette-grid,

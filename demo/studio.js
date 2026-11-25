@@ -548,7 +548,10 @@ function currentChatScale() {
 function applyChatSidebarWidth(explicitPx = null) {
   const talkWin = $('talkWindow');
   const scale = currentChatScale();
-  talkWin.classList.toggle('is-rail', state.chatRail);
+  if (talkWin.classList.contains('is-rail') !== state.chatRail) {
+    talkWin.classList.toggle('is-rail', state.chatRail);
+    botRowEls.forEach(row => { if (row.hero) row.face.setAttribute('size', String(sideFaceSize(true))); });
+  }
   if (state.chatRail) {
     talkWin.style.setProperty('--talk-side-w', `${scale.railW}px`);
     return;
@@ -565,7 +568,7 @@ function syncChatScale() {
   const talkWin = $('talkWindow');
   talkWin.dataset.zoom = zoom;
 
-  botRowEls.forEach(row => row.face.setAttribute('size', String(scale.sideFace)));
+  botRowEls.forEach(row => row.face.setAttribute('size', String(sideFaceSize(row.hero))));
   if (activeTalkFace) {
     const size = state.chatAvatarPos === 'header' ? scale.headerFace : scale.inlineFace;
     activeTalkFace.setAttribute('size', String(size));
@@ -2164,6 +2167,12 @@ function createBotFace(bot, size) {
   return face;
 }
 
+// The main bot is about 1.6 times the others (1.2 in the narrow icon rail).
+function sideFaceSize(hero) {
+  const base = currentChatScale().sideFace;
+  return hero ? Math.round(base * (state.chatRail ? 1.2 : 1.6)) : base;
+}
+
 function buildSidebarBots() {
   const list = $('talkBots');
   list.replaceChildren();
@@ -2173,9 +2182,12 @@ function buildSidebarBots() {
     const li = document.createElement('li');
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'talk-bot';
+    // The current character leads the list as the main bot: bigger, its name
+    // under it, set apart from the other bots by a line.
+    const hero = !!bot.custom;
+    btn.className = hero ? 'talk-bot talk-hero' : 'talk-bot';
     btn.title = bot.name;
-    const face = createBotFace(bot, currentChatScale().sideFace);
+    const face = createBotFace(bot, sideFaceSize(hero));
     const textWrap = document.createElement('span');
     textWrap.className = 'talk-bot-text';
     const name = document.createElement('span');
@@ -2190,9 +2202,10 @@ function buildSidebarBots() {
     btn.addEventListener('click', () => openBot(index));
     li.append(btn);
     list.append(li);
+    if (hero) { li.className = 'talk-hero-item'; const line = document.createElement('li'); line.className = 'talk-divider'; line.setAttribute('aria-hidden', 'true'); list.append(line); }
     paintCustomFace(face, { bot });
     if (bot.custom) studioRowFace = face;
-    botRowEls.push({ btn, face, preview, defaultReply, taskCursor: -1 });
+    botRowEls.push({ btn, face, preview, defaultReply, taskCursor: -1, hero });
   });
 }
 
