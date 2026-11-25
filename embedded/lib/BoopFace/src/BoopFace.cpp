@@ -245,8 +245,10 @@ Eyes::Pose Eyes::poseAt(uint32_t now) const {
       for (int i = 0; i < 2; ++i) { rx[i] = i ? shortR : longR; ry[i] = i ? longR : shortR; }
     }
     angle = fmodf(angle + 180, 360); if (angle < 0) angle += 360; angle -= 180;
-    p = {{80, 45, rx[0], ry[0], angle, -100, 100, 0, 0, -1, -1},
-         {80, 45, rx[1], ry[1], angle, -100, 100, 0, 0, -1, -1}};
+    // Centred on the eyes (y 50), not on the Web head's face (45): a screen
+    // shows only the eyes, so the face's centre would sit visibly high.
+    p = {{80, 50, rx[0], ry[0], angle, -100, 100, 0, 0, -1, -1},
+         {80, 50, rx[1], ry[1], angle, -100, 100, 0, 0, -1, -1}};
   } else if (selected == Action::WaitingWave) {
     // Restore the experimental v0.1 waiting motion verbatim as a NEW variant.
     // Source: e600f7e3b22dd792c3fc7b26994fa6bae39f1e66, poseAt/Waiting.
@@ -256,6 +258,12 @@ Eyes::Pose Eyes::poseAt(uint32_t now) const {
          {114, 50 + sinf(phase + .7f) * 10, 27, 29, 0, -100, 100, 0, 0, -1, -1}};
   } else {
     p = webPose(selected,elapsed);
+    if (selected == Action::ShapeWait) {
+      // The Web shape sits on the face's centre (y 44); here it moves down to
+      // the eyes' centre (y 50) as the two eyes merge into it.
+      const float merged = fmaxf(0, fminf(1, 1 - fabsf(p.left.x - 80) / (80 - 46.03f)));
+      p.left.y += 6 * merged; p.right.y += 6 * merged;
+    }
   }
   // The typing cursor blinks as on the Web avatar 0.9: 530 ms on, 530 ms off.
   if (selected == Action::Input && p.left.corner >= 0 && ((now / 530) % 2))

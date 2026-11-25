@@ -81,7 +81,16 @@ try {
         } else if (shape) {
           // A ready outline (wink capsule, shape-wait circle/square): its box and
           // corner as a rounded rectangle (a superellipse's corner from its diagonal).
-          const n = (shape.match(/-?\d*\.?\d+/g) || []).map(Number), xs = n.filter((_, i) => i % 2 === 0), ys = n.filter((_, i) => i % 2);
+          // The points of the path (absolute commands): an arc's radii, rotation
+          // and flags are not points, H and V carry one coordinate each.
+          const xs = [], ys = []; let px = 0, py = 0;
+          for (const [, cmd, args] of shape.matchAll(/([MLHVCSQTAZ])([^MLHVCSQTAZ]*)/gi)) {
+            const v = (args.match(/-?\d*\.?\d+(?:e-?\d+)?/gi) || []).map(Number), C = cmd.toUpperCase();
+            if (C === 'H') for (const x of v) { px = x; xs.push(px); ys.push(py); }
+            else if (C === 'V') for (const y of v) { py = y; xs.push(px); ys.push(py); }
+            else if (C === 'A') for (let i = 0; i + 6 < v.length; i += 7) { px = v[i + 5]; py = v[i + 6]; xs.push(px); ys.push(py); }
+            else if (C !== 'Z') for (let i = 0; i + 1 < v.length; i += 2) { px = v[i]; py = v[i + 1]; xs.push(px); ys.push(py); }
+          }
           const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
           cx = (x0 + x1) / 2; cy = (y0 + y1) / 2; rx = (x1 - x0) / 2; ry = (y1 - y0) / 2;
           let diag = 0; for (let i = 0; i < xs.length; i++) diag = Math.max(diag, Math.min(Math.abs(xs[i] - cx), Math.abs(ys[i] - cy)));
