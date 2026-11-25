@@ -46,7 +46,7 @@ const PALETTES = [
 
 const OFFICIAL_BOTS = [
   {
-    name: '当前角色', custom: true, skin: null, round: 50,
+    name: 'Boop Bot', custom: true, skin: null, round: 50,
     turns: [
       { ask: '帮我看看现在的样式效果怎么样？', reply: '已经套用你当前调试的外观与动作，去右栏切换外观或皮肤，这里会实时同步。', result: 'success' },
     ],
