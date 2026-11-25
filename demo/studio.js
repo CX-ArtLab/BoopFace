@@ -1,7 +1,7 @@
 import { VERSION } from '../boopface.js';
 import { createRoundnessFeedback } from './roundness-feedback.js';
 import { createVoiceEngine } from './studio-voice.js';
-import { addNames, applyLanguage, initialLanguage, rememberLanguage } from './studio-i18n.js';
+import { addNames, applyLanguage, initialLanguage, rememberLanguage, translateText } from './studio-i18n.js';
 import { plan, pretendStream, agentCode, labelOf } from './studio-agent.js';
 import { connectAgent } from '../boopface.js';
 import {
@@ -2552,6 +2552,8 @@ function updateDevCode() {
     const pkg = state.surface === 'skin' ? `boopface@${VERSION}/boopface.js` : `boopface@${VERSION}/boopface-lite.js`;
     devCode.textContent = `<script type="module" src="https://cdn.jsdelivr.net/npm/${pkg}"></script>\n<boop-face ${attrs}></boop-face>`;
   }
+  // The code itself is not translated; its comments are.
+  devCode.textContent = translateText(devCode.textContent);
 }
 
 document.querySelectorAll('[data-dev-tab]').forEach(tab => {
@@ -2832,6 +2834,7 @@ addNames([...publicSkins.map(skin => [skin.label, skin.english]), ...catalogCate
 function setLanguage(next) {
   const lang = applyLanguage(next);
   renderSkinGrid(); // series headings follow the language
+  updateDevCode(); // comments in the code follow it too
   $('langPopover').querySelectorAll('[data-lang]').forEach(el => el.setAttribute('aria-checked', String(el.dataset.lang === lang)));
 }
 setLanguage(initialLanguage());
