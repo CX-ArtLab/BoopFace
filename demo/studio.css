@@ -2995,6 +2995,8 @@ input:checked + .switch-track::after {
 @media (max-width: 1024px) {
   .app { height: auto; min-height: 100dvh; overflow: visible; }
   .topbar { position: sticky; top: 0; grid-template-columns: auto 1fr auto; padding: 0 12px; }
+  /* The tabs keep their own width, centred in the middle column. */
+  .scene-switch { justify-self: center; }
   .badge-studio { display: none; }
   .workspace {
     flex: 0 0 auto;
@@ -3053,7 +3055,11 @@ body.has-chat-modal {
     padding: 8px 12px;
     gap: 8px;
   }
+  /* Logo and buttons share the first row; the tabs take the second. */
+  .topbar-start { grid-row: 1; grid-column: 1; }
+  .topbar-end { grid-row: 1; grid-column: 2; }
   .scene-switch {
+    grid-row: 2;
     grid-column: 1 / -1;
     justify-self: stretch;
     display: grid;
