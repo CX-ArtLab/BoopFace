@@ -137,8 +137,12 @@ test('the eye colour row paints the real eyes, turns see-through off, and is gre
   await ready(page);
   const face = page.locator('#stageFace');
   const row = page.locator('#eyeColorRow');
-  // The default skin (101) keeps its own eye colour, but its eyes can still
-  // show the background.
+  // Skin 101 keeps its own eye colour, but its eyes can still show the
+  // background (the Studio opens on 705, whose eyes can be painted).
+  await page.locator('[data-inspector-tab="skins"]').click();
+  await page.locator('[data-filter="all"]').click();
+  await page.locator('button.skin-card[data-skin="101"]').click();
+  await page.locator('[data-inspector-tab="look"]').click();
   await expect(row).toHaveClass(/is-locked/);
   await expect(page.locator('#eyeThroughToggle')).toBeEnabled();
   await page.locator('label:has(#eyeThroughToggle)').click();

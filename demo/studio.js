@@ -200,7 +200,7 @@ const state = {
   exportAlpha: true,
   surface: 'skin',
   dimension: '3d',
-  skinId: '101',
+  skinId: '705',
   lightFollow: true,
   groundShadow: true,
   flatBg: DEFAULT_FLAT.bg,
@@ -844,7 +844,7 @@ $('stageResetBtn').addEventListener('click', () => {
   stopVoiceDemo(false);
   setVoiceStage(null, { play: false });
   Object.assign(state, {
-    backdrop: 'dark', size: 168, sizeAuto: true, surface: 'skin', dimension: '3d', skinId: '101',
+    backdrop: 'dark', size: 168, sizeAuto: true, surface: 'skin', dimension: '3d', skinId: '705',
     roundness: 50, antenna: true, pointerFollow: true,
     pressSqueeze: true, antennaDrag: true, autoSleep: '0', wakeOn: 'activity', motion: 'auto',
     flatBg: DEFAULT_FLAT.bg, flatHead: DEFAULT_FLAT.head, eyeThrough: true, eyeColor: null,
