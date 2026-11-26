@@ -25,6 +25,11 @@ test('public artifact contains only approved demo files and component runtime', 
     assert.equal(existsSync(path.join(output, forbidden)), false, forbidden);
   }
 });
+test('the old embedded simulator address forwards to the Embedded Studio on boopface.com', () => {
+  const html = readFileSync(path.join(output, 'hardware/index.html'), 'utf8');
+  assert.match(html, /url=https:\/\/boopface\.com\/hardware\//);
+  assert.match(html, /location\.search/);
+});
 test('the old full-gallery address leads to the Studio skin tab', () => {
   const html = readFileSync(path.join(output, 'materials/index.html'), 'utf8');
   assert.match(html, /url=\.\.\/#skins/);
