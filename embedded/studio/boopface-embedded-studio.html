@@ -1828,8 +1828,9 @@ input:checked + .switch-track::after { transform: translateX(16px); }
   .topbar { padding: 8px 12px; gap: 8px; }
   .brand-wordmark { font-size: 18px; }
   .brand-embedded-svg { height: 13.5px; }
+  /* The link to the Web Studio stays on a phone (it is the way across); the badges make room. */
   .topbar-start .badge-version,
-  .top-link[href*="demo"] { display: none; }
+  .topbar-start .badge-studio { display: none; }
   .toolbar-solo { gap: 6px; }
   .top-btn:not(.top-icon-btn) { padding: 0 9px; }
   .dock-folder-bar { gap: 6px; flex-wrap: wrap; }
@@ -5116,14 +5117,42 @@ class PanelRenderer {
     api = null;
   }
 
-  function copyText(text, targetBtn) {
-    if (navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(text).catch(() => {});
+  // Writes to the clipboard and says whether the browser really accepted it.
+  async function writeClipboard(text) {
+    try {
+      if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(text); return true; }
+    } catch (_) { /* refused: try the older way below */ }
+    try {
+      const field = document.createElement('textarea');
+      field.value = text; field.setAttribute('readonly', '');
+      field.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
+      document.body.append(field); field.select();
+      const ok = document.execCommand('copy');
+      field.remove();
+      return ok;
+    } catch (_) { return false; }
+  }
+
+  // true when the text is really on the clipboard. When it is not, the text in `shownIn` is
+  // selected so it can be copied by hand.
+  async function copyText(text, targetBtn, shownIn) {
+    const ok = await writeClipboard(text);
+    if (!ok) {
+      if (shownIn) {
+        const range = document.createRange();
+        range.selectNodeContents(shownIn);
+        const selection = getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+      return false;
     }
-    if (!targetBtn) return;
-    targetBtn.dataset.copied = 'true';
-    clearTimeout(targetBtn._copyTimer);
-    targetBtn._copyTimer = setTimeout(() => delete targetBtn.dataset.copied, 1300);
+    if (targetBtn) {
+      targetBtn.dataset.copied = 'true';
+      clearTimeout(targetBtn._copyTimer);
+      targetBtn._copyTimer = setTimeout(() => delete targetBtn.dataset.copied, 1300);
+    }
+    return true;
   }
 
   function setCycling(value) {
@@ -6951,12 +6980,13 @@ class PanelRenderer {
       });
 
       // Firmware Tab Actions
-      $('copyCmdBtn').addEventListener('click', () => {
-        copyText($('fwBuildCmd').textContent, $('copyCmdBtn'));
-        const orig = $('copyCmdBtn').textContent;
-        $('copyCmdBtn').textContent = previewText('已复制命令');
+      $('copyCmdBtn').addEventListener('click', async () => {
+        const orig = $('copyCmdBtn').dataset.label || $('copyCmdBtn').textContent;
+        $('copyCmdBtn').dataset.label = orig;
+        const ok = await copyText($('fwBuildCmd').textContent, $('copyCmdBtn'), $('fwBuildCmd'));
+        $('copyCmdBtn').textContent = previewText(ok ? '已复制命令' : '请手动选中复制');
         clearTimeout($('copyCmdBtn')._txtTimer);
-        $('copyCmdBtn')._txtTimer = setTimeout(() => { $('copyCmdBtn').textContent = orig; }, 1200);
+        $('copyCmdBtn')._txtTimer = setTimeout(() => { $('copyCmdBtn').textContent = orig; }, 1600);
       });
       $('export-copy').addEventListener('click', () => copyFirmwareCode($('export-status')));
       $('export-download').addEventListener('click', () => downloadFirmwareFile($('export-status')));
