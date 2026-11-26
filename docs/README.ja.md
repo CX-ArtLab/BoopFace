@@ -294,7 +294,7 @@ AG-UI、OpenAI（Responses、Realtime、Chat Completions）、Anthropic Messages
 connectAgent(avatar, { actions: { replying: 'input', tool: 'inspect' } });
 ```
 
-[Studio](https://boopface.com/demo/?lang=ja#agent) で AI と接続したアバターとチャットし、各形式の接続方法を確認できます。
+[Studio](https://boopface.com/demo/?lang=ja#agent) のチャットはローカルの模擬で、返信に合わせてアバターの表情が変わる様子を見せるためのものです。実際の AI にはつながっていません。実際の接続は上の数行のとおり、AI SDK が返すストリームを `connectAgent()` に渡すだけです。各形式のつなぎ方は「コード › AI と接続」で確認できます。
 
 <p align="center">
   <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">

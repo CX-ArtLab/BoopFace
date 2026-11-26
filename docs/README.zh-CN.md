@@ -293,7 +293,7 @@ for await (const event of agent.track(stream)) {
 connectAgent(avatar, { actions: { replying: 'input', tool: 'inspect' } });
 ```
 
-可以在 [Studio](https://boopface.com/demo/?lang=zh-CN#agent) 里和接入了 AI 的头像聊天，查看各种格式的接法。
+[Studio](https://boopface.com/demo/?lang=zh-CN#agent) 里的聊天是本地模拟的，用来演示头像怎么随回复换表情，没有连接真实 AI。真实接入就是上面那几行：把你的 AI SDK 返回的数据流交给 `connectAgent()`。各种格式的接法见「代码 › 接入 AI」。
 
 <p align="center">
   <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">

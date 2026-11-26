@@ -2657,10 +2657,10 @@ function shareUrl() {
   if (lang) q.set('lang', lang);
   q.set('surface', state.surface);
   if (state.surface === 'skin') q.set('skin', state.skinId);
-  else {
-    q.set('head', hexOf(state.flatHead) || '');
-    q.set('bg', hexOf(state.flatBg) || '');
-  }
+  else q.set('head', hexOf(state.flatHead) || '');
+  // The stage: dark, light, following the skin, or a colour of its own.
+  q.set('backdrop', state.backdrop);
+  if (state.backdrop === 'custom') q.set('bg', hexOf(state.flatBg) || '');
   q.set('view', state.dimension === '3d' ? '3d' : '2d');
   const eye = appliedEyeColor();
   if (eye) q.set('eye', eye === 'transparent' ? 'transparent' : hexOf(eye) || '');
@@ -2904,14 +2904,18 @@ addEventListener('hashchange', openFromHash);
   if (surface === 'flat') {
     state.surface = 'flat';
     if (head) state.flatHead = `#${head}`;
-    if (bg) { state.flatBg = `#${bg}`; state.backdrop = 'custom'; }
   } else if (surface === 'skin') state.surface = 'skin';
+  const backdrop = q.get('backdrop');
+  if (bg) state.flatBg = `#${bg}`;
+  if (['dark', 'light', 'skin', 'custom'].includes(backdrop)) state.backdrop = backdrop === 'custom' && !bg ? 'dark' : backdrop;
+  else if (bg && state.surface === 'flat') state.backdrop = 'custom'; // links made before the stage was part of the link
+  if (state.surface === 'flat' && state.backdrop === 'skin') state.backdrop = 'dark'; // a plain colour has no skin to follow
   if (view === '2d' || view === '3d') state.dimension = view;
   if (round !== null && round !== '' && Number.isFinite(Number(round))) state.roundness = Math.max(0, Math.min(100, Math.round(Number(round))));
   if (eye === 'transparent') { setThrough(true); }
   else if (hexOf(eye)) { state.eyeColor = `#${hexOf(eye)}`; setThrough(false); }
   else if (surface) { setThrough(false); }
-  if (skin || surface || view || round !== null || eye) { renderSkinGrid(); syncRoundnessControl(); syncAllFaces(); }
+  if (skin || surface || view || round !== null || eye || backdrop || bg) { renderSkinGrid(); syncRoundnessControl(); syncAllFaces(); }
   if (action && document.querySelector(`[data-action="${CSS.escape(action)}"]`)) setTimeout(() => document.querySelector(`[data-action="${CSS.escape(action)}"]`)?.click(), 600);
 }
 

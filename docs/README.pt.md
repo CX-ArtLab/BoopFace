@@ -294,7 +294,7 @@ Usar outras expressões:
 connectAgent(avatar, { actions: { replying: 'input', tool: 'inspect' } });
 ```
 
-Converse com um avatar conectado a uma IA no [Studio](https://boopface.com/demo/?lang=pt#agent) e veja como conectar cada formato.
+O chat do [Studio](https://boopface.com/demo/?lang=pt#agent) é uma simulação local que mostra como o avatar muda de expressão quando uma resposta chega; nenhuma IA real está conectada. O uso real são as poucas linhas acima: passe para `connectAgent()` o stream que o seu SDK de IA devolve. Em Código › Conectar IA você vê como conectar cada formato.
 
 <p align="center">
   <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">

@@ -44,4 +44,6 @@ jobs:
       - name: Package the Arduino library and offline simulator
         run: |
           node embedded/tools/package-release.mjs "$RELEASE_TAG"
-          gh release upload "$RELEASE_TAG" BoopFace-Embedded-*.zip embedded/studio/boopface-embedded-studio.html --clobber
+          # The old file name keeps working: it downloads the same current offline simulator.
+          cp embedded/studio/boopface-embedded-studio.html boopface-embedded-preview.html
+          gh release upload "$RELEASE_TAG" BoopFace-Embedded-*.zip embedded/studio/boopface-embedded-studio.html boopface-embedded-preview.html --clobber
