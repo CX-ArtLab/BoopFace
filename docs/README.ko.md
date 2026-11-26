@@ -4,7 +4,7 @@
   <img src="../assets/readme/boopface-header.jpg" alt="BoopFace: AI 봇, 에이전트, 인터랙티브 앱을 위한 가볍고 표현력 있는 로봇 아바타 컴포넌트">
 </p>
 
-**공식 웹사이트: [boopface.com](https://boopface.com/)**
+**공식 사이트: [boopface.com](https://boopface.com/)** · **온라인 데모: [BoopFace Studio](https://boopface.com/demo/?lang=ko)**
 
 [English](https://github.com/CX-ArtLab/boopface/blob/main/README.md) | [简体中文](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.zh-CN.md) | [Español](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.es.md) | [Русский](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.ru.md) | [Français](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.fr.md) | [Português](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.pt.md) | [Deutsch](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.de.md) | [日本語](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.ja.md) | [한국어](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.ko.md) | [繁體中文](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.zh-TW.md)
 
@@ -12,98 +12,89 @@
 
 ![Vanilla JavaScript](https://img.shields.io/badge/Vanilla-JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=000) ![Web Component](https://img.shields.io/badge/Web-Native%20Component-5A67D8?style=flat-square) ![SVG](https://img.shields.io/badge/Rendering-SVG-FFB13B?style=flat-square&logo=svg&logoColor=000) ![Zero Dependencies](https://img.shields.io/badge/Dependencies-0-2EA44F?style=flat-square) ![Embedded](https://img.shields.io/badge/Embedded-ESP32%20%7C%20STM32%20%7C%20Pico-E7352C?style=flat-square&logo=espressif&logoColor=white)
 
-BoopFace는 AI 봇, 에이전트, 인터랙티브 앱을 위한 가볍고 표현력 있는 로봇 아바타 컴포넌트입니다. 생각 중, 대기 중, 완료, 오류까지 에이전트의 모든 상태를 표정으로 보여 줄 수 있습니다.
+BoopFace는 AI 봇, 에이전트, 인터랙티브 앱을 위한 가볍고 표현력 있는 로봇 아바타 컴포넌트입니다. 생각 중, 대기, 완료, 오류. 에이전트의 모든 상태를 표정 하나로 보여 줄 수 있습니다.
 
-AI 어시스턴트와 에이전트의 얼굴이자 상태 피드백으로 쓸 수 있습니다. ChatGPT, Claude, Gemini, Grok, DeepSeek 같은 채팅 어시스턴트, Codex, Claude Code, Cursor, Gemini CLI, OpenCode 같은 코딩 에이전트, 그리고 Grok Bot, ChatGPT dots, Meta Muse, OpenClaw, Hermes Agent 같은 개인 에이전트에 어울립니다.
+AI 어시스턴트와 에이전트의 얼굴이자 상태 표시로 쓸 수 있습니다. ChatGPT, Claude, Gemini 같은 채팅 어시스턴트, Codex, Claude Code, Cursor 같은 코딩 에이전트, 그리고 다양한 개인 에이전트에 어울립니다. 데스크톱 친구, 가상 펫, 디지털 마스코트, 챗봇 아바타로도 좋습니다.
 
-데스크톱 컴패니언, 가상 펫, 디지털 마스코트, 챗봇 아바타 같은 인터랙티브 캐릭터에도, AG-UI 스타일 에이전트 인터페이스의 시각 피드백 레이어로도 쓸 수 있습니다.
-
-SVG와 순수 JavaScript로 만든 네이티브 Web Component로, 런타임 의존성이 없고 MIT 라이선스입니다. 평면으로 보여 줄 수도 있고, 실제로 회전하는 [3D 머리](#3d-머리--09-신규)로 바꿀 수도 있습니다. 188종의 [스킨](#스킨--07-새-기능)도 언제든 입힐 수 있습니다.
+SVG와 순수 JavaScript로 만든 네이티브 Web Component로, 런타임 의존성이 없고 MIT 라이선스입니다. 평면으로 보여 주거나, 실제로 고개를 돌리는 입체 머리로 바꿀 수 있습니다. 188가지 스킨도 바로 입힐 수 있습니다.
 
 https://github.com/user-attachments/assets/533940e6-38e8-45e3-a276-606e1e7bba51
 
-## 0.9에서 달라진 점
-
-- **입체 머리.** `view="3d"`를 넣으면 머리가 실제로 포인터 쪽으로 돌고, 두께와 둥근 얼굴이 생깁니다. [자세히](#3d-머리--09-신규)
-- **새 표정 15개.** 인사, 고개 젓기, 생각, 윙크, 어지러움, 점프 등과 음성 키트의 듣기·말하기. [자세히](#음성-인터랙션-표정-키트--09-신규)
-- **쓰다듬기, 둥근 눈, 눈 색.** 이마를 쓰다듬으면 눈을 감고 비벼 옵니다. 눈은 어떤 색으로도, 투명하게도 바꿀 수 있습니다. [자세히](#3d-머리--09-신규)
-- **AI 연결.** AI가 돌려주는 스트림을 `connectAgent()`에 넘기면 생각 중·도구 사용·답장·완료·오류에 맞춰 아바타가 스스로 표정을 바꿉니다. 음성 대화도 지원합니다. [자세히](#ai-스트림-연결--09-신규)
-- **새 Studio.** 데모, 스킨, AI 연결을 한 페이지에. [Studio 열기](https://boopface.com/demo/?lang=ko)
-- **BoopFace Embedded 0.2.** 새 표정과 둥근 눈을 개발 보드 화면에서도. [자세히](#boopface-embedded)
-
-나머지는 아래 각 섹션과 [CHANGELOG](../CHANGELOG.md)에서 볼 수 있습니다.
-
-## 새 지원: [BoopFace Embedded](#boopface-embedded)
-
 <p align="center">
-  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="BoopFace Embedded: ESP32, STM32, Raspberry Pi Pico 화면과 다른 C++ 프로그램에서 같은 눈 표정을 사용합니다. 28가지 구성의 예제 펌웨어와 설정을 내보내는 시뮬레이터를 제공합니다."></a>
-</p>
-
-ESP32, STM32, Raspberry Pi Pico 화면과 다른 C++ 프로그램에서 같은 눈 표정을 사용합니다. 28가지 구성의 예제 펌웨어와 설정을 내보내는 시뮬레이터를 제공합니다.
-
-## 라이브 데모
-
-<h3 align="center">공식 웹사이트</h3>
-
-<p align="center">
-  <a href="https://boopface.com/">boopface.com</a>
+  <a href="#빠른-시작">빠른 시작</a> · <a href="#표정">표정</a> · <a href="#설정">설정</a> · <a href="#입체-머리와-눈">입체 머리와 눈</a> · <a href="#스킨">스킨</a> · <a href="#ai-연결">AI 연결</a> · <a href="#음성-대화">음성 대화</a> · <a href="#react와-vue">React와 Vue</a> · <a href="#boopface-embedded">임베디드 버전</a>
 </p>
 
 <p align="center">
   <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
 </p>
 
-<h3 align="center">BoopFace Web Component</h3>
+## 온라인으로 써 보기
 
-0.9부터 데모, 스킨, AI 연결이 하나의 페이지인 Studio로 합쳐졌습니다. 무대는 평면과 3D를 전환할 수 있고, 옆에서 모든 표정과 음성 키트를 써 보고, 스킨과 색을 바꾸고, 동작을 설정하고, AI에 연결된 아바타와 대화하고, 지금 보이는 모습의 코드를 언제든 복사할 수 있습니다.
-
-<p align="center">
-  <a href="https://boopface.com/demo/?lang=ko">Studio 열기</a> · <a href="https://boopface.com/demo/?lang=ko#skins">스킨 고르기</a> · <a href="https://boopface.com/demo/?lang=ko#agent">AI 연결 써 보기</a>
-</p>
+<h3 align="center">공식 사이트</h3>
 
 <p align="center">
-  <img src="../assets/demo/boopface-demo.gif" alt="BoopFace 인터랙티브 애니메이션 데모" width="560">
+  <a href="https://boopface.com/"><b>boopface.com</b></a>
 </p>
 
 <p align="center">
   <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
 </p>
 
-<h3 align="center">BoopFace Embedded</h3>
+<h3 align="center">BoopFace Studio 온라인 데모</h3>
 
 <p align="center">
-  <a href="https://boopface.com/hardware/?lang=ko">임베디드 시뮬레이터 열기</a> (32가지 임베디드 화면 프리셋 미리보기)
+  <a href="https://boopface.com/demo/?lang=ko"><b>Studio 열기</b></a> · <a href="https://boopface.com/demo/?lang=ko#skins">스킨 고르기</a> · <a href="https://boopface.com/demo/?lang=ko#agent">AI 연결 해 보기</a>
+</p>
+
+<p align="center">
+  <img src="../assets/demo/boopface-demo.gif" alt="BoopFace 인터랙션 데모" width="560">
 </p>
 
 <p align="center">
   <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
 </p>
 
-## 주요 특징
+<h3 align="center">BoopFace Embedded 임베디드 시뮬레이터</h3>
 
-- 네이티브 Web Component
-- SVG 렌더링 + 순수 JavaScript
-- 런타임 의존성 0
-- 평면 또는 3D. 3D 머리는 포인터 쪽으로 실제로 회전
-- 자동 눈 깜빡임과 은은한 idle 동작
-- 포인터를 따라가는 눈과 관성 있는 머리 움직임. 모든 표정이 머리 전체를 움직임
-- 이마를 쓰다듬으면 눈을 감고 비비며 다가옴
-- 젤리 스타일의 국소 드래그 변형과 탄성 복귀
-- 길게 누르는 압축과 드래그 가능한 스프링 안테나
-- 프로그램으로 제어할 수 있는 Agent 상태와 표정
-- 30개가 넘는 표정: waiting, success, failure, affirm, wary, inspect, angry, refuse, love, 그리고 0.9에 추가된 인사, 관찰, 생각, 윙크, 으쓱, 어지러움, 통통 등
-- 둥근 눈을 원하는 색으로, 또는 배경이 비쳐 보이게
-- Reduced Motion 지원
-- 설정 가능한 수면 동작
-- 조절 가능한 머리 둥글기
-- 17개 시리즈, 188가지 번호 스킨. 빛이 포인터를 따라갑니다
-- 스킨을 뺀 경량판 제공
-- `connectAgent()`: AI 스트림 이벤트로 표정을 자동 전환 (AG-UI, OpenAI, Anthropic, Vercel AI SDK)
-- 음성 인터랙션 표정 키트: 실제 음량을 따라 움직이는 듣기·생각하기·말하기 표정 세트
-- TypeScript 선언 포함
-- BoopFace Embedded는 ESP32, ESP32-S3, STM32, Raspberry Pi Pico의 28가지 보드·화면 구성에서 같은 눈 표정을 재현하며 시뮬레이터 설정을 펌웨어용으로 내보낼 수 있습니다
+<p align="center">
+  <a href="https://boopface.com/hardware/?lang=ko"><b>임베디드 시뮬레이터 열기</b></a> (보드 화면 프리셋 32종)
+</p>
 
-## 설치
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+## 0.9 업데이트
+
+- BoopFace가 입체로 진화했습니다. [자세히](#입체-머리와-눈)
+- 새 표정 15개와 음성 대화 키트. [자세히](#표정)
+- 쓰다듬기 반응 추가: 이마 위에서 포인터를 흔들어 보세요. [자세히](#입체-머리와-눈)
+- AI 대화 연결 업데이트. [자세히](#ai-연결)
+- 온라인 데모 페이지를 새로 만들었습니다: [BoopFace Studio](https://boopface.com/demo/?lang=ko)
+- 임베디드 버전 0.2: 새 표정을 함께 지원합니다. [자세히](#boopface-embedded)
+
+자세한 내용은 [CHANGELOG](../CHANGELOG.md)를 보세요.
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+## BoopFace 특징
+
+- 네이티브 Web Component, SVG 렌더링 + 순수 JavaScript, 런타임 의존성 없음, 어떤 프레임워크에서도 사용 가능
+- 감정을 표현하는 아바타 컴포넌트, 다양한 상태마다 그에 맞는 표정
+- 30가지가 넘는 표정으로 살아 있는 듯한 느낌
+- 인터랙티브: 눈이 포인터를 따라가고, 끌기, 찌그러뜨리기, 누르기, 안테나 당기기, 쓰다듬기에 모두 반응
+- 평면과 입체 두 가지 스타일로 용도에 맞게, 188가지 스킨을 언제든 교체
+- AI 스트림 이벤트가 표정을 바로 움직임 (AG-UI, OpenAI, Anthropic, Vercel AI SDK), 음성 대화 지원
+- 가벼움: 라이트 빌드 약 92 KB
+- BoopFace Embedded 임베디드 버전: 같은 표정이 개발 보드 화면에서도 동작 (ESP32, STM32, Raspberry Pi Pico)
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+## 빠른 시작
 
 ```bash
 npm install boopface
@@ -113,68 +104,42 @@ npm install boopface
 import 'boopface';
 ```
 
-또는 [최신 릴리스](https://github.com/CX-ArtLab/boopface/releases/latest)에서 `boopface-x.y.z.zip`을 내려받으세요. 컴포넌트만 들어 있으며 스킨도 포함됩니다. 페이지 옆에 압축을 풀어 주세요.
-
-```html
-<script type="module" src="./boopface/boopface.js"></script>
-```
-
-그다음 컴포넌트를 추가합니다.
-
 ```html
 <boop-face id="avatar" view="3d"></boop-face>
 ```
 
-`view="3d"`를 넣으면 [boopface.com](https://boopface.com/)과 Studio에서 보는 입체 아바타가 됩니다. 빼면 평면 아바타이며, 이것이 기본값이고 더 가볍습니다(입체 렌더러는 약 19 KB를 더 받습니다).
-
-별도의 초기화 코드는 필요하지 않습니다. 아바타는 자동으로 기본 idle 상태로 들어갑니다.
-
-### Agent Robot Avatar에서 업그레이드하기
-
-BoopFace의 0.8 이전 이름은 Agent Robot Avatar입니다. 기능과 사용법은 그대로입니다. 패키지 이름만 `boopface`로 바꾸면 업그레이드됩니다:
-
-```bash
-npm uninstall agent-robot-avatar
-npm install boopface
-```
-
-예전 태그 `<agent-robot-avatar>`는 1.0까지 계속 쓸 수 있으니 페이지를 서둘러 고칠 필요는 없습니다. 예전 npm 패키지 `agent-robot-avatar`는 더 이상 업데이트되지 않으며, 새 버전은 `boopface`로만 배포됩니다.
-
-### 경량판
-
-스킨을 쓰지 않는 페이지라면 `boopface/lite`를 쓸 수 있습니다. 아바타와 모든 표정은 같고 스킨 코드만 빠져 있습니다:
-
-```js
-import 'boopface/lite';
-```
-
-경량판은 `skin` 속성을 무시하고, 스킨에는 전체판이 필요하다고 콘솔에 알려 줍니다.
-
-크기 비교(네트워크 전송량, gzip 압축 기준):
-
-| 버전 | 크기 |
-| --- | --- |
-| 경량판 `boopface/lite` | 약 92KB |
-| 전체판, 페이지에서 스킨을 쓰지 않을 때 | 약 104KB, 스킨을 그리는 코드는 다운로드되지 않음 |
-| 전체판, 스킨을 쓸 때 | 약 161KB, 늘어난 부분은 스킨을 처음 쓸 때 다운로드됨 |
-
-두 빌드 모두 3D로 전환하면 3D 렌더링용으로 약 19 KB를 더 내려받습니다.
-
-## 기본 사용법
+초기화 코드가 필요 없습니다. 아바타가 알아서 눈을 깜빡이며 대기합니다. `view="3d"`는 공식 사이트의 입체 머리이고, 생략하면 평면 아바타(기본값, 더 가벼움)입니다.
 
 ```js
 const avatar = document.querySelector('#avatar');
-
 avatar.play('success');
-avatar.play('wary');
-avatar.play('refuse');
-
-avatar.reset();
 ```
 
-사용 가능한 액션:
+npm 없이: [최신 릴리스](https://github.com/CX-ArtLab/boopface/releases/latest)에서 `boopface-x.y.z.zip`을 내려받아 페이지 옆에 풀고 `<script type="module" src="./boopface/boopface.js"></script>`로 불러옵니다.
 
-| 동작 | 모습 | 사용 상황 |
+**크기** (gzip 전송 크기)
+
+| 빌드 | 크기 |
+| --- | --- |
+| 라이트 `import 'boopface/lite'`, 스킨 없음 | 약 92 KB |
+| 풀 빌드, 페이지에서 스킨 미사용 | 약 104 KB |
+| 풀 빌드, 스킨 사용 | 약 161 KB (스킨 코드는 처음 쓸 때 로드) |
+
+입체로 바꾸면 약 19 KB를 더 내려받습니다.
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+## 표정
+
+```js
+avatar.play('success');   // 한 번 재생
+avatar.startWaiting();    // stopWaiting()이나 다른 표정까지 계속 대기
+avatar.reset();           // 대기 상태로 돌아가기
+```
+
+| 동작 | 모습 | 어울리는 상황 |
 | --- | --- | --- |
 | `idle` | 눈을 깜박이며 주변을 둘러봄 | 기본 상태 |
 | `bored` | 천천히 양옆을 둘러봄 | 한동안 아무 일도 없을 때 |
@@ -210,109 +175,79 @@ avatar.reset();
 | `sleep` | 눈을 감고 잠듦 | 오랫동안 조작이 없을 때 |
 | `wake` | 눈을 뜨고 깨어남 | 활동이 다시 시작될 때 |
 
-대기 동작은 `play()`로 한 번 재생됩니다. `startWaiting({ variant: 'spin' | 'wrap' | 'wave' | 'bloom' | 'cross' })`는 다른 동작을 재생하거나 `stopWaiting()`을 호출할 때까지 반복됩니다.
+대기 스타일: `startWaiting({ variant: 'spin' | 'wrap' | 'wave' | 'bloom' | 'cross' })`. 0.5의 예전 동작 이름은 1.0까지 쓸 수 있습니다. [업그레이드 표](../CHANGELOG.md#upgrading-from-05x)를 보세요.
 
-0.5의 이전 이름(`send`, `warning`, `error`, `blocked`, `slot` 등)은 1.0 전까지 계속 동작하지만 콘솔에 이름 변경 안내가 표시됩니다. [업그레이드 표](../CHANGELOG.md#upgrading-from-05x)를 참고하세요.
-
-일반적인 Agent 요청 흐름:
+일반적인 요청 흐름:
 
 ```js
 avatar.startWaiting();
-
-// 두 번째 대기 동작: 눈이 한쪽으로 빠져나갔다가 반대쪽에서 돌아옵니다.
-avatar.startWaiting({ variant: 'wrap' });
-
-// 세 번째 대기 모션: 엇갈려 위아래로 움직이는 눈의 물결.
-avatar.startWaiting({ variant: 'wave' });
-
 try {
   const result = await runAgentRequest();
   await avatar.play(result.ok ? 'success' : 'failure');
-} catch (error) {
+} catch {
   await avatar.play('failure');
 }
 ```
 
-## 자주 쓰는 옵션
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+## 설정
 
 ```html
-<boop-face
-  size="160"
-  view="3d"
-  color="#08090b"
-  eye-color="#2bd67b"
-  auto-sleep="30000"
-  wake-on="activity"
-  motion="auto">
-</boop-face>
+<boop-face size="160" view="3d" color="#08090b" eye-color="#2bd67b" auto-sleep="30000"></boop-face>
 ```
 
-| 속성 | 용도 |
-| --- | --- |
-| `size` | 아바타 크기(px) |
-| `view` | `2d`(기본, 평면) 또는 `3d` |
-| `color` | 아바타 기본 색상 |
-| `eye-color` | 눈 색상. `transparent`이면 눈으로 배경이 비쳐 보임 |
-| `eye-style` | 기본은 둥근 눈. `sharp`이면 예전의 직선 절단으로 돌아감 |
-| `auto-sleep` | 자동 수면까지의 유휴 시간; `0`이면 비활성화 |
-| `wake-on` | 자동 깨우기 정책: `activity`, `interaction`, `manual` |
-| `motion` | 모션 정책: `auto`, `reduce`, `full` |
-| `press-squeeze` | 중앙을 길게 눌러 압축; `false`로 비활성화 |
-| `antenna` | `false`이면 안테나 공을 숨김 |
-| `antenna-drag` | 안테나 당기기, 스프링 복귀와 어지러운 반응. `false`로 끔 |
-| `idle-gaze` | 쉬는 동안 눈이 가끔 주위를 둘러봄. `false`이면 계속 앞을 봄 |
-| `petting` | 이마 위에서 포인터를 몇 번 왔다 갔다 하면 눈을 감고 비벼 옴. `false`이면 끔 |
-| `skin` | 스킨 번호(예: `301`). 생략하면 단색 |
+| 속성 | 용도 | 런타임 메서드 |
+| --- | --- | --- |
+| `size` | 아바타 크기(px) |  |
+| `view` | `2d`(기본, 평면) 또는 `3d` | `setView()` |
+| `color` | 아바타 기본 색상 |  |
+| `eye-color` | 눈 색상. `transparent`이면 눈으로 배경이 비쳐 보임 | `setEyeColor()` |
+| `eye-style` | 기본은 둥근 눈. `sharp`이면 예전의 직선 절단으로 돌아감 |  |
+| `skin` | 스킨 번호(예: `301`). 생략하면 단색 | `setSkin()` |
+| `auto-sleep` | 자동 수면까지의 유휴 시간; `0`이면 비활성화 |  |
+| `wake-on` | 자동 깨우기 정책: `activity`, `interaction`, `manual` |  |
+| `motion` | 모션 정책: `auto`, `reduce`, `full` |  |
+| `idle-gaze` | 쉬는 동안 눈이 가끔 주위를 둘러봄. `false`이면 계속 앞을 봄 | `setIdleGaze()` |
+| `petting` | 이마 위에서 포인터를 몇 번 왔다 갔다 하면 눈을 감고 비벼 옴. `false`이면 끔 | `setPetting()` |
+| `press-squeeze` | 중앙을 길게 눌러 압축; `false`로 비활성화 | `setPressSqueeze()` |
+| `antenna` | `false`이면 안테나 공을 숨김 |  |
+| `antenna-drag` | 안테나 당기기, 스프링 복귀와 어지러운 반응. `false`로 끔 | `setAntennaDrag()` |
 
-자주 쓰는 런타임 제어:
+기타 메서드: `setPointerFollow(false)`로 포인터 따라가기 끄기, `setHeadRoundness(75)`로 머리 둥글기 조절.
 
-```js
-avatar.setPointerFollow(false);
-avatar.setIdleGaze(false);
-avatar.setHeadRoundness(75);
-avatar.setPressSqueeze(true);
-avatar.setAntennaDrag(true);
-avatar.setView('3d');
-avatar.setEyeColor('#2bd67b');
-avatar.setPetting(false); // 쓰다듬기 끄기
-```
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
-아바타 가운데를 누르면 찌그러뜨리기가 시작됩니다. 4 CSS 픽셀 넘게 움직이면 같은 포인터 동작이 기존 머리 드래그로 바뀝니다. 안테나 드래그는 머리 드래그와 같은 거리 제한을 쓰고, 돌아온 뒤에는 어지러운 표정이 이어집니다.
+## 입체 머리와 눈
 
-## 3D 머리 · 0.9 신규
+- **입체**: `view="3d"`를 쓰면 머리에 두께와 곡면이 생기고, 실제로 포인터 쪽으로 고개를 돌린 뒤 살짝 튕기며 멈춥니다. 모든 표정, 스킨, 색상을 그대로 쓸 수 있습니다. 입체 코드는 처음 3D로 바꿀 때 로드됩니다.
+- **표정과 함께 머리가 움직임**: 머리가 눈을 따라 돌고, 끄덕이고, 뛰어오릅니다. `motion="reduce"`에서는 움직이지 않습니다.
+- **둥근 눈**: 눈을 가늘게 뜨거나 깜빡이는 가는 틈은 양 끝이 둥급니다. `eye-style="sharp"`로 직각 모서리로 되돌릴 수 있습니다.
+- **눈 색상**: `eye-color`는 단색 아바타와 131가지 스킨에서 쓸 수 있습니다. 나머지 57가지 스킨은 질감 있는 눈을 그대로 유지합니다(`SKINS[번호].eyeColor`로 확인). `transparent`는 모든 스킨에서 쓸 수 있습니다.
+- **인터랙션**: 눈이 포인터를 따라가고, 머리를 끌면 젤리처럼 흔들리며, 가운데를 누르면 찌그러지고, 안테나는 당겼다 놓으면 튕겨 돌아옵니다. 이마 위에서 포인터를 몇 번 흔들면 눈을 감고 비벼 옵니다.
 
-```html
-<boop-face view="3d"></boop-face>
-```
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
-`view="3d"`(또는 `avatar.setView('3d')`)는 아바타를 두께가 있는 입체 머리로 바꿉니다. 포인터 쪽으로 실제로 회전하고, 얼굴은 곡면이며, 돌 때마다 살짝 튕긴 뒤 멈춥니다. 모든 표정, 제스처, 스킨과 색상이 3D에서도 그대로 작동하며, `view="2d"`로 평면으로 돌아갑니다. 3D 코드는 페이지가 처음 3D로 바뀔 때만 내려받으므로 평면만 쓰는 페이지는 불러오지 않습니다.
+## 스킨
 
-**모든 표정이 머리를 움직입니다.** 머리가 눈이 보는 쪽으로 돌고, 끄덕이고, 기울고, 뜁니다. 3D에서는 실제로 회전하고, 평면에서는 회전하는 모습을 그립니다. `motion="reduce"`일 때는 움직이지 않습니다.
-
-**둥근 눈.** 눈꺼풀이 눈을 자르는 모서리가 이제 둥글고, 잠·실눈·깜빡임·입력 커서 같은 가는 틈은 양 끝이 반원입니다. 예전의 직선 절단은 `eye-style="sharp"`로 쓸 수 있습니다.
-
-**눈 색상.** `eye-color="#2bd67b"`(또는 `setEyeColor()`)로 눈에 색을 입힙니다. 단색 아바타와 눈이 단색인 131종의 스킨에서 쓸 수 있습니다. 나머지 57종의 스킨은 눈에 고유한 질감(볼록, 유리, 무늬)이 있어 그대로 유지되며, 바꿀 수 있는지는 `SKINS[번호].eyeColor`로 알 수 있습니다. `eye-color="transparent"`는 눈을 머리에서 도려내 아바타 뒤에 있는 것이 눈으로 보이게 합니다. 질감 있는 눈을 포함해 모든 스킨에서 됩니다.
-
-**쓰다듬기.** 이마를 몇 번 쓰다듬으면 아바타가 눈을 감고 비비며 다가옵니다. 기본으로 켜져 있고, `petting="false"` 또는 `setPetting(false)`로 끌 수 있습니다.
-
-## 스킨 · 0.7 새 기능
-
-17개 시리즈, 188가지 스킨이 있으며 빛이 포인터를 따라갑니다. 모든 스킨에는 고정 번호가 있습니다. 시리즈 번호 뒤에 두 자리가 붙어 305는 3번 시리즈의 다섯 번째 스킨입니다. 이름은 바뀔 수 있지만 번호는 바뀌지 않고 다시 쓰이지 않습니다.
-
-모든 스킨은 여전히 순수 SVG로 그려지며 이미지, Canvas, WebGL을 사용하지 않습니다. 전체 스킨을 합쳐도 네트워크 전송량은 약 70KB(압축 전 약 290KB)이며, 그 대부분은 페이지에서 스킨을 쓸 때만 불러옵니다. 참고로 아바타 본체(스킨이 없는 lite 빌드)는 약 92KB입니다.
-
-<img src="../assets/readme/boopface-skin-gallery.jpg" alt="BoopFace 스킨 갤러리: 추천 스킨, 분류, 검색" width="100%">
+17개 시리즈, 188가지 스킨. 빛이 포인터를 따라가며 모두 순수 SVG입니다. 번호는 영원히 바뀌지 않습니다. 앞자리는 시리즈 번호, 뒤 두 자리는 시리즈 안의 순서입니다(305 = 3번 시리즈의 5번째).
 
 ```html
 <boop-face skin="301"></boop-face>
 ```
 
 ```js
-avatar.setSkin(102);  // '102'도 가능
+avatar.setSkin(102);
 avatar.setSkin(null); // 단색으로 돌아가기
 ```
 
-모든 스킨과 번호는 [Studio의 스킨 탭](https://boopface.com/demo/?lang=ko#skins)에서 볼 수 있습니다.
+<img src="../assets/readme/boopface-skin-gallery.jpg" alt="BoopFace 스킨: 추천 스킨, 시리즈 필터, 검색" width="100%">
 
 | 시리즈 | 번호 | 시리즈 | 번호 | 시리즈 | 번호 |
 | --- | --- | --- | --- | --- | --- |
@@ -323,70 +258,60 @@ avatar.setSkin(null); // 단색으로 돌아가기
 | 투명·반짝임 | 1301–1305 | 패브릭과 가죽 | 1401–1412 | 디저트와 과일 | 1501–1512 |
 | 자연 | 1601–1612 | 패턴과 테크 | 1701–1717 |  |  |
 
-스킨 그리기 코드는 스킨을 처음 쓸 때 내려받으므로, 스킨을 쓰지 않는 페이지는 이를 불러오지 않습니다. `await loadSkins()`로 미리 불러올 수 있습니다. `SKINS`는 각 스킨의 중국어·영어 이름과 색상을, `SKIN_SERIES`는 시리즈를, `SKIN_NAMES`는 모든 번호를 제공합니다.
+모든 스킨은 [Studio 스킨 페이지](https://boopface.com/demo/?lang=ko#skins)에서 볼 수 있습니다. `await loadSkins()`로 미리 로드할 수 있고, `SKINS`, `SKIN_SERIES`, `SKIN_NAMES`로 이름, 시리즈, 번호를 얻을 수 있습니다.
 
-모든 표정과 제스처를 스킨과 함께 쓸 수 있습니다. 스킨을 제거하면 `color` 속성이 다시 적용됩니다.
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
-## AI 스트림 연결 · 0.9 신규
+## AI 연결
 
-`connectAgent()`를 쓰면 AI 스트림이 아바타를 직접 움직입니다. AI SDK가 이미 주는 이벤트를 넘기기만 하면 아바타가 생각 중, 도구 사용, 답변 중, 완료, 실패, 거절을 스스로 표현합니다.
+AI SDK가 주는 스트림을 `connectAgent()`에 넘기면, 아바타가 생각 중, 도구 호출, 답변, 완료, 오류를 스스로 보여 줍니다.
 
 ```js
 import { connectAgent } from 'boopface';
 
 const agent = connectAgent(avatar);
-
 for await (const event of agent.track(stream)) {
-  // 답변은 평소처럼 표시
+  // 평소처럼 답변 표시
 }
 ```
 
-`track()`은 모든 항목을 그대로 통과시킵니다. 스트림이 정상적으로 끝나면 완료, 오류가 발생하면 실패, 중단하거나 중간에 `break`하면 취소로 처리합니다. `agent.handle(event)`로 하나씩 넘기거나, `agent.handle('thinking')`처럼 상태 이름을 직접 넘길 수도 있습니다.
+AG-UI, OpenAI(Responses, Realtime, Chat Completions), Anthropic Messages, Vercel AI SDK, `useChat` 상태를 지원합니다. `agent.handle(event)`로 하나씩 넘기거나 `agent.handle('thinking')`처럼 상태를 바로 넘길 수도 있습니다.
 
-AG-UI 이벤트, OpenAI Responses, Realtime 및 Chat Completions 스트림, Anthropic Messages 스트림, Vercel AI SDK 스트림 파트, `useChat` 상태(`submitted`, `streaming`, `ready`, `error`)를 이해합니다. 그 밖의 항목은 무시합니다.
+| 상태 | 기본 표정 | 상태 | 기본 표정 |
+| --- | --- | --- | --- |
+| `thinking` | `waiting-spin` | `done` | `success` |
+| `tool` | `waiting-wave` | `error` | `failure` |
+| `replying` | `idle` | `refused` | `refuse` |
+| `approval` | `wary` | `cancelled` | `idle` |
+| `listening` | `listening` | `speaking` | `speaking` |
+| `typing` | `input` | `idle` | `idle` |
 
-| 상태 | 기본 표정 | 언제 |
-| --- | --- | --- |
-| `listening` | `listening`, 반복 | 음성 대화: 사용자가 말하는 중 |
-| `thinking` | `waiting-spin`, 반복 | 요청을 보냈고 모델이 생각 중 |
-| `tool` | `waiting-wave`, 반복 | 도구 호출 실행 중 |
-| `replying` | `idle` | 답변 텍스트가 도착하는 중 |
-| `speaking` | `speaking`, 반복 | 음성 대화: AI 답변이 재생되는 중 |
-| `approval` | `wary` | 사용자 확인이 필요함 |
-| `done` | `success` | 완료 |
-| `error` | `failure` | 실패 |
-| `refused` | `refuse` | 모델이 답변을 거절함 |
-| `cancelled` | `idle` | 사용자가 중지함 |
-| `typing` | `input` | 사용자가 입력 중, `handle('typing')`으로 설정 |
-| `idle` | `idle` | 실행 중인 작업 없음 |
-
-각 상태는 액션 이름, 함수, 또는 아무것도 표시하지 않는 `null`로 바꿀 수 있습니다.
+표정 바꾸기:
 
 ```js
-connectAgent(avatar, {
-  actions: { replying: 'input', tool: 'inspect' },
-  onChange: (state, previous) => console.log(previous, '→', state),
-});
+connectAgent(avatar, { actions: { replying: 'input', tool: 'inspect' } });
 ```
 
-[Studio](https://boopface.com/demo/?lang=ko#agent)에서 AI에 연결된 아바타와 대화할 수 있고, 「코드 › AI 연결」에서 상태별 표정을 정하고 각 형식의 코드를 볼 수 있습니다.
+[Studio](https://boopface.com/demo/?lang=ko#agent)에서 AI가 연결된 아바타와 대화하고, 형식별 연결 방법을 볼 수 있습니다.
 
-## 음성 인터랙션 표정 키트 · 0.9 신규
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
-듣기, 생각하기, 말하기. 모든 음성 비서는 매 턴마다 이 세 단계를 거칩니다. 음성 인터랙션 표정 키트는 자연스럽게 이어지는 세 가지 표정을 아바타에 제공합니다. 음성 서비스와 상관없이 말로 대화하는 어떤 제품에도 맞습니다. 세 메서드를 직접 호출해도 되고, `connectAgent()`가 음성 API를 따라가게 해도 됩니다.
+## 음성 대화
+
+음성 어시스턴트의 한 턴은 듣기, 생각하기, 말하기 세 단계입니다. BoopFace에는 자연스럽게 이어지는 표정 세트가 있습니다:
 
 ```js
 avatar.startListening();                   // 사용자가 말하는 중
 avatar.startWaiting({ variant: 'bloom' }); // AI가 생각하는 중
 avatar.startSpeaking();                    // AI가 답하는 중
-avatar.setVoiceLevel(0.6);                 // 선택: 음량 0~1
+avatar.setVoiceLevel(0.6);                 // 선택: 음량 0–1
 ```
 
-듣기에서는 두 눈이 하나의 둥근 눈으로 합쳐져 사용자의 목소리에 따라 부풀어 오릅니다. 생각하기에서는 교차한 두 타원이 천천히 도는 꽃처럼 숨 쉽니다. 말하기에서는 두 눈으로 다시 나뉘어 잠시 멈춘 뒤, 답변에 맞춰 늘어났다 줄어듭니다. 낮은 소리는 왼쪽 눈, 높은 소리는 오른쪽 눈을 움직입니다. 음량은 `setVoiceLevel(level)` 또는 `setVoiceLevel([low, high])`로 넘깁니다. 넘기지 않으면 말하기는 자체 리듬으로 움직이고 듣기는 가만히 있습니다. 각 단계는 다음 단계가 시작될 때까지 반복되며, 단계가 바뀔 때 눈이 튀지 않고 부드럽게 변형됩니다.
-
-생각은 기다림의 한 단계입니다. 피어나기(`variant: 'bloom'`)와 십자(`variant: 'cross'`)는 듣기의 둥근 눈에서 바로 변형되며, 다른 기다림 스타일도 쓸 수 있습니다.
-
-`connectAgent()`는 표정을 스스로 전환할 수도 있습니다. OpenAI Realtime이나 ElevenLabs 같은 SDK가 알려 주는 `mode` 등 흔히 쓰는 음성 API의 이벤트를 이미 이해합니다. 생각하는 동안 피어나기 스타일로 대기하고(`actions.thinking`으로 다른 스타일 지정 가능), 답변이 끝날 때마다 듣기로 돌아갑니다. OpenAI Realtime 예시:
+`connectAgent()`를 쓰면 자동으로 전환됩니다(OpenAI Realtime, ElevenLabs 등 지원). `connectAudio()`에 마이크와 답변 오디오를 연결하면 눈이 실제 음량에 맞춰 움직입니다:
 
 ```js
 const agent = connectAgent(avatar);
@@ -394,15 +319,16 @@ events.onmessage = ({ data }) => agent.handle(JSON.parse(data));
 agent.connectAudio({ input: microphone, output: replyAudio });
 ```
 
-`connectAudio()`는 MediaStream이나 `<audio>` 요소를 받아 그 음량을 눈에 전달합니다. 답변 음성을 연결하면 재생이 끝난 것도 아바타가 스스로 알아챕니다.
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
 ## React와 Vue
 
-`<boop-face>`는 표준 Web Component이므로 어떤 프레임워크에서도 쓸 수 있습니다.
-
-**React 19**
+표준 Web Component이므로 어떤 프레임워크에서도 그대로 쓸 수 있습니다.
 
 ```jsx
+// React 19 (Next.js에서는 'use client' 추가)
 import { useEffect, useRef } from 'react';
 import { connectAgent } from 'boopface';
 
@@ -413,128 +339,75 @@ export function Avatar({ onReady }) {
 }
 ```
 
-Next.js에서는 파일에 `'use client'`를 붙이세요.
-
-**Vue 3**
-
-`vite.config.js`에서 `boop-face`가 커스텀 엘리먼트라고 Vue에 알려 줍니다.
+Vue 3에서는 `vite.config.js`에서 커스텀 요소를 선언합니다:
 
 ```js
 vue({ template: { compilerOptions: { isCustomElement: tag => tag === 'boop-face' } } })
 ```
 
-```vue
-<script setup>
-import { onMounted, ref } from 'vue';
-import { connectAgent } from 'boopface';
-
-const avatar = ref(null);
-let agent;
-onMounted(() => { agent = connectAgent(avatar.value); });
-</script>
-
-<template>
-  <boop-face ref="avatar" size="140" />
-</template>
-```
-
-빌드 없이 바로 실행되는 페이지: [`examples/react.html`](../examples/react.html), [`examples/vue.html`](../examples/vue.html).
-
-## 이벤트와 통합
-
-컴포넌트는 시각 상태 변경에 `face-state`, 의미 기반 액션 라이프사이클 변경에 `action-state`를 발생시킵니다.
-
-호스트 애플리케이션 통합과 접근성 상태 텍스트에는 `action-state` 사용을 권장합니다. 실행 가능한 요청 라이프사이클 예시는 [`examples/accessibility.html`](../examples/accessibility.html)을 참고하세요.
-
-최소 통합 예시는 [`examples/basic.html`](../examples/basic.html)에 있습니다.
-
-## 호환성
-
-ES Modules, Custom Elements, SVG, Pointer Events, Web Animations API, `IntersectionObserver`, `ResizeObserver`, `matchMedia`를 지원하는 최신 브라우저를 대상으로 합니다.
-
-자동 브라우저 테스트는 Chromium, Firefox, WebKit을 포함합니다.
+빌드 없이 열기만 하면 동작하는 예제: [`react.html`](../examples/react.html), [`vue.html`](../examples/vue.html), [`basic.html`](../examples/basic.html). 컴포넌트는 `face-state`(화면 상태)와 `action-state`(동작 시작과 끝) 이벤트를 보냅니다. 스크린 리더 안내 예제는 [`accessibility.html`](../examples/accessibility.html)에 있습니다. TypeScript 타입이 포함되어 있습니다.
 
 <a id="boopface-embedded"></a>
 
-## 새 지원: BoopFace Embedded
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
-웹 버전의 눈 표정을 로봇과 개발 보드 화면에서 사용할 수 있습니다. 작은 C++11 엔진이 움직임과 타이밍을 재현합니다. 예제는 ESP32, ESP32-S3, STM32, Raspberry Pi Pico의 28가지 구성을 지원합니다. 원형·직사각형 TFT, 긴 화면, AMOLED, 단색 OLED와 사용자 지정 크기를 지원합니다.0.2는 웹 0.9을 따라잡았습니다. 같은 둥근 눈, 인사·관찰·생각·윙크·으쓱·어지러움·통통 등 13개의 새 표정, 그리고 음성 키트의 듣기와 말하기까지 모두 33개입니다.
+## BoopFace Embedded 임베디드 버전
 
-| 사용 기기 | 선택할 버전 |
-| --- | --- |
-| 웹, 앱, Android 태블릿, 브라우저 탑재 로봇 | 웹 컴포넌트: 전체 아바타, 스킨, 상호작용 |
-| ESP32, STM32, Raspberry Pi Pico | 임베디드 엔진과 예제 펌웨어 |
-| 기타 마이크로컨트롤러 및 C++ 프로그램 | C++ 라이브러리, 화면 드라이버 직접 연결 |
+<p align="center">
+  <img src="../assets/readme/boopface-embedded.jpg" alt="BoopFace Embedded 임베디드 버전: ESP32, STM32, Raspberry Pi Pico 보드 화면에서 동작하는 같은 눈 표정">
+</p>
 
+같은 눈 표정이 로봇과 개발 보드 화면에서 동작합니다. 작은 C++11 엔진에 표정 33개. 펌웨어 예제는 ESP32, ESP32-S3, STM32, Raspberry Pi Pico의 보드와 화면 조합 28가지를 지원합니다(원형/사각 TFT, 가로로 긴 화면, AMOLED, 흑백 OLED).
 
-<img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded 시뮬레이터: 원형 TFT의 눈 표정과 배치, 색상, 설정 내보내기" width="100%">
+<img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded Studio: 보드 화면 위의 눈, 표정 버튼, 화면 목록" width="100%">
 
-**보드 없이도 확인하세요.** [시뮬레이터](https://boopface.com/hardware/?lang=ko)는 같은 C++ 엔진을 브라우저에서 실행하며 32가지 화면을 재현합니다. 표시 결과를 확인하고 모듈을 비교할 수 있습니다.
-
-**조정, 내보내기, 빌드.** 화면, 배치, 색상, 프레임 속도를 조정한 후 **설정 내보내기**를 누르세요. `eyes_settings.h`를 예제의 `main.cpp` 옆에 저장하고 빌드합니다. [사용 방법](../embedded/README.md)을 참고하세요. 화면과 내보낸 주석은 선택한 언어를 따릅니다.
-
-**ZIP 설치.** [임베디드 릴리스](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0)에서 `BoopFace-Embedded-0.2.0.zip`을 받아 Arduino IDE의 **스케치 → 라이브러리 포함하기 → .ZIP 라이브러리 추가**로 설치하세요. Arduino Library Manager 색인 반영은 대기 중이므로 ZIP 또는 소스를 사용하세요. [PlatformIO](https://registry.platformio.org/libraries/cxlab/BoopFace)에서는 `platformio.ini`의 환경 설정에 다음 의존성을 추가하세요:
-
-```ini
-lib_deps = cxlab/BoopFace@^0.2.0
-```
-
-**직접 만든 프로그램에서** 이름으로 표정을 재생하세요:
+1. **미리 보기**: [온라인 시뮬레이터](https://boopface.com/hardware/?lang=ko)가 같은 엔진으로 화면 32가지를 재현하므로 보드 없이도 볼 수 있습니다.
+2. **내보내기**: 레이아웃, 색상, 프레임 레이트를 맞추고 설정 내보내기를 누른 뒤, `eyes_settings.h`를 예제 펌웨어의 `main.cpp` 옆에 두고 빌드합니다. [절차](../embedded/README.md#from-the-preview-to-your-board)
+3. **설치**: Arduino IDE에서는 [릴리스 페이지](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0)의 `BoopFace-Embedded-0.2.0.zip`을 추가하고, PlatformIO에서는 `lib_deps = cxlab/BoopFace@^0.2.0`을 씁니다.
 
 ```cpp
 #include <BoopFace.h>
 boopface::Eyes eyes;
-uint8_t pixels[4800]; // 240 x 160, 픽셀당 1비트
+uint8_t pixels[4800]; // 240 x 160, 1비트 픽셀
 
-void setup() {
-  boopface::EyesConfig config;
-  eyes.begin(config, pixels, sizeof pixels, millis());
-}
+boopface::EyesConfig config;
 
-void loop() {
-  if (eyes.update(millis())) {
-    // eyes.data()를 화면 드라이버로 보냅니다.
-  }
-}
-
-// 필요할 때
+void setup() { eyes.begin(config, pixels, sizeof pixels, millis()); }
+void loop()  { if (eyes.update(millis())) { /* eyes.data()를 화면으로 보내기 */ } }
 // eyes.play("success", millis());
 ```
 
-실험 버전: 모든 구성이 CI에서 컴파일되지만 실기 검증은 아직 없습니다. 사용해 보셨다면 [하드웨어 보고서](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml)를 보내주세요. API와 배선은 [임베디드 안내](../embedded/README.md)를 참고하세요.
+실험 버전: 모든 구성이 CI에서 빌드되지만, 실제 하드웨어에서 모두 확인된 것은 아닙니다. [하드웨어 보고](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml)를 환영합니다. 자세한 내용은 [임베디드 문서](../embedded/README.md)를 보세요.
 
-## BoopFace로 만든 프로젝트
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
-BoopFace로 만든 프로젝트를 이 목록에 올려 더 많은 사람에게 보여 주세요. 프로젝트를 제출하려면 아래 양식을 열어 주세요. https://github.com/CX-ArtLab/BoopFace/issues/new?template=showcase-submission.yml
+## 기타
 
-[커뮤니티 프로젝트 보기](../SHOWCASE.md)
+- **Agent Robot Avatar에서 업그레이드**: 0.8에서 이름이 바뀌었고 사용법은 같습니다. `npm uninstall agent-robot-avatar && npm install boopface`면 되고, 예전 태그 `<agent-robot-avatar>`는 1.0까지 쓸 수 있습니다.
+- **호환성**: ES Modules, Custom Elements, Web Animations를 지원하는 최신 브라우저. 자동 테스트는 Chromium, Firefox, WebKit에서 실행합니다.
+- **버전**: **웹 버전 v0.9.0**, 임베디드 버전 v0.2.0(실험 버전). 1.0까지 API는 신중하게 발전시킵니다.
+- **작품 소개**: [커뮤니티 작품](../SHOWCASE.md), [작품 제출하기](https://github.com/CX-ArtLab/BoopFace/issues/new?template=showcase-submission.yml).
+- **기여하기**: Issue와 Pull Request를 환영합니다. 먼저 [`CONTRIBUTING.md`](../CONTRIBUTING.md)를 읽어 주세요.
 
-## 기여
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
-Issue와 Pull Request를 환영합니다. 변경 사항을 제출하기 전에 [`CONTRIBUTING.md`](../CONTRIBUTING.md)를 확인하세요.
+## 라이선스와 캐릭터
 
-## 프로젝트 상태
+코드는 [MIT License](../LICENSE)로, 앱에서 사용, 수정, 배포할 수 있습니다. BoopFace 캐릭터의 외형, 이름, 시각적 아이덴티티는 CX ArtLab의 오리지널 디자인입니다. MIT License는 그 소유권을 넘기지 않으며, 다른 이의 오리지널 캐릭터나 브랜드로 내세울 권리도 주지 않습니다.
 
-**현재 공개 버전: v0.9.0**\
-BoopFace Embedded: v0.2.0 (실험 버전)
+BoopFace는 독립적인 오픈소스 프로젝트로, 어떤 AI 플랫폼이나 브랜드와도 제휴하지 않았고 공식 승인을 받지 않았습니다. 제품 이름은 사용 사례를 설명하기 위해서만 언급합니다.
 
-공개 API는 향후 `1.0.0` 안정성 약속을 향해 발전하는 동안 의도적으로 간결하게 유지합니다.
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
-BoopFace는 독립적으로 개발되며 어떤 AI 플랫폼이나 브랜드와도 제휴, 보증 또는 공식적인 관계가 없습니다.
-
-## 캐릭터 디자인과 비주얼 아이덴티티
-
-BoopFace 캐릭터의 로봇 외형과 비주얼 아이덴티티는 CX ArtLab의 오리지널 디자인입니다.
-
-MIT License는 소프트웨어와 소스 코드에 적용됩니다. 애플리케이션의 일부로 아바타를 사용·수정·배포할 수 있지만 BoopFace의 이름, 캐릭터 정체성 또는 비주얼 아이덴티티의 소유권을 이전하지 않으며, 이를 다른 주체의 오리지널 캐릭터나 독립 브랜드로 표시할 권리를 부여하지 않습니다.
-
-이 프로젝트에 언급된 제3자 제품명은 가능한 사용 사례를 설명하기 위한 것이며 제휴나 보증을 의미하지 않습니다.
-
-## 라이선스
-
-MIT License. 자세한 내용은 [`LICENSE`](../LICENSE)를 참고하세요.
-
----
+## 커피 한 잔 사 주기
 
 이 프로젝트가 유용하다면 커피 한 잔을 사 주셔도 좋습니다.
 
