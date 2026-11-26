@@ -364,7 +364,7 @@ Las mismas expresiones de ojos en pantallas de robots y placas. Un pequeño moto
 <img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded Studio: ojos en la pantalla de una placa, botones de expresiones y la lista de pantallas" width="100%">
 
 1. **Vista previa**: el [simulador en línea](https://boopface.com/hardware/?lang=es) ejecuta el mismo motor y simula 32 pantallas, así que puedes verlo sin placa.
-2. **Exportar**: ajusta el diseño, los colores y la tasa de fotogramas, pulsa Exportar ajustes y coloca `eyes_settings.h` junto al `main.cpp` del firmware de ejemplo para compilar. [Pasos](../embedded/README.md#from-the-preview-to-your-board)
+2. **Exportar**: ajusta el diseño, los colores y la tasa de fotogramas, pulsa Exportar ajustes y coloca `eyes_settings.h` junto al `main.cpp` del firmware de ejemplo para compilar. [Pasos](../embedded/README.es.md#ajusta-en-el-simulador-y-pásalo-a-la-placa)
 3. **Instalar**: en el Arduino IDE añade `BoopFace-Embedded-0.2.0.zip` desde la [página de la versión](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0); en PlatformIO usa `lib_deps = cxlab/BoopFace@^0.2.0`.
 
 ```cpp
@@ -379,7 +379,7 @@ void loop()  { if (eyes.update(millis())) { /* enviar eyes.data() a la pantalla 
 // eyes.play("success", millis());
 ```
 
-Experimental: todas las configuraciones compilan en CI, pero no todas se han probado en hardware real. Se agradecen los [informes de hardware](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml). Guía completa: [documentación de Embedded](../embedded/README.md).
+Experimental: todas las configuraciones compilan en CI, pero no todas se han probado en hardware real. Se agradecen los [informes de hardware](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml). Guía completa: [documentación de Embedded](../embedded/README.es.md).
 
 <p align="center">
   <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">

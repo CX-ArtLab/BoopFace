@@ -1,6 +1,8 @@
 # BoopFace Embedded
 
-[简体中文](README.zh-CN.md) · [Main project](../README.md)
+[English](README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Français](README.fr.md) · [Português](README.pt.md) · [Deutsch](README.de.md)
+
+[Main project](../README.md)
 
 An **experimental**, portable C++11 implementation of the BoopFace eye expressions. It renders eyes only, with no head, antenna, dragging, squeezing, pointer listeners, network client or AI model. The embedded package is independent of the SVG component and its Demo UI.
 
@@ -22,7 +24,7 @@ Download [`preview/boopface-embedded-preview.html`](preview/boopface-embedded-pr
 
 The preview runs **this exact embedded C++ engine compiled to WebAssembly**, not the separate Web avatar renderer. It offers 33 actions (the 18 of 0.1, plus 13 that 0.2 brings over from the Web avatar 0.9, such as bow, observe, think, wink, smug, dizzy and bounce, and the Voice Kit's listening and speaking), cycling/manual interruption, pause/step, playback speed, explicit gaze, blink/transition switches, and 32 screen presets in five groups (round, square, bar, dev kits and OLEDs) plus custom resolutions from 16 to 512 pixels per axis. Eyes are rounded by default; `setRoundEyes(false)` keeps the straight cuts. Layout controls include aspect-preserving fit, crop-to-fill, zoom, offsets and circular clipping. Named presets use SVG front views of specific reference modules; see [artwork sources](preview/frames/README.md). TFT mode centers a 240×160 mask inside a 240×240 canvas, matching the Arduino example. OLED mode renders a 128×64 mask; it does not emulate the display driver's page conversion. Changing the screen restarts the simulation; timing, layout and display changes apply without restarting, and hidden tabs freeze its clock. This validates animation, not board performance or screen electronics. See [preview/README.md](preview/README.md) for rebuilding and tests.
 
-The [online simulator](https://cx-artlab.github.io/BoopFace/hardware/?lang=en) supports 10 languages; exported settings comments follow the selected language. You can also download the standalone offline HTML from the embedded release.
+The [online simulator](https://boopface.com/hardware/?lang=en) supports 10 languages; exported settings comments follow the selected language. You can also download the standalone offline HTML from the embedded release.
 
 ## From the preview to your board
 
