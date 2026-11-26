@@ -44,19 +44,21 @@
 
 ## 不用硬件，先在电脑上看效果
 
-下载并用浏览器打开 [`preview/boopface-embedded-preview.html`](preview/boopface-embedded-preview.html)。这是一个完整的离线文件，不需要服务器、开发板、Python、Node.js 或编译工具；请下载原始 HTML，而不是保存 GitHub 的文件查看页面。也可在克隆后的项目中直接双击这个文件。
+下载并用浏览器打开 [`studio/boopface-embedded-studio.html`](studio/boopface-embedded-studio.html)。这是一个完整的离线文件，不需要服务器、开发板、Python、Node.js 或编译工具；请下载原始 HTML，而不是保存 GitHub 的文件查看页面。也可在克隆后的项目中直接双击这个文件。
 
 它将**同一份嵌入式 C++ 源码编译成 WebAssembly**，不是原 Web Demo 或另一套 JavaScript 动画。支持 33 种动作（0.1 的 18 种，加上 0.2 跟随网页版 0.9 新增的鞠躬、观察、思考、眨眼、得意、眩晕、弹跳等 13 种，以及语音套件的聆听和说话）、自动轮播、暂停/逐帧、注视方向，以及 32 种屏幕预设（圆屏、方屏、长条屏、开发套件和 OLED 五组）和宽高 16–512 的自定义分辨率。眼睛默认是圆角，`setRoundEyes(false)` 恢复直角。可设置完整显示或裁切铺满、缩放、偏移与圆形裁切。命名预设使用对应参考模组的 SVG 外框，保留 PCB、玻璃、安装孔与排线的不同结构；横屏、竖屏整板旋转，自定义分辨率使用通用外框。打开「注视跟随」后，鼠标可模拟接近的物体；感应范围、只看移动物体、跟随速度和离开后的停留时间在库接口里设置，真正的摄像头或传感器接入由宿主程序提供。暂停只冻结时间，仍可切换动作；慢速播放可用于检查过渡。浏览器输出不能代替真机接线、驱动、刷新率和性能测试。重建和验证方法见 [模拟器说明](preview/README.md)。
 
 ## 在模拟器里调好，直接用到板子上
 
-在模拟器里把眼睛调到满意，不用改代码，就能按同样的设置编译固件：
+在模拟器里把眼睛调到满意，不用改代码，就能按同样的设置编译固件。这条路线需要**完整的项目文件夹**（里面有 `embedded/` 目录）：在 [GitHub 页面](https://github.com/CX-ArtLab/boopface) 点 *Code → Download ZIP*，或用 `git clone`。Arduino 库的 ZIP 里只有 `.ino` 示例，没有这些文件。
 
-1. 打开模拟器，选你的屏幕。「型号与接线」里有对应的开发板、接线表和编译命令。
-2. 调整布局、颜色、帧率、眨眼和过渡；屏幕是转着装的，就按「屏幕旋转 90°」。
-3. 点「导出设置」，复制或下载，保存为 `eyes_settings.h`。
-4. 把文件放进 `embedded/examples/arduino/`，和 `main.cpp` 放在一起。
-5. 按文件开头注释里写的环境编译并上传，例如 `pio run -d embedded -e esp32-s3-st7789 -t upload`。
+1. 打开模拟器，选你的屏幕。右边「固件」标签里的「型号与接线」有对应的开发板和接线表。
+2. 调整布局、颜色、帧率、眨眼和过渡；屏幕是转着装的，就按「旋转 90°」。
+3. 回到「固件」标签的 `eyes_settings.h` 页，点「下载文件」（或点「复制」，自己存成 `eyes_settings.h`）。
+4. 把文件放进项目文件夹的 `embedded/examples/arduino/`，和 `main.cpp` 放在一起。
+5. 安装 [PlatformIO](https://docs.platformio.org/en/latest/core/installation/index.html)，在项目最上层（能看到 `embedded` 文件夹的那一层）打开终端，执行页面上的「编译命令」，例如 `pio run -d embedded -e esp32-s3-st7789 -t upload`。
+
+**用 Arduino IDE**：用 ZIP 安装库（项目 → 导入库 → 添加 .ZIP 库），再打开「文件 → 示例 → BoopFace」里的 SerialEyes 或 OledSSD1306。这两个示例不读取 `eyes_settings.h`；想用模拟器里调好的设置，请按上面的步骤走。
 
 | `eyes_settings.h` 里的设置 | 对应模拟器里的 |
 | --- | --- |

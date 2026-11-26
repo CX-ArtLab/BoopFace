@@ -364,7 +364,7 @@ Las mismas expresiones de ojos en pantallas de robots y placas. Un pequeño moto
 <img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded Studio: ojos en la pantalla de una placa, botones de expresiones y la lista de pantallas" width="100%">
 
 1. **Vista previa**: el [simulador en línea](https://boopface.com/hardware/?lang=es) ejecuta el mismo motor y simula 32 pantallas, así que puedes verlo sin placa.
-2. **Exportar**: ajusta el diseño, los colores y la tasa de fotogramas, pulsa Exportar ajustes y coloca `eyes_settings.h` junto al `main.cpp` del firmware de ejemplo para compilar. [Pasos](../embedded/README.es.md#ajusta-en-el-simulador-y-pásalo-a-la-placa)
+2. **Exportar**: ajusta el diseño, los colores y la tasa de fotogramas, abre la pestaña **Firmware** y pulsa **Descargar archivo**; coloca `eyes_settings.h` en `embedded/examples/arduino/` del proyecto completo (junto a `main.cpp`) y compila. El ZIP de la biblioteca de Arduino no incluye esos archivos; consulta los [Pasos](../embedded/README.es.md#ajusta-en-el-simulador-y-pásalo-a-la-placa).
 3. **Instalar**: en el Arduino IDE añade `BoopFace-Embedded-0.2.0.zip` desde la [página de la versión](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0); en PlatformIO usa `lib_deps = cxlab/BoopFace@^0.2.0`.
 
 ```cpp

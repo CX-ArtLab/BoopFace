@@ -194,6 +194,14 @@
                 <div class="talk-body" id="talkBody">
                   <div class="talk-thread" id="talkThread" aria-live="polite"></div>
                 </div>
+                <div class="talk-demo">
+                  <span class="talk-demo-note">演示对话：回复是本地模拟的，没有连接真实 AI。</span>
+                  <label class="talk-demo-pick"><span>模拟结果</span>
+                    <select id="demoOutcome" aria-label="模拟结果">
+                      <option value="random">随机</option><option value="done">成功</option><option value="error">失败</option><option value="refused">拒绝</option><option value="approval">待确认</option>
+                    </select>
+                  </label>
+                </div>
                 <form class="talk-input" id="chatForm">
                   <span class="talk-plus" aria-hidden="true">
                     <svg viewBox="0 0 16 16" width="15" height="15"><path d="M8 3v10M3 8h10"/></svg>

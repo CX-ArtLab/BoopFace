@@ -44,19 +44,21 @@ O driver de tela de cada configuração é um pequeno bloco em `examples/arduino
 
 ## Veja primeiro no computador, sem hardware
 
-Baixe [`preview/boopface-embedded-preview.html`](preview/boopface-embedded-preview.html) e abra no navegador. É um arquivo completo que funciona offline: não precisa de servidor, placa, Python, Node.js nem compilador. Baixe o HTML original, não salve a página de visualização do arquivo no GitHub. Num clone do projeto, dá para abrir com dois cliques.
+Baixe [`studio/boopface-embedded-studio.html`](studio/boopface-embedded-studio.html) e abra no navegador. É um arquivo completo que funciona offline: não precisa de servidor, placa, Python, Node.js nem compilador. Baixe o HTML original, não salve a página de visualização do arquivo no GitHub. Num clone do projeto, dá para abrir com dois cliques.
 
 É **o mesmo código C++ embarcado compilado para WebAssembly**, não a demo web nem outra animação em JavaScript. Oferece 33 ações (as 18 da 0.1, mais 13 que a 0.2 traz da web 0.9, como reverência, observar, pensar, piscadela, convencido, tontura e quicar, além de ouvir e falar do kit de voz), ciclo automático, pausa e avanço quadro a quadro, direção do olhar, 32 telas predefinidas em cinco grupos (redondas, quadradas, em barra, kits de desenvolvimento e OLED) e resoluções personalizadas de 16 a 512 por eixo. Os olhos são arredondados por padrão; `setRoundEyes(false)` volta aos cortes retos. Dá para escolher mostrar inteiro ou recortar para preencher, zoom, deslocamentos e recorte circular. A saída do navegador não substitui testes de ligação, driver, taxa de atualização e desempenho no hardware real. Para recompilar e verificar, veja [as notas do simulador](preview/README.md).
 
 ## Ajuste no simulador e leve para a placa
 
-Deixe os olhos do seu jeito no simulador e compile o firmware com essas mesmas configurações, sem mexer no código:
+Deixe os olhos do seu jeito no simulador e compile o firmware com essas mesmas configurações, sem mexer no código. Este caminho precisa da **pasta completa do projeto** (a que contém `embedded/`): na [página do GitHub](https://github.com/CX-ArtLab/boopface) escolha *Code → Download ZIP* ou use `git clone`. O ZIP da biblioteca do Arduino traz só os exemplos `.ino`.
 
-1. Abra o simulador e escolha a sua tela. O painel **Modelo e ligação** mostra a placa, a ligação e o comando de compilação.
-2. Ajuste o layout, as cores, a taxa de quadros, o piscar e as transições; se a tela estiver montada girada, clique em «Girar tela 90°».
-3. Clique em **Exportar configurações**, copie ou baixe o texto e salve como `eyes_settings.h`.
-4. Coloque o arquivo em `embedded/examples/arduino/`, ao lado de `main.cpp`.
-5. Compile e envie o ambiente indicado nas primeiras linhas do arquivo, por exemplo `pio run -d embedded -e esp32-s3-st7789 -t upload`.
+1. Abra o simulador e escolha a sua tela. Na aba **Firmware**, *Modelo e conexões* mostra a placa e a sua tabela de ligação.
+2. Ajuste o layout, as cores, a taxa de quadros, o piscar e as transições; se a tela estiver montada girada, gire-a 90°.
+3. De volta à aba **Firmware**, na página `eyes_settings.h`, clique em **Baixar arquivo** (ou em **Copiar** e salve o texto como `eyes_settings.h`).
+4. Coloque o arquivo em `embedded/examples/arduino/` da pasta do projeto, ao lado de `main.cpp`.
+5. Instale o [PlatformIO](https://docs.platformio.org/en/latest/core/installation/index.html), abra um terminal na pasta mais acima do projeto (a que contém `embedded`) e execute o comando de compilação mostrado na página, por exemplo `pio run -d embedded -e esp32-s3-st7789 -t upload`.
+
+**Arduino IDE**: instale a biblioteca pelo ZIP (*Sketch → Incluir biblioteca → Adicionar biblioteca .ZIP*) e abra *Arquivo → Exemplos → BoopFace* (SerialEyes, OledSSD1306). Esses dois exemplos não leem `eyes_settings.h`; para usar as configurações do simulador, siga os passos acima.
 
 | Configuração em `eyes_settings.h` | Controle do simulador |
 | --- | --- |

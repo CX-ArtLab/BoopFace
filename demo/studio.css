@@ -3066,8 +3066,9 @@ body.has-chat-modal {
     grid-template-columns: 1fr 1fr;
   }
   .scene-switch button { text-align: center; }
+  /* The link to the Embedded Studio stays on a phone (it is the way across); the badges make room. */
   .topbar-start .badge-version,
-  .top-link[href*="hardware"],
+  .topbar-start .badge-studio,
   .export-label { display: none; }
   .toolbar-solo { gap: 6px; }
   .top-btn:not(.top-icon-btn) { padding: 0 9px; }
@@ -3147,3 +3148,53 @@ body.has-chat-modal {
 
 /* What Connect AI does, under its heading. */
 .agent-what { margin: -2px 0 12px; line-height: 1.55; }
+
+/* Chat: a plain statement that the replies are simulated, and a picker for the ending. */
+.talk-demo {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 0 16px 6px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--w-muted);
+}
+.talk-demo-pick { display: inline-flex; align-items: center; gap: 6px; }
+.talk-demo-pick select {
+  height: 24px;
+  padding: 0 6px;
+  border: 1px solid var(--w-line);
+  border-radius: 8px;
+  background: var(--w-field);
+  color: var(--w-text);
+  font: inherit;
+}
+
+/* When the browser refuses to copy, the text is shown selected, to copy by hand. */
+.manual-copy {
+  margin: 8px 0 0;
+  padding: 10px;
+  border: 1px solid var(--line-strong, var(--line));
+  border-radius: 10px;
+  background: var(--seg-active, rgba(255, 255, 255, 0.06));
+  color: var(--ink);
+  font-size: 12px;
+}
+.manual-copy p { margin: 0 0 6px; line-height: 1.5; }
+.manual-copy textarea {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 0 6px;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  color: inherit;
+  font: 11.5px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  resize: vertical;
+}
+.manual-copy button { height: 26px; padding: 0 10px; border: 1px solid var(--line); border-radius: 8px; color: inherit; }

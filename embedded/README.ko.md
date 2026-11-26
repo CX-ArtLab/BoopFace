@@ -44,19 +44,21 @@
 
 ## 하드웨어 없이 먼저 PC에서 확인
 
-[`preview/boopface-embedded-preview.html`](preview/boopface-embedded-preview.html)을 내려받아 브라우저로 엽니다. 완전한 오프라인 파일이라 서버, 개발 보드, Python, Node.js, 컴파일러가 필요 없습니다. GitHub 파일 보기 페이지를 저장하지 말고 원본 HTML을 내려받으세요. 클론한 프로젝트에서 파일을 더블클릭해도 됩니다.
+[`studio/boopface-embedded-studio.html`](studio/boopface-embedded-studio.html)을 내려받아 브라우저로 엽니다. 완전한 오프라인 파일이라 서버, 개발 보드, Python, Node.js, 컴파일러가 필요 없습니다. GitHub 파일 보기 페이지를 저장하지 말고 원본 HTML을 내려받으세요. 클론한 프로젝트에서 파일을 더블클릭해도 됩니다.
 
 **같은 임베디드 C++ 소스를 WebAssembly로 컴파일한 것**으로, 웹 데모나 별도의 JavaScript 애니메이션이 아닙니다. 동작 33개(0.1의 18개에, 0.2에서 웹 버전 0.9를 따라 추가된 인사, 관찰, 생각, 윙크, 으쓱, 어지러움, 통통 튀기 등 13개와 음성 키트의 듣기·말하기), 자동 순환, 일시 정지와 한 프레임씩 보기, 시선 방향, 5개 그룹(원형, 사각형, 가로형, 개발 키트, OLED) 32가지 화면 프리셋, 가로세로 16–512의 사용자 해상도를 지원합니다. 눈은 기본으로 모서리가 둥글며 `setRoundEyes(false)`로 직각으로 되돌릴 수 있습니다. 전체 표시 또는 잘라서 채우기, 확대·축소, 오프셋, 원형 잘라내기를 설정할 수 있습니다. 브라우저 출력은 실제 배선, 드라이버, 주사율, 성능 테스트를 대신하지 못합니다. 다시 빌드하고 검증하는 방법은 [시뮬레이터 설명](preview/README.md)을 보세요.
 
 ## 시뮬레이터에서 맞추고 바로 보드로
 
-시뮬레이터에서 눈을 마음에 들게 맞추면 코드를 고치지 않고 같은 설정으로 펌웨어를 빌드할 수 있습니다:
+시뮬레이터에서 눈을 마음에 들게 맞추면 코드를 고치지 않고 같은 설정으로 펌웨어를 빌드할 수 있습니다. 이 방법에는 **프로젝트 전체 폴더**(`embedded/`가 들어 있는 폴더)가 필요합니다. [GitHub 페이지](https://github.com/CX-ArtLab/boopface)에서 *Code → Download ZIP*을 고르거나 `git clone`으로 받으세요. Arduino 라이브러리 ZIP에는 `.ino` 예제만 들어 있습니다.
 
-1. 시뮬레이터를 열고 화면을 고릅니다. "모델과 배선"에 해당 보드, 배선표, 빌드 명령이 나옵니다.
-2. 레이아웃, 색상, 프레임 레이트, 깜빡임, 전환을 조정합니다. 화면을 돌려서 장착했다면 "화면 90° 회전"을 누릅니다.
-3. "설정 내보내기"를 누르고 복사하거나 내려받아 `eyes_settings.h`로 저장합니다.
-4. 파일을 `embedded/examples/arduino/` 안 `main.cpp` 옆에 둡니다.
-5. 파일 첫 주석에 적힌 환경으로 빌드하고 업로드합니다. 예: `pio run -d embedded -e esp32-s3-st7789 -t upload`.
+1. 시뮬레이터를 열고 화면을 고릅니다. "펌웨어" 탭의 "모델 및 배선"에 해당 보드와 배선표가 나옵니다.
+2. 레이아웃, 색상, 프레임 레이트, 깜빡임, 전환을 조정합니다. 화면을 돌려서 장착했다면 90° 회전을 켭니다.
+3. "펌웨어" 탭의 `eyes_settings.h` 페이지에서 "파일 다운로드"를 누릅니다("복사"한 뒤 `eyes_settings.h`로 저장해도 됩니다).
+4. 파일을 프로젝트 폴더의 `embedded/examples/arduino/` 안 `main.cpp` 옆에 둡니다.
+5. [PlatformIO](https://docs.platformio.org/en/latest/core/installation/index.html)를 설치하고, 프로젝트 맨 위 폴더(`embedded`가 보이는 곳)에서 터미널을 열어 페이지에 표시된 "빌드 명령"을 실행합니다. 예: `pio run -d embedded -e esp32-s3-st7789 -t upload`.
+
+**Arduino IDE**: ZIP으로 라이브러리를 설치하고(스케치 → 라이브러리 포함하기 → .ZIP 라이브러리 추가) "파일 → 예제 → BoopFace"의 SerialEyes나 OledSSD1306을 엽니다. 이 두 예제는 `eyes_settings.h`를 읽지 않습니다. 시뮬레이터에서 맞춘 설정을 쓰려면 위 단계를 따르세요.
 
 | `eyes_settings.h`의 설정 | 시뮬레이터 항목 |
 | --- | --- |

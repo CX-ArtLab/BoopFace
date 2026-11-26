@@ -44,19 +44,21 @@ Le pilote d’écran de chaque configuration tient dans un petit bloc de `exampl
 
 ## Voir d’abord sur l’ordinateur, sans matériel
 
-Téléchargez [`preview/boopface-embedded-preview.html`](preview/boopface-embedded-preview.html) et ouvrez-le dans le navigateur. C’est un fichier complet qui fonctionne hors ligne : pas de serveur, de carte, de Python, de Node.js ni de compilateur. Téléchargez le HTML brut, n’enregistrez pas la page d’affichage du fichier sur GitHub. Dans un clone du projet, un double-clic suffit.
+Téléchargez [`studio/boopface-embedded-studio.html`](studio/boopface-embedded-studio.html) et ouvrez-le dans le navigateur. C’est un fichier complet qui fonctionne hors ligne : pas de serveur, de carte, de Python, de Node.js ni de compilateur. Téléchargez le HTML brut, n’enregistrez pas la page d’affichage du fichier sur GitHub. Dans un clone du projet, un double-clic suffit.
 
 C’est **le même code C++ embarqué compilé en WebAssembly**, pas la démo web ni une autre animation JavaScript. Il propose 33 actions (les 18 de la 0.1, plus 13 que la 0.2 reprend de la version web 0.9 : révérence, observer, réfléchir, clin d’œil, air satisfait, vertige, rebond, etc., ainsi qu’écouter et parler du kit vocal), le cycle automatique, la pause et l’image par image, la direction du regard, 32 écrans prédéfinis en cinq groupes (ronds, carrés, en barre, kits de développement et OLED) et des résolutions personnalisées de 16 à 512 par axe. Les yeux sont arrondis par défaut ; `setRoundEyes(false)` rétablit les coupes droites. On peut choisir l’affichage entier ou le recadrage pour remplir, le zoom, les décalages et le découpage circulaire. Le rendu du navigateur ne remplace pas les tests de câblage, de pilote, de rafraîchissement ni de performances sur le vrai matériel. Pour recompiler et vérifier, voir [les notes du simulateur](preview/README.md).
 
 ## Réglez dans le simulateur, puis passez à la carte
 
-Réglez les yeux à votre goût dans le simulateur, puis compilez le firmware avec exactement ces réglages, sans toucher au code :
+Réglez les yeux à votre goût dans le simulateur, puis compilez le firmware avec exactement ces réglages, sans toucher au code. Ce chemin demande le **dossier complet du projet** (celui qui contient `embedded/`) : sur la [page GitHub](https://github.com/CX-ArtLab/boopface), choisissez *Code → Download ZIP* ou faites un `git clone`. Le ZIP de la bibliothèque Arduino ne contient que les exemples `.ino`.
 
-1. Ouvrez le simulateur et choisissez votre écran. Le panneau **Modèle et câblage** indique la carte, le câblage et la commande de compilation.
-2. Ajustez la mise en page, les couleurs, la fréquence d’images, le clignement et les transitions ; si l’écran est monté tourné, cliquez sur « Tourner l’écran de 90° ».
-3. Cliquez sur **Exporter les réglages**, copiez ou téléchargez le texte et enregistrez-le sous `eyes_settings.h`.
-4. Placez le fichier dans `embedded/examples/arduino/`, à côté de `main.cpp`.
-5. Compilez et téléversez l’environnement indiqué en tête du fichier, par exemple `pio run -d embedded -e esp32-s3-st7789 -t upload`.
+1. Ouvrez le simulateur et choisissez votre écran. Dans l’onglet **Firmware**, *Modèle et câblage* indique la carte et son tableau de câblage.
+2. Ajustez la mise en page, les couleurs, la fréquence d’images, le clignement et les transitions ; si l’écran est monté tourné, tournez-le de 90°.
+3. De retour dans l’onglet **Firmware**, sur la page `eyes_settings.h`, cliquez sur **Télécharger le fichier** (ou sur **Copier**, puis enregistrez le texte sous `eyes_settings.h`).
+4. Placez le fichier dans `embedded/examples/arduino/` du dossier du projet, à côté de `main.cpp`.
+5. Installez [PlatformIO](https://docs.platformio.org/en/latest/core/installation/index.html), ouvrez un terminal dans le dossier le plus haut du projet (celui où l’on voit `embedded`) et lancez la commande de compilation affichée sur la page, par exemple `pio run -d embedded -e esp32-s3-st7789 -t upload`.
+
+**Arduino IDE** : installez la bibliothèque depuis le ZIP (*Croquis → Inclure une bibliothèque → Ajouter la bibliothèque .ZIP*), puis ouvrez *Fichier → Exemples → BoopFace* (SerialEyes, OledSSD1306). Ces deux exemples ne lisent pas `eyes_settings.h` ; pour utiliser les réglages du simulateur, suivez les étapes ci-dessus.
 
 | Réglage dans `eyes_settings.h` | Contrôle du simulateur |
 | --- | --- |

@@ -109,9 +109,17 @@ jobs:
           PREVIEW_BROWSER=firefox node embedded/tools/test-preview-ui.mjs
           PREVIEW_BROWSER=webkit node embedded/tools/test-preview-ui.mjs
           node embedded/tools/test-preview-i18n.mjs
+      - name: Embedded Studio offline file is current and plays every action
+        run: |
+          node embedded/tools/test-studio-file.mjs
+          ZIG="$ZIG" node embedded/tools/build-core-data.mjs "$RUNNER_TEMP/core-data.js"
+          node -e "const f=require('fs'),w=t=>t.match(/const WASM_BASE64 = '([^']+)'/)[1];if(w(f.readFileSync(process.argv[1],'utf8'))!==w(f.readFileSync('embedded/studio/boopface-embedded-studio.html','utf8')))throw new Error('Studio engine differs from a fresh build of the core');console.log('Studio engine equals a fresh build.')" "$RUNNER_TEMP/core-data.js"
+          node embedded/tools/test-studio-ui.mjs
+          PREVIEW_BROWSER=firefox node embedded/tools/test-studio-ui.mjs
+          PREVIEW_BROWSER=webkit node embedded/tools/test-studio-ui.mjs
       - name: Check the standalone Arduino ZIP
         run: node embedded/tools/package-release.mjs "eyes-v$(node -p 'JSON.parse(require("fs").readFileSync("embedded/lib/BoopFace/library.json")).version')" "$RUNNER_TEMP/BoopFace-Embedded.zip"
       - uses: actions/upload-artifact@v4
         with:
           name: offline-eyes-preview
-          path: embedded/preview/boopface-embedded-preview.html
+          path: embedded/studio/boopface-embedded-studio.html

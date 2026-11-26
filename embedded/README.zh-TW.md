@@ -44,19 +44,21 @@
 
 ## 不用硬體，先在電腦上看效果
 
-下載並用瀏覽器開啟 [`preview/boopface-embedded-preview.html`](preview/boopface-embedded-preview.html)。這是一個完整的離線檔案，不需要伺服器、開發板、Python、Node.js 或編譯工具；請下載原始 HTML，而不是儲存 GitHub 的檔案檢視頁面。也可在克隆後的專案中直接雙擊這個檔案。
+下載並用瀏覽器開啟 [`studio/boopface-embedded-studio.html`](studio/boopface-embedded-studio.html)。這是一個完整的離線檔案，不需要伺服器、開發板、Python、Node.js 或編譯工具；請下載原始 HTML，而不是儲存 GitHub 的檔案檢視頁面。也可在克隆後的專案中直接雙擊這個檔案。
 
 它將**同一份嵌入式 C++ 原始碼編譯成 WebAssembly**，不是原 Web Demo 或另一套 JavaScript 動畫。支援 33 種動作（0.1 的 18 種，加上 0.2 跟隨網頁版 0.9 新增的鞠躬、觀察、思考、眨眼、得意、眩暈、彈跳等 13 種，以及語音套件的聆聽和說話）、自動輪播、暫停/逐幀、注視方向，以及 32 種螢幕預設（圓屏、方屏、長條屏、開發套件和 OLED 五組）和寬高 16–512 的自定義解析度。眼睛預設是圓角，`setRoundEyes(false)` 恢復直角。可設定完整顯示或裁切鋪滿、縮放、偏移與圓形裁切。命名預設使用對應參考模組的 SVG 外框，保留 PCB、玻璃、安裝孔與排線的不同結構；橫屏、豎屏整板旋轉，自定義解析度使用通用外框。開啟「注視跟隨」後，滑鼠可模擬接近的物體；感應範圍、只看移動物體、跟隨速度和離開後的停留時間在庫介面裡設定，真正的攝像頭或感測器接入由宿主程式提供。暫停只凍結時間，仍可切換動作；慢速播放可用於檢查過渡。瀏覽器輸出不能代替真機接線、驅動、重新整理率和效能測試。重建和驗證方法見 [模擬器說明](preview/README.md)。
 
 ## 在模擬器裡調好，直接用到板子上
 
-在模擬器裡把眼睛調到滿意，不用改程式碼，就能按同樣的設定編譯韌體：
+在模擬器裡把眼睛調到滿意，不用改程式，就能按同樣的設定編譯韌體。這條路線需要**完整的專案資料夾**（裡面有 `embedded/` 目錄）：在 [GitHub 頁面](https://github.com/CX-ArtLab/boopface) 點 *Code → Download ZIP*，或用 `git clone`。Arduino 函式庫的 ZIP 裡只有 `.ino` 範例，沒有這些檔案。
 
-1. 開啟模擬器，選你的螢幕。「型號與接線」裡有對應的開發板、接線表和編譯命令。
-2. 調整佈局、顏色、幀率、眨眼和過渡；螢幕是轉著裝的，就按「螢幕旋轉 90°」。
-3. 點「匯出設定」，複製或下載，儲存為 `eyes_settings.h`。
-4. 把檔案放進 `embedded/examples/arduino/`，和 `main.cpp` 放在一起。
-5. 按檔案開頭註釋裡寫的環境編譯並上傳，例如 `pio run -d embedded -e esp32-s3-st7789 -t upload`。
+1. 打開模擬器，選你的螢幕。右邊「韌體」分頁裡的「型號與接線」有對應的開發板和接線表。
+2. 調整佈局、顏色、幀率、眨眼和過渡；螢幕是轉著裝的，就按「旋轉 90°」。
+3. 回到「韌體」分頁的 `eyes_settings.h` 頁，點「下載文件」（或點「複製」，自己存成 `eyes_settings.h`）。
+4. 把檔案放進專案資料夾的 `embedded/examples/arduino/`，和 `main.cpp` 放在一起。
+5. 安裝 [PlatformIO](https://docs.platformio.org/en/latest/core/installation/index.html)，在專案最上層（看得到 `embedded` 資料夾的那一層）打開終端機，執行頁面上的「編譯指令」，例如 `pio run -d embedded -e esp32-s3-st7789 -t upload`。
+
+**用 Arduino IDE**：用 ZIP 安裝函式庫（草稿碼 → 匯入程式庫 → 加入 .ZIP 程式庫），再打開「檔案 → 範例 → BoopFace」裡的 SerialEyes 或 OledSSD1306。這兩個範例不讀取 `eyes_settings.h`；想用模擬器裡調好的設定，請照上面的步驟走。
 
 | `eyes_settings.h` 裡的設定 | 對應模擬器裡的 |
 | --- | --- |

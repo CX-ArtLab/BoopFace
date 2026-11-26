@@ -364,7 +364,7 @@ Dieselben Augenausdrücke auf Roboter- und Board-Bildschirmen. Eine kleine C++11
 <img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded Studio: Augen auf einem Board-Bildschirm, Ausdrucksknöpfe und die Bildschirmliste" width="100%">
 
 1. **Vorschau**: Der [Online-Simulator](https://boopface.com/hardware/?lang=de) nutzt dieselbe Engine und simuliert 32 Bildschirme, so siehst du es auch ohne Board.
-2. **Export**: Layout, Farben und Bildrate einstellen, auf Einstellungen exportieren klicken und `eyes_settings.h` neben die `main.cpp` der Beispiel-Firmware legen und bauen. [Schritte](../embedded/README.de.md#im-simulator-einstellen-direkt-aufs-board)
+2. **Export**: Layout, Farben und Bildrate einstellen, den Reiter **Firmware** öffnen und auf **Datei herunterladen** klicken; `eyes_settings.h` im vollständigen Projekt nach `embedded/examples/arduino/` legen (neben `main.cpp`) und bauen. Das ZIP der Arduino-Bibliothek enthält diese Dateien nicht; siehe die [Schritte](../embedded/README.de.md#im-simulator-einstellen-direkt-aufs-board).
 3. **Installation**: In der Arduino IDE `BoopFace-Embedded-0.2.0.zip` von der [Release-Seite](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0) hinzufügen; in PlatformIO `lib_deps = cxlab/BoopFace@^0.2.0` verwenden.
 
 ```cpp

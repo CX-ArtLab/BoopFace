@@ -44,19 +44,21 @@ Der Bildschirmtreiber jeder Konfiguration ist ein kleiner Block in `examples/ard
 
 ## Erst am Rechner ansehen, ohne Hardware
 
-Lade [`preview/boopface-embedded-preview.html`](preview/boopface-embedded-preview.html) herunter und öffne sie im Browser. Es ist eine vollständige Offline-Datei: kein Server, kein Board, kein Python, kein Node.js und kein Compiler nötig. Lade das rohe HTML herunter, nicht die GitHub-Dateiansicht. In einem geklonten Projekt genügt ein Doppelklick.
+Lade [`studio/boopface-embedded-studio.html`](studio/boopface-embedded-studio.html) herunter und öffne sie im Browser. Es ist eine vollständige Offline-Datei: kein Server, kein Board, kein Python, kein Node.js und kein Compiler nötig. Lade das rohe HTML herunter, nicht die GitHub-Dateiansicht. In einem geklonten Projekt genügt ein Doppelklick.
 
 Es ist **derselbe Embedded-C++-Code, nach WebAssembly kompiliert**, nicht die Web-Demo oder eine andere JavaScript-Animation. Es gibt 33 Aktionen (die 18 aus 0.1 plus 13, die 0.2 aus der Web-Version 0.9 übernimmt, etwa Verbeugen, Beobachten, Nachdenken, Zwinkern, selbstzufrieden, schwindelig und Hüpfen, dazu Zuhören und Sprechen aus dem Sprach-Kit), automatischen Durchlauf, Pause und Einzelbild, Blickrichtung, 32 vorgefertigte Bildschirme in fünf Gruppen (rund, quadratisch, Leiste, Entwicklungskits und OLED) und eigene Auflösungen von 16 bis 512 pro Achse. Die Augen sind standardmäßig abgerundet; `setRoundEyes(false)` bringt die geraden Schnitte zurück. Einstellbar sind ganz anzeigen oder zuschneiden zum Füllen, Zoom, Versatz und runder Zuschnitt. Die Ausgabe im Browser ersetzt keine Tests von Verdrahtung, Treiber, Bildwiederholrate und Leistung auf echter Hardware. Neu bauen und prüfen: siehe [Hinweise zum Simulator](preview/README.md).
 
 ## Im Simulator einstellen, direkt aufs Board
 
-Stell die Augen im Simulator nach deinem Geschmack ein und baue die Firmware mit genau diesen Einstellungen, ohne Code zu ändern:
+Stell die Augen im Simulator nach deinem Geschmack ein und baue die Firmware mit genau diesen Einstellungen, ohne Code zu ändern. Dieser Weg braucht den **vollständigen Projektordner** (den mit `embedded/`): Wähle auf der [GitHub-Seite](https://github.com/CX-ArtLab/boopface) *Code → Download ZIP* oder nutze `git clone`. Das ZIP der Arduino-Bibliothek enthält nur die `.ino`-Beispiele.
 
-1. Öffne den Simulator und wähle deinen Bildschirm. Das Feld **Modell und Verdrahtung** zeigt Board, Verdrahtung und Build-Befehl.
-2. Stelle Layout, Farben, Bildrate, Blinzeln und Übergänge ein; ist der Bildschirm gedreht eingebaut, klicke auf „Bildschirm um 90° drehen“.
-3. Klicke auf **Einstellungen exportieren**, kopiere oder lade den Text herunter und speichere ihn als `eyes_settings.h`.
-4. Lege die Datei in `embedded/examples/arduino/` neben `main.cpp`.
-5. Baue und lade die Umgebung hoch, die in den ersten Zeilen der Datei steht, zum Beispiel `pio run -d embedded -e esp32-s3-st7789 -t upload`.
+1. Öffne den Simulator und wähle deinen Bildschirm. Im Reiter **Firmware** zeigt *Modell und Anschlüsse* das Board und seine Verdrahtungstabelle.
+2. Stelle Layout, Farben, Bildrate, Blinzeln und Übergänge ein; ist der Bildschirm gedreht eingebaut, drehe ihn um 90°.
+3. Zurück im Reiter **Firmware**, auf der Seite `eyes_settings.h`, klicke auf **Datei herunterladen** (oder auf **Kopieren** und speichere den Text als `eyes_settings.h`).
+4. Lege die Datei im Projektordner nach `embedded/examples/arduino/`, neben `main.cpp`.
+5. Installiere [PlatformIO](https://docs.platformio.org/en/latest/core/installation/index.html), öffne ein Terminal im obersten Ordner des Projekts (dem, in dem `embedded` liegt) und führe den auf der Seite gezeigten Build-Befehl aus, zum Beispiel `pio run -d embedded -e esp32-s3-st7789 -t upload`.
+
+**Arduino IDE**: Installiere die Bibliothek aus dem ZIP (*Sketch → Bibliothek einbinden → .ZIP-Bibliothek hinzufügen*) und öffne *Datei → Beispiele → BoopFace* (SerialEyes, OledSSD1306). Diese beiden Beispiele lesen `eyes_settings.h` nicht; für die Einstellungen aus dem Simulator folge den Schritten oben.
 
 | Einstellung in `eyes_settings.h` | Element im Simulator |
 | --- | --- |
