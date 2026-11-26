@@ -222,7 +222,7 @@ export declare class BoopFace extends HTMLElement {
    * Same as the `eye-color` attribute.
    */
   setEyeColor(color?: string | null): this;
-  /** Stroking the forehead makes the avatar nuzzle in (on by default). */
+  /** Stroking the forehead makes the avatar nuzzle in (on by default). Also the `petting` attribute. */
   setPetting(enabled?: boolean): this;
   getHeadRoundness(): number;
   /**

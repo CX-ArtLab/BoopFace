@@ -22,6 +22,17 @@ Gebaut mit SVG und reinem JavaScript, ist es eine native Web Component ohne Lauf
 
 https://github.com/user-attachments/assets/533940e6-38e8-45e3-a276-606e1e7bba51
 
+## Neu in 0.9
+
+- **3D-Kopf.** Mit `view="3d"` dreht sich der Kopf wirklich zum Zeiger, mit Tiefe und gewölbtem Gesicht. [mehr](#3d-kopf--neu-in-09)
+- **15 neue Ausdrücke.** Verbeugen, Kopfschütteln, Nachdenken, Zwinkern, Schwindel, Hüpfen und mehr, dazu Zuhören und Sprechen aus dem Sprach-Kit. [mehr](#sprach-interaktions-kit--neu-in-09)
+- **Streicheln, runde Augen, Augenfarbe.** Über die Stirn streichen, und der Avatar schmiegt sich an; die Augen nehmen jede Farbe an oder werden durchsichtig. [mehr](#3d-kopf--neu-in-09)
+- **KI anbinden.** Gib den Stream, den deine KI zurückgibt, an `connectAgent()`, und der Avatar wechselt selbst den Ausdruck, während sie nachdenkt, ein Werkzeug nutzt, antwortet, fertig ist oder scheitert; Sprachgespräche auch. [mehr](#einen-ki-stream-anbinden--neu-in-09)
+- **Ein neues Studio.** Demo, Skins und KI-Anbindung auf einer Seite. [Studio öffnen](https://boopface.com/demo/?lang=de)
+- **BoopFace Embedded 0.2.** Die neuen Ausdrücke und runden Augen auch auf Board-Displays. [mehr](#boopface-embedded)
+
+Alles Weitere steht in den Abschnitten unten und im [CHANGELOG](../CHANGELOG.md).
+
 ## Neu: [BoopFace Embedded](#boopface-embedded)
 
 <p align="center">
@@ -111,8 +122,10 @@ Oder lade `boopface-x.y.z.zip` aus dem [neuesten Release](https://github.com/CX-
 Dann die Komponente hinzufügen:
 
 ```html
-<boop-face id="avatar"></boop-face>
+<boop-face id="avatar" view="3d"></boop-face>
 ```
+
+`view="3d"` ergibt den 3D-Kopf, den du auf [boopface.com](https://boopface.com/) und im Studio siehst. Ohne diese Angabe ist der Avatar flach: Das ist der Standard und leichter (der 3D-Renderer lädt etwa 19 KB nach).
 
 Es ist kein Initialisierungscode nötig. Der Avatar wechselt automatisch in seinen standardmäßigen Idle-Zustand.
 
@@ -248,6 +261,7 @@ try {
 | `antenna` | `false` blendet die Antennenkugel aus |
 | `antenna-drag` | Antenne ziehen, zurückfedern und schwindlige Reaktion; mit `false` abschalten |
 | `idle-gaze` | In Ruhe schauen die Augen ab und zu umher; `false` lässt sie geradeaus schauen |
+| `petting` | Fährst du ein paar Mal mit dem Zeiger über die Stirn, schließt der Avatar die Augen und schmiegt sich an; `false` schaltet es aus |
 | `skin` | Skin-Nummer, z. B. `301`; weglassen für die flache Farbe |
 
 Häufige Runtime-Steuerungen:
@@ -279,7 +293,7 @@ Ein Druck auf die Mitte des Avatars startet das Quetschen. Bewegt sich der Zeige
 
 **Augenfarbe.** `eye-color="#2bd67b"` (oder `setEyeColor()`) färbt die Augen, beim schlichten Avatar und bei den 131 Skins mit schlichten Augen. Die übrigen 57 Skins haben Augen mit eigener Textur (erhaben, gläsern oder gemustert) und behalten sie; `SKINS[Nummer].eyeColor` zeigt, welche sich ändern lassen. `eye-color="transparent"` schneidet die Augen aus dem Kopf, sodass alles hinter dem Avatar darin zu sehen ist; das funktioniert bei jedem Skin, auch bei texturierten Augen.
 
-**Streicheln.** Ein paar Mal über die Stirn streichen, und der Avatar schließt die Augen und schmiegt sich an. Standardmäßig an; `setPetting(false)` schaltet es ab.
+**Streicheln.** Ein paar Mal über die Stirn streichen, und der Avatar schließt die Augen und schmiegt sich an. Standardmäßig an; `petting="false"` oder `setPetting(false)` schaltet es ab.
 
 ## Skins · Neu in 0.7
 

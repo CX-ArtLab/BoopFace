@@ -22,6 +22,17 @@ Construit avec SVG et JavaScript natif, c’est un Web Component natif sans dép
 
 https://github.com/user-attachments/assets/533940e6-38e8-45e3-a276-606e1e7bba51
 
+## Nouveautés de la 0.9
+
+- **Tête 3D.** Avec `view="3d"`, la tête se tourne vraiment vers le pointeur, avec du volume et un visage bombé. [détails](#tête-3d--nouveau-dans-09)
+- **15 nouvelles expressions.** Révérence, non de la tête, réflexion, clin d’œil, vertige, saut et plus, ainsi que l’écoute et la parole du kit vocal. [détails](#kit-dexpressions-vocales--nouveau-dans-la-09)
+- **Caresses, yeux arrondis, couleur des yeux.** Caressez le front et l’avatar vient se blottir ; les yeux prennent n’importe quelle couleur ou deviennent transparents. [détails](#tête-3d--nouveau-dans-09)
+- **Connecter l’IA.** Passez à `connectAgent()` le flux que renvoie votre IA : l’avatar change tout seul d’expression quand elle réfléchit, utilise un outil, répond, a fini ou échoue ; les conversations vocales aussi. [détails](#brancher-un-flux-dia--nouveau-dans-la-09)
+- **Un nouveau Studio.** La démo, les skins et la connexion IA sur une seule page. [Ouvrir le Studio](https://boopface.com/demo/?lang=fr)
+- **BoopFace Embedded 0.2.** Les nouvelles expressions et les yeux arrondis aussi sur les écrans de cartes. [détails](#boopface-embedded)
+
+Tout le reste se trouve dans les sections ci-dessous et dans le [CHANGELOG](../CHANGELOG.md).
+
 ## Nouveau : [BoopFace Embedded](#boopface-embedded)
 
 <p align="center">
@@ -111,8 +122,10 @@ Ou téléchargez `boopface-x.y.z.zip` depuis la [dernière version](https://gith
 Puis ajouter le composant :
 
 ```html
-<boop-face id="avatar"></boop-face>
+<boop-face id="avatar" view="3d"></boop-face>
 ```
+
+`view="3d"` donne la tête en 3D que vous voyez sur [boopface.com](https://boopface.com/) et dans le Studio. Sans lui, l’avatar est plat : c’est la valeur par défaut, plus légère (le rendu 3D ajoute environ 19 Ko).
 
 Aucun code d’initialisation n’est nécessaire. L’avatar entre automatiquement dans son état idle par défaut.
 
@@ -248,6 +261,7 @@ try {
 | `antenna` | `false` masque la boule de l’antenne |
 | `antenna-drag` | Tirer l’antenne, retour élastique et réaction étourdie ; `false` pour désactiver |
 | `idle-gaze` | Au repos, les yeux regardent autour de temps en temps ; `false` les garde droit devant |
+| `petting` | Passez le pointeur plusieurs fois sur le front : l’avatar ferme les yeux et vient se blottir ; `false` le désactive |
 | `skin` | Numéro de skin, par exemple `301` ; à omettre pour la couleur unie |
 
 Contrôles courants à l’exécution :
@@ -279,7 +293,7 @@ Le centre de l’avatar déclenche l’écrasement. Au-delà de 4 pixels CSS de 
 
 **Couleur des yeux.** `eye-color="#2bd67b"` (ou `setEyeColor()`) colore les yeux, sur l’avatar uni et sur les 131 skins aux yeux unis. Les 57 autres skins ont des yeux à la texture propre (en relief, vitrés ou à motif) et les gardent ; `SKINS[numéro].eyeColor` indique lesquelles peuvent changer. `eye-color="transparent"` découpe les yeux dans la tête pour laisser voir ce qui se trouve derrière l’avatar ; cela fonctionne sur tous les skins, yeux texturés compris.
 
-**Caresses.** Caressez le front quelques fois : l’avatar ferme les yeux et vient se blottir. Activé par défaut ; `setPetting(false)` le désactive.
+**Caresses.** Caressez le front quelques fois : l’avatar ferme les yeux et vient se blottir. Activé par défaut ; `petting="false"` ou `setPetting(false)` le désactive.
 
 ## Skins · Nouveau dans la 0.7
 

@@ -22,6 +22,17 @@ SVG와 순수 JavaScript로 만든 네이티브 Web Component로, 런타임 의�
 
 https://github.com/user-attachments/assets/533940e6-38e8-45e3-a276-606e1e7bba51
 
+## 0.9에서 달라진 점
+
+- **입체 머리.** `view="3d"`를 넣으면 머리가 실제로 포인터 쪽으로 돌고, 두께와 둥근 얼굴이 생깁니다. [자세히](#3d-머리--09-신규)
+- **새 표정 15개.** 인사, 고개 젓기, 생각, 윙크, 어지러움, 점프 등과 음성 키트의 듣기·말하기. [자세히](#음성-인터랙션-표정-키트--09-신규)
+- **쓰다듬기, 둥근 눈, 눈 색.** 이마를 쓰다듬으면 눈을 감고 비벼 옵니다. 눈은 어떤 색으로도, 투명하게도 바꿀 수 있습니다. [자세히](#3d-머리--09-신규)
+- **AI 연결.** AI가 돌려주는 스트림을 `connectAgent()`에 넘기면 생각 중·도구 사용·답장·완료·오류에 맞춰 아바타가 스스로 표정을 바꿉니다. 음성 대화도 지원합니다. [자세히](#ai-스트림-연결--09-신규)
+- **새 Studio.** 데모, 스킨, AI 연결을 한 페이지에. [Studio 열기](https://boopface.com/demo/?lang=ko)
+- **BoopFace Embedded 0.2.** 새 표정과 둥근 눈을 개발 보드 화면에서도. [자세히](#boopface-embedded)
+
+나머지는 아래 각 섹션과 [CHANGELOG](../CHANGELOG.md)에서 볼 수 있습니다.
+
 ## 새 지원: [BoopFace Embedded](#boopface-embedded)
 
 <p align="center">
@@ -111,8 +122,10 @@ import 'boopface';
 그다음 컴포넌트를 추가합니다.
 
 ```html
-<boop-face id="avatar"></boop-face>
+<boop-face id="avatar" view="3d"></boop-face>
 ```
+
+`view="3d"`를 넣으면 [boopface.com](https://boopface.com/)과 Studio에서 보는 입체 아바타가 됩니다. 빼면 평면 아바타이며, 이것이 기본값이고 더 가볍습니다(입체 렌더러는 약 19 KB를 더 받습니다).
 
 별도의 초기화 코드는 필요하지 않습니다. 아바타는 자동으로 기본 idle 상태로 들어갑니다.
 
@@ -248,6 +261,7 @@ try {
 | `antenna` | `false`이면 안테나 공을 숨김 |
 | `antenna-drag` | 안테나 당기기, 스프링 복귀와 어지러운 반응. `false`로 끔 |
 | `idle-gaze` | 쉬는 동안 눈이 가끔 주위를 둘러봄. `false`이면 계속 앞을 봄 |
+| `petting` | 이마 위에서 포인터를 몇 번 왔다 갔다 하면 눈을 감고 비벼 옴. `false`이면 끔 |
 | `skin` | 스킨 번호(예: `301`). 생략하면 단색 |
 
 자주 쓰는 런타임 제어:
@@ -279,7 +293,7 @@ avatar.setPetting(false); // 쓰다듬기 끄기
 
 **눈 색상.** `eye-color="#2bd67b"`(또는 `setEyeColor()`)로 눈에 색을 입힙니다. 단색 아바타와 눈이 단색인 131종의 스킨에서 쓸 수 있습니다. 나머지 57종의 스킨은 눈에 고유한 질감(볼록, 유리, 무늬)이 있어 그대로 유지되며, 바꿀 수 있는지는 `SKINS[번호].eyeColor`로 알 수 있습니다. `eye-color="transparent"`는 눈을 머리에서 도려내 아바타 뒤에 있는 것이 눈으로 보이게 합니다. 질감 있는 눈을 포함해 모든 스킨에서 됩니다.
 
-**쓰다듬기.** 이마를 몇 번 쓰다듬으면 아바타가 눈을 감고 비비며 다가옵니다. 기본으로 켜져 있고, `setPetting(false)`로 끌 수 있습니다.
+**쓰다듬기.** 이마를 몇 번 쓰다듬으면 아바타가 눈을 감고 비비며 다가옵니다. 기본으로 켜져 있고, `petting="false"` 또는 `setPetting(false)`로 끌 수 있습니다.
 
 ## 스킨 · 0.7 새 기능
 

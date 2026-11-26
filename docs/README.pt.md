@@ -22,6 +22,17 @@ Feito com SVG e JavaScript puro, é um Web Component nativo sem dependências em
 
 https://github.com/user-attachments/assets/533940e6-38e8-45e3-a276-606e1e7bba51
 
+## Novidades da 0.9
+
+- **Cabeça 3D.** Com `view="3d"` a cabeça gira de verdade para o ponteiro, com volume e um rosto curvo. [detalhes](#cabeça-3d--novo-na-09)
+- **15 expressões novas.** Reverência, balançar a cabeça, pensar, piscadinha, tontura, pulo e mais, além de ouvir e falar do kit de voz. [detalhes](#kit-de-expressões-de-voz--novidade-na-09)
+- **Carinho, olhos arredondados, cor dos olhos.** Faça carinho na testa e o avatar se aconchega; os olhos aceitam qualquer cor ou ficam transparentes. [detalhes](#cabeça-3d--novo-na-09)
+- **Conectar IA.** Passe para `connectAgent()` o stream que sua IA devolve e o avatar muda de expressão sozinho ao pensar, usar uma ferramenta, responder, terminar ou falhar; conversas por voz também. [detalhes](#conectar-um-stream-de-ia--novidade-na-09)
+- **Um Studio novo.** A demo, os skins e Conectar IA em uma só página. [Abrir o Studio](https://boopface.com/demo/?lang=pt)
+- **BoopFace Embedded 0.2.** As novas expressões e os olhos arredondados também em telas de placas. [detalhes](#boopface-embedded)
+
+O resto está nas seções abaixo e no [CHANGELOG](../CHANGELOG.md).
+
 ## Novo: [BoopFace Embedded](#boopface-embedded)
 
 <p align="center">
@@ -111,8 +122,10 @@ Ou baixe `boopface-x.y.z.zip` da [versão mais recente](https://github.com/CX-Ar
 Depois, adicione o componente:
 
 ```html
-<boop-face id="avatar"></boop-face>
+<boop-face id="avatar" view="3d"></boop-face>
 ```
+
+`view="3d"` dá a cabeça em 3D que você vê em [boopface.com](https://boopface.com/) e no Studio. Sem ele, o avatar é plano: esse é o padrão, e é mais leve (o renderizador 3D adiciona cerca de 19 KB).
 
 Nenhum código de inicialização é necessário. O avatar entra automaticamente no estado idle padrão.
 
@@ -248,6 +261,7 @@ try {
 | `antenna` | `false` oculta a bolinha da antena |
 | `antenna-drag` | Puxar a antena, retorno elástico e reação de tontura; `false` desativa |
 | `idle-gaze` | Ocioso, os olhos olham em volta de vez em quando; `false` os mantém olhando para frente |
+| `petting` | Passe o ponteiro algumas vezes sobre a testa e o avatar fecha os olhos e se aconchega; `false` desativa |
 | `skin` | Número do skin, por exemplo `301`; omita para a cor lisa |
 
 Controles comuns em tempo de execução:
@@ -279,7 +293,7 @@ O centro do avatar inicia o amassar. Se o ponteiro se mover mais de 4 pixels CSS
 
 **Cor dos olhos.** `eye-color="#2bd67b"` (ou `setEyeColor()`) colore os olhos, no avatar liso e nas 131 skins de olhos lisos. As outras 57 skins têm olhos com textura própria (em relevo, vítreos ou estampados) e os mantêm; `SKINS[número].eyeColor` diz quais podem mudar. `eye-color="transparent"` recorta os olhos da cabeça para mostrar o que está atrás do avatar; funciona em todas as skins, inclusive com olhos texturizados.
 
-**Carinho.** Acaricie a testa algumas vezes e o avatar fecha os olhos e se aconchega. Ativado por padrão; `setPetting(false)` desativa.
+**Carinho.** Acaricie a testa algumas vezes e o avatar fecha os olhos e se aconchega. Ativado por padrão; `petting="false"` ou `setPetting(false)` desativa.
 
 ## Skins · Novidade na 0.7
 

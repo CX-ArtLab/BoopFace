@@ -188,7 +188,7 @@
                   </div>
                   <div class="talk-head-end">
                     <span class="talk-head-badge" id="talkHeadBadge">皮肤 #705</span>
-                    <button type="button" class="talk-head-link" id="talkAgentSettings" title="接口格式和每个状态的表情，在「代码 › 接入 AI」里">接入设置</button>
+                    <button type="button" class="talk-head-link" id="talkAgentSettings" title="这里的每条回复都由 connectAgent() 驱动表情；接口格式和每个状态的表情在「代码 › 接入 AI」里">接入设置</button>
                   </div>
                 </div>
                 <div class="talk-body" id="talkBody">
@@ -198,7 +198,7 @@
                   <span class="talk-plus" aria-hidden="true">
                     <svg viewBox="0 0 16 16" width="15" height="15"><path d="M8 3v10M3 8h10"/></svg>
                   </span>
-                  <input type="text" id="chatInput" placeholder="输入任意内容，观察头像从输入 → 等待 → 回复表情…" autocomplete="off">
+                  <input type="text" id="chatInput" placeholder="输入任意内容，看 connectAgent() 让头像从输入、思考到回复自动换表情…" autocomplete="off">
                   <button type="submit" class="talk-enter" id="chatSend" aria-label="发送">
                     <svg viewBox="0 0 16 16" width="15" height="15"><path d="M8 13V3M3.6 7.4 8 3l4.4 4.4"/></svg>
                   </button>
@@ -790,6 +790,7 @@
         <p class="insp-help dev-tab-note" id="devTabNote">复制到网页的 HTML 里，打开网页就能看到这个头像，不用安装任何东西。</p>
         <div class="insp-section agent-settings" id="agentSection" hidden>
           <div class="insp-head"><h3>接入 AI</h3><span class="insp-hint">改一项，下面的代码和对话场景都跟着变</span></div>
+          <p class="insp-help agent-what">你的程序在调用 AI（如 OpenAI、Claude）时，把它返回的数据流交给 connectAgent()，头像就会在思考、用工具、回复、完成、出错时自动换表情。语音对话也能接。</p>
           <div class="agent-rows">
             <div class="agent-row"><span>接口格式</span><div class="mini-seg" data-agent="format">
               <button type="button" data-value="openai">OpenAI</button><button type="button" data-value="anthropic">Anthropic</button><button type="button" data-value="ai-sdk">AI SDK</button><button type="button" data-value="ag-ui">AG-UI</button></div></div>

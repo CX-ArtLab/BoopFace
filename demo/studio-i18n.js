@@ -4,6 +4,9 @@
 // Each language has its own word list; zh-TW is made from the Chinese with OpenCC
 // (s2twp) and the skin names come with it.
 const EN = {
+"输入任意内容，看 connectAgent() 让头像从输入、思考到回复自动换表情…": "Type anything and watch connectAgent() take the avatar from typing and thinking to the reply…",
+"你的程序在调用 AI（如 OpenAI、Claude）时，把它返回的数据流交给 connectAgent()，头像就会在思考、用工具、回复、完成、出错时自动换表情。语音对话也能接。": "When your program calls an AI (OpenAI, Claude…), hand the stream it returns to connectAgent(): the avatar changes its expression by itself while thinking, using a tool, replying, done or failed. Voice conversations work too.",
+"这里的每条回复都由 connectAgent() 驱动表情；接口格式和每个状态的表情在「代码 › 接入 AI」里": "Every reply here drives the avatar through connectAgent(); the format and the expression for each state are in Code › Connect AI",
 "24 款": "24 skins",
 "AI · 正在思考…": "AI · Thinking…",
 "BoopFace 官网首页": "BoopFace home page",
@@ -427,6 +430,9 @@ const EN = {
 };
 // ---- generated translations ----
 const JA = {
+"输入任意内容，看 connectAgent() 让头像从输入、思考到回复自动换表情…": "何か入力すると、connectAgent() がアバターを入力中・考え中から返信まで自動で切り替えます…",
+"你的程序在调用 AI（如 OpenAI、Claude）时，把它返回的数据流交给 connectAgent()，头像就会在思考、用工具、回复、完成、出错时自动换表情。语音对话也能接。": "プログラムが AI（OpenAI、Claude など）を呼ぶとき、返ってくるストリームを connectAgent() に渡すだけで、考え中・ツール使用中・返信中・完了・失敗に合わせてアバターが自動で表情を変えます。音声の会話にも対応します。",
+"这里的每条回复都由 connectAgent() 驱动表情；接口格式和每个状态的表情在「代码 › 接入 AI」里": "ここでの返信はすべて connectAgent() が表情を動かしています。形式と状態ごとの表情は「コード › AI に接続」で",
 "24 款": "24 種類",
 "AI · 正在思考…": "AI · 考え中…",
 "BoopFace 官网首页": "BoopFace ホームページ",
@@ -849,6 +855,9 @@ const JA = {
 "经典黑": "クラシックブラック",
 };
 const KO = {
+"输入任意内容，看 connectAgent() 让头像从输入、思考到回复自动换表情…": "아무거나 입력하면 connectAgent()가 아바타를 입력·생각부터 답장까지 자동으로 바꿔요…",
+"你的程序在调用 AI（如 OpenAI、Claude）时，把它返回的数据流交给 connectAgent()，头像就会在思考、用工具、回复、完成、出错时自动换表情。语音对话也能接。": "프로그램이 AI(OpenAI, Claude 등)를 호출할 때 돌아오는 스트림을 connectAgent()에 넘기면, 생각 중·도구 사용·답장·완료·오류에 맞춰 아바타가 스스로 표정을 바꿉니다. 음성 대화도 연결할 수 있습니다.",
+"这里的每条回复都由 connectAgent() 驱动表情；接口格式和每个状态的表情在「代码 › 接入 AI」里": "여기의 모든 답장은 connectAgent()가 표정을 움직입니다. 형식과 상태별 표정은 「코드 › AI 연결」에서",
 "24 款": "24종",
 "AI · 正在思考…": "AI · 생각 중…",
 "BoopFace 官网首页": "BoopFace 홈페이지",
@@ -1271,6 +1280,9 @@ const KO = {
 "经典黑": "클래식 블랙",
 };
 const ES = {
+"输入任意内容，看 connectAgent() 让头像从输入、思考到回复自动换表情…": "Escribe algo y mira cómo connectAgent() lleva al avatar de escribir y pensar a la respuesta…",
+"你的程序在调用 AI（如 OpenAI、Claude）时，把它返回的数据流交给 connectAgent()，头像就会在思考、用工具、回复、完成、出错时自动换表情。语音对话也能接。": "Cuando tu programa llama a una IA (OpenAI, Claude…), pasa el flujo que devuelve a connectAgent(): el avatar cambia solo de expresión al pensar, usar una herramienta, responder, terminar o fallar. También sirve para conversaciones de voz.",
+"这里的每条回复都由 connectAgent() 驱动表情；接口格式和每个状态的表情在「代码 › 接入 AI」里": "Cada respuesta de aquí mueve al avatar con connectAgent(); el formato y la expresión de cada estado están en Código › Conectar IA",
 "24 款": "24 skins",
 "AI · 正在思考…": "IA · Pensando…",
 "BoopFace 官网首页": "Página de inicio de BoopFace",
@@ -1693,6 +1705,9 @@ const ES = {
 "经典黑": "Negro clásico",
 };
 const PT = {
+"输入任意内容，看 connectAgent() 让头像从输入、思考到回复自动换表情…": "Digite qualquer coisa e veja o connectAgent() levar o avatar de digitando e pensando até a resposta…",
+"你的程序在调用 AI（如 OpenAI、Claude）时，把它返回的数据流交给 connectAgent()，头像就会在思考、用工具、回复、完成、出错时自动换表情。语音对话也能接。": "Quando seu programa chama uma IA (OpenAI, Claude…), passe o stream que ela devolve para o connectAgent(): o avatar muda de expressão sozinho ao pensar, usar uma ferramenta, responder, terminar ou falhar. Conversas por voz também funcionam.",
+"这里的每条回复都由 connectAgent() 驱动表情；接口格式和每个状态的表情在「代码 › 接入 AI」里": "Cada resposta aqui move o avatar pelo connectAgent(); o formato e a expressão de cada estado ficam em Código › Conectar IA",
 "24 款": "24 skins",
 "AI · 正在思考…": "IA · Pensando…",
 "BoopFace 官网首页": "Página inicial do BoopFace",
@@ -2115,6 +2130,9 @@ const PT = {
 "经典黑": "Preto clássico",
 };
 const DE = {
+"输入任意内容，看 connectAgent() 让头像从输入、思考到回复自动换表情…": "Tippe irgendetwas und sieh zu, wie connectAgent() den Avatar vom Tippen und Nachdenken bis zur Antwort führt…",
+"你的程序在调用 AI（如 OpenAI、Claude）时，把它返回的数据流交给 connectAgent()，头像就会在思考、用工具、回复、完成、出错时自动换表情。语音对话也能接。": "Wenn dein Programm eine KI aufruft (OpenAI, Claude …), gib den zurückkommenden Stream an connectAgent(): Der Avatar wechselt selbst den Ausdruck, während die KI nachdenkt, ein Werkzeug nutzt, antwortet, fertig ist oder scheitert. Sprachgespräche gehen auch.",
+"这里的每条回复都由 connectAgent() 驱动表情；接口格式和每个状态的表情在「代码 › 接入 AI」里": "Jede Antwort hier steuert den Avatar über connectAgent(); Format und Ausdruck je Zustand findest du unter Code › KI anbinden",
 "24 款": "24 Skins",
 "AI · 正在思考…": "KI · Denkt nach…",
 "BoopFace 官网首页": "BoopFace-Startseite",
@@ -2537,6 +2555,9 @@ const DE = {
 "经典黑": "Klassisch Schwarz",
 };
 const FR = {
+"输入任意内容，看 connectAgent() 让头像从输入、思考到回复自动换表情…": "Tape n’importe quoi et regarde connectAgent() faire passer l’avatar de la saisie et la réflexion à la réponse…",
+"你的程序在调用 AI（如 OpenAI、Claude）时，把它返回的数据流交给 connectAgent()，头像就会在思考、用工具、回复、完成、出错时自动换表情。语音对话也能接。": "Quand votre programme appelle une IA (OpenAI, Claude…), passez le flux qu’elle renvoie à connectAgent() : l’avatar change tout seul d’expression quand l’IA réfléchit, utilise un outil, répond, a fini ou échoue. Les conversations vocales marchent aussi.",
+"这里的每条回复都由 connectAgent() 驱动表情；接口格式和每个状态的表情在「代码 › 接入 AI」里": "Chaque réponse ici anime l’avatar via connectAgent() ; le format et l’expression de chaque état sont dans Code › Connecter l’IA",
 "24 款": "24 skins",
 "AI · 正在思考…": "IA · Réfléchit…",
 "BoopFace 官网首页": "Page d’accueil de BoopFace",
@@ -2959,6 +2980,9 @@ const FR = {
 "经典黑": "Noir classique",
 };
 const RU = {
+"输入任意内容，看 connectAgent() 让头像从输入、思考到回复自动换表情…": "Введите что угодно и посмотрите, как connectAgent() ведёт аватар от набора и размышления к ответу…",
+"你的程序在调用 AI（如 OpenAI、Claude）时，把它返回的数据流交给 connectAgent()，头像就会在思考、用工具、回复、完成、出错时自动换表情。语音对话也能接。": "Когда ваша программа вызывает ИИ (OpenAI, Claude…), передайте полученный поток в connectAgent(): аватар сам меняет выражение, пока ИИ думает, использует инструмент, отвечает, закончил или ошибся. Голосовые разговоры тоже поддерживаются.",
+"这里的每条回复都由 connectAgent() 驱动表情；接口格式和每个状态的表情在「代码 › 接入 AI」里": "Каждый ответ здесь управляет аватаром через connectAgent(); формат и выражение для каждого состояния — в «Код › Подключить ИИ»",
 "24 款": "24 скина",
 "AI · 正在思考…": "ИИ · Думает…",
 "BoopFace 官网首页": "Главная страница BoopFace",
@@ -3381,6 +3405,9 @@ const RU = {
 "经典黑": "Классический чёрный",
 };
 const ZH_TW = {
+"输入任意内容，看 connectAgent() 让头像从输入、思考到回复自动换表情…": "輸入任意內容，看 connectAgent() 讓頭像從輸入、思考到回覆自動換表情…",
+"你的程序在调用 AI（如 OpenAI、Claude）时，把它返回的数据流交给 connectAgent()，头像就会在思考、用工具、回复、完成、出错时自动换表情。语音对话也能接。": "你的程式在呼叫 AI（如 OpenAI、Claude）時，把它回傳的資料流交給 connectAgent()，頭像就會在思考、用工具、回覆、完成、出錯時自動換表情。語音對話也能接。",
+"这里的每条回复都由 connectAgent() 驱动表情；接口格式和每个状态的表情在「代码 › 接入 AI」里": "這裡的每條回覆都由 connectAgent() 驅動表情；介面格式和每個狀態的表情在「程式碼 › 接入 AI」裡",
 "24 款": "24 款",
 "AI · 正在思考…": "AI · 正在思考…",
 "BoopFace 官网首页": "BoopFace 官網首頁",
