@@ -1,6 +1,8 @@
 # BoopFace Embedded
 
-[简体中文](README.zh-CN.md) · [Main project](../README.md)
+[English](README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Français](README.fr.md) · [Português](README.pt.md) · [Deutsch](README.de.md)
+
+[Main project](../README.md)
 
 An **experimental**, portable C++11 implementation of the BoopFace eye expressions. It renders eyes only, with no head, antenna, dragging, squeezing, pointer listeners, network client or AI model. The embedded package is independent of the SVG component and its Demo UI.
 

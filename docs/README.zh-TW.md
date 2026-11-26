@@ -363,7 +363,7 @@ vue({ template: { compilerOptions: { isCustomElement: tag => tag === 'boop-face'
 <img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded Studio：開發板螢幕上的眼睛、表情按鈕和螢幕列表" width="100%">
 
 1. **預覽**：[線上模擬器](https://boopface.com/hardware/?lang=zh-TW)執行同一套引擎，模擬 32 種螢幕，沒有板子也能看效果。
-2. **匯出**：調好佈局、顏色和幀率，點「匯出設定」，把 `eyes_settings.h` 放到示例韌體的 `main.cpp` 旁邊編譯。[操作步驟](../embedded/README.zh-CN.md#在模拟器里调好直接用到板子上)
+2. **匯出**：調好佈局、顏色和幀率，點「匯出設定」，把 `eyes_settings.h` 放到示例韌體的 `main.cpp` 旁邊編譯。[操作步驟](../embedded/README.zh-TW.md#在模擬器裡調好直接用到板子上)
 3. **安裝**：Arduino IDE 匯入[釋出頁](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0)的 `BoopFace-Embedded-0.2.0.zip`；PlatformIO 用 `lib_deps = cxlab/BoopFace@^0.2.0`。
 
 ```cpp
@@ -378,7 +378,7 @@ void loop()  { if (eyes.update(millis())) { /* 把 eyes.data() 发到屏幕 */ }
 // eyes.play("success", millis());
 ```
 
-實驗版：全部配置在 CI 編譯通過，尚未在真實硬體上逐一驗證，歡迎提交[實機驗證報告](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml)。完整說明見[嵌入式裝置版文件](../embedded/README.zh-CN.md)。
+實驗版：全部配置在 CI 編譯通過，尚未在真實硬體上逐一驗證，歡迎提交[實機驗證報告](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml)。完整說明見[嵌入式裝置版文件](../embedded/README.zh-TW.md)。
 
 <p align="center">
   <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">

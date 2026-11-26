@@ -364,7 +364,7 @@ vue({ template: { compilerOptions: { isCustomElement: tag => tag === 'boop-face'
 <img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded Studio: 보드 화면 위의 눈, 표정 버튼, 화면 목록" width="100%">
 
 1. **미리 보기**: [온라인 시뮬레이터](https://boopface.com/hardware/?lang=ko)가 같은 엔진으로 화면 32가지를 재현하므로 보드 없이도 볼 수 있습니다.
-2. **내보내기**: 레이아웃, 색상, 프레임 레이트를 맞추고 설정 내보내기를 누른 뒤, `eyes_settings.h`를 예제 펌웨어의 `main.cpp` 옆에 두고 빌드합니다. [절차](../embedded/README.md#from-the-preview-to-your-board)
+2. **내보내기**: 레이아웃, 색상, 프레임 레이트를 맞추고 설정 내보내기를 누른 뒤, `eyes_settings.h`를 예제 펌웨어의 `main.cpp` 옆에 두고 빌드합니다. [절차](../embedded/README.ko.md#시뮬레이터에서-맞추고-바로-보드로)
 3. **설치**: Arduino IDE에서는 [릴리스 페이지](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0)의 `BoopFace-Embedded-0.2.0.zip`을 추가하고, PlatformIO에서는 `lib_deps = cxlab/BoopFace@^0.2.0`을 씁니다.
 
 ```cpp
@@ -379,7 +379,7 @@ void loop()  { if (eyes.update(millis())) { /* eyes.data()를 화면으로 보�
 // eyes.play("success", millis());
 ```
 
-실험 버전: 모든 구성이 CI에서 빌드되지만, 실제 하드웨어에서 모두 확인된 것은 아닙니다. [하드웨어 보고](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml)를 환영합니다. 자세한 내용은 [임베디드 문서](../embedded/README.md)를 보세요.
+실험 버전: 모든 구성이 CI에서 빌드되지만, 실제 하드웨어에서 모두 확인된 것은 아닙니다. [하드웨어 보고](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml)를 환영합니다. 자세한 내용은 [임베디드 문서](../embedded/README.ko.md)를 보세요.
 
 <p align="center">
   <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">

@@ -364,7 +364,7 @@ vue({ template: { compilerOptions: { isCustomElement: tag => tag === 'boop-face'
 <img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded Studio：ボード画面上の目、表情ボタン、画面リスト" width="100%">
 
 1. **プレビュー**：[オンラインシミュレーター](https://boopface.com/hardware/?lang=ja)は同じエンジンで 32 種類の画面を再現するので、ボードがなくても確認できます。
-2. **書き出し**：レイアウト、色、フレームレートを調整して「設定を書き出す」を押し、`eyes_settings.h` をサンプルファームウェアの `main.cpp` の隣に置いてビルドします。[手順](../embedded/README.md#from-the-preview-to-your-board)
+2. **書き出し**：レイアウト、色、フレームレートを調整して「設定を書き出す」を押し、`eyes_settings.h` をサンプルファームウェアの `main.cpp` の隣に置いてビルドします。[手順](../embedded/README.ja.md#シミュレーターで調整してそのままボードへ)
 3. **インストール**：Arduino IDE では[リリースページ](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0)の `BoopFace-Embedded-0.2.0.zip` を追加、PlatformIO では `lib_deps = cxlab/BoopFace@^0.2.0` を使います。
 
 ```cpp
@@ -379,7 +379,7 @@ void loop()  { if (eyes.update(millis())) { /* eyes.data() を画面に送る */
 // eyes.play("success", millis());
 ```
 
-実験版：すべての構成は CI でビルドできますが、実機での確認はまだすべては済んでいません。[実機レポート](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml)を歓迎します。詳しくは[組み込み版ドキュメント](../embedded/README.md)へ。
+実験版：すべての構成は CI でビルドできますが、実機での確認はまだすべては済んでいません。[実機レポート](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml)を歓迎します。詳しくは[組み込み版ドキュメント](../embedded/README.ja.md)へ。
 
 <p align="center">
   <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">

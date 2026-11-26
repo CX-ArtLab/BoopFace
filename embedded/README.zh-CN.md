@@ -1,5 +1,7 @@
 # BoopFace Embedded 嵌入式设备版
 
+[English](README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Français](README.fr.md) · [Português](README.pt.md) · [Deutsch](README.de.md)
+
 [English / 完整接口说明](README.md) · [返回主项目](../docs/README.zh-CN.md)
 
 这是同一项目下的**实验性硬件实现**。只绘制眼睛，提供表情、眨眼、注视、等待和休眠唤醒；由你的程序决定什么时候播放哪个动作。拖动、挤压、头部外形、天线和鼠标监听不包含在此版本中。嵌入式目录独立于 SVG 组件及其 Demo 界面，方便分别维护。
