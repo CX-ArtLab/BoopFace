@@ -283,12 +283,53 @@ let chatSideScaleRatio = 1;
 
 $('versionBadge').textContent = `v${VERSION}`;
 
-function copyText(text, targetBtn) {
-  navigator.clipboard?.writeText(text).catch(() => {});
-  if (!targetBtn) return;
-  targetBtn.dataset.copied = 'true';
-  clearTimeout(targetBtn._copyTimer);
-  targetBtn._copyTimer = setTimeout(() => delete targetBtn.dataset.copied, 1300);
+// Writes to the clipboard and says whether the browser really accepted it.
+async function writeClipboard(text) {
+  try {
+    if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(text); return true; }
+  } catch { /* refused: try the older way below */ }
+  try {
+    const field = document.createElement('textarea');
+    field.value = text; field.setAttribute('readonly', '');
+    field.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
+    document.body.append(field); field.select();
+    const ok = document.execCommand('copy');
+    field.remove();
+    return ok;
+  } catch { return false; }
+}
+
+// When copying is not allowed here, show the text selected so it can be copied by hand.
+let manualCopyBox = null;
+function showManualCopy(text, anchor) {
+  manualCopyBox?.remove();
+  const box = document.createElement('div');
+  box.className = 'manual-copy';
+  box.setAttribute('role', 'dialog');
+  const note = document.createElement('p');
+  note.textContent = '这里不允许自动复制。请按 Ctrl+C（Mac 用 ⌘C）手动复制下面的内容：';
+  const field = document.createElement('textarea');
+  field.readOnly = true; field.value = text; field.rows = Math.min(8, text.split('\n').length + 1);
+  const close = document.createElement('button');
+  close.type = 'button'; close.textContent = '关闭提示';
+  close.addEventListener('click', () => { box.remove(); manualCopyBox = null; });
+  box.append(note, field, close);
+  (anchor?.closest('.inspector-panel, .tool-popover, .stage-card') || document.body).append(box);
+  manualCopyBox = box;
+  field.focus(); field.select();
+}
+
+// true when the text is really on the clipboard; otherwise the text is offered for hand copying.
+async function copyText(text, targetBtn) {
+  const ok = await writeClipboard(text);
+  if (!ok) { showManualCopy(text, targetBtn); return false; }
+  manualCopyBox?.remove(); manualCopyBox = null;
+  if (targetBtn) {
+    targetBtn.dataset.copied = 'true';
+    clearTimeout(targetBtn._copyTimer);
+    targetBtn._copyTimer = setTimeout(() => delete targetBtn.dataset.copied, 1300);
+  }
+  return true;
 }
 
 // Whether the pointer is over the stage (the stage avatar follows it only then).
@@ -2428,10 +2469,13 @@ const AGENT_STATUS = {
   thinking: ['thinking', '思考中…'], tool: ['thinking', '用工具中…'], replying: ['thinking', '回复中…'], approval: ['asking', '待确认'],
   done: ['done', '已完成'], error: ['failed', '出错了'], refused: ['failed', '已拒绝'], cancelled: ['failed', '已停止'],
 };
-// Mostly a plain answer; sometimes a tool first, an error, a refusal or a question.
+// The chat is a local simulation. "Random" is mostly a plain answer, sometimes a tool first, an error,
+// a refusal or a question; the picker above the input lets a visitor play any ending on purpose.
+const DEMO_OUTCOMES = ['done', 'error', 'refused', 'approval'];
 function pickOutcome() {
+  const chosen = $('demoOutcome')?.value;
   const r = Math.random();
-  return { outcome: r < .6 ? 'done' : r < .72 ? 'approval' : r < .86 ? 'refused' : 'error', tool: Math.random() < .35 };
+  return { outcome: DEMO_OUTCOMES.includes(chosen) ? chosen : r < .6 ? 'done' : r < .72 ? 'approval' : r < .86 ? 'refused' : 'error', tool: Math.random() < .35 };
 }
 
 $('chatForm').addEventListener('submit', async e => {
@@ -2469,7 +2513,7 @@ $('chatForm').addEventListener('submit', async e => {
     for await (const event of agent.track(stream)) logEvent('agent', labelOf(event));
     if (outcome === 'approval' && state.agent.format === 'anthropic') agent.handle?.('approval');
   } catch (error) { console.error(error); }
-  if (outcome === 'error' && !started) replyEl.bubble.textContent = '（连接中断，回复失败）';
+  if (outcome === 'error' && !started) replyEl.bubble.textContent = '（演示：这是模拟的连接中断，用来展示出错时头像的表情）';
   botRowEls[state.activeBotIndex].preview.textContent = replyEl.bubble.textContent;
   chatBusy = false;
 });
@@ -2553,7 +2597,11 @@ function updateDevCode() {
     devCode.textContent = agentCode(state.agent.format, agentActions());
   } else if (state.devTab === 'cdn') {
     const pkg = state.surface === 'skin' ? `boopface@${VERSION}/boopface.js` : `boopface@${VERSION}/boopface-lite.js`;
-    devCode.textContent = `<script type="module" src="https://cdn.jsdelivr.net/npm/${pkg}"></script>\n<boop-face ${attrs}></boop-face>`;
+    // Petting and idle gaze have attributes; head roundness and pointer following are set with methods.
+    const quickAttrs = [attrs, state.petting === false ? 'petting="false"' : '', state.idleGaze === false ? 'idle-gaze="false"' : ''].filter(Boolean).join(' ');
+    const calls = [state.roundness !== 50 ? `  avatar.setHeadRoundness(${state.roundness});` : '', !state.pointerFollow ? '  avatar.setPointerFollow(false);' : ''].filter(Boolean);
+    const script = calls.length ? `\n<script type="module">\n  const avatar = document.querySelector('#avatar');\n  await customElements.whenDefined('boop-face');\n${calls.join('\n')}\n</script>` : '';
+    devCode.textContent = `<script type="module" src="https://cdn.jsdelivr.net/npm/${pkg}"></script>\n<boop-face ${quickAttrs}></boop-face>${script}`;
   }
   // The code itself is not translated; its comments are.
   devCode.textContent = translateText(devCode.textContent);
@@ -2575,9 +2623,9 @@ function flashBtnText(btn, doneText, idleText) {
   btn._txtTimer = setTimeout(() => { btn.textContent = idleText; }, 1300);
 }
 
-$('copyActionBtn').addEventListener('click', () => {
-  copyText($('devQuickAction').textContent, $('copyActionBtn'));
-  flashBtnText($('copyActionBtn'), '已复制', '复制调用');
+$('copyActionBtn').addEventListener('click', async () => {
+  const ok = await copyText($('devQuickAction').textContent, $('copyActionBtn'));
+  flashBtnText($('copyActionBtn'), ok ? '已复制' : '未能复制', '复制调用');
 });
 
 // Events: a strip at the bottom of the code panel showing the latest event; opened,
@@ -2595,17 +2643,35 @@ $('clearEventsBtn').addEventListener('click', () => {
   devEvents.replaceChildren();
   $('eventStripLast').textContent = '还没有事件';
 });
-$('copyCodeBtn').addEventListener('click', () => {
-  copyText(devCode.textContent, $('copyCodeBtn'));
-  flashBtnText($('copyCodeBtn'), '已复制代码', '复制代码');
+$('copyCodeBtn').addEventListener('click', async () => {
+  const ok = await copyText(devCode.textContent, $('copyCodeBtn'));
+  flashBtnText($('copyCodeBtn'), ok ? '已复制代码' : '未能复制', '复制代码');
 });
-$('copyShareBtn').addEventListener('click', () => {
+// The share link carries the whole look: surface, skin or colours, flat or 3D, eye colour, roundness and the action.
+const hexOf = value => (/^#?[0-9a-f]{6}$/i.test(value || '') ? value.replace('#', '').toLowerCase() : null);
+function shareUrl() {
   const url = new URL(location.href);
-  if (state.surface === 'skin') url.searchParams.set('skin', state.skinId);
-  else url.searchParams.delete('skin');
-  url.searchParams.set('action', state.action);
-  copyText(url.href, $('copyShareBtn'));
-  flashBtnText($('copyShareBtn'), '已复制链接', '复制分享链接');
+  const lang = new URLSearchParams(location.search).get('lang');
+  url.search = '';
+  const q = url.searchParams;
+  if (lang) q.set('lang', lang);
+  q.set('surface', state.surface);
+  if (state.surface === 'skin') q.set('skin', state.skinId);
+  else {
+    q.set('head', hexOf(state.flatHead) || '');
+    q.set('bg', hexOf(state.flatBg) || '');
+  }
+  q.set('view', state.dimension === '3d' ? '3d' : '2d');
+  const eye = appliedEyeColor();
+  if (eye) q.set('eye', eye === 'transparent' ? 'transparent' : hexOf(eye) || '');
+  q.set('round', String(state.roundness));
+  q.set('action', state.action);
+  for (const [key, value] of [...q]) if (!value) q.delete(key);
+  return url.href;
+}
+$('copyShareBtn').addEventListener('click', async () => {
+  const ok = await copyText(shareUrl(), $('copyShareBtn'));
+  flashBtnText($('copyShareBtn'), ok ? '已复制链接' : '未能复制', '复制分享链接');
 });
 
 /* Keyboard Shortcuts */
@@ -2828,10 +2894,24 @@ function openFromHash() {
 openFromHash();
 addEventListener('hashchange', openFromHash);
 
-// Shared links and the full skin gallery: ?skin=301 opens that skin, ?action=love plays it.
+// Shared links and the full skin gallery: ?skin=301 opens that skin; a link from "copy share link" also
+// restores plain colours, flat or 3D, eye colour and roundness; ?action=love plays it.
 {
   const q = new URLSearchParams(location.search), skin = q.get('skin'), action = q.get('action');
-  if (skin && skinById.has(skin)) { state.surface = 'skin'; state.skinId = skin; renderSkinGrid(); syncAllFaces(); }
+  const surface = q.get('surface'), view = q.get('view'), round = q.get('round'), eye = q.get('eye');
+  const head = hexOf(q.get('head')), bg = hexOf(q.get('bg'));
+  if (skin && skinById.has(skin)) { state.surface = 'skin'; state.skinId = skin; }
+  if (surface === 'flat') {
+    state.surface = 'flat';
+    if (head) state.flatHead = `#${head}`;
+    if (bg) { state.flatBg = `#${bg}`; state.backdrop = 'custom'; }
+  } else if (surface === 'skin') state.surface = 'skin';
+  if (view === '2d' || view === '3d') state.dimension = view;
+  if (round !== null && round !== '' && Number.isFinite(Number(round))) state.roundness = Math.max(0, Math.min(100, Math.round(Number(round))));
+  if (eye === 'transparent') { setThrough(true); }
+  else if (hexOf(eye)) { state.eyeColor = `#${hexOf(eye)}`; setThrough(false); }
+  else if (surface) { setThrough(false); }
+  if (skin || surface || view || round !== null || eye) { renderSkinGrid(); syncRoundnessControl(); syncAllFaces(); }
   if (action && document.querySelector(`[data-action="${CSS.escape(action)}"]`)) setTimeout(() => document.querySelector(`[data-action="${CSS.escape(action)}"]`)?.click(), 600);
 }
 

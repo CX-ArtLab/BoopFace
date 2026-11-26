@@ -427,6 +427,12 @@ const EN = {
 "已导出": "Exported",
 "（点击直接切换）": " (click to switch)",
 "经典黑": "Classic black",
+"这里不允许自动复制。请按 Ctrl+C（Mac 用 ⌘C）手动复制下面的内容：": "Copying is not allowed here. Press Ctrl+C (⌘C on Mac) to copy the text below by hand:",
+"关闭提示": "Close this note",
+"未能复制": "Could not copy",
+"演示对话：回复是本地模拟的，没有连接真实 AI。": "Demo chat: replies are simulated on this page, not from a real AI.",
+"模拟结果": "Simulated result",
+"（演示：这是模拟的连接中断，用来展示出错时头像的表情）": "(Demo: a simulated lost connection, to show the avatar's face when something fails)",
 };
 // ---- generated translations ----
 const JA = {
@@ -853,6 +859,12 @@ const JA = {
 "已导出": "書き出しました",
 "（点击直接切换）": "（クリックで切り替え）",
 "经典黑": "クラシックブラック",
+"这里不允许自动复制。请按 Ctrl+C（Mac 用 ⌘C）手动复制下面的内容：": "ここでは自動コピーが許可されていません。Ctrl+C（Mac は ⌘C）で下の内容を手動でコピーしてください：",
+"关闭提示": "閉じる",
+"未能复制": "コピーできませんでした",
+"演示对话：回复是本地模拟的，没有连接真实 AI。": "デモの会話：返信はこのページ内の模擬で、実際の AI にはつながっていません。",
+"模拟结果": "模擬する結果",
+"（演示：这是模拟的连接中断，用来展示出错时头像的表情）": "（デモ：接続が切れたことを模擬しています。失敗したときのアバターの表情を見せるためです）",
 };
 const KO = {
 "输入任意内容，看 connectAgent() 让头像从输入、思考到回复自动换表情…": "아무거나 입력하면 connectAgent()가 아바타를 입력·생각부터 답장까지 자동으로 바꿔요…",
@@ -1278,6 +1290,12 @@ const KO = {
 "已导出": "내보냄",
 "（点击直接切换）": "(클릭하여 전환)",
 "经典黑": "클래식 블랙",
+"这里不允许自动复制。请按 Ctrl+C（Mac 用 ⌘C）手动复制下面的内容：": "여기서는 자동 복사가 허용되지 않습니다. Ctrl+C(Mac은 ⌘C)로 아래 내용을 직접 복사하세요:",
+"关闭提示": "닫기",
+"未能复制": "복사하지 못했습니다",
+"演示对话：回复是本地模拟的，没有连接真实 AI。": "데모 대화: 답변은 이 페이지에서 흉내 낸 것이며 실제 AI와 연결되어 있지 않습니다.",
+"模拟结果": "시뮬레이션 결과",
+"（演示：这是模拟的连接中断，用来展示出错时头像的表情）": "(데모: 연결이 끊긴 상황을 흉내 낸 것으로, 실패했을 때 아바타의 표정을 보여 줍니다)",
 };
 const ES = {
 "输入任意内容，看 connectAgent() 让头像从输入、思考到回复自动换表情…": "Escribe algo y mira cómo connectAgent() lleva al avatar de escribir y pensar a la respuesta…",
@@ -1703,6 +1721,12 @@ const ES = {
 "已导出": "Exportado",
 "（点击直接切换）": " (clic para cambiar)",
 "经典黑": "Negro clásico",
+"这里不允许自动复制。请按 Ctrl+C（Mac 用 ⌘C）手动复制下面的内容：": "Aquí no se permite copiar automáticamente. Pulsa Ctrl+C (⌘C en Mac) para copiar a mano el texto de abajo:",
+"关闭提示": "Cerrar aviso",
+"未能复制": "No se pudo copiar",
+"演示对话：回复是本地模拟的，没有连接真实 AI。": "Chat de demostración: las respuestas son simuladas en esta página, no de una IA real.",
+"模拟结果": "Resultado simulado",
+"（演示：这是模拟的连接中断，用来展示出错时头像的表情）": "(Demostración: una conexión perdida simulada, para mostrar la cara del avatar cuando algo falla)",
 };
 const PT = {
 "输入任意内容，看 connectAgent() 让头像从输入、思考到回复自动换表情…": "Digite qualquer coisa e veja o connectAgent() levar o avatar de digitando e pensando até a resposta…",
@@ -2128,6 +2152,12 @@ const PT = {
 "已导出": "Exportado",
 "（点击直接切换）": " (clique para alternar)",
 "经典黑": "Preto clássico",
+"这里不允许自动复制。请按 Ctrl+C（Mac 用 ⌘C）手动复制下面的内容：": "Aqui não é permitido copiar automaticamente. Pressione Ctrl+C (⌘C no Mac) para copiar o texto abaixo manualmente:",
+"关闭提示": "Fechar aviso",
+"未能复制": "Não foi possível copiar",
+"演示对话：回复是本地模拟的，没有连接真实 AI。": "Chat de demonstração: as respostas são simuladas nesta página, não vêm de uma IA real.",
+"模拟结果": "Resultado simulado",
+"（演示：这是模拟的连接中断，用来展示出错时头像的表情）": "(Demonstração: uma conexão perdida simulada, para mostrar a expressão do avatar quando algo falha)",
 };
 const DE = {
 "输入任意内容，看 connectAgent() 让头像从输入、思考到回复自动换表情…": "Tippe irgendetwas und sieh zu, wie connectAgent() den Avatar vom Tippen und Nachdenken bis zur Antwort führt…",
@@ -2553,6 +2583,12 @@ const DE = {
 "已导出": "Exportiert",
 "（点击直接切换）": " (zum Umschalten klicken)",
 "经典黑": "Klassisch Schwarz",
+"这里不允许自动复制。请按 Ctrl+C（Mac 用 ⌘C）手动复制下面的内容：": "Automatisches Kopieren ist hier nicht erlaubt. Drücke Strg+C (⌘C am Mac), um den Text unten von Hand zu kopieren:",
+"关闭提示": "Hinweis schließen",
+"未能复制": "Kopieren nicht möglich",
+"演示对话：回复是本地模拟的，没有连接真实 AI。": "Demo-Chat: Die Antworten werden auf dieser Seite simuliert und stammen nicht von einer echten KI.",
+"模拟结果": "Simuliertes Ergebnis",
+"（演示：这是模拟的连接中断，用来展示出错时头像的表情）": "(Demo: eine simulierte unterbrochene Verbindung, um den Gesichtsausdruck des Avatars bei einem Fehler zu zeigen)",
 };
 const FR = {
 "输入任意内容，看 connectAgent() 让头像从输入、思考到回复自动换表情…": "Tape n’importe quoi et regarde connectAgent() faire passer l’avatar de la saisie et la réflexion à la réponse…",
@@ -2978,6 +3014,12 @@ const FR = {
 "已导出": "Exporté",
 "（点击直接切换）": " (cliquer pour basculer)",
 "经典黑": "Noir classique",
+"这里不允许自动复制。请按 Ctrl+C（Mac 用 ⌘C）手动复制下面的内容：": "La copie automatique n’est pas autorisée ici. Appuyez sur Ctrl+C (⌘C sur Mac) pour copier le texte ci-dessous à la main :",
+"关闭提示": "Fermer l’avis",
+"未能复制": "Copie impossible",
+"演示对话：回复是本地模拟的，没有连接真实 AI。": "Chat de démonstration : les réponses sont simulées sur cette page, pas celles d’une vraie IA.",
+"模拟结果": "Résultat simulé",
+"（演示：这是模拟的连接中断，用来展示出错时头像的表情）": "(Démo : une connexion interrompue simulée, pour montrer l’expression de l’avatar en cas d’échec)",
 };
 const RU = {
 "输入任意内容，看 connectAgent() 让头像从输入、思考到回复自动换表情…": "Введите что угодно и посмотрите, как connectAgent() ведёт аватар от набора и размышления к ответу…",
@@ -3403,6 +3445,12 @@ const RU = {
 "已导出": "Экспортировано",
 "（点击直接切换）": " (нажмите, чтобы переключить)",
 "经典黑": "Классический чёрный",
+"这里不允许自动复制。请按 Ctrl+C（Mac 用 ⌘C）手动复制下面的内容：": "Здесь автоматическое копирование запрещено. Нажмите Ctrl+C (⌘C на Mac), чтобы скопировать текст ниже вручную:",
+"关闭提示": "Закрыть подсказку",
+"未能复制": "Не удалось скопировать",
+"演示对话：回复是本地模拟的，没有连接真实 AI。": "Демо-чат: ответы имитируются на этой странице, это не настоящий ИИ.",
+"模拟结果": "Имитируемый результат",
+"（演示：这是模拟的连接中断，用来展示出错时头像的表情）": "(Демо: имитация потери соединения, чтобы показать выражение аватара при сбое)",
 };
 const ZH_TW = {
 "输入任意内容，看 connectAgent() 让头像从输入、思考到回复自动换表情…": "輸入任意內容，看 connectAgent() 讓頭像從輸入、思考到回覆自動換表情…",
@@ -4030,6 +4078,12 @@ const ZH_TW = {
 "甜点与水果": "甜點與水果",
 "自然": "自然",
 "图案与科技": "圖案與科技",
+"这里不允许自动复制。请按 Ctrl+C（Mac 用 ⌘C）手动复制下面的内容：": "這裡不允許自動複製。請按 Ctrl+C（Mac 用 ⌘C）手動複製下面的內容：",
+"关闭提示": "關閉提示",
+"未能复制": "未能複製",
+"演示对话：回复是本地模拟的，没有连接真实 AI。": "演示對話：回覆是本機模擬的，沒有連接真實 AI。",
+"模拟结果": "模擬結果",
+"（演示：这是模拟的连接中断，用来展示出错时头像的表情）": "（演示：這是模擬的連線中斷，用來展示出錯時頭像的表情）",
 };
 // ---- end generated ----
 const DICTS = { en: EN, ja: JA, ko: KO, es: ES, ru: RU, pt: PT, de: DE, fr: FR, 'zh-TW': ZH_TW };

@@ -300,3 +300,151 @@ test('every Studio language has its own words: no Chinese left on the page (zh-T
     expect(texts.filter(t => !names.has(t) && bad.test(t)), lang).toEqual([]);
   }
 });
+
+// ---- audit 2026-11-26: code, share link, copy and the chat's honesty ----
+import { readFileSync, existsSync } from 'node:fs';
+import { join, extname } from 'node:path';
+
+const setLook = async page => {
+  // The look the audit used: plain colour, flat, roundness 100, a colour, no pointer following, no petting, no idle gaze.
+  await page.locator('[data-surface-btn="flat"]').click();
+  await page.locator('[data-dimension-btn="2d"]').click();
+  await page.locator('#roundnessSlider').fill('100');
+  await page.evaluate(() => {
+    for (const id of ['pointerFollowToggle', 'pettingToggle', 'idleGazeToggle']) {
+      const box = document.getElementById(id);
+      box.checked = false;
+      box.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  });
+};
+
+test('the Quick start code brings back the roundness and the three behaviours set by method', async ({ page }) => {
+  await page.goto('/demo/?lang=zh-CN');
+  await ready(page);
+  await setLook(page);
+  await page.locator('[data-inspector-tab="code"]').click();
+  await page.locator('[data-dev-tab="cdn"]').click();
+  const quick = await page.locator('#devCode').textContent();
+  await page.locator('[data-dev-tab="html"]').click();
+  const npm = await page.locator('#devCode').textContent();
+  for (const code of [quick, npm]) {
+    expect(code).toContain('setHeadRoundness(100)');
+    expect(code).toContain('setPointerFollow(false)');
+  }
+  // Petting and idle gaze are attributes in the quick start, calls in the npm project.
+  expect(quick).toContain('petting="false"');
+  expect(quick).toContain('idle-gaze="false"');
+  expect(npm).toContain('setPetting(false)');
+  expect(npm).toContain('setIdleGaze(false)');
+
+  // Run the quick-start code on a blank page (the CDN answered from this checkout) and read the avatar.
+  const root = process.cwd();
+  const mime = { '.js': 'text/javascript', '.json': 'application/json' };
+  const blank = await page.context().newPage();
+  await blank.route('https://cdn.jsdelivr.net/npm/**', route => {
+    const file = new URL(route.request().url()).pathname.replace(/^\/npm\/boopface@[^/]+\//, '');
+    const full = join(root, file);
+    if (!existsSync(full)) return route.fulfill({ status: 404, body: '' });
+    return route.fulfill({ body: readFileSync(full), contentType: mime[extname(full)] || 'text/plain', headers: { 'access-control-allow-origin': '*' } });
+  });
+  await blank.setContent(`<!doctype html><body>${quick}</body>`);
+  await blank.waitForFunction(() => document.getElementById('avatar')?.getHeadRoundness?.() === 100, null, { timeout: 15000 });
+  const avatar = await blank.evaluate(() => { const a = document.getElementById('avatar'); return { roundness: a.getHeadRoundness(), petting: a.getAttribute('petting'), idle: a.getAttribute('idle-gaze'), follow: a._pointerFollowEnabled }; });
+  expect(avatar).toEqual({ roundness: 100, petting: 'false', idle: 'false', follow: false });
+  await blank.close();
+});
+
+test('the share link restores the look: plain colour, flat, roundness, colours and the action', async ({ page, browser, baseURL }) => {
+  await page.goto('/demo/?lang=zh-CN');
+  await ready(page);
+  await page.locator('[data-surface-btn="flat"]').click();
+  await page.locator('[data-dimension-btn="2d"]').click();
+  await page.locator('#roundnessSlider').fill('73');
+  await page.locator('[data-action="love"]').click();
+  await page.keyboard.press('c');
+  // Read the link the button builds.
+  const href = await page.evaluate(async () => {
+    let copied = null;
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async text => { copied = text; } } });
+    document.getElementById('copyShareBtn').click();
+    await new Promise(r => setTimeout(r, 200));
+    return copied;
+  });
+  const url = new URL(href);
+  expect(url.searchParams.get('surface')).toBe('flat');
+  expect(url.searchParams.get('view')).toBe('2d');
+  expect(url.searchParams.get('round')).toBe('73');
+  expect(url.searchParams.get('action')).toBe('love');
+
+  const context = await browser.newContext({ baseURL });
+  const other = await context.newPage();
+  await other.goto(url.pathname + url.search);
+  await ready(other);
+  await expect(other.locator('[data-surface-btn="flat"]')).toHaveAttribute('aria-pressed', 'true');
+  await expect(other.locator('[data-dimension-btn="2d"]')).toHaveAttribute('aria-pressed', 'true');
+  await expect.poll(() => other.locator('#stageFace').evaluate(f => f.getHeadRoundness())).toBe(73);
+  await expect.poll(() => other.locator('#stageFace').evaluate(f => f.view)).toBe('2d');
+  await expect(other.locator('#roundnessInput')).toHaveValue('73');
+  await context.close();
+});
+
+test('a skin share link keeps the skin, 3D and the eye colour', async ({ page, browser, baseURL }) => {
+  await page.goto('/demo/?lang=zh-CN&skin=302&view=3d&round=20&eye=2bd67b&action=wink');
+  await ready(page);
+  await expect(page.locator('#roundnessInput')).toHaveValue('20');
+  await expect.poll(() => page.locator('#stageFace').evaluate(f => f.getAttribute('skin'))).toBe('302');
+  await expect.poll(() => page.locator('#stageFace').evaluate(f => f.getHeadRoundness())).toBe(20);
+  await expect.poll(() => page.locator('#stageFace').evaluate(f => f.dataset.view)).toBe('3d');
+});
+
+test('copy buttons only say "copied" when the clipboard accepted it; otherwise the text is offered for hand copying', async ({ page }) => {
+  await page.goto('/demo/?lang=zh-CN');
+  await ready(page);
+  await page.keyboard.press('c');
+  // Allowed: a working clipboard.
+  await page.evaluate(() => { window.__clip = null; Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async text => { window.__clip = text; } } }); });
+  await page.locator('#copyCodeBtn').click();
+  await expect(page.locator('#copyCodeBtn')).toHaveText('已复制代码');
+  expect(await page.evaluate(() => window.__clip)).toContain('<boop-face');
+  await expect(page.locator('.manual-copy')).toHaveCount(0);
+  // Refused: no "copied", and the code is shown selected.
+  await page.evaluate(() => { Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async () => { throw new DOMException('denied', 'NotAllowedError'); } } }); document.execCommand = () => false; });
+  await page.locator('#copyCodeBtn').click();
+  await expect(page.locator('#copyCodeBtn')).not.toHaveText('已复制代码');
+  await expect(page.locator('#copyCodeBtn')).toHaveText('未能复制');
+  const box = page.locator('.manual-copy textarea');
+  await expect(box).toHaveCount(1);
+  expect(await box.inputValue()).toContain('<boop-face');
+  // The share link too.
+  await page.locator('#copyShareBtn').click();
+  await expect(page.locator('#copyShareBtn')).toHaveText('未能复制');
+  expect(await page.locator('.manual-copy textarea').inputValue()).toContain('action=');
+  // No clipboard API at all behaves the same way.
+  await page.evaluate(() => { Object.defineProperty(navigator, 'clipboard', { configurable: true, value: undefined }); });
+  await page.locator('[data-dev-tab="js"]').click();
+  await page.locator('#copyActionBtn').click();
+  await expect(page.locator('#copyActionBtn')).toHaveText('未能复制');
+});
+
+test('the chat says its replies are simulated, and a visitor can pick the ending', async ({ page }) => {
+  await page.goto('/demo/?lang=zh-CN');
+  await ready(page);
+  await page.locator('[data-scene-tab="chat"]').click();
+  await expect(page.locator('.talk-demo-note')).toContainText('本地模拟');
+  for (const [value, status, label] of [['error', 'failed', '出错了'], ['refused', 'failed', '已拒绝'], ['approval', 'asking', '待确认'], ['done', 'done', '已完成']]) {
+    await page.locator('#demoOutcome').selectOption(value);
+    await page.locator('#chatInput').fill('你好');
+    await page.locator('#chatForm').press('Enter');
+    const last = page.locator('.talk-status').last();
+    await expect(last).toHaveAttribute('data-state', status, { timeout: 15000 });
+    await expect(last).toContainText(label);
+    await expect.poll(() => page.evaluate(() => !document.getElementById('chatInput').disabled)).toBe(true);
+    await page.waitForTimeout(600);
+  }
+  // A failed reply says it is a demonstration, not a real disconnect.
+  await page.locator('#demoOutcome').selectOption('error');
+  await page.locator('#chatInput').fill('再来一次');
+  await page.locator('#chatForm').press('Enter');
+  await expect(page.locator('.talk-thread, #talkThread').getByText('演示：这是模拟的连接中断', { exact: false }).first()).toBeVisible({ timeout: 15000 });
+});
