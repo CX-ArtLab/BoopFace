@@ -22,6 +22,17 @@ Está hecho con SVG y JavaScript puro, es un Web Component nativo sin dependenci
 
 https://github.com/user-attachments/assets/533940e6-38e8-45e3-a276-606e1e7bba51
 
+## Novedades de la 0.9
+
+- **Cabeza 3D.** Con `view="3d"` la cabeza gira de verdad hacia el puntero, con volumen y una cara curva. [más](#cabeza-3d--nuevo-en-09)
+- **15 expresiones nuevas.** Reverencia, negar con la cabeza, pensar, guiño, mareo, salto y más, además de escuchar y hablar del kit de voz. [más](#kit-de-expresiones-de-voz--novedad-en-09)
+- **Caricias, ojos redondeados, color de ojos.** Acaricia la frente y el avatar se acurruca; los ojos admiten cualquier color o pueden volverse transparentes. [más](#cabeza-3d--nuevo-en-09)
+- **Conectar IA.** Pasa a `connectAgent()` el flujo que devuelve tu IA y el avatar cambia solo de expresión al pensar, usar una herramienta, responder, terminar o fallar; también en conversaciones de voz. [más](#conectar-un-flujo-de-ia--novedad-en-09)
+- **Un Studio nuevo.** La demo, los skins y Conectar IA en una sola página. [Abrir el Studio](https://boopface.com/demo/?lang=es)
+- **BoopFace Embedded 0.2.** Las nuevas expresiones y los ojos redondeados también en pantallas de placas. [más](#boopface-embedded)
+
+Todo lo demás está en las secciones de abajo y en el [CHANGELOG](../CHANGELOG.md).
+
 ## Nuevo: [BoopFace Embedded](#boopface-embedded)
 
 <p align="center">
@@ -250,6 +261,7 @@ try {
 | `antenna` | `false` oculta la bola de la antena |
 | `antenna-drag` | Arrastre de la antena, retorno elástico y reacción de mareo; `false` lo desactiva |
 | `idle-gaze` | En reposo los ojos miran alrededor de vez en cuando; `false` los mantiene mirando al frente |
+| `petting` | Pasa el puntero varias veces sobre la frente y el avatar cierra los ojos y se acurruca; `false` lo desactiva |
 | `skin` | Número de skin, por ejemplo `301`; omítelo para el color plano |
 
 Controles habituales en tiempo de ejecución:
@@ -281,7 +293,7 @@ El centro del avatar inicia el aplastamiento. Si el puntero se mueve más de 4 p
 
 **Color de ojos.** `eye-color="#2bd67b"` (o `setEyeColor()`) colorea los ojos, en el avatar liso y en las 131 skins de ojos lisos. Las otras 57 skins tienen ojos con textura propia (en relieve, de cristal o con dibujo) y los conservan; `SKINS[número].eyeColor` indica cuáles se pueden cambiar. `eye-color="transparent"` recorta los ojos de la cabeza para que se vea lo que hay detrás del avatar; funciona en todas las skins, también con ojos con textura.
 
-**Caricias.** Acaricia la frente unas cuantas veces y el avatar cierra los ojos y se acurruca. Activado por defecto; `setPetting(false)` lo desactiva.
+**Caricias.** Acaricia la frente unas cuantas veces y el avatar cierra los ojos y se acurruca. Activado por defecto; `petting="false"` o `setPetting(false)` lo desactiva.
 
 ## Skins · Novedad en 0.7
 

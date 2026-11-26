@@ -3144,3 +3144,6 @@ body.has-chat-modal {
 .studio-booting .inspector-shell,
 .studio-booting .stage-toolbar,
 .studio-booting .scene-switch { opacity: .55; pointer-events: none; transition: opacity .2s; }
+
+/* What Connect AI does, under its heading. */
+.agent-what { margin: -2px 0 12px; line-height: 1.55; }

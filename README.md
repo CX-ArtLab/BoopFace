@@ -22,6 +22,17 @@ Built with SVG and vanilla JavaScript, it is a native Web Component with zero ru
 
 https://github.com/user-attachments/assets/533940e6-38e8-45e3-a276-606e1e7bba51
 
+## What’s new in 0.9
+
+- **3D head.** Add `view="3d"` and the head really turns toward the pointer, with depth and a curved face. [details](#3d-head--new-in-09)
+- **15 new expressions.** Bow, shake, think, wink, dizzy, bounce and more, plus the Voice Kit’s listening and speaking. [details](#voice-interaction-kit--new-in-09)
+- **Petting, rounded eyes, eye colour.** Stroke the forehead and the avatar nuzzles in; the eyes take any colour or turn see-through. [details](#3d-head--new-in-09)
+- **Connect AI.** Hand the stream your AI returns to `connectAgent()` and the avatar changes its expression by itself while thinking, using a tool, replying, done or failed; voice conversations too. [details](#connect-an-ai-stream--new-in-09)
+- **A new Studio.** The demo, the skins and Connect AI in one page. [Open the Studio](https://boopface.com/demo/?lang=en)
+- **BoopFace Embedded 0.2.** The new expressions and rounded eyes on dev-board screens too. [details](#boopface-embedded)
+
+Everything else is in the sections below and in the [CHANGELOG](./CHANGELOG.md).
+
 ## New: [BoopFace Embedded](#boopface-embedded)
 
 <p align="center">
@@ -250,6 +261,7 @@ try {
 | `antenna` | `false` hides the antenna ball |
 | `antenna-drag` | Antenna drag, spring return, and a dizzy reaction; set to `false` to disable |
 | `idle-gaze` | While idle the eyes glance around now and then; `false` keeps them looking ahead |
+| `petting` | Stroke the forehead a few times and the avatar closes its eyes and nuzzles in; `false` turns it off |
 | `skin` | Skin number, such as `301`; leave it out for the flat color |
 
 Common runtime controls:
@@ -281,7 +293,7 @@ The avatar center begins the squeeze interaction. Moving more than 4 CSS pixels 
 
 **Eye colour.** `eye-color="#2bd67b"` (or `setEyeColor()`) colours the eyes, on the plain avatar and on the 131 skins with plain eyes. The other 57 skins have eyes with a texture of their own (raised, glassy or patterned) and keep them; `SKINS[number].eyeColor` tells which can change. `eye-color="transparent"` cuts the eyes out of the head so whatever is behind the avatar shows in them; it works on every skin, textured eyes included.
 
-**Petting.** Stroke the forehead a few times and the avatar closes its eyes and nuzzles in. On by default; `setPetting(false)` turns it off.
+**Petting.** Stroke the forehead a few times and the avatar closes its eyes and nuzzles in. On by default; `petting="false"` or `setPetting(false)` turns it off.
 
 ## Skins · New in 0.7
 

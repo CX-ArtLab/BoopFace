@@ -3,7 +3,7 @@
 // slit and raised (looking up into the hand), the head sways slowly left and
 // right twice, then rests; an optional purr tremble.
 // Uses only the avatar's own eye morph, expression lock and head-motion layer.
-// setPetting(false) turns it off.
+// setPetting(false) or the petting="false" attribute turns it off.
 
 import BoopFace, { registerAvatarExtension } from './boopface-extension-host.js';
 import { endOfficialAction } from './boopface-new-expressions.js';
@@ -203,7 +203,8 @@ function petOf(face) {
       views: () => (face.isConnected ? [face] : []), faces: () => [face],
       options: () => ({ purr: true, blink: true }),
       isFlat: f => !f._view3d,
-      enabled: () => face._pettingEnabled !== false && !face._dragJelly?.active,
+      // setPetting() wins once called; otherwise petting="false" turns it off.
+      enabled: () => (face._pettingEnabled ?? String(face.getAttribute('petting') ?? '').trim().toLowerCase() !== 'false') && !face._dragJelly?.active,
     });
     pets.set(face, p);
   }
