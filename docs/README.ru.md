@@ -294,7 +294,7 @@ for await (const event of agent.track(stream)) {
 connectAgent(avatar, { actions: { replying: 'input', tool: 'inspect' } });
 ```
 
-Поговорите с аватаром, подключённым к ИИ, в [Studio](https://boopface.com/demo/?lang=ru#agent) и посмотрите, как подключить каждый формат.
+Чат в [Studio](https://boopface.com/demo/?lang=ru#agent) — локальная имитация: он показывает, как аватар меняет выражение, пока приходит ответ; настоящий ИИ не подключён. В реальном проекте это те несколько строк выше: передайте в `connectAgent()` поток, который возвращает ваш ИИ-SDK. Как подключить каждый формат, видно на вкладке «Код › Подключение ИИ».
 
 <p align="center">
   <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">

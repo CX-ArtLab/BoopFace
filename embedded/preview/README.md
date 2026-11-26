@@ -1,5 +1,9 @@
 # Offline eyes preview / 离线表情预览器
 
+> **Historical / 历史用途**: this folder holds the earlier simulator (18 actions in its panel). It stays only as the test fixture for the compiled engine. The current offline simulator is **`boopface-embedded-studio.html`** (33 actions, 32 screens, settings export), also available online at https://boopface.com/hardware/.
+> Download it from the [embedded release](https://github.com/CX-ArtLab/BoopFace/releases/tag/eyes-v0.2.0); the old file name `boopface-embedded-preview.html` on the release downloads the same current file.
+> 这个文件夹是更早的模拟器（面板里只有 18 个动作），只留作引擎的测试样本。现在的离线模拟器是 **`boopface-embedded-studio.html`**（33 个动作、32 种屏幕、导出设置），也可以直接用 https://boopface.com/hardware/ 。请从[嵌入式发布页](https://github.com/CX-ArtLab/BoopFace/releases/tag/eyes-v0.2.0)下载；发布页上沿用旧文件名 `boopface-embedded-preview.html` 的附件，内容也是同一个新文件。
+
 Download **`boopface-embedded-preview.html`** and open it in a browser. The file contains its UI and compiled engine. No install or server is required to run it. On a phone, a file manager's preview may not execute HTML/WebAssembly: use a desktop browser if it only shows source or a static preview.
 
 下载 **`boopface-embedded-preview.html`**，在电脑上用浏览器打开即可，不用安装、不用联网。手机文件管理器的快速预览可能不执行脚本；遇到只能看源码或无法运行时，请在电脑浏览器中打开。

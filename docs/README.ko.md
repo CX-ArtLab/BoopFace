@@ -294,7 +294,7 @@ AG-UI, OpenAI(Responses, Realtime, Chat Completions), Anthropic Messages, Vercel
 connectAgent(avatar, { actions: { replying: 'input', tool: 'inspect' } });
 ```
 
-[Studio](https://boopface.com/demo/?lang=ko#agent)에서 AI가 연결된 아바타와 대화하고, 형식별 연결 방법을 볼 수 있습니다.
+[Studio](https://boopface.com/demo/?lang=ko#agent)의 채팅은 로컬에서 흉내 낸 것으로, 답변이 올 때 아바타 표정이 어떻게 바뀌는지 보여 줍니다. 실제 AI와는 연결되어 있지 않습니다. 실제 연결은 위의 몇 줄처럼 AI SDK가 돌려주는 스트림을 `connectAgent()`에 넘기면 됩니다. 형식별 연결 방법은 "코드 › AI 연결"에서 볼 수 있습니다.
 
 <p align="center">
   <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">

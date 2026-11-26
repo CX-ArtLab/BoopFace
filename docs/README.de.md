@@ -294,7 +294,7 @@ Andere Ausdrücke verwenden:
 connectAgent(avatar, { actions: { replying: 'input', tool: 'inspect' } });
 ```
 
-Im [Studio](https://boopface.com/demo/?lang=de#agent) kannst du mit einem KI-angebundenen Avatar chatten und sehen, wie jedes Format angebunden wird.
+Der Chat im [Studio](https://boopface.com/demo/?lang=de#agent) ist eine lokale Simulation, die zeigt, wie der Avatar den Ausdruck wechselt, wenn eine Antwort eintrifft; es ist keine echte KI angebunden. Im echten Einsatz sind es die paar Zeilen oben: Gib `connectAgent()` den Stream, den dein KI-SDK liefert. Unter Code › KI anbinden siehst du, wie jedes Format angebunden wird.
 
 <p align="center">
   <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">

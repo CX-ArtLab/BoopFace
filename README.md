@@ -294,7 +294,7 @@ Use other expressions:
 connectAgent(avatar, { actions: { replying: 'input', tool: 'inspect' } });
 ```
 
-Chat with an AI-connected avatar in the [Studio](https://boopface.com/demo/?lang=en#agent) and see how to connect each format.
+The chat in the [Studio](https://boopface.com/demo/?lang=en#agent) is a local simulation that shows how the avatar changes expression as a reply arrives; no real AI is connected. Real use is the few lines above: hand the stream your AI SDK returns to `connectAgent()`. Code › Connect AI shows how to connect each format.
 
 <p align="center">
   <img src="assets/readme/divider.svg" width="100%" height="1" alt="">

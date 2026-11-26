@@ -448,3 +448,53 @@ test('the chat says its replies are simulated, and a visitor can pick the ending
   await page.locator('#chatForm').press('Enter');
   await expect(page.locator('.talk-thread, #talkThread').getByText('演示：这是模拟的连接中断', { exact: false }).first()).toBeVisible({ timeout: 15000 });
 });
+
+test('the share link keeps the stage: dark, light, following the skin, or a colour of its own', async ({ page, browser, baseURL }) => {
+  const copyLink = async p => {
+    await p.keyboard.press('Escape');
+    return p.evaluate(async () => { let c = null; Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async t => { c = t; } } }); document.getElementById('copyShareBtn').click(); await new Promise(r => setTimeout(r, 250)); return c; });
+  };
+  const cases = [
+    { surface: 'flat', backdrop: 'dark' }, { surface: 'flat', backdrop: 'light' },
+    { surface: 'skin', backdrop: 'dark' }, { surface: 'skin', backdrop: 'light' }, { surface: 'skin', backdrop: 'skin' },
+  ];
+  for (const { surface, backdrop } of cases) {
+    await page.goto('/demo/?lang=zh-CN');
+    await ready(page);
+    await page.locator(`[data-surface-btn="${surface}"]`).click();
+    await page.locator(`[data-backdrop-btn="${backdrop}"]`).click();
+    const href = await copyLink(page);
+    expect(new URL(href).searchParams.get('backdrop'), `${surface}/${backdrop} link`).toBe(backdrop);
+    const context = await browser.newContext({ baseURL });
+    const other = await context.newPage();
+    await other.goto(new URL(href).pathname + new URL(href).search);
+    await ready(other);
+    await expect(other.locator('#stageCard'), `${surface}/${backdrop} received`).toHaveAttribute('data-backdrop', backdrop);
+    await context.close();
+  }
+  // Two different stages never give the same link.
+  await page.goto('/demo/?lang=zh-CN');
+  await ready(page);
+  await page.locator('[data-surface-btn="flat"]').click();
+  await page.locator('[data-backdrop-btn="dark"]').click();
+  const dark = await copyLink(page);
+  await page.locator('[data-backdrop-btn="light"]').click();
+  expect(await copyLink(page)).not.toBe(dark);
+  // A colour of its own travels with the link.
+  await page.goto('/demo/?lang=zh-CN&surface=flat&backdrop=custom&bg=224466&eye=transparent');
+  await ready(page);
+  await expect(page.locator('#stageCard')).toHaveAttribute('data-backdrop', 'custom');
+  const custom = await copyLink(page);
+  expect(new URL(custom).searchParams.get('bg')).toBe('224466');
+  const context = await browser.newContext({ baseURL });
+  const other = await context.newPage();
+  await other.goto(new URL(custom).pathname + new URL(custom).search);
+  await ready(other);
+  await expect(other.locator('#stageCard')).toHaveAttribute('data-backdrop', 'custom');
+  expect(await other.locator('#stageCard').evaluate(el => el.style.getPropertyValue('--custom-stage-bg'))).toBe('#224466');
+  await context.close();
+  // Links made earlier (flat, bg, no backdrop) still open as a custom colour.
+  await page.goto('/demo/?lang=zh-CN&surface=flat&bg=141416');
+  await ready(page);
+  await expect(page.locator('#stageCard')).toHaveAttribute('data-backdrop', 'custom');
+});

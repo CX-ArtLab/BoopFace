@@ -27,6 +27,16 @@ for (const [name, type] of Object.entries(engines)) {
     const current = await page.textContent('#current');
     assert(current.startsWith(stage), `${name}: ${stage} plays (shows "${current}")`);
   }
+  // The build command on the page and the one in the downloaded settings file are the same, and can be run
+  // from the project's top folder (platformio.ini lives in embedded/).
+  await page.click('[data-inspector-tab="firmware"]');
+  const command = (await page.textContent('#fwBuildCmd')).trim();
+  assert(/^pio run -d embedded -e \S+$/.test(command), `${name}: page command "${command}"`);
+  const exported = await page.textContent('#export-code');
+  assert(exported.includes(command), `${name}: the settings file repeats "${command}"`);
+  assert(!/pio run -e /.test(exported), `${name}: no command without -d embedded in the file`);
+  await page.click('[data-fw-tab="wiring"]');
+  assert((await page.textContent('#fwSettingsPane ~ * , #wiring-body')).includes(command) || (await page.textContent('#wiring-body')).includes(command), `${name}: the wiring page shows the same command`);
   assert.deepEqual(requests, [], `${name}: no network requests`);
   assert.deepEqual(errors, [], `${name}: no script errors`);
   console.log(`${name}: wink, bow, listening and speaking play from the offline file; no network.`);
