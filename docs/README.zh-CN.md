@@ -363,7 +363,7 @@ vue({ template: { compilerOptions: { isCustomElement: tag => tag === 'boop-face'
 <img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded Studio：开发板屏幕上的眼睛、表情按钮和屏幕列表" width="100%">
 
 1. **预览**：[在线模拟器](https://boopface.com/hardware/?lang=zh-CN)运行同一套引擎，模拟 32 种屏幕，没有板子也能看效果。
-2. **导出**：调好布局、颜色和帧率，点「导出设置」，把 `eyes_settings.h` 放到示例固件的 `main.cpp` 旁边编译。[操作步骤](../embedded/README.zh-CN.md#在模拟器里调好直接用到板子上)
+2. **导出**：调好布局、颜色和帧率，在「固件」标签里点「下载文件」，把 `eyes_settings.h` 放进完整项目的 `embedded/examples/arduino/`（和 `main.cpp` 在一起）再编译。Arduino 库的 ZIP 里没有这些文件，见[操作步骤](../embedded/README.zh-CN.md#在模拟器里调好直接用到板子上)。
 3. **安装**：Arduino IDE 导入[发布页](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0)的 `BoopFace-Embedded-0.2.0.zip`；PlatformIO 用 `lib_deps = cxlab/BoopFace@^0.2.0`。
 
 ```cpp

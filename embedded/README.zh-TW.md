@@ -50,13 +50,15 @@
 
 ## 在模擬器裡調好，直接用到板子上
 
-在模擬器裡把眼睛調到滿意，不用改程式碼，就能按同樣的設定編譯韌體：
+在模擬器裡把眼睛調到滿意，不用改程式，就能按同樣的設定編譯韌體。這條路線需要**完整的專案資料夾**（裡面有 `embedded/` 目錄）：在 [GitHub 頁面](https://github.com/CX-ArtLab/boopface) 點 *Code → Download ZIP*，或用 `git clone`。Arduino 函式庫的 ZIP 裡只有 `.ino` 範例，沒有這些檔案。
 
-1. 開啟模擬器，選你的螢幕。「型號與接線」裡有對應的開發板、接線表和編譯命令。
-2. 調整佈局、顏色、幀率、眨眼和過渡；螢幕是轉著裝的，就按「螢幕旋轉 90°」。
-3. 點「匯出設定」，複製或下載，儲存為 `eyes_settings.h`。
-4. 把檔案放進 `embedded/examples/arduino/`，和 `main.cpp` 放在一起。
-5. 按檔案開頭註釋裡寫的環境編譯並上傳，例如 `pio run -d embedded -e esp32-s3-st7789 -t upload`。
+1. 打開模擬器，選你的螢幕。右邊「韌體」分頁裡的「型號與接線」有對應的開發板和接線表。
+2. 調整佈局、顏色、幀率、眨眼和過渡；螢幕是轉著裝的，就按「旋轉 90°」。
+3. 回到「韌體」分頁的 `eyes_settings.h` 頁，點「下載文件」（或點「複製」，自己存成 `eyes_settings.h`）。
+4. 把檔案放進專案資料夾的 `embedded/examples/arduino/`，和 `main.cpp` 放在一起。
+5. 安裝 [PlatformIO](https://docs.platformio.org/en/latest/core/installation/index.html)，在專案最上層（看得到 `embedded` 資料夾的那一層）打開終端機，執行頁面上的「編譯指令」，例如 `pio run -d embedded -e esp32-s3-st7789 -t upload`。
+
+**用 Arduino IDE**：用 ZIP 安裝函式庫（草稿碼 → 匯入程式庫 → 加入 .ZIP 程式庫），再打開「檔案 → 範例 → BoopFace」裡的 SerialEyes 或 OledSSD1306。這兩個範例不讀取 `eyes_settings.h`；想用模擬器裡調好的設定，請照上面的步驟走。
 
 | `eyes_settings.h` 裡的設定 | 對應模擬器裡的 |
 | --- | --- |

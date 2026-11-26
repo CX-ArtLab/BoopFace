@@ -364,7 +364,7 @@ vue({ template: { compilerOptions: { isCustomElement: tag => tag === 'boop-face'
 <img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded Studio: глаза на экране платы, кнопки выражений и список экранов" width="100%">
 
 1. **Предпросмотр**: [онлайн-симулятор](https://boopface.com/hardware/?lang=ru) запускает тот же движок и имитирует 32 экрана, так что всё видно и без платы.
-2. **Экспорт**: настройте раскладку, цвета и частоту кадров, нажмите «Экспорт настроек» и положите `eyes_settings.h` рядом с `main.cpp` примера прошивки для сборки. [Шаги](../embedded/README.ru.md#настройте-в-симуляторе-и-сразу-на-плату)
+2. **Экспорт**: настройте раскладку, цвета и частоту кадров, откройте вкладку **Прошивка** и нажмите **Скачать файл**; положите `eyes_settings.h` в `embedded/examples/arduino/` полного проекта (рядом с `main.cpp`) и соберите. В ZIP библиотеки Arduino этих файлов нет; см. [Шаги](../embedded/README.ru.md#настройте-в-симуляторе-и-сразу-на-плату).
 3. **Установка**: в Arduino IDE добавьте `BoopFace-Embedded-0.2.0.zip` со [страницы релиза](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0); в PlatformIO используйте `lib_deps = cxlab/BoopFace@^0.2.0`.
 
 ```cpp

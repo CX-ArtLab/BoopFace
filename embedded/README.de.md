@@ -50,13 +50,15 @@ Es ist **derselbe Embedded-C++-Code, nach WebAssembly kompiliert**, nicht die We
 
 ## Im Simulator einstellen, direkt aufs Board
 
-Stell die Augen im Simulator nach deinem Geschmack ein und baue die Firmware mit genau diesen Einstellungen, ohne Code zu ändern:
+Stell die Augen im Simulator nach deinem Geschmack ein und baue die Firmware mit genau diesen Einstellungen, ohne Code zu ändern. Dieser Weg braucht den **vollständigen Projektordner** (den mit `embedded/`): Wähle auf der [GitHub-Seite](https://github.com/CX-ArtLab/boopface) *Code → Download ZIP* oder nutze `git clone`. Das ZIP der Arduino-Bibliothek enthält nur die `.ino`-Beispiele.
 
-1. Öffne den Simulator und wähle deinen Bildschirm. Das Feld **Modell und Verdrahtung** zeigt Board, Verdrahtung und Build-Befehl.
-2. Stelle Layout, Farben, Bildrate, Blinzeln und Übergänge ein; ist der Bildschirm gedreht eingebaut, klicke auf „Bildschirm um 90° drehen“.
-3. Klicke auf **Einstellungen exportieren**, kopiere oder lade den Text herunter und speichere ihn als `eyes_settings.h`.
-4. Lege die Datei in `embedded/examples/arduino/` neben `main.cpp`.
-5. Baue und lade die Umgebung hoch, die in den ersten Zeilen der Datei steht, zum Beispiel `pio run -d embedded -e esp32-s3-st7789 -t upload`.
+1. Öffne den Simulator und wähle deinen Bildschirm. Im Reiter **Firmware** zeigt *Modell und Anschlüsse* das Board und seine Verdrahtungstabelle.
+2. Stelle Layout, Farben, Bildrate, Blinzeln und Übergänge ein; ist der Bildschirm gedreht eingebaut, drehe ihn um 90°.
+3. Zurück im Reiter **Firmware**, auf der Seite `eyes_settings.h`, klicke auf **Datei herunterladen** (oder auf **Kopieren** und speichere den Text als `eyes_settings.h`).
+4. Lege die Datei im Projektordner nach `embedded/examples/arduino/`, neben `main.cpp`.
+5. Installiere [PlatformIO](https://docs.platformio.org/en/latest/core/installation/index.html), öffne ein Terminal im obersten Ordner des Projekts (dem, in dem `embedded` liegt) und führe den auf der Seite gezeigten Build-Befehl aus, zum Beispiel `pio run -d embedded -e esp32-s3-st7789 -t upload`.
+
+**Arduino IDE**: Installiere die Bibliothek aus dem ZIP (*Sketch → Bibliothek einbinden → .ZIP-Bibliothek hinzufügen*) und öffne *Datei → Beispiele → BoopFace* (SerialEyes, OledSSD1306). Diese beiden Beispiele lesen `eyes_settings.h` nicht; für die Einstellungen aus dem Simulator folge den Schritten oben.
 
 | Einstellung in `eyes_settings.h` | Element im Simulator |
 | --- | --- |

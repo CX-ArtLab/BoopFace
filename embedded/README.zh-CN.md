@@ -50,13 +50,15 @@
 
 ## 在模拟器里调好，直接用到板子上
 
-在模拟器里把眼睛调到满意，不用改代码，就能按同样的设置编译固件：
+在模拟器里把眼睛调到满意，不用改代码，就能按同样的设置编译固件。这条路线需要**完整的项目文件夹**（里面有 `embedded/` 目录）：在 [GitHub 页面](https://github.com/CX-ArtLab/boopface) 点 *Code → Download ZIP*，或用 `git clone`。Arduino 库的 ZIP 里只有 `.ino` 示例，没有这些文件。
 
-1. 打开模拟器，选你的屏幕。「型号与接线」里有对应的开发板、接线表和编译命令。
-2. 调整布局、颜色、帧率、眨眼和过渡；屏幕是转着装的，就按「屏幕旋转 90°」。
-3. 点「导出设置」，复制或下载，保存为 `eyes_settings.h`。
-4. 把文件放进 `embedded/examples/arduino/`，和 `main.cpp` 放在一起。
-5. 按文件开头注释里写的环境编译并上传，例如 `pio run -d embedded -e esp32-s3-st7789 -t upload`。
+1. 打开模拟器，选你的屏幕。右边「固件」标签里的「型号与接线」有对应的开发板和接线表。
+2. 调整布局、颜色、帧率、眨眼和过渡；屏幕是转着装的，就按「旋转 90°」。
+3. 回到「固件」标签的 `eyes_settings.h` 页，点「下载文件」（或点「复制」，自己存成 `eyes_settings.h`）。
+4. 把文件放进项目文件夹的 `embedded/examples/arduino/`，和 `main.cpp` 放在一起。
+5. 安装 [PlatformIO](https://docs.platformio.org/en/latest/core/installation/index.html)，在项目最上层（能看到 `embedded` 文件夹的那一层）打开终端，执行页面上的「编译命令」，例如 `pio run -d embedded -e esp32-s3-st7789 -t upload`。
+
+**用 Arduino IDE**：用 ZIP 安装库（项目 → 导入库 → 添加 .ZIP 库），再打开「文件 → 示例 → BoopFace」里的 SerialEyes 或 OledSSD1306。这两个示例不读取 `eyes_settings.h`；想用模拟器里调好的设置，请按上面的步骤走。
 
 | `eyes_settings.h` 里的设置 | 对应模拟器里的 |
 | --- | --- |

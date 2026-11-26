@@ -28,13 +28,15 @@ The [online simulator](https://boopface.com/hardware/?lang=en) supports 10 langu
 
 ## From the preview to your board
 
-Tune the eyes in the preview, then build the firmware with exactly those settings, without editing code:
+Tune the eyes in the simulator, then build the firmware with exactly those settings, without editing code. This route needs the **full project folder** (the one that contains `embedded/`): on the [GitHub page](https://github.com/CX-ArtLab/boopface) choose *Code → Download ZIP*, or use `git clone`. The Arduino library ZIP holds only the `.ino` examples, not these files.
 
-1. Open the preview and pick your screen. The **Model and wiring** panel shows the board, its wiring and the build command.
+1. Open the simulator and pick your screen. In the **Firmware** tab, *Model and wiring* shows the board and its wiring table.
 2. Adjust layout, colours, frame rate, blinking and transitions, and turn the module if it is mounted turned.
-3. Press **Export settings**, then copy or download the text as `eyes_settings.h`.
-4. Put the file in `embedded/examples/arduino/`, next to `main.cpp`.
-5. Build and upload the environment named in the file's first lines, for example `pio run -d embedded -e esp32-s3-st7789 -t upload`.
+3. Back in the **Firmware** tab, on the `eyes_settings.h` page, press **Download file** (or **Copy** and save the text as `eyes_settings.h`).
+4. Put the file in the project folder's `embedded/examples/arduino/`, next to `main.cpp`.
+5. Install [PlatformIO](https://docs.platformio.org/en/latest/core/installation/index.html), open a terminal in the top folder of the project (the one that contains `embedded`) and run the build command shown on the page, for example `pio run -d embedded -e esp32-s3-st7789 -t upload`.
+
+**Arduino IDE**: install the library from the ZIP (*Sketch → Include Library → Add .ZIP Library*), then open *File → Examples → BoopFace* (SerialEyes, OledSSD1306). These two examples do not read `eyes_settings.h`; to use settings from the simulator, follow the steps above.
 
 | Setting in `eyes_settings.h` | Preview control |
 | --- | --- |

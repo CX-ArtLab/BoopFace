@@ -50,13 +50,15 @@ Es **el mismo código C++ embebido compilado a WebAssembly**, no la demo web ni 
 
 ## Ajusta en el simulador y pásalo a la placa
 
-Deja los ojos a tu gusto en el simulador y compila el firmware con esos mismos ajustes, sin tocar código:
+Deja los ojos a tu gusto en el simulador y compila el firmware con esos mismos ajustes, sin tocar código. Esta ruta necesita la **carpeta completa del proyecto** (la que contiene `embedded/`): en la [página de GitHub](https://github.com/CX-ArtLab/boopface) elige *Code → Download ZIP* o usa `git clone`. El ZIP de la biblioteca de Arduino solo trae los ejemplos `.ino`, no estos archivos.
 
-1. Abre el simulador y elige tu pantalla. El panel **Modelo y cableado** muestra la placa, el cableado y el comando de compilación.
-2. Ajusta el diseño, los colores, la tasa de fotogramas, el parpadeo y las transiciones; si la pantalla está montada girada, pulsa «Girar pantalla 90°».
-3. Pulsa **Exportar ajustes**, copia o descarga el texto y guárdalo como `eyes_settings.h`.
-4. Coloca el archivo en `embedded/examples/arduino/`, junto a `main.cpp`.
-5. Compila y sube el entorno indicado en las primeras líneas del archivo, por ejemplo `pio run -d embedded -e esp32-s3-st7789 -t upload`.
+1. Abre el simulador y elige tu pantalla. En la pestaña **Firmware**, *Modelo y conexiones* muestra la placa y su tabla de cableado.
+2. Ajusta el diseño, los colores, la tasa de fotogramas, el parpadeo y las transiciones; si la pantalla está montada girada, gírala 90°.
+3. De vuelta en la pestaña **Firmware**, en la página de `eyes_settings.h`, pulsa **Descargar archivo** (o **Copiar** y guarda el texto como `eyes_settings.h`).
+4. Coloca el archivo en `embedded/examples/arduino/` de la carpeta del proyecto, junto a `main.cpp`.
+5. Instala [PlatformIO](https://docs.platformio.org/en/latest/core/installation/index.html), abre una terminal en la carpeta superior del proyecto (la que contiene `embedded`) y ejecuta el comando de compilación que muestra la página, por ejemplo `pio run -d embedded -e esp32-s3-st7789 -t upload`.
+
+**Arduino IDE**: instala la biblioteca desde el ZIP (*Programa → Incluir biblioteca → Añadir biblioteca .ZIP*) y abre *Archivo → Ejemplos → BoopFace* (SerialEyes, OledSSD1306). Esos dos ejemplos no leen `eyes_settings.h`; para usar los ajustes del simulador, sigue los pasos de arriba.
 
 | Ajuste en `eyes_settings.h` | Control del simulador |
 | --- | --- |

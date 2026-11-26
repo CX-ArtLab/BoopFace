@@ -364,7 +364,7 @@ vue({ template: { compilerOptions: { isCustomElement: tag => tag === 'boop-face'
 <img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded Studio：ボード画面上の目、表情ボタン、画面リスト" width="100%">
 
 1. **プレビュー**：[オンラインシミュレーター](https://boopface.com/hardware/?lang=ja)は同じエンジンで 32 種類の画面を再現するので、ボードがなくても確認できます。
-2. **書き出し**：レイアウト、色、フレームレートを調整して「設定を書き出す」を押し、`eyes_settings.h` をサンプルファームウェアの `main.cpp` の隣に置いてビルドします。[手順](../embedded/README.ja.md#シミュレーターで調整してそのままボードへ)
+2. **書き出し**：レイアウト、色、フレームレートを調整し、「ファームウェア」タブで「ファイルを保存」を押して、`eyes_settings.h` を完全なプロジェクトの `embedded/examples/arduino/`（`main.cpp` の隣）に置いてビルドします。Arduino ライブラリの ZIP にはこれらのファイルは入っていません。[手順](../embedded/README.ja.md#シミュレーターで調整してそのままボードへ)をご覧ください。
 3. **インストール**：Arduino IDE では[リリースページ](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0)の `BoopFace-Embedded-0.2.0.zip` を追加、PlatformIO では `lib_deps = cxlab/BoopFace@^0.2.0` を使います。
 
 ```cpp

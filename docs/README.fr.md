@@ -364,7 +364,7 @@ Les mêmes expressions des yeux sur les écrans de robots et de cartes. Un petit
 <img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded Studio : yeux sur l’écran d’une carte, boutons d’expressions et liste des écrans" width="100%">
 
 1. **Aperçu** : le [simulateur en ligne](https://boopface.com/hardware/?lang=fr) exécute le même moteur et simule 32 écrans, pour voir le résultat sans carte.
-2. **Export** : réglez la mise en page, les couleurs et la fréquence d’images, cliquez sur Exporter les réglages, puis placez `eyes_settings.h` à côté du `main.cpp` du firmware d’exemple pour compiler. [Étapes](../embedded/README.fr.md#réglez-dans-le-simulateur-puis-passez-à-la-carte)
+2. **Export** : réglez la mise en page, les couleurs et la fréquence d’images, ouvrez l’onglet **Firmware** et cliquez sur **Télécharger le fichier** ; placez `eyes_settings.h` dans `embedded/examples/arduino/` du projet complet (à côté de `main.cpp`) et compilez. Le ZIP de la bibliothèque Arduino ne contient pas ces fichiers ; voir les [Étapes](../embedded/README.fr.md#réglez-dans-le-simulateur-puis-passez-à-la-carte).
 3. **Installation** : dans l’Arduino IDE, ajoutez `BoopFace-Embedded-0.2.0.zip` depuis la [page de version](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0) ; dans PlatformIO, utilisez `lib_deps = cxlab/BoopFace@^0.2.0`.
 
 ```cpp
