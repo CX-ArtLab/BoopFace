@@ -1,10 +1,10 @@
 # BoopFace
 
 <p align="center">
-  <img src="../assets/readme/boopface-header.jpg" alt="BoopFace: лёгкий выразительный компонент аватара-робота для ИИ-ботов, агентов и интерактивных приложений">
+  <img src="../assets/readme/boopface-header.jpg" alt="BoopFace: лёгкий и выразительный компонент аватара-робота для ИИ-ботов, агентов и интерактивных приложений">
 </p>
 
-**Официальный сайт: [boopface.com](https://boopface.com/)**
+**Официальный сайт: [boopface.com](https://boopface.com/)** · **Онлайн-демо: [BoopFace Studio](https://boopface.com/demo/?lang=ru)**
 
 [English](https://github.com/CX-ArtLab/boopface/blob/main/README.md) | [简体中文](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.zh-CN.md) | [Español](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.es.md) | [Русский](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.ru.md) | [Français](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.fr.md) | [Português](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.pt.md) | [Deutsch](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.de.md) | [日本語](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.ja.md) | [한국어](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.ko.md) | [繁體中文](https://github.com/CX-ArtLab/boopface/blob/main/docs/README.zh-TW.md)
 
@@ -12,98 +12,89 @@
 
 ![Vanilla JavaScript](https://img.shields.io/badge/Vanilla-JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=000) ![Web Component](https://img.shields.io/badge/Web-Native%20Component-5A67D8?style=flat-square) ![SVG](https://img.shields.io/badge/Rendering-SVG-FFB13B?style=flat-square&logo=svg&logoColor=000) ![Zero Dependencies](https://img.shields.io/badge/Dependencies-0-2EA44F?style=flat-square) ![Embedded](https://img.shields.io/badge/Embedded-ESP32%20%7C%20STM32%20%7C%20Pico-E7352C?style=flat-square&logo=espressif&logoColor=white)
 
-BoopFace — лёгкий выразительный компонент аватара-робота для ИИ-ботов, агентов и интерактивных приложений. Думает, ждёт, готово или ошибка: каждое состояние агента можно показать выражением лица.
+BoopFace — лёгкий и выразительный компонент аватара-робота для ИИ-ботов, агентов и интерактивных приложений. Думает, ждёт, готово, ошибка: любое состояние агента можно показать выражением лица.
 
-Подходит как лицо и индикатор состояния ИИ-ассистентов и агентов: чат-ассистентов вроде ChatGPT, Claude, Gemini, Grok и DeepSeek, агентов для программирования вроде Codex, Claude Code, Cursor, Gemini CLI и OpenCode, а также персональных агентов вроде Grok Bot, ChatGPT dots, Meta Muse, OpenClaw и Hermes Agent.
+Подходит как лицо и индикатор состояния ИИ-ассистентов и агентов: чат-ассистентов вроде ChatGPT, Claude и Gemini, агентов для программирования вроде Codex, Claude Code и Cursor и самых разных личных агентов. Также годится для настольных компаньонов, виртуальных питомцев, цифровых маскотов и аватаров чат-ботов.
 
-Также подходит для настольных компаньонов, виртуальных питомцев, цифровых маскотов, аватаров чат-ботов и других интерактивных персонажей или как слой визуальной обратной связи для интерфейсов агентов в стиле AG-UI.
-
-Построен на SVG и чистом JavaScript: это нативный Web Component без зависимостей во время выполнения, под лицензией MIT. Его можно показывать плоским или переключить на [3D-голову](#3d-голова--новое-в-09), которая по-настоящему поворачивается; 188 [скинов](#скины--новое-в-07) можно надеть в любой момент.
+Нативный Web Component на SVG и чистом JavaScript, без зависимостей во время выполнения, лицензия MIT. Можно показывать плоским или переключить на объёмную голову, которая действительно поворачивается; 188 скинов готовы к использованию.
 
 https://github.com/user-attachments/assets/533940e6-38e8-45e3-a276-606e1e7bba51
 
-## Что нового в 0.9
-
-- **3D-голова.** С `view="3d"` голова по-настоящему поворачивается к указателю, у неё есть объём и выпуклое лицо. [подробнее](#3d-голова--новое-в-09)
-- **15 новых выражений.** Поклон, мотание головой, размышление, подмигивание, головокружение, прыжок и другие, а также «слушает» и «говорит» из голосового набора. [подробнее](#набор-выражений-для-голосового-общения--новое-в-09)
-- **Поглаживание, скруглённые глаза, цвет глаз.** Погладьте лоб — аватар прильнёт; глаза можно окрасить в любой цвет или сделать прозрачными. [подробнее](#3d-голова--новое-в-09)
-- **Подключение ИИ.** Передайте поток, который возвращает ваш ИИ, в `connectAgent()` — и аватар сам меняет выражение, пока ИИ думает, использует инструмент, отвечает, закончил или ошибся; голосовые разговоры тоже. [подробнее](#подключение-потока-ии--новое-в-09)
-- **Новый Studio.** Демо, скины и подключение ИИ на одной странице. [Открыть Studio](https://boopface.com/demo/?lang=ru)
-- **BoopFace Embedded 0.2.** Новые выражения и скруглённые глаза теперь и на экранах плат. [подробнее](#boopface-embedded)
-
-Остальное — в разделах ниже и в [CHANGELOG](../CHANGELOG.md).
-
-## Новое: [BoopFace Embedded](#boopface-embedded)
-
 <p align="center">
-  <a href="#boopface-embedded"><img src="../assets/readme/boopface-embedded.jpg" alt="BoopFace Embedded: те же выражения глаз на экранах ESP32, STM32 и Raspberry Pi Pico или в других программах C++. Примеры прошивок для 28 конфигураций и симулятор с экспортом настроек."></a>
+  <a href="#быстрый-старт">Быстрый старт</a> · <a href="#выражения">Выражения</a> · <a href="#настройки">Настройки</a> · <a href="#объёмная-голова-и-глаза">Объёмная голова и глаза</a> · <a href="#скины">Скины</a> · <a href="#подключение-ии">Подключение ИИ</a> · <a href="#голосовые-разговоры">Голосовые разговоры</a> · <a href="#react-и-vue">React и Vue</a> · <a href="#boopface-embedded">Embedded</a>
 </p>
 
-Те же выражения глаз на экранах ESP32, STM32 и Raspberry Pi Pico или в других программах C++. Примеры прошивок для 28 конфигураций и симулятор с экспортом настроек.
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
-## Демонстрация в реальном времени
+## Попробовать онлайн
 
 <h3 align="center">Официальный сайт</h3>
 
 <p align="center">
-  <a href="https://boopface.com/">boopface.com</a>
+  <a href="https://boopface.com/"><b>boopface.com</b></a>
 </p>
 
 <p align="center">
   <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
 </p>
 
-<h3 align="center">BoopFace Web Component</h3>
-
-С версии 0.9 демо, скины и подключение ИИ собраны на одной странице — в Studio. Сцена переключается между плоским видом и 3D; рядом можно попробовать каждое выражение и голосовой набор, сменить скин и цвета, настроить поведение, пообщаться с аватаром, подключённым к ИИ, и в любой момент скопировать код того, что вы видите.
+<h3 align="center">Онлайн-демо BoopFace Studio</h3>
 
 <p align="center">
-  <a href="https://boopface.com/demo/?lang=ru">Открыть Studio</a> · <a href="https://boopface.com/demo/?lang=ru#skins">Выбрать скин</a> · <a href="https://boopface.com/demo/?lang=ru#agent">Попробовать подключение ИИ</a>
+  <a href="https://boopface.com/demo/?lang=ru"><b>Открыть Studio</b></a> · <a href="https://boopface.com/demo/?lang=ru#skins">Выбрать скин</a> · <a href="https://boopface.com/demo/?lang=ru#agent">Попробовать подключение ИИ</a>
 </p>
 
 <p align="center">
-  <img src="../assets/demo/boopface-demo.gif" alt="Интерактивная анимационная демонстрация BoopFace" width="560">
-</p>
-
-<p align="center">
-  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
-</p>
-
-<h3 align="center">BoopFace Embedded</h3>
-
-<p align="center">
-  <a href="https://boopface.com/hardware/?lang=ru">Открыть симулятор устройств</a> (предпросмотр 32 предустановок экранов встраиваемых устройств)
+  <img src="../assets/demo/boopface-demo.gif" alt="Демо взаимодействия с BoopFace" width="560">
 </p>
 
 <p align="center">
   <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
 </p>
 
-## Основные возможности
+<h3 align="center">Симулятор BoopFace Embedded</h3>
 
-- Нативный Web Component
-- SVG-рендеринг + vanilla JavaScript
-- Ноль runtime-зависимостей
-- Плоский вид или 3D; 3D-голова по-настоящему поворачивается к указателю
-- Автоматическое моргание и лёгкое idle-поведение
-- Глаза следят за указателем, голова движется по инерции; каждое выражение двигает всю голову
-- Погладьте лоб — аватар закроет глаза и прильнёт
-- Локальная jelly-деформация при перетаскивании с упругим возвратом
-- Сжатие при удержании и перетаскиваемая пружинящая антенна
-- Программное управление состояниями и выражениями Agent
-- Более 30 выражений: waiting, success, failure, affirm, wary, inspect, angry, refuse, love и новые в 0.9: поклон, наблюдение, раздумье, подмигивание, довольство, головокружение, прыжки и другие
-- Скруглённые глаза любого цвета или прозрачные, сквозь которые виден фон
-- Поддержка reduced motion
-- Настраиваемое поведение сна
-- Регулируемое скругление головы
-- 188 пронумерованных скинов в 17 сериях, свет следует за указателем
-- Облегчённая версия без скинов для самых лёгких страниц
-- `connectAgent()`: события потока ИИ управляют выражениями (AG-UI, OpenAI, Anthropic, Vercel AI SDK)
-- Набор выражений для голосового общения: набор выражений «слушает», «думает», «говорит», которые следуют реальной громкости
-- TypeScript-декларации включены
-- BoopFace Embedded воспроизводит те же выражения глаз на 28 конфигурациях плат и экранов ESP32, ESP32-S3, STM32 и Raspberry Pi Pico с экспортом настроек симулятора для прошивки
+<p align="center">
+  <a href="https://boopface.com/hardware/?lang=ru"><b>Открыть симулятор для плат</b></a> (32 готовых экрана плат)
+</p>
 
-## Установка
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+## Что нового в 0.9
+
+- BoopFace стал объёмным. [Подробнее](#объёмная-голова-и-глаза)
+- 15 новых выражений и набор для голосовых разговоров. [Подробнее](#выражения)
+- Новая реакция на поглаживание: поводите указателем по лбу. [Подробнее](#объёмная-голова-и-глаза)
+- Обновлено подключение ИИ. [Подробнее](#подключение-ии)
+- Онлайн-демо переделано с нуля: [BoopFace Studio](https://boopface.com/demo/?lang=ru)
+- Embedded 0.2: новые выражения появились и на платах. [Подробнее](#boopface-embedded)
+
+Все подробности — в [CHANGELOG](../CHANGELOG.md).
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+## Возможности BoopFace
+
+- Нативный Web Component, рендеринг SVG + чистый JavaScript, без зависимостей во время выполнения, работает с любым фреймворком
+- Компонент аватара, который выражает эмоции, с выражением для каждого состояния
+- Более 30 выражений — как будто живой
+- Интерактивный: глаза следят за указателем; на перетаскивание, сжатие, нажатие, оттягивание антенны и поглаживание есть реакция
+- Плоский или объёмный стиль для разных задач, 188 скинов можно сменить в любой момент
+- События из потоков ИИ напрямую управляют выражениями (AG-UI, OpenAI, Anthropic, Vercel AI SDK), включая голосовые разговоры
+- Лёгкий: lite-сборка около 92 КБ
+- BoopFace Embedded: те же выражения работают на экранах плат (ESP32, STM32, Raspberry Pi Pico)
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+## Быстрый старт
 
 ```bash
 npm install boopface
@@ -113,66 +104,40 @@ npm install boopface
 import 'boopface';
 ```
 
-Или скачайте `boopface-x.y.z.zip` из [последнего релиза](https://github.com/CX-ArtLab/boopface/releases/latest). В нём только компонент, вместе со скинами. Распакуйте его рядом со страницей:
-
-```html
-<script type="module" src="./boopface/boopface.js"></script>
-```
-
-Затем добавьте компонент:
-
 ```html
 <boop-face id="avatar" view="3d"></boop-face>
 ```
 
-`view="3d"` даёт объёмную голову, как на [boopface.com](https://boopface.com/) и в Studio. Без него аватар плоский: это значение по умолчанию, и оно легче (3D-рендер добавляет около 19 КБ).
-
-Инициализация не требуется. Аватар автоматически переходит в стандартное состояние idle.
-
-### Переход с Agent Robot Avatar
-
-До версии 0.8 BoopFace назывался Agent Robot Avatar. Возможности и использование не изменились. Чтобы обновиться, замените имя пакета на `boopface`:
-
-```bash
-npm uninstall agent-robot-avatar
-npm install boopface
-```
-
-Старый тег `<agent-robot-avatar>` работает до версии 1.0, так что менять страницы срочно не нужно. Старый npm-пакет `agent-robot-avatar` больше не обновляется; новые версии публикуются только как `boopface`.
-
-### Облегчённая версия
-
-Для страниц без скинов есть `boopface/lite` — тот же аватар без кода скинов:
-
-```js
-import 'boopface/lite';
-```
-
-Облегчённая версия игнорирует атрибут `skin` и сообщает в консоли, что для скинов нужна полная версия.
-
-Сравнение размеров (передача по сети, со сжатием gzip):
-
-| Версия | Размер |
-| --- | --- |
-| Облегчённая `boopface/lite` | около 92 КБ |
-| Полная, страница не использует скины | около 104 КБ; код отрисовки скинов не загружается |
-| Полная, со скинами | около 161 КБ; дополнительная часть загружается при первом использовании скина |
-
-При переключении на 3D обе сборки дополнительно загружают около 19 КБ кода 3D-отрисовки.
-
-## Базовое использование
+Код инициализации не нужен: аватар сам моргает и ждёт. `view="3d"` — объёмная голова с официального сайта; без него будет плоский аватар (по умолчанию, и он легче).
 
 ```js
 const avatar = document.querySelector('#avatar');
-
 avatar.play('success');
-avatar.play('wary');
-avatar.play('refuse');
-
-avatar.reset();
 ```
 
-Доступные действия:
+Без npm: скачайте `boopface-x.y.z.zip` из [последнего релиза](https://github.com/CX-ArtLab/boopface/releases/latest), распакуйте рядом со страницей и подключите через `<script type="module" src="./boopface/boopface.js"></script>`.
+
+**Размер** (объём передачи, gzip)
+
+| Сборка | Размер |
+| --- | --- |
+| Lite `import 'boopface/lite'`, без скинов | около 92 КБ |
+| Полная, страница не использует скины | около 104 КБ |
+| Полная, со скинами | около 161 КБ (код скинов загружается при первом использовании) |
+
+При переходе на объёмный вид загружается ещё около 19 КБ.
+
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+## Выражения
+
+```js
+avatar.play('success');   // проиграть один раз
+avatar.startWaiting();    // ждать до stopWaiting() или другого выражения
+avatar.reset();           // вернуться в покой
+```
 
 | Действие | Как выглядит | Когда использовать |
 | --- | --- | --- |
@@ -210,109 +175,79 @@ avatar.reset();
 | `sleep` | Закрывает глаза и спит | Долго нет активности |
 | `wake` | Открывает глаза и просыпается | Активность возобновилась |
 
-Действия ожидания проигрывают один цикл через `play()`. `startWaiting({ variant: 'spin' | 'wrap' | 'wave' | 'bloom' | 'cross' })` повторяется, пока не начнётся другое действие или не будет вызван `stopWaiting()`.
+Стили ожидания: `startWaiting({ variant: 'spin' | 'wrap' | 'wave' | 'bloom' | 'cross' })`. Старые названия действий из 0.5 работают до 1.0, см. [таблицу перехода](../CHANGELOG.md#upgrading-from-05x).
 
-Имена из 0.5 (`send`, `warning`, `error`, `blocked`, `slot` и другие) работают до 1.0 с уведомлением в консоли; см. [таблицу обновления](../CHANGELOG.md#upgrading-from-05x).
-
-Типичный жизненный цикл запроса Agent:
+Типичный запрос:
 
 ```js
 avatar.startWaiting();
-
-// Второй вариант ожидания: глаза уходят с одной стороны и возвращаются с другой.
-avatar.startWaiting({ variant: 'wrap' });
-
-// Третий вариант ожидания: поочерёдные вертикальные волны глаз.
-avatar.startWaiting({ variant: 'wave' });
-
 try {
   const result = await runAgentRequest();
   await avatar.play(result.ok ? 'success' : 'failure');
-} catch (error) {
+} catch {
   await avatar.play('failure');
 }
 ```
 
-## Часто используемые параметры
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
+
+## Настройки
 
 ```html
-<boop-face
-  size="160"
-  view="3d"
-  color="#08090b"
-  eye-color="#2bd67b"
-  auto-sleep="30000"
-  wake-on="activity"
-  motion="auto">
-</boop-face>
+<boop-face size="160" view="3d" color="#08090b" eye-color="#2bd67b" auto-sleep="30000"></boop-face>
 ```
 
-| Атрибут | Назначение |
-| --- | --- |
-| `size` | Размер аватара в пикселях |
-| `view` | `2d` (по умолчанию, плоский) или `3d` |
-| `color` | Основной цвет аватара |
-| `eye-color` | Цвет глаз; `transparent` делает глаза прозрачными, сквозь них виден фон |
-| `eye-style` | По умолчанию глаза скруглены; `sharp` возвращает прямые срезы |
-| `auto-sleep` | Время бездействия до автоматического сна; `0` отключает его |
-| `wake-on` | Политика автоматического пробуждения: `activity`, `interaction` или `manual` |
-| `motion` | Политика движения: `auto`, `reduce` или `full` |
-| `press-squeeze` | Удержание центра для сжатия; `false` отключает жест |
-| `antenna` | `false` скрывает шарик антенны |
-| `antenna-drag` | Перетаскивание антенны, пружинный возврат и головокружение; `false` отключает |
-| `idle-gaze` | В покое глаза время от времени оглядываются; `false` оставляет взгляд прямо |
-| `petting` | Несколько раз проведите указателем по лбу — аватар закроет глаза и прильнёт; `false` отключает |
-| `skin` | Номер скина, например `301`; без атрибута — сплошной цвет |
+| Атрибут | Назначение | Метод во время выполнения |
+| --- | --- | --- |
+| `size` | Размер аватара в пикселях |  |
+| `view` | `2d` (по умолчанию, плоский) или `3d` | `setView()` |
+| `color` | Основной цвет аватара |  |
+| `eye-color` | Цвет глаз; `transparent` делает глаза прозрачными, сквозь них виден фон | `setEyeColor()` |
+| `eye-style` | По умолчанию глаза скруглены; `sharp` возвращает прямые срезы |  |
+| `skin` | Номер скина, например `301`; без атрибута — сплошной цвет | `setSkin()` |
+| `auto-sleep` | Время бездействия до автоматического сна; `0` отключает его |  |
+| `wake-on` | Политика автоматического пробуждения: `activity`, `interaction` или `manual` |  |
+| `motion` | Политика движения: `auto`, `reduce` или `full` |  |
+| `idle-gaze` | В покое глаза время от времени оглядываются; `false` оставляет взгляд прямо | `setIdleGaze()` |
+| `petting` | Несколько раз проведите указателем по лбу — аватар закроет глаза и прильнёт; `false` отключает | `setPetting()` |
+| `press-squeeze` | Удержание центра для сжатия; `false` отключает жест | `setPressSqueeze()` |
+| `antenna` | `false` скрывает шарик антенны |  |
+| `antenna-drag` | Перетаскивание антенны, пружинный возврат и головокружение; `false` отключает | `setAntennaDrag()` |
 
-Часто используемые runtime-настройки:
+Другие методы: `setPointerFollow(false)` отключает слежение за указателем, `setHeadRoundness(75)` задаёт скругление головы.
 
-```js
-avatar.setPointerFollow(false);
-avatar.setIdleGaze(false);
-avatar.setHeadRoundness(75);
-avatar.setPressSqueeze(true);
-avatar.setAntennaDrag(true);
-avatar.setView('3d');
-avatar.setEyeColor('#2bd67b');
-avatar.setPetting(false); // отключить поглаживание
-```
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
-Нажатие в центр аватара начинает сжатие. Если указатель сдвинется больше чем на 4 CSS-пикселя, тот же жест переходит в обычное перетаскивание головы. Перетаскивание антенны использует тот же предел, что и перетаскивание головы, и заканчивается головокружением.
+## Объёмная голова и глаза
 
-## 3D-голова · Новое в 0.9
+- **Объём**: `view="3d"` придаёт голове толщину и изогнутое лицо; она по-настоящему поворачивается к указателю и останавливается с лёгким отскоком. Все выражения, скины и цвета работают как обычно. Код объёмного вида загружается при первом включении.
+- **Выражения двигают голову**: голова поворачивается вслед за глазами, кивает и подпрыгивает. С `motion="reduce"` она остаётся неподвижной.
+- **Скруглённые глаза**: щёлочки, например при прищуре или моргании, имеют круглые концы; `eye-style="sharp"` возвращает прямые срезы.
+- **Цвет глаз**: `eye-color` работает на однотонном аватаре и 131 скине; остальные 57 скинов сохраняют свои фактурные глаза (см. `SKINS[номер].eyeColor`). `transparent` работает на всех скинах.
+- **Взаимодействие**: глаза следят за указателем; если тянуть голову, она колышется как желе; при нажатии на центр сжимается; антенну можно оттянуть, и она пружинит обратно; поводите указателем по лбу — аватар закроет глаза и прильнёт.
 
-```html
-<boop-face view="3d"></boop-face>
-```
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
-`view="3d"` (или `avatar.setView('3d')`) превращает аватар в объёмную голову: она по-настоящему поворачивается к указателю, лицо выпуклое, а после каждого поворота голова слегка пружинит и замирает. В 3D работают все выражения, жесты, скины и цвета; `view="2d"` возвращает плоский вид. Код 3D загружается, только когда страница впервые переключается на 3D, поэтому плоские страницы его не загружают.
+## Скины
 
-**Каждое выражение двигает голову.** Голова поворачивается туда, куда смотрят глаза, кивает, наклоняется и прыгает; в 3D она поворачивается по-настоящему, в плоском виде поворот нарисован. С `motion="reduce"` она остаётся неподвижной.
-
-**Скруглённые глаза.** Там, где веко срезает глаз, угол теперь скруглён, а у узких щёлок (сон, прищур, моргание, курсор ввода) круглые концы. Для прежних прямых срезов используйте `eye-style="sharp"`.
-
-**Цвет глаз.** `eye-color="#2bd67b"` (или `setEyeColor()`) окрашивает глаза — у простого аватара и у 131 скина с простыми глазами. У остальных 57 скинов глаза со своей фактурой (выпуклые, стеклянные или с узором), и они сохраняются; `SKINS[номер].eyeColor` показывает, какие можно менять. `eye-color="transparent"` вырезает глаза из головы, и в них видно всё, что находится за аватаром; это работает на всех скинах, включая глаза с фактурой.
-
-**Поглаживание.** Погладьте лоб несколько раз — аватар закроет глаза и прильнёт. Включено по умолчанию; `petting="false"` или `setPetting(false)` отключает.
-
-## Скины · Новое в 0.7
-
-188 скинов в 17 сериях, свет следует за указателем. У каждого скина постоянный номер: номер серии и две цифры, то есть 305 — пятый скин серии 3. Названия могут меняться, номера — никогда, и повторно они не используются.
-
-Все скины по-прежнему чистый SVG: без изображений, canvas и WebGL. Все скины вместе занимают около 70 КБ при передаче по сети (около 290 КБ без сжатия), и бо́льшая часть загружается, только когда странице нужен скин. Для сравнения: сам аватар (облегчённая сборка lite, без скинов) весит около 92 КБ.
-
-<img src="../assets/readme/boopface-skin-gallery.jpg" alt="Галерея скинов BoopFace: подборка, фильтры и поиск" width="100%">
+188 скинов в 17 сериях, свет следует за указателем, всё на чистом SVG. Номера никогда не меняются: сначала номер серии, затем две цифры скина (305 = серия 3, скин 5).
 
 ```html
 <boop-face skin="301"></boop-face>
 ```
 
 ```js
-avatar.setSkin(102);  // или '102'
-avatar.setSkin(null); // вернуться к сплошному цвету
+avatar.setSkin(102);
+avatar.setSkin(null); // вернуться к однотонному цвету
 ```
 
-Все скины с номерами — на [вкладке скинов в Studio](https://boopface.com/demo/?lang=ru#skins).
+<img src="../assets/readme/boopface-skin-gallery.jpg" alt="Скины BoopFace: избранные, фильтры по сериям и поиск" width="100%">
 
 | Серия | Номера | Серия | Номера | Серия | Номера |
 | --- | --- | --- | --- | --- | --- |
@@ -323,70 +258,60 @@ avatar.setSkin(null); // вернуться к сплошному цвету
 | Прозрачность и блеск | 1301–1305 | Ткань и кожа | 1401–1412 | Сладости и фрукты | 1501–1512 |
 | Природа | 1601–1612 | Узоры и техника | 1701–1717 |  |  |
 
-Код, рисующий скины, загружается при первом использовании скина, поэтому страница без скинов его не загружает. `await loadSkins()` загружает его заранее. `SKINS` содержит китайские и английские названия и цвета каждого скина, `SKIN_SERIES` — серии, `SKIN_NAMES` — все номера.
+Все скины — на [странице скинов в Studio](https://boopface.com/demo/?lang=ru#skins). `await loadSkins()` загружает их заранее; `SKINS`, `SKIN_SERIES` и `SKIN_NAMES` дают названия, серии и номера.
 
-Все выражения и жесты работают со скином. Если убрать скин, снова применяется атрибут `color`.
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
-## Подключение потока ИИ · Новое в 0.9
+## Подключение ИИ
 
-С `connectAgent()` поток ИИ сам управляет аватаром. Передайте ему события, которые уже выдаёт ваш SDK, и аватар сам покажет размышление, вызов инструмента, ответ, завершение, ошибку и отказ.
+Передайте в `connectAgent()` поток, который даёт ваш ИИ-SDK, и аватар сам покажет размышление, вызов инструментов, ответ, завершение и ошибки.
 
 ```js
 import { connectAgent } from 'boopface';
 
 const agent = connectAgent(avatar);
-
 for await (const event of agent.track(stream)) {
   // показывайте ответ как обычно
 }
 ```
 
-`track()` пропускает каждый элемент без изменений. Нормально завершившийся поток считается выполненным, выброшенная ошибка — неудачей, а прерывание или ранний `break` — отменой. Элементы можно передавать и по одному через `agent.handle(event)`, или сразу имя состояния, например `agent.handle('thinking')`.
+Поддерживаются AG-UI, OpenAI (Responses, Realtime, Chat Completions), Anthropic Messages, Vercel AI SDK и состояние `useChat`. Можно передавать элементы по одному через `agent.handle(event)` или состояние, например `agent.handle('thinking')`.
 
-Понимает события AG-UI, потоки OpenAI Responses, Realtime и Chat Completions, потоки Anthropic Messages, части потока Vercel AI SDK и статус `useChat` (`submitted`, `streaming`, `ready`, `error`). Всё остальное игнорируется.
+| Состояние | Выражение по умолчанию | Состояние | Выражение по умолчанию |
+| --- | --- | --- | --- |
+| `thinking` | `waiting-spin` | `done` | `success` |
+| `tool` | `waiting-wave` | `error` | `failure` |
+| `replying` | `idle` | `refused` | `refuse` |
+| `approval` | `wary` | `cancelled` | `idle` |
+| `listening` | `listening` | `speaking` | `speaking` |
+| `typing` | `input` | `idle` | `idle` |
 
-| Состояние | Выражение по умолчанию | Когда |
-| --- | --- | --- |
-| `listening` | `listening`, по кругу | Голос: говорит пользователь |
-| `thinking` | `waiting-spin`, по кругу | Запрос отправлен, модель думает |
-| `tool` | `waiting-wave`, по кругу | Выполняется вызов инструмента |
-| `replying` | `idle` | Приходит текст ответа |
-| `speaking` | `speaking`, по кругу | Голос: звучит ответ ИИ |
-| `approval` | `wary` | Агенту нужно подтверждение пользователя |
-| `done` | `success` | Готово |
-| `error` | `failure` | Ошибка |
-| `refused` | `refuse` | Модель отказалась |
-| `cancelled` | `idle` | Остановлено пользователем |
-| `typing` | `input` | Пользователь печатает, задаётся через `handle('typing')` |
-| `idle` | `idle` | Ничего не выполняется |
-
-Любое состояние можно заменить именем действия, функцией или `null`, чтобы ничего не показывать:
+Другие выражения:
 
 ```js
-connectAgent(avatar, {
-  actions: { replying: 'input', tool: 'inspect' },
-  onChange: (state, previous) => console.log(previous, '→', state),
-});
+connectAgent(avatar, { actions: { replying: 'input', tool: 'inspect' } });
 ```
 
-В [Studio](https://boopface.com/demo/?lang=ru#agent) можно пообщаться с аватаром, подключённым к ИИ; в разделе «Код › Подключить ИИ» задаётся выражение для каждого состояния и показан код для каждого формата.
+Поговорите с аватаром, подключённым к ИИ, в [Studio](https://boopface.com/demo/?lang=ru#agent) и посмотрите, как подключить каждый формат.
 
-## Набор выражений для голосового общения · Новое в 0.9
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
-Слушать, думать, говорить: любой голосовой ассистент проходит эти три шага в каждом ходе. Набор выражений для голосового общения даёт аватару три выражения, которые плавно переходят друг в друга. Он подходит для любого продукта, с которым разговаривают, с любым голосовым сервисом: вызывайте три метода сами или позвольте `connectAgent()` следовать за вашим голосовым API.
+## Голосовые разговоры
+
+Каждый ход голосового ассистента — слушать, думать, говорить. В BoopFace есть подходящий набор выражений, плавно переходящих друг в друга:
 
 ```js
-avatar.startListening();                   // говорит пользователь
+avatar.startListening();                   // пользователь говорит
 avatar.startWaiting({ variant: 'bloom' }); // ИИ думает
 avatar.startSpeaking();                    // ИИ отвечает
-avatar.setVoiceLevel(0.6);                 // необязательно: громкость от 0 до 1
+avatar.setVoiceLevel(0.6);                 // необязательно: громкость 0–1
 ```
 
-Слушая, аватар сливает оба глаза в один круглый глаз, который набухает от голоса пользователя. Думая, превращает его в медленно вращающийся цветок из двух скрещённых овалов. Говоря, снова разделяет его на два глаза: они замирают, а затем вытягиваются в такт ответу, низкие звуки — в левом глазу, высокие — в правом. Громкость передаётся через `setVoiceLevel(level)` или `setVoiceLevel([low, high])`; без неё речь держит собственный ритм, а слушание остаётся неподвижным. Каждый шаг повторяется до следующего, а при смене глаза плавно перетекают, а не прыгают.
-
-Раздумье — это шаг ожидания. Цветок (`variant: 'bloom'`) и Крест (`variant: 'cross'`) вырастают прямо из глаза слушания; подойдёт и любой другой стиль ожидания.
-
-`connectAgent()` может и сам переключать их. Он уже понимает события распространённых голосовых API, например OpenAI Realtime и `mode`, который сообщают SDK вроде ElevenLabs. Во время размышления он ждёт в стиле «Цветение» (или в стиле из `actions.thinking`) и после каждого ответа возвращается к слушанию. Пример с OpenAI Realtime:
+С `connectAgent()` переключение происходит автоматически (OpenAI Realtime, ElevenLabs и другие). Если передать в `connectAudio()` микрофон и звук ответа, глаза двигаются в такт реальной громкости:
 
 ```js
 const agent = connectAgent(avatar);
@@ -394,15 +319,16 @@ events.onmessage = ({ data }) => agent.handle(JSON.parse(data));
 agent.connectAudio({ input: microphone, output: replyAudio });
 ```
 
-`connectAudio()` принимает MediaStream или элементы `<audio>` и передаёт их громкость глазам. Если подключён ответ, аватар также замечает, когда он доиграл.
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
 ## React и Vue
 
-`<boop-face>` — стандартный Web Component, поэтому он работает в любом фреймворке.
-
-**React 19**
+Стандартный Web Component, работает в любом фреймворке как есть.
 
 ```jsx
+// React 19 (в Next.js добавьте 'use client')
 import { useEffect, useRef } from 'react';
 import { connectAgent } from 'boopface';
 
@@ -413,128 +339,75 @@ export function Avatar({ onReady }) {
 }
 ```
 
-В Next.js пометьте файл как `'use client'`.
-
-**Vue 3**
-
-Сообщите Vue, что `boop-face` — пользовательский элемент, в `vite.config.js`:
+В Vue 3 нужно объявить пользовательский элемент в `vite.config.js`:
 
 ```js
 vue({ template: { compilerOptions: { isCustomElement: tag => tag === 'boop-face' } } })
 ```
 
-```vue
-<script setup>
-import { onMounted, ref } from 'vue';
-import { connectAgent } from 'boopface';
-
-const avatar = ref(null);
-let agent;
-onMounted(() => { agent = connectAgent(avatar.value); });
-</script>
-
-<template>
-  <boop-face ref="avatar" size="140" />
-</template>
-```
-
-Страницы, которые работают без сборки: [`examples/react.html`](../examples/react.html) и [`examples/vue.html`](../examples/vue.html).
-
-## События и интеграция
-
-Компонент отправляет `face-state` при изменениях визуального состояния и `action-state` при семантических изменениях жизненного цикла действий.
-
-Для интеграции с host-приложением и доступного статусного текста предпочтительнее `action-state`. Рабочий пример жизненного цикла запроса находится в [`examples/accessibility.html`](../examples/accessibility.html).
-
-Минимальный пример интеграции доступен в [`examples/basic.html`](../examples/basic.html).
-
-## Совместимость
-
-Рассчитан на современные браузеры с поддержкой ES Modules, Custom Elements, SVG, Pointer Events, Web Animations API, `IntersectionObserver`, `ResizeObserver` и `matchMedia`.
-
-Автоматизированные тесты покрывают Chromium, Firefox и WebKit.
+Примеры, которые работают сразу после открытия, без сборки: [`react.html`](../examples/react.html), [`vue.html`](../examples/vue.html), [`basic.html`](../examples/basic.html). Компонент отправляет события `face-state` (что показано) и `action-state` (начало и конец действий); объявления для экранных чтецов — в [`accessibility.html`](../examples/accessibility.html). Типы TypeScript включены.
 
 <a id="boopface-embedded"></a>
 
-## Новое: BoopFace Embedded
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
-Выражения глаз из веб-версии теперь работают на экранах роботов и плат. Небольшой движок C++11 сохраняет движения и ритм. Примеры охватывают 28 конфигураций ESP32, ESP32-S3, STM32 и Raspberry Pi Pico: круглые и прямоугольные TFT, узкие дисплеи, AMOLED и монохромные OLED. Поддерживаются свои размеры экрана. Версия 0.2 догоняет веб-версию 0.9: те же скруглённые глаза, 13 новых выражений — поклон, наблюдение, раздумье, подмигивание, довольство, головокружение, прыжки и другие, — а также слушание и речь из голосового набора, всего 33.
+## BoopFace Embedded
 
-| Ваше устройство | Что использовать |
-| --- | --- |
-| Сайты, приложения, Android-планшеты, роботы с браузером | Веб-компонент: полный аватар, скины и взаимодействия |
-| ESP32, STM32, Raspberry Pi Pico | Встраиваемый движок с примерами прошивок |
-| Другие микроконтроллеры или программы C++ | Библиотека C++; подключите свой драйвер экрана |
+<p align="center">
+  <img src="../assets/readme/boopface-embedded.jpg" alt="BoopFace Embedded: те же выражения глаз на экранах плат ESP32, STM32 и Raspberry Pi Pico">
+</p>
 
+Те же выражения глаз на экранах роботов и плат. Небольшой движок на C++11 с 33 выражениями; примеры прошивок охватывают 28 сочетаний плат и экранов на ESP32, ESP32-S3, STM32 и Raspberry Pi Pico (круглые и квадратные TFT, вытянутые экраны, AMOLED, монохромные OLED).
 
-<img src="../assets/readme/boopface-embedded-simulator.jpg" alt="Симулятор BoopFace Embedded: выражения на круглом TFT, расположение, цвета и экспорт" width="100%">
+<img src="../assets/readme/boopface-embedded-simulator.jpg" alt="BoopFace Embedded Studio: глаза на экране платы, кнопки выражений и список экранов" width="100%">
 
-**Попробуйте без платы.** [Симулятор](https://boopface.com/hardware/?lang=ru) запускает тот же движок C++ в браузере на 32 виртуальных экранах. Он помогает оценить результат и сравнить модули.
-
-**Настройте, экспортируйте, соберите.** Выберите экран, расположение, цвета и частоту кадров, затем **Экспорт настроек**. Сохраните `eyes_settings.h` рядом с `main.cpp` примера и соберите прошивку. См. [инструкцию](../embedded/README.md). Интерфейс и экспортированные комментарии следуют выбранному языку.
-
-**Установка из ZIP.** Скачайте `BoopFace-Embedded-0.2.0.zip` из [встраиваемого релиза](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0) и добавьте через **Скетч → Подключить библиотеку → Добавить .ZIP-библиотеку** в Arduino IDE. Индексация в Arduino Library Manager ещё ожидается; пока используйте ZIP или исходники. Для [PlatformIO](https://registry.platformio.org/libraries/cxlab/BoopFace) добавьте эту зависимость в окружение в `platformio.ini`:
-
-```ini
-lib_deps = cxlab/BoopFace@^0.2.0
-```
-
-**В своей программе** запускайте выражения по имени:
+1. **Предпросмотр**: [онлайн-симулятор](https://boopface.com/hardware/?lang=ru) запускает тот же движок и имитирует 32 экрана, так что всё видно и без платы.
+2. **Экспорт**: настройте раскладку, цвета и частоту кадров, нажмите «Экспорт настроек» и положите `eyes_settings.h` рядом с `main.cpp` примера прошивки для сборки. [Шаги](../embedded/README.md#from-the-preview-to-your-board)
+3. **Установка**: в Arduino IDE добавьте `BoopFace-Embedded-0.2.0.zip` со [страницы релиза](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0); в PlatformIO используйте `lib_deps = cxlab/BoopFace@^0.2.0`.
 
 ```cpp
 #include <BoopFace.h>
 boopface::Eyes eyes;
-uint8_t pixels[4800]; // 240 x 160, 1 бит на пиксель
+uint8_t pixels[4800]; // 240 x 160, 1-битные пиксели
 
-void setup() {
-  boopface::EyesConfig config;
-  eyes.begin(config, pixels, sizeof pixels, millis());
-}
+boopface::EyesConfig config;
 
-void loop() {
-  if (eyes.update(millis())) {
-    // Передать eyes.data() драйверу дисплея.
-  }
-}
-
-// При необходимости
+void setup() { eyes.begin(config, pixels, sizeof pixels, millis()); }
+void loop()  { if (eyes.update(millis())) { /* отправьте eyes.data() на экран */ } }
 // eyes.play("success", millis());
 ```
 
-Экспериментальная версия: все конфигурации собираются в CI, но ещё не проверены на реальных устройствах. После проверки отправьте [отчёт](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml). API и подключение описаны в [руководстве](../embedded/README.md).
+Экспериментальная версия: все конфигурации собираются в CI, но не все проверены на реальном железе. [Отчёты о проверке на железе](https://github.com/CX-ArtLab/boopface/issues/new?template=hardware_report.yml) приветствуются. Полное руководство: [документация Embedded](../embedded/README.md).
 
-## Проекты на базе BoopFace
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
-Присоединяйтесь к этому списку, чтобы больше людей увидели, что вы создали с помощью BoopFace. Чтобы отправить свой проект, откройте форму: https://github.com/CX-ArtLab/BoopFace/issues/new?template=showcase-submission.yml
+## Прочее
 
-[Посмотреть проекты сообщества](../SHOWCASE.md)
+- **Переход с Agent Robot Avatar**: переименован в 0.8, использование не изменилось. Выполните `npm uninstall agent-robot-avatar && npm install boopface`; старый тег `<agent-robot-avatar>` работает до 1.0.
+- **Совместимость**: современные браузеры с ES Modules, Custom Elements и Web Animations; автотесты охватывают Chromium, Firefox и WebKit.
+- **Версия**: **Web v0.9.0**, Embedded v0.2.0 (экспериментальная). До 1.0 API меняется осторожно.
+- **Витрина**: [проекты сообщества](../SHOWCASE.md), [добавьте свой](https://github.com/CX-ArtLab/BoopFace/issues/new?template=showcase-submission.yml).
+- **Участие**: issues и pull requests приветствуются; сначала прочитайте [`CONTRIBUTING.md`](../CONTRIBUTING.md).
 
-## Участие в разработке
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
-Issues и Pull Requests приветствуются. Перед отправкой изменений прочитайте [`CONTRIBUTING.md`](../CONTRIBUTING.md).
+## Лицензия и персонаж
 
-## Статус проекта
+Код распространяется по [лицензии MIT](../LICENSE): используйте, изменяйте и распространяйте его в своих приложениях. Персонаж BoopFace, его внешний вид, имя и визуальный стиль — оригинальный дизайн CX ArtLab; лицензия MIT не передаёт их и не позволяет представлять их как оригинального персонажа или бренд другой стороны.
 
-**Текущая публичная версия: v0.9.0**\
-BoopFace Embedded: v0.2.0 (экспериментальная)
+BoopFace — независимый проект с открытым исходным кодом, не связанный ни с одной ИИ-платформой или брендом и не одобренный ими; названия продуктов упомянуты только для описания сценариев использования.
 
-Публичный API намеренно остаётся компактным, пока проект развивается к будущему обязательству стабильности `1.0.0`.
+<p align="center">
+  <img src="../assets/readme/divider.svg" width="100%" height="1" alt="">
+</p>
 
-BoopFace разрабатывается независимо и не аффилирован, не одобрен и не представляет какую-либо AI-платформу или бренд.
-
-## Дизайн персонажа и визуальная идентичность
-
-Персонаж BoopFace, включая внешний вид робота и визуальную идентичность, является оригинальной разработкой CX ArtLab.
-
-MIT License применяется к программному обеспечению и исходному коду. Она разрешает использовать, изменять и распространять аватар как часть приложений, но не передаёт права собственности на название BoopFace, идентичность персонажа или визуальную идентичность и не даёт права представлять их как оригинального персонажа или самостоятельный бренд другой стороны.
-
-Названия сторонних продуктов, упомянутые в проекте, используются только для описания возможных сценариев применения и не означают аффилированность или одобрение.
-
-## Лицензия
-
-MIT License. См. [`LICENSE`](../LICENSE).
-
----
+## Угостить меня кофе
 
 Если этот проект оказался полезен, вы можете угостить меня кофе.
 
