@@ -111,8 +111,10 @@ Ou baixe `boopface-x.y.z.zip` da [versão mais recente](https://github.com/CX-Ar
 Depois, adicione o componente:
 
 ```html
-<boop-face id="avatar"></boop-face>
+<boop-face id="avatar" view="3d"></boop-face>
 ```
+
+`view="3d"` dá a cabeça em 3D que você vê em [boopface.com](https://boopface.com/) e no Studio. Sem ele, o avatar é plano: esse é o padrão, e é mais leve (o renderizador 3D adiciona cerca de 19 KB).
 
 Nenhum código de inicialização é necessário. O avatar entra automaticamente no estado idle padrão.
 

@@ -111,8 +111,10 @@ Or download `boopface-x.y.z.zip` from the [latest release](https://github.com/CX
 Then add the component:
 
 ```html
-<boop-face id="avatar"></boop-face>
+<boop-face id="avatar" view="3d"></boop-face>
 ```
+
+`view="3d"` gives the 3D head you see on [boopface.com](https://boopface.com/) and in the Studio. Leave it out for the flat avatar: that is the default, and it is lighter (the 3D renderer adds about 19 KB). See [3D head](#3d-head--new-in-09).
 
 No initialization code is required. The avatar enters its default idle behavior automatically.
 

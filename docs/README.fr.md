@@ -111,8 +111,10 @@ Ou téléchargez `boopface-x.y.z.zip` depuis la [dernière version](https://gith
 Puis ajouter le composant :
 
 ```html
-<boop-face id="avatar"></boop-face>
+<boop-face id="avatar" view="3d"></boop-face>
 ```
+
+`view="3d"` donne la tête en 3D que vous voyez sur [boopface.com](https://boopface.com/) et dans le Studio. Sans lui, l’avatar est plat : c’est la valeur par défaut, plus légère (le rendu 3D ajoute environ 19 Ko).
 
 Aucun code d’initialisation n’est nécessaire. L’avatar entre automatiquement dans son état idle par défaut.
 

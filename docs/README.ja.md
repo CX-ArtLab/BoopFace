@@ -111,8 +111,10 @@ import 'boopface';
 続いてコンポーネントを追加します。
 
 ```html
-<boop-face id="avatar"></boop-face>
+<boop-face id="avatar" view="3d"></boop-face>
 ```
+
+`view="3d"` を付けると、[boopface.com](https://boopface.com/) や Studio と同じ立体のアバターになります。付けない場合は平面のアバターです。こちらが既定で、より軽量です（立体の描画には約 19 KB 追加されます）。
 
 初期化コードは不要です。アバターは自動的にデフォルトの idle 状態になります。
 

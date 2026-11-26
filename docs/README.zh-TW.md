@@ -111,8 +111,10 @@ import 'boopface';
 然後新增元件：
 
 ```html
-<boop-face id="avatar"></boop-face>
+<boop-face id="avatar" view="3d"></boop-face>
 ```
+
+`view="3d"` 就是[官網](https://boopface.com/)和 Studio 裡的立體頭像。不寫這一項是平面頭像：這是預設值，也更輕（立體會多載入約 19 KB）。
 
 無需初始化程式碼，頭像會自動進入預設待機狀態。
 

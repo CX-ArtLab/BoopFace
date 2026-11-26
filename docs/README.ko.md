@@ -111,8 +111,10 @@ import 'boopface';
 그다음 컴포넌트를 추가합니다.
 
 ```html
-<boop-face id="avatar"></boop-face>
+<boop-face id="avatar" view="3d"></boop-face>
 ```
+
+`view="3d"`를 넣으면 [boopface.com](https://boopface.com/)과 Studio에서 보는 입체 아바타가 됩니다. 빼면 평면 아바타이며, 이것이 기본값이고 더 가볍습니다(입체 렌더러는 약 19 KB를 더 받습니다).
 
 별도의 초기화 코드는 필요하지 않습니다. 아바타는 자동으로 기본 idle 상태로 들어갑니다.
 

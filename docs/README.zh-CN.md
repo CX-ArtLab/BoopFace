@@ -111,8 +111,10 @@ import 'boopface';
 然后添加组件：
 
 ```html
-<boop-face id="avatar"></boop-face>
+<boop-face id="avatar" view="3d"></boop-face>
 ```
+
+`view="3d"` 就是[官网](https://boopface.com/)和 Studio 里的立体头像。不写这一项是平面头像：这是默认值，也更轻（立体会多加载约 19 KB）。
 
 无需初始化代码，头像会自动进入默认待机状态。
 
