@@ -365,7 +365,7 @@ vue({ template: { compilerOptions: { isCustomElement: tag => tag === 'boop-face'
 
 1. **Предпросмотр**: [онлайн-симулятор](https://boopface.com/hardware/?lang=ru) запускает тот же движок и имитирует 32 экрана, так что всё видно и без платы.
 2. **Экспорт**: настройте раскладку, цвета и частоту кадров, откройте вкладку **Прошивка** и нажмите **Скачать файл**; положите `eyes_settings.h` в `embedded/examples/arduino/` полного проекта (рядом с `main.cpp`) и соберите. В ZIP библиотеки Arduino этих файлов нет; см. [Шаги](../embedded/README.ru.md#настройте-в-симуляторе-и-сразу-на-плату).
-3. **Установка**: в Arduino IDE добавьте `BoopFace-Embedded-0.2.0.zip` со [страницы релиза](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0); в PlatformIO используйте `lib_deps = cxlab/BoopFace@^0.2.0`.
+3. **Установка**: в Arduino IDE добавьте `BoopFace-Embedded-0.2.1.zip` со [страницы релиза](https://github.com/CX-ArtLab/boopface/releases/tag/embedded-v0.2.1); в PlatformIO используйте `lib_deps = cxlab/BoopFace@^0.2.1`.
 
 ```cpp
 #include <BoopFace.h>
@@ -389,7 +389,7 @@ void loop()  { if (eyes.update(millis())) { /* отправьте eyes.data() н
 
 - **Переход с Agent Robot Avatar**: переименован в 0.8, использование не изменилось. Выполните `npm uninstall agent-robot-avatar && npm install boopface`; старый тег `<agent-robot-avatar>` работает до 1.0.
 - **Совместимость**: современные браузеры с ES Modules, Custom Elements и Web Animations; автотесты охватывают Chromium, Firefox и WebKit.
-- **Версия**: **Web v0.9.0**, Embedded v0.2.0 (экспериментальная). До 1.0 API меняется осторожно.
+- **Версия**: **Web v0.9.0**, Embedded v0.2.1 (экспериментальная). До 1.0 API меняется осторожно.
 - **Витрина**: [проекты сообщества](../SHOWCASE.md), [добавьте свой](https://github.com/CX-ArtLab/BoopFace/issues/new?template=showcase-submission.yml).
 - **Участие**: issues и pull requests приветствуются; сначала прочитайте [`CONTRIBUTING.md`](../CONTRIBUTING.md).
 

@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Published embedded Release tag (eyes-v0.1.0)'
+        description: 'Published embedded Release tag (embedded-v0.2.1; 0.1.0 and 0.2.0 were eyes-v0.1.0 and eyes-v0.2.0)'
         required: true
         type: string
 
@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   downloads:
-    if: github.repository == 'CX-ArtLab/BoopFace' && startsWith(inputs.tag || github.event.release.tag_name, 'eyes-v')
+    if: github.repository == 'CX-ArtLab/BoopFace' && startsWith(inputs.tag || github.event.release.tag_name, 'embedded-v')
     runs-on: ubuntu-latest
     permissions:
       contents: write

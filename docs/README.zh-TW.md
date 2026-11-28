@@ -364,7 +364,7 @@ vue({ template: { compilerOptions: { isCustomElement: tag => tag === 'boop-face'
 
 1. **預覽**：[線上模擬器](https://boopface.com/hardware/?lang=zh-TW)執行同一套引擎，模擬 32 種螢幕，沒有板子也能看效果。
 2. **匯出**：調好佈局、顏色和幀率，在「韌體」分頁裡點「下載文件」，把 `eyes_settings.h` 放進完整專案的 `embedded/examples/arduino/`（和 `main.cpp` 在一起）再編譯。Arduino 函式庫的 ZIP 裡沒有這些檔案，見[操作步驟](../embedded/README.zh-TW.md#在模擬器裡調好直接用到板子上)。
-3. **安裝**：Arduino IDE 匯入[釋出頁](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0)的 `BoopFace-Embedded-0.2.0.zip`；PlatformIO 用 `lib_deps = cxlab/BoopFace@^0.2.0`。
+3. **安裝**：Arduino IDE 匯入[釋出頁](https://github.com/CX-ArtLab/boopface/releases/tag/embedded-v0.2.1)的 `BoopFace-Embedded-0.2.1.zip`；PlatformIO 用 `lib_deps = cxlab/BoopFace@^0.2.1`。
 
 ```cpp
 #include <BoopFace.h>
@@ -388,7 +388,7 @@ void loop()  { if (eyes.update(millis())) { /* 把 eyes.data() 发到屏幕 */ }
 
 - **從 Agent Robot Avatar 升級**：0.8 起改名，用法不變。`npm uninstall agent-robot-avatar && npm install boopface` 即可，舊標籤 `<agent-robot-avatar>` 在 1.0 前仍可用。
 - **相容性**：支援 ES Modules、Custom Elements 和 Web Animations 的現代瀏覽器；自動測試覆蓋 Chromium、Firefox、WebKit。
-- **版本**：**網頁版 v0.9.0**，嵌入式裝置版 v0.2.0（實驗版）。1.0 前 API 會謹慎演進。
+- **版本**：**網頁版 v0.9.0**，嵌入式裝置版 v0.2.1（實驗版）。1.0 前 API 會謹慎演進。
 - **作品展示**：[社羣作品](../SHOWCASE.md)，[提交你的作品](https://github.com/CX-ArtLab/BoopFace/issues/new?template=showcase-submission.yml)。
 - **參與貢獻**：歡迎 Issue 和 PR，請先讀 [`CONTRIBUTING.md`](../CONTRIBUTING.md)。
 

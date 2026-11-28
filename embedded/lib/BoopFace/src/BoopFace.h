@@ -88,7 +88,7 @@ class Eyes {
   size_t bufferSize() const { return bytes_; }
   static const char* actionName(Action action);
   static bool parseAction(const char* name, Action& result);
-  static const char* version() { return "0.2.0"; }
+  static const char* version() { return "0.2.1"; }
   // Lid corners rounded like the Web avatar (on by default); false keeps
   // the straight lid cuts (the Web eye-style="sharp").
   void setRoundEyes(bool on) { roundEyes_ = on; force_ = true; }

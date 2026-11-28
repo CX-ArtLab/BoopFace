@@ -30,7 +30,7 @@
     "release:check": "npm test && npm publish --dry-run --ignore-scripts --tag latest",
     "prepublishOnly": "npm test && node scripts/check-publish-tag.mjs",
     "test:types": "tsc -p tsconfig.types.json",
-    "test:release": "node --test tests/release.test.mjs",
+    "test:release": "node --test tests/release.test.mjs tests/release-names.test.mjs",
     "test:package": "node --test tests/package.test.mjs",
     "test:waiting": "node --test tests/waiting-wave.test.mjs",
     "test:browser": "playwright test",

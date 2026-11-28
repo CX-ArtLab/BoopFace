@@ -58,7 +58,7 @@
 4. 把文件放进项目文件夹的 `embedded/examples/arduino/`，和 `main.cpp` 放在一起。
 5. 安装 [PlatformIO](https://docs.platformio.org/en/latest/core/installation/index.html)，在项目最上层（能看到 `embedded` 文件夹的那一层）打开终端，执行页面上的「编译命令」，例如 `pio run -d embedded -e esp32-s3-st7789 -t upload`。
 
-**用 Arduino IDE**：用 ZIP 安装库（项目 → 导入库 → 添加 .ZIP 库），再打开「文件 → 示例 → BoopFace」里的 SerialEyes 或 OledSSD1306。这两个示例不读取 `eyes_settings.h`；想用模拟器里调好的设置，请按上面的步骤走。
+**用 Arduino IDE**：用 ZIP 安装库（项目 → 导入库 → 添加 .ZIP 库），再打开「文件 → 示例 → BoopFace Embedded」里的 SerialEyes 或 OledSSD1306。这两个示例不读取 `eyes_settings.h`；想用模拟器里调好的设置，请按上面的步骤走。
 
 | `eyes_settings.h` 里的设置 | 对应模拟器里的 |
 | --- | --- |
@@ -128,15 +128,15 @@ pio device monitor -b 115200
 
 ## 接入自己的设备
 
-库在 `embedded/lib/BoopFace`。Arduino 用户可将这个目录复制到自己的 `libraries` 目录；也可以从[嵌入式发布页](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0)下载 `BoopFace-Embedded-0.2.0.zip`，用“项目 → 导入库 → 添加 .ZIP 库”安装。Arduino 库管理器索引仍在更新，目前请使用 ZIP 或源码。其他 C++11 平台可编译库的整个 `src` 目录。
+库在 `embedded/lib/BoopFace`。Arduino 用户可将这个目录复制到自己的 `libraries` 目录；也可以从[嵌入式发布页](https://github.com/CX-ArtLab/boopface/releases/tag/embedded-v0.2.1)下载 `BoopFace-Embedded-0.2.1.zip`，用“项目 → 导入库 → 添加 .ZIP 库”安装。Arduino 库管理器索引仍在更新，目前请使用 ZIP 或源码。其他 C++11 平台可编译库的整个 `src` 目录。
 
 [PlatformIO](https://registry.platformio.org/libraries/cxlab/BoopFace) 已收录 `cxlab/BoopFace`，在 `platformio.ini` 的环境配置中添加：
 
 ```ini
-lib_deps = cxlab/BoopFace@^0.2.0
+lib_deps = cxlab/BoopFace@^0.2.1
 ```
 
-库里带两个 Arduino IDE 示例，在“文件 → 示例 → BoopFace”下：**SerialEyes** 在串口监视器里用字符画出眼睛，不需要屏幕；**OledSSD1306** 运行在 0.96 寸 128×64 I²C OLED 上（需先安装 Adafruit SSD1306 库）。两个示例都可以在串口监视器里输入动作名来播放。CI 会为 ESP32 和 RP2040 编译它们。
+库里带两个 Arduino IDE 示例，在“文件 → 示例 → BoopFace Embedded”下：**SerialEyes** 在串口监视器里用字符画出眼睛，不需要屏幕；**OledSSD1306** 运行在 0.96 寸 128×64 I²C OLED 上（需先安装 Adafruit SSD1306 库）。两个示例都可以在串口监视器里输入动作名来播放。CI 会为 ESP32 和 RP2040 编译它们。
 
 绘制核心不要求安装 Adafruit 库，例程中的显示驱动才需要它们。
 

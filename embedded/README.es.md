@@ -58,7 +58,7 @@ Deja los ojos a tu gusto en el simulador y compila el firmware con esos mismos a
 4. Coloca el archivo en `embedded/examples/arduino/` de la carpeta del proyecto, junto a `main.cpp`.
 5. Instala [PlatformIO](https://docs.platformio.org/en/latest/core/installation/index.html), abre una terminal en la carpeta superior del proyecto (la que contiene `embedded`) y ejecuta el comando de compilación que muestra la página, por ejemplo `pio run -d embedded -e esp32-s3-st7789 -t upload`.
 
-**Arduino IDE**: instala la biblioteca desde el ZIP (*Programa → Incluir biblioteca → Añadir biblioteca .ZIP*) y abre *Archivo → Ejemplos → BoopFace* (SerialEyes, OledSSD1306). Esos dos ejemplos no leen `eyes_settings.h`; para usar los ajustes del simulador, sigue los pasos de arriba.
+**Arduino IDE**: instala la biblioteca desde el ZIP (*Programa → Incluir biblioteca → Añadir biblioteca .ZIP*) y abre *Archivo → Ejemplos → BoopFace Embedded* (SerialEyes, OledSSD1306). Esos dos ejemplos no leen `eyes_settings.h`; para usar los ajustes del simulador, sigue los pasos de arriba.
 
 | Ajuste en `eyes_settings.h` | Control del simulador |
 | --- | --- |
@@ -128,15 +128,15 @@ También están `idle`, `bored`, `input`, `affirm`, `surprise`, `random` y, desd
 
 ## Integrarlo en tu dispositivo
 
-La biblioteca está en `embedded/lib/BoopFace`. En Arduino, copia esa carpeta a tu carpeta `libraries`, o descarga `BoopFace-Embedded-0.2.0.zip` desde la [página de la versión embebida](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0) e instálalo con *Programa → Incluir biblioteca → Añadir biblioteca .ZIP*. La indexación en el Gestor de bibliotecas de Arduino sigue en curso; hasta entonces usa el ZIP o el código fuente. En otras plataformas C++11, compila la carpeta `src` completa.
+La biblioteca está en `embedded/lib/BoopFace`. En Arduino, copia esa carpeta a tu carpeta `libraries`, o descarga `BoopFace-Embedded-0.2.1.zip` desde la [página de la versión embebida](https://github.com/CX-ArtLab/boopface/releases/tag/embedded-v0.2.1) e instálalo con *Programa → Incluir biblioteca → Añadir biblioteca .ZIP*. La indexación en el Gestor de bibliotecas de Arduino sigue en curso; hasta entonces usa el ZIP o el código fuente. En otras plataformas C++11, compila la carpeta `src` completa.
 
 [PlatformIO](https://registry.platformio.org/libraries/cxlab/BoopFace) ya incluye `cxlab/BoopFace`; añádelo a tu entorno en `platformio.ini`:
 
 ```ini
-lib_deps = cxlab/BoopFace@^0.2.0
+lib_deps = cxlab/BoopFace@^0.2.1
 ```
 
-La biblioteca trae dos ejemplos para el Arduino IDE, en *Archivo → Ejemplos → BoopFace*: **SerialEyes** dibuja los ojos con caracteres en el monitor serie y no necesita pantalla; **OledSSD1306** funciona en una OLED I²C de 0,96″ 128×64 (instala antes la biblioteca Adafruit SSD1306). En ambos se escribe el nombre de la acción en el monitor serie. CI los compila para ESP32 y RP2040.
+La biblioteca trae dos ejemplos para el Arduino IDE, en *Archivo → Ejemplos → BoopFace Embedded*: **SerialEyes** dibuja los ojos con caracteres en el monitor serie y no necesita pantalla; **OledSSD1306** funciona en una OLED I²C de 0,96″ 128×64 (instala antes la biblioteca Adafruit SSD1306). En ambos se escribe el nombre de la acción en el monitor serie. CI los compila para ESP32 y RP2040.
 
 El núcleo de dibujo no necesita las bibliotecas de Adafruit; solo los controladores de pantalla del ejemplo las usan.
 

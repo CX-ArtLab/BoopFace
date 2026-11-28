@@ -11,7 +11,7 @@ const properties = await readFile(path.join(library, 'library.properties'), 'utf
 const version = properties.match(/^version=(.+)$/m)?.[1].trim();
 if (!/^\d+\.\d+\.\d+$/.test(version || '')) throw new Error('Invalid embedded version');
 const tag = process.argv[2];
-if (tag !== `eyes-v${version}`) throw new Error(`Expected tag eyes-v${version}, received ${tag}`);
+if (tag !== `embedded-v${version}`) throw new Error(`Expected tag embedded-v${version}, received ${tag}`);
 const manifest = JSON.parse(await readFile(path.join(library, 'library.json'), 'utf8'));
 const header = await readFile(path.join(library, 'src/BoopFace.h'), 'utf8');
 if (manifest.version !== version || !header.includes(`version() { return "${version}"; }`)) {
@@ -31,7 +31,7 @@ try {
 
 Experimental C++11 robot eyes. Import this ZIP with Arduino IDE's
 Sketch → Include Library → Add .ZIP Library. Examples appear under
-File → Examples → BoopFace. SerialEyes needs no screen;
+File → Examples → BoopFace Embedded. SerialEyes needs no screen;
 OledSSD1306 needs the Adafruit SSD1306 library and a 128×64 I²C OLED.
 
 All board configurations compile in CI; physical verification is pending.
