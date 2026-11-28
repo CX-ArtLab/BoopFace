@@ -365,7 +365,7 @@ Dieselben Augenausdrücke auf Roboter- und Board-Bildschirmen. Eine kleine C++11
 
 1. **Vorschau**: Der [Online-Simulator](https://boopface.com/hardware/?lang=de) nutzt dieselbe Engine und simuliert 32 Bildschirme, so siehst du es auch ohne Board.
 2. **Export**: Layout, Farben und Bildrate einstellen, den Reiter **Firmware** öffnen und auf **Datei herunterladen** klicken; `eyes_settings.h` im vollständigen Projekt nach `embedded/examples/arduino/` legen (neben `main.cpp`) und bauen. Das ZIP der Arduino-Bibliothek enthält diese Dateien nicht; siehe die [Schritte](../embedded/README.de.md#im-simulator-einstellen-direkt-aufs-board).
-3. **Installation**: In der Arduino IDE `BoopFace-Embedded-0.2.0.zip` von der [Release-Seite](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0) hinzufügen; in PlatformIO `lib_deps = cxlab/BoopFace@^0.2.0` verwenden.
+3. **Installation**: In der Arduino IDE `BoopFace-Embedded-0.2.1.zip` von der [Release-Seite](https://github.com/CX-ArtLab/boopface/releases/tag/embedded-v0.2.1) hinzufügen; in PlatformIO `lib_deps = cxlab/BoopFace@^0.2.1` verwenden.
 
 ```cpp
 #include <BoopFace.h>
@@ -389,7 +389,7 @@ Experimentell: Alle Konfigurationen bauen in der CI, aber nicht alle wurden auf 
 
 - **Umstieg von Agent Robot Avatar**: in 0.8 umbenannt, gleiche Nutzung. `npm uninstall agent-robot-avatar && npm install boopface` ausführen; das alte Tag `<agent-robot-avatar>` funktioniert bis 1.0.
 - **Kompatibilität**: moderne Browser mit ES Modules, Custom Elements und Web Animations; automatische Tests laufen in Chromium, Firefox und WebKit.
-- **Version**: **Web v0.9.0**, Embedded v0.2.0 (experimentell). Bis 1.0 ändert sich die API behutsam.
+- **Version**: **Web v0.9.0**, Embedded v0.2.1 (experimentell). Bis 1.0 ändert sich die API behutsam.
 - **Showcase**: [Projekte der Community](../SHOWCASE.md), [eigenes einreichen](https://github.com/CX-ArtLab/BoopFace/issues/new?template=showcase-submission.yml).
 - **Mitmachen**: Issues und Pull Requests sind willkommen; bitte zuerst [`CONTRIBUTING.md`](../CONTRIBUTING.md) lesen.
 

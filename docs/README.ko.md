@@ -365,7 +365,7 @@ vue({ template: { compilerOptions: { isCustomElement: tag => tag === 'boop-face'
 
 1. **미리 보기**: [온라인 시뮬레이터](https://boopface.com/hardware/?lang=ko)가 같은 엔진으로 화면 32가지를 재현하므로 보드 없이도 볼 수 있습니다.
 2. **내보내기**: 레이아웃, 색상, 프레임 레이트를 맞추고 "펌웨어" 탭에서 "파일 다운로드"를 누른 뒤, `eyes_settings.h`를 전체 프로젝트의 `embedded/examples/arduino/`(`main.cpp` 옆)에 두고 빌드합니다. Arduino 라이브러리 ZIP에는 이 파일들이 없습니다. [절차](../embedded/README.ko.md#시뮬레이터에서-맞추고-바로-보드로)를 보세요.
-3. **설치**: Arduino IDE에서는 [릴리스 페이지](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0)의 `BoopFace-Embedded-0.2.0.zip`을 추가하고, PlatformIO에서는 `lib_deps = cxlab/BoopFace@^0.2.0`을 씁니다.
+3. **설치**: Arduino IDE에서는 [릴리스 페이지](https://github.com/CX-ArtLab/boopface/releases/tag/embedded-v0.2.1)의 `BoopFace-Embedded-0.2.1.zip`을 추가하고, PlatformIO에서는 `lib_deps = cxlab/BoopFace@^0.2.1`을 씁니다.
 
 ```cpp
 #include <BoopFace.h>
@@ -389,7 +389,7 @@ void loop()  { if (eyes.update(millis())) { /* eyes.data()를 화면으로 보�
 
 - **Agent Robot Avatar에서 업그레이드**: 0.8에서 이름이 바뀌었고 사용법은 같습니다. `npm uninstall agent-robot-avatar && npm install boopface`면 되고, 예전 태그 `<agent-robot-avatar>`는 1.0까지 쓸 수 있습니다.
 - **호환성**: ES Modules, Custom Elements, Web Animations를 지원하는 최신 브라우저. 자동 테스트는 Chromium, Firefox, WebKit에서 실행합니다.
-- **버전**: **웹 버전 v0.9.0**, 임베디드 버전 v0.2.0(실험 버전). 1.0까지 API는 신중하게 발전시킵니다.
+- **버전**: **웹 버전 v0.9.0**, 임베디드 버전 v0.2.1(실험 버전). 1.0까지 API는 신중하게 발전시킵니다.
 - **작품 소개**: [커뮤니티 작품](../SHOWCASE.md), [작품 제출하기](https://github.com/CX-ArtLab/BoopFace/issues/new?template=showcase-submission.yml).
 - **기여하기**: Issue와 Pull Request를 환영합니다. 먼저 [`CONTRIBUTING.md`](../CONTRIBUTING.md)를 읽어 주세요.
 

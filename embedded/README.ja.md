@@ -58,7 +58,7 @@
 4. ファイルをプロジェクトフォルダーの `embedded/examples/arduino/` の `main.cpp` の隣に置きます。
 5. [PlatformIO](https://docs.platformio.org/en/latest/core/installation/index.html) をインストールし、プロジェクトの一番上のフォルダー（`embedded` が見える階層）でターミナルを開いて、ページに表示される「ビルドコマンド」を実行します。例：`pio run -d embedded -e esp32-s3-st7789 -t upload`。
 
-**Arduino IDE の場合**：ZIP でライブラリをインストールし（スケッチ → ライブラリをインクルード → .ZIP 形式のライブラリをインストール）、「ファイル → スケッチ例 → BoopFace」の SerialEyes か OledSSD1306 を開きます。この 2 つのサンプルは `eyes_settings.h` を読みません。シミュレーターで調整した設定を使うには、上の手順に従ってください。
+**Arduino IDE の場合**：ZIP でライブラリをインストールし（スケッチ → ライブラリをインクルード → .ZIP 形式のライブラリをインストール）、「ファイル → スケッチ例 → BoopFace Embedded」の SerialEyes か OledSSD1306 を開きます。この 2 つのサンプルは `eyes_settings.h` を読みません。シミュレーターで調整した設定を使うには、上の手順に従ってください。
 
 | `eyes_settings.h` の設定 | シミュレーターの項目 |
 | --- | --- |
@@ -128,15 +128,15 @@ pio device monitor -b 115200
 
 ## 自分のデバイスに組み込む
 
-ライブラリは `embedded/lib/BoopFace` にあります。Arduino ではこのディレクトリを自分の `libraries` にコピーするか、[組み込み版のリリースページ](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0)から `BoopFace-Embedded-0.2.0.zip` をダウンロードし、「スケッチ → ライブラリをインクルード → .ZIP 形式のライブラリをインストール」で追加します。Arduino ライブラリマネージャーへの登録は手続き中なので、それまでは ZIP かソースを使ってください。そのほかの C++11 環境ではライブラリの `src` ディレクトリをそのままコンパイルします。
+ライブラリは `embedded/lib/BoopFace` にあります。Arduino ではこのディレクトリを自分の `libraries` にコピーするか、[組み込み版のリリースページ](https://github.com/CX-ArtLab/boopface/releases/tag/embedded-v0.2.1)から `BoopFace-Embedded-0.2.1.zip` をダウンロードし、「スケッチ → ライブラリをインクルード → .ZIP 形式のライブラリをインストール」で追加します。Arduino ライブラリマネージャーへの登録は手続き中なので、それまでは ZIP かソースを使ってください。そのほかの C++11 環境ではライブラリの `src` ディレクトリをそのままコンパイルします。
 
 [PlatformIO](https://registry.platformio.org/libraries/cxlab/BoopFace) には `cxlab/BoopFace` が登録されています。`platformio.ini` の環境に追加します：
 
 ```ini
-lib_deps = cxlab/BoopFace@^0.2.0
+lib_deps = cxlab/BoopFace@^0.2.1
 ```
 
-ライブラリには Arduino IDE のサンプルが 2 つあり、「ファイル → スケッチ例 → BoopFace」にあります。**SerialEyes** はシリアルモニターに文字で目を描くので画面は不要です。**OledSSD1306** は 0.96 インチ 128×64 I²C OLED で動きます（先に Adafruit SSD1306 ライブラリをインストール）。どちらもシリアルモニターに動作名を入力すると再生します。CI で ESP32 と RP2040 向けにビルドしています。
+ライブラリには Arduino IDE のサンプルが 2 つあり、「ファイル → スケッチ例 → BoopFace Embedded」にあります。**SerialEyes** はシリアルモニターに文字で目を描くので画面は不要です。**OledSSD1306** は 0.96 インチ 128×64 I²C OLED で動きます（先に Adafruit SSD1306 ライブラリをインストール）。どちらもシリアルモニターに動作名を入力すると再生します。CI で ESP32 と RP2040 向けにビルドしています。
 
 描画のコアには Adafruit ライブラリは不要で、必要なのはサンプルの表示ドライバーだけです。
 

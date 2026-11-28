@@ -365,7 +365,7 @@ The same eye expressions on robot and board screens. A small C++11 engine with 3
 
 1. **Preview**: the [online simulator](https://boopface.com/hardware/?lang=en) runs the same engine and simulates 32 screens, so you can see it without a board.
 2. **Export**: set the layout, colours and frame rate, open the **Firmware** tab and press **Download file**, then put `eyes_settings.h` in `embedded/examples/arduino/` of the full project (next to `main.cpp`) and build. The Arduino library ZIP does not contain these files; see the [Steps](embedded/README.md#from-the-preview-to-your-board).
-3. **Install**: in the Arduino IDE add `BoopFace-Embedded-0.2.0.zip` from the [release page](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0); in PlatformIO use `lib_deps = cxlab/BoopFace@^0.2.0`.
+3. **Install**: in the Arduino IDE add `BoopFace-Embedded-0.2.1.zip` from the [release page](https://github.com/CX-ArtLab/boopface/releases/tag/embedded-v0.2.1); in PlatformIO use `lib_deps = cxlab/BoopFace@^0.2.1`.
 
 ```cpp
 #include <BoopFace.h>
@@ -389,7 +389,7 @@ Experimental: every configuration builds in CI, but not all have been checked on
 
 - **Upgrading from Agent Robot Avatar**: renamed in 0.8, same usage. Run `npm uninstall agent-robot-avatar && npm install boopface`; the old `<agent-robot-avatar>` tag keeps working until 1.0.
 - **Compatibility**: modern browsers with ES Modules, Custom Elements and Web Animations; automated tests cover Chromium, Firefox and WebKit.
-- **Version**: **Web v0.9.0**, Embedded v0.2.0 (experimental). Until 1.0 the API changes carefully.
+- **Version**: **Web v0.9.0**, Embedded v0.2.1 (experimental). Until 1.0 the API changes carefully.
 - **Showcase**: [community projects](SHOWCASE.md), [submit yours](https://github.com/CX-ArtLab/BoopFace/issues/new?template=showcase-submission.yml).
 - **Contributing**: issues and pull requests are welcome; please read [`CONTRIBUTING.md`](CONTRIBUTING.md) first.
 

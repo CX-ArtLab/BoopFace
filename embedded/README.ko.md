@@ -58,7 +58,7 @@
 4. 파일을 프로젝트 폴더의 `embedded/examples/arduino/` 안 `main.cpp` 옆에 둡니다.
 5. [PlatformIO](https://docs.platformio.org/en/latest/core/installation/index.html)를 설치하고, 프로젝트 맨 위 폴더(`embedded`가 보이는 곳)에서 터미널을 열어 페이지에 표시된 "빌드 명령"을 실행합니다. 예: `pio run -d embedded -e esp32-s3-st7789 -t upload`.
 
-**Arduino IDE**: ZIP으로 라이브러리를 설치하고(스케치 → 라이브러리 포함하기 → .ZIP 라이브러리 추가) "파일 → 예제 → BoopFace"의 SerialEyes나 OledSSD1306을 엽니다. 이 두 예제는 `eyes_settings.h`를 읽지 않습니다. 시뮬레이터에서 맞춘 설정을 쓰려면 위 단계를 따르세요.
+**Arduino IDE**: ZIP으로 라이브러리를 설치하고(스케치 → 라이브러리 포함하기 → .ZIP 라이브러리 추가) "파일 → 예제 → BoopFace Embedded"의 SerialEyes나 OledSSD1306을 엽니다. 이 두 예제는 `eyes_settings.h`를 읽지 않습니다. 시뮬레이터에서 맞춘 설정을 쓰려면 위 단계를 따르세요.
 
 | `eyes_settings.h`의 설정 | 시뮬레이터 항목 |
 | --- | --- |
@@ -128,15 +128,15 @@ pio device monitor -b 115200
 
 ## 내 장치에 넣기
 
-라이브러리는 `embedded/lib/BoopFace`에 있습니다. Arduino에서는 이 디렉터리를 내 `libraries` 폴더에 복사하거나, [임베디드 릴리스 페이지](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0)에서 `BoopFace-Embedded-0.2.0.zip`을 내려받아 "스케치 → 라이브러리 포함하기 → .ZIP 라이브러리 추가"로 설치합니다. Arduino 라이브러리 관리자 등록은 진행 중이니 그때까지는 ZIP이나 소스를 쓰세요. 다른 C++11 환경에서는 라이브러리의 `src` 디렉터리 전체를 컴파일하면 됩니다.
+라이브러리는 `embedded/lib/BoopFace`에 있습니다. Arduino에서는 이 디렉터리를 내 `libraries` 폴더에 복사하거나, [임베디드 릴리스 페이지](https://github.com/CX-ArtLab/boopface/releases/tag/embedded-v0.2.1)에서 `BoopFace-Embedded-0.2.1.zip`을 내려받아 "스케치 → 라이브러리 포함하기 → .ZIP 라이브러리 추가"로 설치합니다. Arduino 라이브러리 관리자 등록은 진행 중이니 그때까지는 ZIP이나 소스를 쓰세요. 다른 C++11 환경에서는 라이브러리의 `src` 디렉터리 전체를 컴파일하면 됩니다.
 
 [PlatformIO](https://registry.platformio.org/libraries/cxlab/BoopFace)에 `cxlab/BoopFace`가 등록되어 있습니다. `platformio.ini`의 환경에 추가하세요:
 
 ```ini
-lib_deps = cxlab/BoopFace@^0.2.0
+lib_deps = cxlab/BoopFace@^0.2.1
 ```
 
-라이브러리에는 Arduino IDE 예제가 두 개 있으며 "파일 → 예제 → BoopFace"에 있습니다. **SerialEyes**는 시리얼 모니터에 문자로 눈을 그려 화면이 필요 없고, **OledSSD1306**은 0.96인치 128×64 I²C OLED에서 동작합니다(먼저 Adafruit SSD1306 라이브러리 설치). 두 예제 모두 시리얼 모니터에 동작 이름을 입력하면 재생합니다. CI에서 ESP32와 RP2040용으로 빌드합니다.
+라이브러리에는 Arduino IDE 예제가 두 개 있으며 "파일 → 예제 → BoopFace Embedded"에 있습니다. **SerialEyes**는 시리얼 모니터에 문자로 눈을 그려 화면이 필요 없고, **OledSSD1306**은 0.96인치 128×64 I²C OLED에서 동작합니다(먼저 Adafruit SSD1306 라이브러리 설치). 두 예제 모두 시리얼 모니터에 동작 이름을 입력하면 재생합니다. CI에서 ESP32와 RP2040용으로 빌드합니다.
 
 그리기 코어에는 Adafruit 라이브러리가 필요 없고, 예제의 디스플레이 드라이버에만 필요합니다.
 

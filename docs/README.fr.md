@@ -365,7 +365,7 @@ Les mêmes expressions des yeux sur les écrans de robots et de cartes. Un petit
 
 1. **Aperçu** : le [simulateur en ligne](https://boopface.com/hardware/?lang=fr) exécute le même moteur et simule 32 écrans, pour voir le résultat sans carte.
 2. **Export** : réglez la mise en page, les couleurs et la fréquence d’images, ouvrez l’onglet **Firmware** et cliquez sur **Télécharger le fichier** ; placez `eyes_settings.h` dans `embedded/examples/arduino/` du projet complet (à côté de `main.cpp`) et compilez. Le ZIP de la bibliothèque Arduino ne contient pas ces fichiers ; voir les [Étapes](../embedded/README.fr.md#réglez-dans-le-simulateur-puis-passez-à-la-carte).
-3. **Installation** : dans l’Arduino IDE, ajoutez `BoopFace-Embedded-0.2.0.zip` depuis la [page de version](https://github.com/CX-ArtLab/boopface/releases/tag/eyes-v0.2.0) ; dans PlatformIO, utilisez `lib_deps = cxlab/BoopFace@^0.2.0`.
+3. **Installation** : dans l’Arduino IDE, ajoutez `BoopFace-Embedded-0.2.1.zip` depuis la [page de version](https://github.com/CX-ArtLab/boopface/releases/tag/embedded-v0.2.1) ; dans PlatformIO, utilisez `lib_deps = cxlab/BoopFace@^0.2.1`.
 
 ```cpp
 #include <BoopFace.h>
@@ -389,7 +389,7 @@ Expérimental : toutes les configurations compilent en CI, mais toutes n’ont p
 
 - **Mise à niveau depuis Agent Robot Avatar** : renommé en 0.8, même utilisation. Lancez `npm uninstall agent-robot-avatar && npm install boopface` ; l’ancienne balise `<agent-robot-avatar>` fonctionne jusqu’à la 1.0.
 - **Compatibilité** : navigateurs modernes avec ES Modules, Custom Elements et Web Animations ; les tests automatiques couvrent Chromium, Firefox et WebKit.
-- **Version** : **Web v0.9.0**, Embedded v0.2.0 (expérimental). Jusqu’à la 1.0, l’API évolue avec prudence.
+- **Version** : **Web v0.9.0**, Embedded v0.2.1 (expérimental). Jusqu’à la 1.0, l’API évolue avec prudence.
 - **Vitrine** : [projets de la communauté](../SHOWCASE.md), [proposez le vôtre](https://github.com/CX-ArtLab/BoopFace/issues/new?template=showcase-submission.yml).
 - **Contribuer** : issues et pull requests sont bienvenues ; lisez d’abord [`CONTRIBUTING.md`](../CONTRIBUTING.md).
 

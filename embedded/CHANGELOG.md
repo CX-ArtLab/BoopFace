@@ -1,6 +1,19 @@
 # BoopFace Embedded changelog
 
-Changes to the embedded eyes library for robot and dev-board screens. It is versioned and released separately from the Web component (`eyes-v*` tags, not published to npm).
+Changes to the embedded eyes library for robot and dev-board screens. It is versioned and released separately from the Web component (`embedded-v*` tags from 0.2.1, `eyes-v*` before; not published to npm).
+
+## [0.2.1] - 2026-11-28
+
+### Fixed
+
+- The Arduino library is called **BoopFace Embedded** again, as in 0.1.0. 0.2.0 had renamed it to `BoopFace`, so the Arduino Library Manager kept showing 0.1.0 and never offered the update. If you installed 0.2.0 from the ZIP, delete the old `BoopFace` folder from your Arduino `libraries` folder before installing 0.2.1, or the IDE finds two copies. PlatformIO keeps the name `cxlab/BoopFace`.
+- The Arduino IDE examples now appear under *File → Examples → BoopFace Embedded*.
+- The settings file exported by the Embedded Studio gives the same build command as the page (`pio run -d embedded -e …`, run from the project's top folder).
+
+### Changed
+
+- Embedded releases are tagged `embedded-v<version>` from now on (0.1.0 and 0.2.0 keep their `eyes-v` tags), so the release name matches the `embedded/` folder.
+- The offline Embedded Studio (`boopface-embedded-studio.html`, 33 actions) replaces the older preview as the download; the old file name downloads the same file.
 
 ## [0.2.0] - 2026-11-25
 

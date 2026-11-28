@@ -39,7 +39,7 @@ await writeFile(path.join(output, 'hardware/index.html'), `<!doctype html>
 <meta http-equiv="refresh" content="0;url=https://boopface.com/hardware/">
 <script>location.replace('https://boopface.com/hardware/' + location.search + location.hash);</script>
 </head><body style="font:16px system-ui;padding:2rem">
-<p>The BoopFace Embedded Studio has moved: <a href="https://boopface.com/hardware/">boopface.com/hardware</a>. The offline file is on the <a href="https://github.com/CX-ArtLab/BoopFace/releases/tag/eyes-v0.2.0">embedded release page</a>.</p>
+<p>The BoopFace Embedded Studio has moved: <a href="https://boopface.com/hardware/">boopface.com/hardware</a>. The offline file is on the <a href="https://github.com/CX-ArtLab/BoopFace/releases/tag/embedded-v0.2.1">embedded release page</a>.</p>
 </body></html>
 `);
 console.log(`Public demo built at ${output} (${publicDemoFiles.length} demo files; private editors excluded)`);
